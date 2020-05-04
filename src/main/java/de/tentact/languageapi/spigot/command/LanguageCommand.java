@@ -12,91 +12,142 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class LanguageCommand implements CommandExecutor {
+
+
+    public LanguageAPI languageAPI = LanguageAPI.getInstance();
+
+
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
         if (commandSender instanceof Player) {
-            Player player = (Player) commandSender; //                  args0 1   2   3
+            Player player = (Player) commandSender; //               args[] 0    1    2   3  length    1     2   3
             if (player.hasPermission("system.languageapi")) { //lang add lang key MSG | lang remove lang key | lang change lang key msg | lang createlang lang | lang deletelang lang
                 if (args.length >= 2) {
                     switch (args[0].toLowerCase()) {
                         case "add":
                             if (args.length >= 4) {
-                                if (LanguageAPI.getInstance().getAvailableLanguages().contains(args[1].toLowerCase())) {
+                                String lang = args[1].toLowerCase();
+                                if (languageAPI.getAvailableLanguages().contains(args[1].toLowerCase())) {
                                     String key = args[2].toLowerCase();
-                                    String lang = args[1].toLowerCase();
-                                    if (!LanguageAPI.getInstance().isKey(key, lang)) {
-                                        String msg = "";
+                                    if (!languageAPI.isKey(key, lang)) {
+                                        StringBuilder msg = new StringBuilder();
 
                                         for (int i = 3; i < args.length; i++) {
-                                            msg = msg + args[i] + " ";
+                                            msg.append(args[i]).append(" ");
                                         }
-                                        LanguageAPI.getInstance().addMessage(key, msg, lang);
-                                        player.sendMessage("TRYING TO DO");
+                                        languageAPI.addMessage(key, msg.toString(), lang);
+                                        player.sendMessage(languageAPI.getMessage("languageapi-add-success", player.getUniqueId())
+                                                .replace("%KEY%", key)
+                                                .replace("%LANG%", lang)
+                                                .replace("%MSG%", msg.toString()));
 
                                     } else {
-                                        player.sendMessage("KEY ALREADY EXISTS");
+                                        player.sendMessage(languageAPI.getMessage("languageapi-key-already-exists", player.getUniqueId())
+                                                .replace("%KEY%", key)
+                                                .replace("%LANG%", lang));
                                     }
                                 } else {
-                                    player.sendMessage("lang");
+                                    player.sendMessage(languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId())
+                                            .replace("%LANG%", lang));
                                 }
                             } else {
-                                player.sendMessage("args");
+                                player.sendMessage(languageAPI.getMessage("languageapi-add-help", player.getUniqueId()));
                             }
                         case "remove":
                             if (args.length >= 3) {
-                                if (LanguageAPI.getInstance().getAvailableLanguages().contains(args[1].toLowerCase())) {
-                                    if (LanguageAPI.getInstance().isKey(args[2].toLowerCase(), args[1].toLowerCase())) {
-                                        LanguageAPI.getInstance().deleteMessage(args[2].toLowerCase(), args[1].toLowerCase());
+                                String lang = args[1].toLowerCase();
+                                String key = args[2].toLowerCase();
+                                if (languageAPI.getAvailableLanguages().contains(lang)) {
+                                    if (languageAPI.isKey(key, lang)) {
+                                        languageAPI.deleteMessage(key, lang);
+                                        player.sendMessage(languageAPI.getMessage("languageapi-remove-success", player.getUniqueId())
+                                                .replace("%KEY%", key).replace("%LANG", lang));
+                                    } else {
+                                        player.sendMessage(languageAPI.getMessage("languageapi-key-not-found", player.getUniqueId())
+                                                .replace("%KEY%", key)
+                                                .replace("%LANG%", lang));
                                     }
+                                } else {
+                                    player.sendMessage(languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId())
+                                            .replace("%LANG%", lang));
                                 }
+                            }else{
+                                //HELP
                             }
                         case "change":
                             if (args.length >= 4) {
-                                if (LanguageAPI.getInstance().getAvailableLanguages().contains(args[1].toLowerCase())) {
+                                String lang = args[1].toLowerCase();
+                                if (languageAPI.getAvailableLanguages().contains(lang)) {
                                     String key = args[2].toLowerCase();
-                                    String lang = args[1].toLowerCase();
-                                    if (LanguageAPI.getInstance().isKey(key, lang)) {
-                                        String msg = "";
+                                    if (languageAPI.isKey(key, lang)) {
+                                        StringBuilder msg = new StringBuilder();
                                         for (int i = 3; i < args.length; i++) {
-                                            msg = msg + args[i] + " ";
+                                            msg.append(args[i]).append(" ");
                                         }
-                                        LanguageAPI.getInstance().updateMessage(key, lang, msg);
+                                        languageAPI.updateMessage(key, lang, msg.toString());
+                                        player.sendMessage(languageAPI.getMessage("languageapi-change-success", player.getUniqueId())
+                                                .replace("%KEY%", key)
+                                                .replace("%LANG%", lang)
+                                                .replace("%MSG%", msg.toString()));
+                                    }else {
+                                        player.sendMessage(languageAPI.getMessage("languageapi-key-not-found", player.getUniqueId())
+                                                .replace("%KEY%", key)
+                                                .replace("%LANG%", lang));
                                     }
-
-
+                                }else {
+                                    player.sendMessage(languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId())
+                                            .replace("%LANG%", lang));
                                 }
+                            }else {
+                                //HELP
                             }
                         case "create":
-                            if (!LanguageAPI.getInstance().getAvailableLanguages().contains(args[1].toLowerCase())) {
-                                LanguageAPI.getInstance().createLanguage(args[1].toLowerCase());
+                            String lang = args[1].toLowerCase();
+
+                            if (!languageAPI.getAvailableLanguages().contains(lang)) {
+                                languageAPI.createLanguage(lang);
+                                player.sendMessage(languageAPI.getMessage("languageapi-create-success", player.getUniqueId()).replace("%LANG%", lang));
+                            }else {
+                                player.sendMessage(languageAPI.getMessage("languageapi-lang-already-exists", player.getUniqueId()).replace("%LANG%", lang));
                             }
 
                         case "delete":
-                            if (LanguageAPI.getInstance().getAvailableLanguages().contains(args[1].toLowerCase()) && !LanguageAPI.getInstance().getDefaultLanguage().equalsIgnoreCase(args[1])) {
-                                LanguageAPI.getInstance().deleteLanguage(args[1].toLowerCase());
+                            lang = args[1].toLowerCase();
+                            if (languageAPI.getAvailableLanguages().contains(lang) && !languageAPI.getDefaultLanguage().equalsIgnoreCase(lang)) {
+                                languageAPI.deleteLanguage(lang);
+                                player.sendMessage(languageAPI.getMessage("languageapi-delete-success", player.getUniqueId()).replace("%LANG%", lang));
+                            }else {
+                                player.sendMessage(languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId())
+                                        .replace("%LANG%", lang));
                             }
                         case "copy":
                             if (args.length >= 3) {
                                 String langfrom = args[1].toLowerCase();
                                 String langto = args[2].toLowerCase();
-                                if (LanguageAPI.getInstance().getAvailableLanguages().contains(langfrom) && LanguageAPI.getInstance().getAvailableLanguages().contains(langto)) {
-                                    LanguageAPI.getInstance().copyLanguage(langfrom, langto);
-                                    player.sendMessage("TRYING TO DO");
-                                }else {
-                                    for(String langs : LanguageAPI.getInstance().getAvailableLanguages()) {
-                                        player.sendMessage(langs);
-                                    }
-                                    player.sendMessage("LANG 1" +langfrom);
-                                    player.sendMessage("LANG 2" +langto);
+                                if (languageAPI.getAvailableLanguages().contains(langfrom) && languageAPI.getAvailableLanguages().contains(langto)) {
+                                    languageAPI.copyLanguage(langfrom, langto);
+                                    player.sendMessage(languageAPI.getMessage("languageapi-copy-success", player.getUniqueId())
+                                            .replace("%OLDLANG%", langfrom)
+                                            .replace("%NEWLANG%", langto));
+                                } else {
+                                    player.sendMessage(languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId())
+                                            .replace("%OLDLANG%", langfrom)
+                                            .replace("%NEWLANG%", langto));
                                 }
+                            }else{
+                                //HELP
                             }
+                        case "show": //lang show key
+                            String key = args[1].toLowerCase();
+                            if (!languageAPI.hasParameter(key)) {
+                                player.sendMessage(languageAPI.getMessage("languageapi-key-has-no-param-found", player.getUniqueId()).replace("%KEY%", key));
+                                return false;
+                            }
+                            player.sendMessage(languageAPI.getMessage("languageapi-show-success", player.getUniqueId())
+                                    .replace("%PARAM%", languageAPI.getParameter(key)));
                     }
                 }
             }
         }
         return false;
-    }
-
-    void sendHelp(Player player) {
-        player.sendMessage("A");
     }
 }

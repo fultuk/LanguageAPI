@@ -38,7 +38,7 @@ public class Source {
         mySQLcfg.addDefault("mysql.username", "languageapi");
         mySQLcfg.addDefault("mysql.password", "password");
         mySQLcfg.addDefault("mysql.port", 3306);
-        mySQLcfg.addDefault("languageapi.defaultlang", "en_en");
+        mySQLcfg.addDefault("languageapi.defaultlang", "de_de");
 
         mySQLcfg.options().copyDefaults(true);
 

@@ -14,7 +14,8 @@ import java.sql.SQLException;
 
 public class MySQL {
 
-    private String hostname, database, username, password;
+    private final String hostname, database, username, password;
+
     private int port;
     private Connection con;
 
@@ -57,6 +58,7 @@ public class MySQL {
         try {
             con.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS choosenlang(uuid VARCHAR(64), language VARCHAR(64));");
             con.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(64));");
+            con.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(transkey VARCHAR(64), param VARCHAR(2000));");
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -72,20 +74,20 @@ public class MySQL {
         }
     }
 
-    public void update(String qry) {
+    public void update(String sql) {
         if (isConnected()) {
             try {
-                con.createStatement().executeUpdate(qry);
+                con.createStatement().executeUpdate(sql);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public ResultSet getResult(String qry) {
+    public ResultSet getResult(String sql) {
         if (isConnected()) {
             try {
-                return con.createStatement().executeQuery(qry);
+                return con.createStatement().executeQuery(sql);
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

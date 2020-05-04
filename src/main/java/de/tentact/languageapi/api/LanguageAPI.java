@@ -7,16 +7,13 @@ package de.tentact.languageapi.api;
 
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.Source;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
 
-import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.UUID;
 
 public class LanguageAPI {
@@ -26,7 +23,6 @@ public class LanguageAPI {
     public static MySQL mySQL;
 
     public ArrayList<String> languageCache = new ArrayList<>();
-
 
     public long lastupdatedCache = System.currentTimeMillis();
 
@@ -43,6 +39,8 @@ public class LanguageAPI {
 
     public void createLanguage(final String langName) {
         if (!getAvailableLanguages().contains(langName.toLowerCase())) {
+
+
             mySQL.createTable(langName.replace(" ", "").toLowerCase());
             new Thread(new Runnable() {
                 @Override
@@ -84,6 +82,8 @@ public class LanguageAPI {
 
     public boolean playerExists(UUID playerUUID) {
         ResultSet rs = mySQL.getResult("SELECT * FROM choosenlang WHERE uuid='" + playerUUID.toString() + "';");
+      
+
         try {
             if (rs.next()) {
                 return true;
@@ -92,6 +92,14 @@ public class LanguageAPI {
             throwables.printStackTrace();
         }
         return false;
+    }
+    public void addMessage(final String transkey, final String message, final String lang, String param) {
+        if (getAvailableLanguages().contains(lang.toLowerCase())) {
+            new Thread(() -> {
+                mySQL.update("INSERT INTO " + lang.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + message + "');");
+                mySQL.update("INSERT INTO Parameter(transkey, param) VALUES ('"+transkey.toLowerCase()+"', '"+param+"')");
+            }).start();
+        }
     }
 
     public void addMessage(final String transkey, final String message, final String lang) {
@@ -103,28 +111,38 @@ public class LanguageAPI {
                 }
             }).start();
         }
+    }
 
+    public void addParameter(final String transkey, final String param) {
+        new Thread(() -> mySQL.update("INSERT INTO Parameter (transkey, param) VALUES ('" + transkey.toLowerCase() + "', '" + param + "');")).start();
+
+    }
+    public void deleteParameter(final String transkey, final String param) {
+        if(!getParameter(transkey).contains(param)) {
+            return;
+        }
+        new Thread(() -> mySQL.update("UPDATE Parameter SET param='"+getParameter(transkey).replace(param, "")+"' WHERE transkey='"+transkey+"';")).start();
+
+    }
+    public void deleteAllParameter(final String transkey) {
+        if(!hasParameter(transkey)) {
+            return;
+        }
+        new Thread(() -> mySQL.update("DELETE FROM Parameter WHERE transkey='"+transkey+"';")).start();
 
     }
 
-
     public void addMessage(final String transkey, final String lang) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mySQL.update("INSERT INTO " + lang.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + transkey + "');");
-            }
-        }).start();
+        new Thread(() -> mySQL.update("INSERT INTO " + lang.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + transkey + "');")).start();
 
     }
 
     public void addMessage(final String transkey) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mySQL.update("INSERT INTO " + Source.getDefaultLanguage().toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + transkey + "');");
-            }
-        }).start();
+        new Thread(() -> mySQL.update("INSERT INTO " + Source.getDefaultLanguage().toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + transkey + "');")).start();
+
+    }
+    public void addMessageExtra(final String transkey, final String translation) {
+        new Thread(() -> mySQL.update("INSERT INTO " + Source.getDefaultLanguage().toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + translation.replace('&', '§') + "');")).start();
 
     }
     public void copyLanguage(String langfrom, String langto) {
@@ -133,6 +151,32 @@ public class LanguageAPI {
             Bukkit.broadcastMessage("MYSQL DOING");
         }
         Bukkit.broadcastMessage("MYSQL FAILED");
+
+    }
+    public boolean hasParameter(String translationKey) {
+        ResultSet rs = mySQL.getResult("SELECT param FROM Parameter WHERE transkey='"+translationKey+"';");
+        try {
+            if(rs.next()) {
+                return true;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
+    }
+    public String getParameter(String translationKey) {
+        if(!hasParameter(translationKey))
+            return null;
+        ResultSet rs = mySQL.getResult("SELECT param FROM Parameter WHERE transkey='"+translationKey+"';");
+        try {
+            if(rs.next()) {
+                return rs.getString("param");
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
+
     }
 
     public void updateMessage(String transkey, String lang, String message) {
@@ -226,6 +270,38 @@ public class LanguageAPI {
             }
         }
 
+    }
+    public ArrayList<String> getAllKeys(String lang) {
+        ArrayList<String> keys = new ArrayList<>();
+        if(getAvailableLanguages().contains(lang)) {
+            ResultSet rs = mySQL.getResult("SELECT transkey FROM "+lang);
+            try{
+                while(rs.next()) {
+                    keys.add(rs.getString("transkey"));
+                }
+            }catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            return keys;
+        }
+        keys.add("Language not found");
+        return keys;
+    }
+    public ArrayList<String> getAllMessages(String lang) {
+        ArrayList<String> messages = new ArrayList<>();
+        if(getAvailableLanguages().contains(lang)) {
+            ResultSet rs = mySQL.getResult("SELECT translation FROM "+lang);
+            try{
+                while(rs.next()) {
+                    messages.add(rs.getString("translation"));
+                }
+            }catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            return messages;
+        }
+        messages.add("Language not found");
+        return messages;
     }
 
     public String getDefaultLanguage() {
