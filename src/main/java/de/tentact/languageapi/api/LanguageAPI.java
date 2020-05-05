@@ -107,7 +107,7 @@ public class LanguageAPI {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    mySQL.update("INSERT INTO " + lang.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + message + "');");
+                    mySQL.update("INSERT INTO " + lang.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + message.replace('&', '§') + "');");
                 }
             }).start();
         }
@@ -133,24 +133,37 @@ public class LanguageAPI {
     }
 
     public void addMessage(final String transkey, final String lang) {
+        if(!getAvailableLanguages().contains(lang)) {
+            return;
+        }
+        if(isKey(transkey, lang)) {
+           return;
+        }
         new Thread(() -> mySQL.update("INSERT INTO " + lang.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + transkey + "');")).start();
 
     }
 
     public void addMessage(final String transkey) {
+        if(isKey(transkey, getDefaultLanguage().toLowerCase())) {
+            return;
+        }
         new Thread(() -> mySQL.update("INSERT INTO " + Source.getDefaultLanguage().toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + transkey + "');")).start();
 
     }
     public void addMessageExtra(final String transkey, final String translation) {
-        new Thread(() -> mySQL.update("INSERT INTO " + Source.getDefaultLanguage().toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + translation.replace('&', '§') + "');")).start();
+        if(isKey(transkey, getDefaultLanguage().toLowerCase())) {
+            return;
+        }
+        new Thread(() -> mySQL.update("INSERT INTO " + Source.getDefaultLanguage().toLowerCase()
+                + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + translation.replace('&', '§') + "');")).start();
 
     }
     public void copyLanguage(String langfrom, String langto) {
         if(getAvailableLanguages().contains(langfrom) && getAvailableLanguages().contains(langto)) {
             mySQL.update("INSERT INTO "+langto+" SELECT * FROM "+langfrom+";");
-            Bukkit.broadcastMessage("MYSQL DOING");
+
         }
-        Bukkit.broadcastMessage("MYSQL FAILED");
+
 
     }
     public boolean hasParameter(String translationKey) {
@@ -180,7 +193,7 @@ public class LanguageAPI {
     }
 
     public void updateMessage(String transkey, String lang, String message) {
-        mySQL.update("UPDATE " + lang.toLowerCase() + " SET translation='" + message.replace('§', '&') + "' WHERE transkey='" + transkey.toLowerCase() + "';");
+        mySQL.update("UPDATE " + lang.toLowerCase() + " SET translation='" + message.replace('&', '§') + "' WHERE transkey='" + transkey.toLowerCase() + "';");
     }
 
     public void deleteMessage(String transkey, String lang) {
@@ -236,7 +249,7 @@ public class LanguageAPI {
 
     public ArrayList<String> getAvailableLanguages() {
         if (languageCache.isEmpty()) {
-            Bukkit.broadcastMessage("CACHE EMPTY");
+
             ArrayList<String> langs = new ArrayList<String>();
             ResultSet rs = mySQL.getResult("SELECT language FROM languages");
             try {
@@ -251,7 +264,7 @@ public class LanguageAPI {
             return langs;
         } else {
             if (lastupdatedCache + 5 * 60000 <= System.currentTimeMillis()) {
-                Bukkit.broadcastMessage("CACHE TO OLD");
+
                 ArrayList<String> langs = new ArrayList<String>();
                 ResultSet rs = mySQL.getResult("SELECT language FROM languages");
                 try {
@@ -265,7 +278,7 @@ public class LanguageAPI {
                 lastupdatedCache = System.currentTimeMillis();
                 return langs;
             } else {
-                Bukkit.broadcastMessage("CACHE OKAY");
+
                 return languageCache;
             }
         }

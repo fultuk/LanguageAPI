@@ -6,15 +6,22 @@ package de.tentact.languageapi.spigot.command;
 */
 
 import de.tentact.languageapi.api.LanguageAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-public class LanguageCommand implements CommandExecutor {
+import java.util.Arrays;
+import java.util.List;
+
+public class LanguageCommand implements CommandExecutor, TabCompleter {
 
 
     public LanguageAPI languageAPI = LanguageAPI.getInstance();
+
+    private static List<String> tabComplete = Arrays.asList("add","remove", "change", "create", "delete", "param", "copy");
 
 
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
@@ -44,6 +51,7 @@ public class LanguageCommand implements CommandExecutor {
                                         player.sendMessage(languageAPI.getMessage("languageapi-key-already-exists", player.getUniqueId())
                                                 .replace("%KEY%", key)
                                                 .replace("%LANG%", lang));
+
                                     }
                                 } else {
                                     player.sendMessage(languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId())
@@ -52,6 +60,8 @@ public class LanguageCommand implements CommandExecutor {
                             } else {
                                 player.sendMessage(languageAPI.getMessage("languageapi-add-help", player.getUniqueId()));
                             }
+                            break;
+
                         case "remove":
                             if (args.length >= 3) {
                                 String lang = args[1].toLowerCase();
@@ -61,18 +71,23 @@ public class LanguageCommand implements CommandExecutor {
                                         languageAPI.deleteMessage(key, lang);
                                         player.sendMessage(languageAPI.getMessage("languageapi-remove-success", player.getUniqueId())
                                                 .replace("%KEY%", key).replace("%LANG", lang));
+                                        break;
                                     } else {
                                         player.sendMessage(languageAPI.getMessage("languageapi-key-not-found", player.getUniqueId())
                                                 .replace("%KEY%", key)
                                                 .replace("%LANG%", lang));
+                                        break;
                                     }
                                 } else {
                                     player.sendMessage(languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId())
                                             .replace("%LANG%", lang));
+                                    break;
                                 }
-                            }else{
+                            } else {
                                 //HELP
+                                break;
                             }
+
                         case "change":
                             if (args.length >= 4) {
                                 String lang = args[1].toLowerCase();
@@ -87,38 +102,40 @@ public class LanguageCommand implements CommandExecutor {
                                         player.sendMessage(languageAPI.getMessage("languageapi-change-success", player.getUniqueId())
                                                 .replace("%KEY%", key)
                                                 .replace("%LANG%", lang)
-                                                .replace("%MSG%", msg.toString()));
-                                    }else {
+                                                .replace("%MSG%", msg.toString().replace('&', '§')));
+                                    } else {
                                         player.sendMessage(languageAPI.getMessage("languageapi-key-not-found", player.getUniqueId())
                                                 .replace("%KEY%", key)
                                                 .replace("%LANG%", lang));
                                     }
-                                }else {
+                                } else {
                                     player.sendMessage(languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId())
                                             .replace("%LANG%", lang));
                                 }
-                            }else {
+                            } else {
                                 //HELP
                             }
+                            break;
                         case "create":
                             String lang = args[1].toLowerCase();
-
                             if (!languageAPI.getAvailableLanguages().contains(lang)) {
                                 languageAPI.createLanguage(lang);
                                 player.sendMessage(languageAPI.getMessage("languageapi-create-success", player.getUniqueId()).replace("%LANG%", lang));
-                            }else {
+                            } else {
                                 player.sendMessage(languageAPI.getMessage("languageapi-lang-already-exists", player.getUniqueId()).replace("%LANG%", lang));
                             }
+                            break;
 
                         case "delete":
                             lang = args[1].toLowerCase();
                             if (languageAPI.getAvailableLanguages().contains(lang) && !languageAPI.getDefaultLanguage().equalsIgnoreCase(lang)) {
                                 languageAPI.deleteLanguage(lang);
                                 player.sendMessage(languageAPI.getMessage("languageapi-delete-success", player.getUniqueId()).replace("%LANG%", lang));
-                            }else {
+                            } else {
                                 player.sendMessage(languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId())
                                         .replace("%LANG%", lang));
                             }
+                            break;
                         case "copy":
                             if (args.length >= 3) {
                                 String langfrom = args[1].toLowerCase();
@@ -133,21 +150,37 @@ public class LanguageCommand implements CommandExecutor {
                                             .replace("%OLDLANG%", langfrom)
                                             .replace("%NEWLANG%", langto));
                                 }
-                            }else{
+                                break;
+                            } else {
                                 //HELP
+                                break;
                             }
-                        case "show": //lang show key
+                        case "param": //lang show key
                             String key = args[1].toLowerCase();
                             if (!languageAPI.hasParameter(key)) {
                                 player.sendMessage(languageAPI.getMessage("languageapi-key-has-no-param-found", player.getUniqueId()).replace("%KEY%", key));
-                                return false;
+                                break;
                             }
                             player.sendMessage(languageAPI.getMessage("languageapi-show-success", player.getUniqueId())
-                                    .replace("%PARAM%", languageAPI.getParameter(key)));
+                                    .replace("%PARAM%", languageAPI.getParameter(key)).replace("%KEY%", key));
+
                     }
                 }
             }
         }
         return false;
+
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
+        if(commandSender instanceof Player) {
+            Player player = (Player) commandSender;
+            if(player.hasPermission("system.languageapi")) {
+                return tabComplete;
+            }
+        }
+
+        return null;
     }
 }

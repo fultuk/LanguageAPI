@@ -55,6 +55,8 @@ public class MySQL {
     }
 
     public void createDefaultTable() {
+        if(!isConnected())
+            return;
         try {
             con.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS choosenlang(uuid VARCHAR(64), language VARCHAR(64));");
             con.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(64));");
@@ -66,6 +68,8 @@ public class MySQL {
     }
 
     public void createTable(String tableName) {
+        if(!isConnected())
+            return;
         try {
             con.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS " + tableName + "(transkey VARCHAR(64), translation VARCHAR(2000));");
         } catch (SQLException e) {
