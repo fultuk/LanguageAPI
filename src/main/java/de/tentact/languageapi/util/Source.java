@@ -6,12 +6,10 @@ package de.tentact.languageapi.util;
 */
 
 import de.tentact.languageapi.LanguageBungeecord;
-import de.tentact.languageapi.LanguageSpigot;
 import de.tentact.languageapi.api.LanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;

@@ -8,8 +8,8 @@ package de.tentact.languageapi.api;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.Source;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Scoreboard;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -107,7 +107,7 @@ public class LanguageAPI {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    mySQL.update("INSERT INTO " + lang.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + message.replace('&', '§') + "');");
+                    mySQL.update("INSERT INTO " + lang.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + ChatColor.translateAlternateColorCodes('&', message) + "');");
                 }
             }).start();
         }
@@ -155,7 +155,7 @@ public class LanguageAPI {
             return;
         }
         new Thread(() -> mySQL.update("INSERT INTO " + Source.getDefaultLanguage().toLowerCase()
-                + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + translation.replace('&', '§') + "');")).start();
+                + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + ChatColor.translateAlternateColorCodes('&', translation) + "');")).start();
 
     }
     public void copyLanguage(String langfrom, String langto) {
@@ -193,7 +193,7 @@ public class LanguageAPI {
     }
 
     public void updateMessage(String transkey, String lang, String message) {
-        mySQL.update("UPDATE " + lang.toLowerCase() + " SET translation='" + message.replace('&', '§') + "' WHERE transkey='" + transkey.toLowerCase() + "';");
+        mySQL.update("UPDATE " + lang.toLowerCase() + " SET translation='" + ChatColor.translateAlternateColorCodes('&', message) + "' WHERE transkey='" + transkey.toLowerCase() + "';");
     }
 
     public void deleteMessage(String transkey, String lang) {
@@ -239,7 +239,7 @@ public class LanguageAPI {
         ResultSet rs = mySQL.getResult("SELECT translation FROM " + lang.toLowerCase() + " WHERE transkey='" + transkey.toLowerCase() + "';");
         try {
             if (rs.next()) {
-                return rs.getString("translation").replace('&', '§');
+                return ChatColor.translateAlternateColorCodes('&',rs.getString("translation"));
             }
         } catch (SQLException throwables) {
             return transkey;
@@ -319,5 +319,8 @@ public class LanguageAPI {
 
     public String getDefaultLanguage() {
         return Source.getDefaultLanguage().toLowerCase();
+    }
+    public String getPrefix() {
+        return getMessage("languageapi-prefix", getDefaultLanguage());
     }
 }

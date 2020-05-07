@@ -8,7 +8,6 @@ package de.tentact.languageapi;
 import de.tentact.languageapi.api.LanguageAPI;
 import de.tentact.languageapi.util.DefaultMessages;
 import de.tentact.languageapi.util.Source;
-import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class LanguageBungeecord extends Plugin {

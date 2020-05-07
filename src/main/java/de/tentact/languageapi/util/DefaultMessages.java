@@ -13,6 +13,8 @@ public class DefaultMessages {
 
     public static void createDefaultPluginMessages() {
 
+        languageAPI.addMessageExtra("languageapi-prefix", "&eLanguageAPI x &7");
+
         languageAPI.addMessageExtra("languageapi-add-success", "Der Translationkey %KEY% wurde in %LANG% erfolgreich als ''%MSG%'' übersetzt.");
         languageAPI.addParameter("languageapi-add-success", "%MSG%");
 
@@ -31,8 +33,10 @@ public class DefaultMessages {
         languageAPI.addMessageExtra("languageapi-key-not-found", "Der Translationkey %KEY% wurde in %LANG% nicht gefunden.");
         languageAPI.addParameter("languageapi-key-not-found", "%KEY%, %LANG%");
 
-        languageAPI.addMessageExtra("languageapi-change-success", "Die Übersetzung des Translationkeys %KEY% in %LANG% wurde erfolgreich zu ''%MSG%'' geändert.");
-        languageAPI.addParameter("languageapi-change-success", "%MSG%");
+        languageAPI.addMessageExtra("languageapi-update-success", "&7Die Übersetzung des Translationkeys %KEY% in %LANG% wurde erfolgreich zu ''%MSG%''&7 geändert.");
+        languageAPI.addParameter("languageapi-update-success", "%MSG%");
+        languageAPI.addMessageExtra("languageapi-update-instructions", "Nun kannst du die Übersetzung in den Chat eingeben, wenn benötigt auch mehrmals.\nMit ''finish'' wird die Übersetzung gespeichert.");
+        languageAPI.addMessageExtra("languageapi-update-same", "Es wurde nichts verändert und die Übersetzung wurde abgebrochen.");
 
         languageAPI.addMessageExtra("languageapi-create-success", "Die Sprache %LANG% wurde erfolgreich erstellt.");
         languageAPI.addParameter("languageapi-create-success", "%LANG%");
