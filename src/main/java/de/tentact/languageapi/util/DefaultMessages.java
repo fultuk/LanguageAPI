@@ -19,7 +19,7 @@ public class DefaultMessages {
         languageAPI.addParameter("languageapi-add-success", "%MSG%");
 
         languageAPI.addMessageExtra("languageapi-key-already-exists", "Der Translationkey %KEY% wurde in %LANG% bereits übersetzt." +
-                " Verwende /lang change um die Übersetzung zu ändern.");
+                " Verwende /lang update um die Übersetzung zu ändern.");
         languageAPI.addParameter("languageapi-key-already-exists", "%KEY%, %LANG%");
 
         languageAPI.addMessageExtra("languageapi-lang-not-found", "Die Sprache %LANG% wurde nicht gefunden.");

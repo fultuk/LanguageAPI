@@ -6,7 +6,6 @@ package de.tentact.languageapi;
 */
 
 import de.tentact.languageapi.api.LanguageAPI;
-import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.spigot.command.LanguageCommand;
 import de.tentact.languageapi.spigot.listener.ChatListener;
 import de.tentact.languageapi.spigot.listener.JoinListener;
@@ -29,6 +28,7 @@ public class LanguageSpigot extends JavaPlugin {
         LanguageAPI.mySQL.createDefaultTable();
         LanguageAPI.getInstance().createLanguage(Source.getDefaultLanguage());
         DefaultMessages.createDefaultPluginMessages();
+
 
         this.getCommand("languageapi").setExecutor(new LanguageCommand());
         this.getCommand("languageapi").setTabCompleter(new LanguageCommand());

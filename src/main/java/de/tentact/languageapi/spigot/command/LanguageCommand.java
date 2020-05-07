@@ -6,25 +6,20 @@ package de.tentact.languageapi.spigot.command;
 */
 
 import de.tentact.languageapi.api.LanguageAPI;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
-public class LanguageCommand implements CommandExecutor, TabCompleter {
+public class LanguageCommand implements TabExecutor {
 
 
     public LanguageAPI languageAPI = LanguageAPI.getInstance();
 
-    private static List<String> tabComplete = Arrays.asList("add", "remove", "change", "create", "delete", "param", "copy");
+    private static List<String> tabComplete = Arrays.asList("add", "remove", "update", "create", "delete", "param", "copy", "translations");
 
     public static ArrayList<Player> editingMessage = new ArrayList<>();
 
@@ -34,7 +29,7 @@ public class LanguageCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender; //
-            if (player.hasPermission("system.languageapi")) { //lang add lang key MSG | lang remove lang key | lang change lang key msg | lang createlang lang | lang deletelang lang
+            if (player.hasPermission("system.languageapi")) { //lang add lang key MSG | lang remove lang key | lang update lang key msg | lang createlang lang | lang deletelang lang
                 if (args.length >= 2) {
                     switch (args[0].toLowerCase()) {
                         case "add":
@@ -185,13 +180,27 @@ public class LanguageCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
-        if (commandSender instanceof Player) {
-            Player player = (Player) commandSender;
-            if (player.hasPermission("system.languageapi")) {
-                return tabComplete;
+        if (args.length == 1) {
+            return getCompletes(args[0], tabComplete);
+        } else if (args.length == 2) {
+            if (!args[0].equalsIgnoreCase("param")) {
+                return getCompletes(args[1], languageAPI.getAvailableLanguages());
+            }
+            return getCompletes(args[1], languageAPI.getAllKeys(languageAPI.getDefaultLanguage()));
+        } else if (args.length == 3) {
+            List<String> keyComplete = Arrays.asList("add", "remove", "update");
+            if (keyComplete.contains(args[0].toLowerCase())) {
+                return getCompletes(args[2], languageAPI.getAllKeys(args[1].toLowerCase()));
             }
         }
+        return Collections.emptyList();
 
-        return null;
+    }
+
+    public List<String> getCompletes(String playerInput, List<String> tabComplete) {
+        List<String> possibleCompletes = new ArrayList<>();
+        StringUtil.copyPartialMatches(playerInput, tabComplete, possibleCompletes);
+        Collections.sort(possibleCompletes);
+        return possibleCompletes;
     }
 }
