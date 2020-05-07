@@ -55,6 +55,8 @@ public class DefaultMessages {
 
         languageAPI.addMessageExtra("languageapi-show-success", "Es wurden folgende Parameter zu %KEY% gefunden: \nParameter: %PARAM%");
         languageAPI.addParameter("languageapi-show-success", "%PARAM%, %KEY%");
+
+        languageAPI.addMessageExtra("languageapi-translation-success", "&6%KEY%&7 - %MSG%");
     }
 
 }

@@ -97,7 +97,7 @@ public class LanguageAPI {
         if (getAvailableLanguages().contains(lang.toLowerCase())) {
             new Thread(() -> {
                 mySQL.update("INSERT INTO " + lang.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + message + "');");
-                mySQL.update("INSERT INTO Parameter(transkey, param) VALUES ('"+transkey.toLowerCase()+"', '"+param+"')");
+                addParameter(transkey, param);
             }).start();
         }
     }
