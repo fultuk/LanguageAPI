@@ -42,6 +42,7 @@ public class LanguageAPI {
 
 
             mySQL.createTable(langName.replace(" ", "").toLowerCase());
+            languageCache.add(langName.toLowerCase());
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -245,6 +246,9 @@ public class LanguageAPI {
             return transkey;
         }
         return transkey;
+    }
+    public boolean isLanguage(String lang) {
+        return getAvailableLanguages().contains(lang);
     }
 
     public ArrayList<String> getAvailableLanguages() {

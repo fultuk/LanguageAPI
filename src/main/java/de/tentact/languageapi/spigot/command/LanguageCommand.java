@@ -143,9 +143,13 @@ public class LanguageCommand implements TabExecutor {
                                             .replace("%OLDLANG%", langfrom)
                                             .replace("%NEWLANG%", langto));
                                 } else {
+                                    lang = langfrom;
+                                    if (languageAPI.getAvailableLanguages().contains(langfrom)) {
+                                        lang = langto;
+                                    }
                                     player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId())
-                                            .replace("%OLDLANG%", langfrom)
-                                            .replace("%NEWLANG%", langto));
+                                            .replace("%LANG%", lang));
+
                                 }
                             } else {
                                 //HELP
