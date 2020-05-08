@@ -202,6 +202,14 @@ public class LanguageAPI {
         return null;
 
     }
+    public void deleteMessageInEveryLang(String transkey) {
+        for(String langs : getAvailableLanguages()) {
+            if(isKey(transkey, langs)) {
+                deleteMessage(transkey, langs);
+            }
+        }
+    }
+
 
     public void updateMessage(String transkey, String lang, String message) {
         mySQL.update("UPDATE " + lang.toLowerCase() + " SET translation='" + ChatColor.translateAlternateColorCodes('&', message) + "' WHERE transkey='" + transkey.toLowerCase() + "';");

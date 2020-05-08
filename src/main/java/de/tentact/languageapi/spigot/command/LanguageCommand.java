@@ -63,33 +63,6 @@ public class LanguageCommand implements TabExecutor {
                                 player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-add-help", player.getUniqueId()));
                             }
                             break;
-
-                        case "remove":
-                            if (args.length >= 3) {
-                                String lang = args[1].toLowerCase();
-                                String key = args[2].toLowerCase();
-                                if (languageAPI.getAvailableLanguages().contains(lang)) {
-                                    if (languageAPI.isKey(key, lang)) {
-                                        languageAPI.deleteMessage(key, lang);
-                                        player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-remove-success", player.getUniqueId())
-                                                .replace("%KEY%", key).replace("%LANG", lang));
-                                        break;
-                                    } else {
-                                        player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-key-not-found", player.getUniqueId())
-                                                .replace("%KEY%", key)
-                                                .replace("%LANG%", lang));
-                                        break;
-                                    }
-                                } else {
-                                    player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId())
-                                            .replace("%LANG%", lang));
-                                    break;
-                                }
-                            } else {
-                                //HELP
-                                break;
-                            }
-
                         case "update":
                             if (args.length >= 3) {
                                 String lang = args[1].toLowerCase();
@@ -174,6 +147,40 @@ public class LanguageCommand implements TabExecutor {
                                 }
                             }
                             break;
+                        case "remove": //lang drop lang key
+
+                            if (args.length >= 3) {
+                                lang = args[1].toLowerCase();
+                                key = args[2].toLowerCase();
+                                if (languageAPI.getDefaultLanguage().contains(lang)) {
+                                    if (languageAPI.isKey(key, lang)) {
+                                        languageAPI.deleteMessage(key, lang);
+
+
+                                    } else if (key.endsWith("*")) {
+                                        for (String keys : languageAPI.getAllKeys(lang)) {
+                                            if (keys.startsWith(key.replace("*", ""))) {
+
+                                            }
+                                        }
+                                    }
+                                } else if (lang.equalsIgnoreCase("*")) {
+
+                                    for (String langs : languageAPI.getAvailableLanguages()) {
+                                        if (languageAPI.isKey(key, langs)) {
+
+                                            languageAPI.deleteMessage(key, langs);
+                                        } else if (key.equalsIgnoreCase("*")) {
+                                            for (String keys : languageAPI.getAllKeys(langs)) {
+                                                languageAPI.deleteMessage(keys, langs);
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+                            break;
+
                     }
                 }
             }
