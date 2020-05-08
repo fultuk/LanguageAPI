@@ -154,27 +154,25 @@ public class LanguageCommand implements TabExecutor {
                                 key = args[2].toLowerCase();
                                 if (languageAPI.getDefaultLanguage().contains(lang)) {
                                     if (languageAPI.isKey(key, lang)) {
-                                        languageAPI.deleteMessage(key, lang);
-
-
+                                        languageAPI.deleteMessage(key, lang); //EINE SPRACHE EIN KEY
                                     } else if (key.endsWith("*")) {
-                                        for (String keys : languageAPI.getAllKeys(lang)) {
+                                        for (String keys : languageAPI.getAllKeys(lang)) { //EINE SPRACJE JEDER KEY
                                             if (keys.startsWith(key.replace("*", ""))) {
-
+                                                languageAPI.deleteMessage(keys, lang);
                                             }
                                         }
                                     }
                                 } else if (lang.equalsIgnoreCase("*")) {
-
                                     for (String langs : languageAPI.getAvailableLanguages()) {
-                                        if (languageAPI.isKey(key, langs)) {
+                                        if (languageAPI.isKey(key, langs)) { //JEDE SPRACHE EIN KEY
 
                                             languageAPI.deleteMessage(key, langs);
-                                        } else if (key.equalsIgnoreCase("*")) {
-                                            for (String keys : languageAPI.getAllKeys(langs)) {
-                                                languageAPI.deleteMessage(keys, langs);
+                                        } else if (key.endsWith("*")) {//JEDE SPRACHE JEDER KEY
+                                            for (String keys : languageAPI.getAllKeys(lang)) {
+                                                if (keys.startsWith(key.replace("*", ""))) {
+                                                    languageAPI.deleteMessageInEveryLang(keys);
+                                                }
                                             }
-
                                         }
                                     }
                                 }
