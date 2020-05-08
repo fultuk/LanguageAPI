@@ -160,7 +160,6 @@ public class LanguageCommand implements TabExecutor {
                                             if (keys.startsWith(key.replace("*", ""))) {
                                                 languageAPI.deleteMessage(keys, lang);
                                             }
-                                            String a = "";
                                         }
                                     }
                                 } else if (lang.equalsIgnoreCase("*")) {
