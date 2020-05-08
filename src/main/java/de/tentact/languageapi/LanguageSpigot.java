@@ -17,7 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class LanguageSpigot extends JavaPlugin {
 
-    static LanguageSpigot languageSpigot;
+    private static LanguageSpigot languageSpigot;
 
     @Override
     public void onEnable() {
