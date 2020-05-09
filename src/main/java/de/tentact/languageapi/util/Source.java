@@ -26,7 +26,7 @@ public class Source {
     static Configuration bungeecfg;
 
     public static void createSpigotMySQLConfig() {
-        mySQLFile = new File("plugins/LanguageAPI", "mysql.yml");
+        mySQLFile = new File("plugins/LanguageAPI", "config.yml");
         mySQLcfg = YamlConfiguration.loadConfiguration(mySQLFile);
 
 
@@ -37,6 +37,7 @@ public class Source {
         mySQLcfg.addDefault("mysql.password", "password");
         mySQLcfg.addDefault("mysql.port", 3306);
         mySQLcfg.addDefault("languageapi.defaultlang", "de_de");
+        mySQLcfg.addDefault("languageapi.notify", true);
 
         mySQLcfg.options().copyDefaults(true);
 
@@ -57,7 +58,7 @@ public class Source {
 
     public static void createBungeeCordMySQLConfig() {
 
-        bungeeMySQL = new File("plugins/LanguageAPI", "mysql.yml");
+        bungeeMySQL = new File("plugins/LanguageAPI", "config.yml");
         if (!LanguageBungeecord.getLanguageBungeecord().getDataFolder().exists()) {
             LanguageBungeecord.getLanguageBungeecord().getDataFolder().mkdir();
         }
@@ -89,4 +90,8 @@ public class Source {
     public static String getDefaultLanguage() {
         return bungeeCordMode ? bungeecfg.getString("languageapi.defaultlang") : mySQLcfg.getString("languageapi.defaultlang");
     }
+    public static boolean getUpdateNotfication() {
+        return bungeeCordMode ? bungeecfg.getBoolean("languageapi.notify") : mySQLcfg.getBoolean("languageapi.notify");
+    }
+
 }

@@ -6,7 +6,7 @@
 
     <groupId>de.tentact.languageapi</groupId>
     <artifactId>LanguageAPI</artifactId>
-    <version>1.1-RELEASE</version>
+    <version>1.2-SNAPSHOT</version>
     <build>
         <plugins>
             <plugin>

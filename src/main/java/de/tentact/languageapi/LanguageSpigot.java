@@ -11,23 +11,25 @@ import de.tentact.languageapi.spigot.listener.ChatListener;
 import de.tentact.languageapi.spigot.listener.JoinListener;
 import de.tentact.languageapi.util.DefaultMessages;
 import de.tentact.languageapi.util.Source;
+import de.tentact.languageapi.util.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class LanguageSpigot extends JavaPlugin {
 
-    private static LanguageSpigot languageSpigot;
+    public static Updater updater;
+
 
     @Override
     public void onEnable() {
-        languageSpigot = this;
         Source.bungeeCordMode = false;
         Source.createSpigotMySQLConfig();
         LanguageAPI.mySQL.connect();
         LanguageAPI.mySQL.createDefaultTable();
         LanguageAPI.getInstance().createLanguage(Source.getDefaultLanguage());
         DefaultMessages.createDefaultPluginMessages();
+        updater = new Updater(this);
 
 
         this.getCommand("languageapi").setExecutor(new LanguageCommand());
@@ -36,9 +38,8 @@ public class LanguageSpigot extends JavaPlugin {
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new JoinListener(), this);
         pm.registerEvents(new ChatListener(), this);
+
+
     }
 
-    public static LanguageSpigot getLanguageSpigot() {
-        return languageSpigot;
-    }
 }
