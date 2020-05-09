@@ -27,8 +27,14 @@ public class DefaultMessages {
 
         languageAPI.addMessageExtra("languageapi-add-help", "Benutzte /lang add <Sprache> <Translationkey> <Übersetzung> um einen Translationkey zu übersetzten.");
 
-        languageAPI.addMessageExtra("languageapi-remove-success", "Die Übersetzung des Translationkeys %KEY% in %LANG% wurde erfolgreich entfernt.");
-        languageAPI.addParameter("languageapi-remove-success", "%KEY%, %LANG%");
+        languageAPI.addMessageExtra("languageapi-remove-key-in-lang", "Die Übersetzung des Translationkeys %KEY% in %LANG% wurde erfolgreich entfernt.");
+        languageAPI.addParameter("languageapi-remove-key-in-lan", "%KEY%, %LANG%");
+        languageAPI.addMessageExtra("languageapi-remove-key-in-every-lang", "Der Translationkey %KEY% wurde in jeder Sprache entfernt.");
+        languageAPI.addParameter("languageapi-remove-key-in-every-lang", "%KEY%");
+        languageAPI.addMessageExtra("languageapi-remove-every-key-in-lang", "Jeder Translationkey beginnend mit %STARTSWITH% wurde in %LANG% entfernt.");
+        languageAPI.addParameter("languageapi-remove-every-key-in-lang", "%STARTSWITH%, %LANG%");
+        languageAPI.addMessageExtra("languageapi-remove-every-key-in-every-lang", "Jeder Translationkey beginnend mit %STARTSWITH% wurde in jeder Sprache entfernt.");
+        languageAPI.addParameter("languageapi-remove-every-key-in-every-lang", "%STARTSWITH%");
 
         languageAPI.addMessageExtra("languageapi-key-not-found", "Der Translationkey %KEY% wurde in %LANG% nicht gefunden.");
         languageAPI.addParameter("languageapi-key-not-found", "%KEY%, %LANG%");
@@ -46,12 +52,14 @@ public class DefaultMessages {
 
         languageAPI.addMessageExtra("languageapi-delete-success", "Die Sprache %LANG% wurde erfolgreich gelöscht.");
         languageAPI.addParameter("languageapi-delete-success", "%LANG%");
+        languageAPI.addMessageExtra("languageapi-delete-all-langs", "Es wurde jede Sprache gelöscht.");
+        languageAPI.addParameter("languageapi-delete-all-langs", "");
 
         languageAPI.addMessageExtra("languageapi-copy-success", "%OLDLANG% wurde erfolgreich in %NEWLANG% kopiert.");
         languageAPI.addParameter("languageapi-copy-success", "%OLDLANG%, %NEWLANG%");
 
-        languageAPI.addMessageExtra("languageapi-key-has-no-param-found", "Der Translationkey %KEY% hat keine Parameter.");
-        languageAPI.addParameter("languageapi-key-has-no-param-foun", "%LANG%");
+        languageAPI.addMessageExtra("languageapi-key-has-no-param", "Der Translationkey %KEY% hat keine Parameter.");
+        languageAPI.addParameter("languageapi-key-has-no-param", "%LANG%");
 
         languageAPI.addMessageExtra("languageapi-show-success", "Es wurden folgende Parameter zu %KEY% gefunden: \nParameter: %PARAM%");
         languageAPI.addParameter("languageapi-show-success", "%PARAM%, %KEY%");
