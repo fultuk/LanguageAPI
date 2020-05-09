@@ -43,12 +43,7 @@ public class LanguageAPI {
 
             mySQL.createTable(langName.replace(" ", "").toLowerCase());
             languageCache.add(langName.toLowerCase());
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    mySQL.update("INSERT INTO languages(language) VALUES ('" + langName.toLowerCase() + "')");
-                }
-            }).start();
+            new Thread(() -> mySQL.update("INSERT INTO languages(language) VALUES ('" + langName.toLowerCase() + "')")).start();
 
 
         }
@@ -202,9 +197,10 @@ public class LanguageAPI {
         return null;
 
     }
+
     public void deleteMessageInEveryLang(String transkey) {
-        for(String langs : getAvailableLanguages()) {
-            if(isKey(transkey, langs)) {
+        for (String langs : getAvailableLanguages()) {
+            if (isKey(transkey, langs)) {
                 deleteMessage(transkey, langs);
             }
         }
@@ -242,6 +238,13 @@ public class LanguageAPI {
             throwables.printStackTrace();
         }
         return false;
+    }
+
+    public String getMessage(String transkey, UUID playerUUID, boolean autoCreate) {
+        if(autoCreate) {
+            addMessage(transkey);
+        }
+        return getMessage(transkey, getPlayerLanguage(playerUUID));
     }
 
     public String getMessage(String transkey, UUID playerUUID) {

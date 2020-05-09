@@ -148,7 +148,6 @@ public class LanguageCommand implements TabExecutor {
                             }
                             break;
                         case "remove": //lang drop lang key
-
                             if (args.length >= 3) {
                                 lang = args[1].toLowerCase();
                                 key = args[2].toLowerCase();
@@ -163,22 +162,24 @@ public class LanguageCommand implements TabExecutor {
                                         }
                                     }
                                 } else if (lang.equalsIgnoreCase("*")) {
-                                    for (String langs : languageAPI.getAvailableLanguages()) {
-                                        if (languageAPI.isKey(key, langs)) { //JEDE SPRACHE EIN KEY
-
-                                            languageAPI.deleteMessage(key, langs);
-                                        } else if (key.endsWith("*")) {//JEDE SPRACHE JEDER KEY
-                                            for (String keys : languageAPI.getAllKeys(lang)) {
+                                    if (key.endsWith("*")) { //JEDE SPRACHE JEDER KEY
+                                        for (String langs : languageAPI.getAvailableLanguages()) {
+                                            for (String keys : languageAPI.getAllKeys(langs)) {
                                                 if (keys.startsWith(key.replace("*", ""))) {
-                                                    languageAPI.deleteMessageInEveryLang(keys);
+                                                    languageAPI.deleteMessage(keys, langs);
                                                 }
+                                            }
+                                        }
+                                    } else { //JEDE SPRACHE EIN KEY
+                                        for (String langs : languageAPI.getAvailableLanguages()) {
+                                            if (languageAPI.isKey(key, langs)) {
+                                                languageAPI.deleteMessage(key, langs);
                                             }
                                         }
                                     }
                                 }
                             }
                             break;
-
                     }
                 }
             }
