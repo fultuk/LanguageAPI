@@ -49,7 +49,7 @@ public class Updater {
     private String getOnlineVersion(String pluginName){
         Scanner scanner = null;
         try {
-            scanner = new Scanner(new URL("http://tenact.de/plugins?"+pluginName.toLowerCase()).openStream());
+            scanner = new Scanner(new URL("http://tentact.de/plugins?"+pluginName.toLowerCase()).openStream());
         } catch (IOException e) {
             e.printStackTrace();
         }

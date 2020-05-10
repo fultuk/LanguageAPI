@@ -20,6 +20,7 @@ public class JoinListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+
         Player player = event.getPlayer();
         LanguageAPI.getInstance().createPlayer(player.getUniqueId());
         if(Source.getUpdateNotfication()) {

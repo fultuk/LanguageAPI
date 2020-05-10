@@ -39,8 +39,6 @@ public class LanguageAPI {
 
     public void createLanguage(final String langName) {
         if (!getAvailableLanguages().contains(langName.toLowerCase())) {
-
-
             mySQL.createTable(langName.replace(" ", "").toLowerCase());
             languageCache.add(langName.toLowerCase());
             new Thread(() -> mySQL.update("INSERT INTO languages(language) VALUES ('" + langName.toLowerCase() + "')")).start();
@@ -276,39 +274,32 @@ public class LanguageAPI {
     public ArrayList<String> getAvailableLanguages() {
         if (languageCache.isEmpty()) {
 
-            ArrayList<String> langs = new ArrayList<String>();
-            ResultSet rs = mySQL.getResult("SELECT language FROM languages");
-            try {
-                while (rs.next()) {
-                    langs.add(rs.getString("language").toLowerCase());
-                }
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-            languageCache = langs;
-            lastupdatedCache = System.currentTimeMillis();
-            return langs;
+            return getLangUpdate();
         } else {
             if (lastupdatedCache + 5 * 60000 <= System.currentTimeMillis()) {
 
-                ArrayList<String> langs = new ArrayList<String>();
-                ResultSet rs = mySQL.getResult("SELECT language FROM languages");
-                try {
-                    while (rs.next()) {
-                        langs.add(rs.getString("language").toLowerCase());
-                    }
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
-                languageCache = langs;
-                lastupdatedCache = System.currentTimeMillis();
-                return langs;
+                return getLangUpdate();
             } else {
 
                 return languageCache;
             }
         }
 
+    }
+
+    private ArrayList<String> getLangUpdate() {
+        ArrayList<String> langs = new ArrayList<String>();
+        ResultSet rs = mySQL.getResult("SELECT language FROM languages");
+        try {
+            while (rs.next()) {
+                langs.add(rs.getString("language").toLowerCase());
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        languageCache = langs;
+        lastupdatedCache = System.currentTimeMillis();
+        return langs;
     }
 
     public ArrayList<String> getAllKeys(String lang) {

@@ -33,7 +33,9 @@ public class MySQL {
                 con = DriverManager.getConnection("jdbc:mysql://" + hostname + ":" + port + "/" + database, username, password);
                 Bukkit.getConsoleSender().sendMessage("§aMySQL Connected");
             } catch (SQLException ex) {
+                Bukkit.getConsoleSender().sendMessage("§cDie MySQL konnte nicht verbunden werden. Prüfe, ob deine Angaben stimmen und der Server online ist.");
                 ex.printStackTrace();
+                Bukkit.getConsoleSender().sendMessage("§cDie MySQL konnte nicht verbunden werden. Prüfe, ob deine Angaben stimmen und der Server online ist.");
             }
         }
 
