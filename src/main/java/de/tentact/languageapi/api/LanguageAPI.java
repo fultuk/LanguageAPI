@@ -38,7 +38,7 @@ public class LanguageAPI {
     }
 
     public void createLanguage(final String langName) {
-        if (!getAvailableLanguages().contains(langName.toLowerCase())) {
+        if (!isLanguage(langName)) {
             mySQL.createTable(langName.replace(" ", "").toLowerCase());
             languageCache.add(langName.toLowerCase());
             new Thread(() -> mySQL.update("INSERT INTO languages(language) VALUES ('" + langName.toLowerCase() + "')")).start();
@@ -49,7 +49,7 @@ public class LanguageAPI {
     }
 
     public void deleteLanguage(String langName) {
-        if (!LanguageAPI.getInstance().getDefaultLanguage().equalsIgnoreCase(langName) && getAvailableLanguages().contains(langName.toLowerCase())) {
+        if (!getDefaultLanguage().equalsIgnoreCase(langName) && isLanguage(langName)) {
             mySQL.update("DROP TABLE " + langName.toLowerCase());
             mySQL.update("DELETE FROM languages WHERE language='" + langName.toLowerCase() + "'");
         }
@@ -92,7 +92,7 @@ public class LanguageAPI {
     }
 
     public void addMessage(final String transkey, final String message, final String lang, String param) {
-        if (getAvailableLanguages().contains(lang.toLowerCase())) {
+        if (isLanguage(lang)) {
             new Thread(() -> {
                 mySQL.update("INSERT INTO " + lang.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + message + "');");
                 addParameter(transkey, param);
@@ -101,7 +101,7 @@ public class LanguageAPI {
     }
 
     public void addMessage(final String transkey, final String message, final String lang) {
-        if (getAvailableLanguages().contains(lang.toLowerCase())) {
+        if (isLanguage(lang)) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -133,7 +133,7 @@ public class LanguageAPI {
     }
 
     public void addMessage(final String transkey, final String lang) {
-        if (!getAvailableLanguages().contains(lang)) {
+        if (!isLanguage(lang)) {
             return;
         }
         if (isKey(transkey, lang)) {
@@ -161,7 +161,7 @@ public class LanguageAPI {
     }
 
     public void copyLanguage(String langfrom, String langto) {
-        if (getAvailableLanguages().contains(langfrom) && getAvailableLanguages().contains(langto)) {
+        if (isLanguage(langfrom) && isLanguage(langto)) {
             mySQL.update("INSERT INTO " + langto + " SELECT * FROM " + langfrom + ";");
 
         }
@@ -250,7 +250,7 @@ public class LanguageAPI {
     }
 
     public String getMessage(String transkey, String lang) {
-        if (!getAvailableLanguages().contains(lang)) {
+        if (!isLanguage(lang)) {
             return "Language not found";
         }
         if (!isKey(transkey, lang)) {
@@ -268,7 +268,7 @@ public class LanguageAPI {
     }
 
     public boolean isLanguage(String lang) {
-        return getAvailableLanguages().contains(lang);
+        return getAvailableLanguages().contains(lang.toLowerCase());
     }
 
     public ArrayList<String> getAvailableLanguages() {
@@ -304,7 +304,7 @@ public class LanguageAPI {
 
     public ArrayList<String> getAllKeys(String lang) {
         ArrayList<String> keys = new ArrayList<>();
-        if (getAvailableLanguages().contains(lang)) {
+        if (isLanguage(lang)) {
             ResultSet rs = mySQL.getResult("SELECT transkey FROM " + lang);
             try {
                 while (rs.next()) {
@@ -321,7 +321,7 @@ public class LanguageAPI {
 
     public ArrayList<String> getAllMessages(String lang) {
         ArrayList<String> messages = new ArrayList<>();
-        if (getAvailableLanguages().contains(lang)) {
+        if (isLanguage(lang)) {
             ResultSet rs = mySQL.getResult("SELECT translation FROM " + lang);
             try {
                 while (rs.next()) {
