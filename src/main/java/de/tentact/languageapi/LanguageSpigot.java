@@ -6,39 +6,55 @@ package de.tentact.languageapi;
 */
 
 import de.tentact.languageapi.api.LanguageAPI;
+import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.spigot.command.LanguageCommand;
 import de.tentact.languageapi.spigot.listener.ChatListener;
 import de.tentact.languageapi.spigot.listener.JoinListener;
 import de.tentact.languageapi.util.DefaultMessages;
 import de.tentact.languageapi.util.Source;
+import de.tentact.languageapi.util.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Objects;
+
 public class LanguageSpigot extends JavaPlugin {
 
-    private static LanguageSpigot languageSpigot;
+    private Updater updater;
+    private MySQL mySQL;
+
 
     @Override
     public void onEnable() {
-        languageSpigot = this;
         Source.bungeeCordMode = false;
+        Source.setLogger(this.getLogger());
         Source.createSpigotMySQLConfig();
-        LanguageAPI.mySQL.connect();
-        LanguageAPI.mySQL.createDefaultTable();
+        Source.initMySQLSpigot();
+        this.mySQL = Source.getMySQL();
+        this.mySQL.connect();
+        this.mySQL.createDefaultTable();
         LanguageAPI.getInstance().createLanguage(Source.getDefaultLanguage());
         DefaultMessages.createDefaultPluginMessages();
+        this.updater = new Updater(this);
 
 
-        this.getCommand("languageapi").setExecutor(new LanguageCommand());
-        this.getCommand("languageapi").setTabCompleter(new LanguageCommand());
+        Objects.requireNonNull(this.getCommand("languageapi")).setExecutor(new LanguageCommand());
+        Objects.requireNonNull(this.getCommand("languageapi")).setTabCompleter(new LanguageCommand());
 
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new JoinListener(), this);
         pm.registerEvents(new ChatListener(), this);
+
+
     }
 
-    public static LanguageSpigot getLanguageSpigot() {
-        return languageSpigot;
+    @Override
+    public void onDisable() {
+        mySQL.close();
+    }
+
+    public Updater getUpdater() {
+        return this.updater;
     }
 }

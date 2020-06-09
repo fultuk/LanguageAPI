@@ -6,7 +6,6 @@ package de.tentact.languageapi.util;
 */
 
 import de.tentact.languageapi.LanguageBungeecord;
-import de.tentact.languageapi.api.LanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -14,6 +13,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Source {
 
@@ -25,18 +26,22 @@ public class Source {
     static File bungeeMySQL;
     static Configuration bungeecfg;
 
+    private static MySQL mySQL;
+    private static Logger logger;
+
+
     public static void createSpigotMySQLConfig() {
-        mySQLFile = new File("plugins/LanguageAPI", "mysql.yml");
+        mySQLFile = new File("plugins/LanguageAPI", "config.yml");
         mySQLcfg = YamlConfiguration.loadConfiguration(mySQLFile);
-
-
 
         mySQLcfg.addDefault("mysql.hostname", "hostname");
         mySQLcfg.addDefault("mysql.database", "languageapi");
         mySQLcfg.addDefault("mysql.username", "languageapi");
+        
         mySQLcfg.addDefault("mysql.password", "password");
         mySQLcfg.addDefault("mysql.port", 3306);
         mySQLcfg.addDefault("languageapi.defaultlang", "de_de");
+        mySQLcfg.addDefault("languageapi.notify", true);
 
         mySQLcfg.options().copyDefaults(true);
 
@@ -48,22 +53,36 @@ public class Source {
 
 
         }
-        LanguageAPI.mySQL = new MySQL(mySQLcfg.getString("mysql.hostname"),
+
+    }
+
+    public static void initMySQLSpigot() {
+        mySQL = new MySQL(mySQLcfg.getString("mysql.hostname"),
                 mySQLcfg.getString("mysql.database"),
                 mySQLcfg.getString("mysql.username"),
                 mySQLcfg.getString("mysql.password"),
                 mySQLcfg.getInt("mysql.port"));
     }
 
+    public static void initMySQLBungeecord() {
+        mySQL = new MySQL(bungeecfg.getString("mysql.hostname"),
+                bungeecfg.getString("mysql.database"),
+                bungeecfg.getString("mysql.username"),
+                bungeecfg.getString("mysql.password"),
+                bungeecfg.getInt("mysql.port"));
+
+    }
+
     public static void createBungeeCordMySQLConfig() {
 
-        bungeeMySQL = new File("plugins/LanguageAPI", "mysql.yml");
+        bungeeMySQL = new File("plugins/LanguageAPI", "config.yml");
         if (!LanguageBungeecord.getLanguageBungeecord().getDataFolder().exists()) {
             LanguageBungeecord.getLanguageBungeecord().getDataFolder().mkdir();
         }
 
         try {
             bungeecfg = ConfigurationProvider.getProvider(net.md_5.bungee.config.YamlConfiguration.class).load(bungeeMySQL);
+
             if (!bungeeMySQL.exists()) {
                 bungeeMySQL.createNewFile();
                 bungeecfg.set("mysql.host", "hostname");
@@ -73,20 +92,33 @@ public class Source {
                 bungeecfg.set("languageapi.defaultlang", "en_EN");
             }
             ConfigurationProvider.getProvider(net.md_5.bungee.config.YamlConfiguration.class).save(bungeecfg, bungeeMySQL);
-        } catch (IOException e) {
+
+        } catch (IOException ignored) {
 
         }
-        LanguageAPI.mySQL = new MySQL(bungeecfg.getString("mysql.hostname"),
-                bungeecfg.getString("mysql.database"),
-                bungeecfg.getString("mysql.username"),
-                bungeecfg.getString("mysql.password"),
-                bungeecfg.getInt("mysql.port"));
-
-
-
     }
 
     public static String getDefaultLanguage() {
         return bungeeCordMode ? bungeecfg.getString("languageapi.defaultlang") : mySQLcfg.getString("languageapi.defaultlang");
+    }
+
+    public static boolean getUpdateNotfication() {
+        return bungeeCordMode ? bungeecfg.getBoolean("languageapi.notify") : mySQLcfg.getBoolean("languageapi.notify");
+    }
+
+    public static MySQL getMySQL() {
+        return mySQL;
+    }
+
+    public static void setLogger(Logger logger) {
+        Source.logger = logger;
+    }
+
+    public static void defaultLog(String message, Level logLevel) {
+        Source.logger.log(logLevel, message);
+    }
+
+    public static void logIntoFile(String message, Level logLevel) {
+
     }
 }
