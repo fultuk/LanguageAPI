@@ -5,7 +5,7 @@ package de.tentact.languageapi;
     Uhrzeit: 17:20
 */
 
-import de.tentact.languageapi.api.LanguageAPI;
+import de.tentact.languageapi.api.LanguageImpl;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.DefaultMessages;
 import de.tentact.languageapi.util.Source;
@@ -27,7 +27,7 @@ public class LanguageBungeecord extends Plugin {
         mySQL = Source.getMySQL();
         mySQL.connect();
         mySQL.createDefaultTable();
-        LanguageAPI.getInstance().createLanguage(Source.getDefaultLanguage());
+        LanguageImpl.getInstance().createLanguage(Source.getDefaultLanguage());
         DefaultMessages.createDefaultPluginMessages();
 
         new Updater(this);

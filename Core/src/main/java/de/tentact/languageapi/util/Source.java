@@ -5,8 +5,8 @@ package de.tentact.languageapi.util;
     Uhrzeit: 17:05
 */
 
-import de.tentact.languageapi.LanguageBungeecord;
 import de.tentact.languageapi.mysql.MySQL;
+import de.tentact.languageapi.LanguageBungeecord;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -35,8 +35,8 @@ public class Source {
         mySQLcfg = YamlConfiguration.loadConfiguration(mySQLFile);
 
         mySQLcfg.addDefault("mysql.hostname", "hostname");
-        mySQLcfg.addDefault("mysql.database", "languageapi");
-        mySQLcfg.addDefault("mysql.username", "languageapi");
+        mySQLcfg.addDefault("mysql.database", "de/tentact/languageapi");
+        mySQLcfg.addDefault("mysql.username", "de/tentact/languageapi");
 
         mySQLcfg.addDefault("mysql.password", "password");
         mySQLcfg.addDefault("mysql.port", 3306);
@@ -86,8 +86,8 @@ public class Source {
             if (!bungeeMySQL.exists()) {
                 bungeeMySQL.createNewFile();
                 bungeecfg.set("mysql.host", "hostname");
-                bungeecfg.set("mysql.username", "languageapi");
-                bungeecfg.set("mysql.database", "languageapi");
+                bungeecfg.set("mysql.username", "de/tentact/languageapi");
+                bungeecfg.set("mysql.database", "de/tentact/languageapi");
                 bungeecfg.set("mysql.password", "password");
                 bungeecfg.set("languageapi.defaultlang", "en_EN");
             }

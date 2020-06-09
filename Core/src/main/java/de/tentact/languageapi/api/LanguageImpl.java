@@ -5,6 +5,7 @@ package de.tentact.languageapi.api;
     Uhrzeit: 16:52
 */
 
+import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.Source;
 import org.bukkit.Bukkit;
@@ -16,9 +17,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class LanguageAPI {
+public class LanguageImpl implements LanguageAPI {
 
-    private static LanguageAPI instance;
+    private static LanguageImpl instance;
 
     private final MySQL mySQL = Source.getMySQL();
 
@@ -26,13 +27,13 @@ public class LanguageAPI {
 
     public long lastupdatedCache = System.currentTimeMillis();
 
-    private LanguageAPI() {
+    private LanguageImpl() {
 
     }
 
-    public static LanguageAPI getInstance() {
+    public static LanguageImpl getInstance() {
         if (instance == null) {
-            instance = new LanguageAPI();
+            instance = new LanguageImpl();
         }
         return instance;
     }
@@ -277,7 +278,7 @@ public class LanguageAPI {
         }
     }
 
-    private ArrayList<String> getLangUpdate() {
+    public ArrayList<String> getLangUpdate() {
         ArrayList<String> langs = new ArrayList<String>();
         ResultSet rs = this.mySQL.getResult("SELECT language FROM languages");
         try {
