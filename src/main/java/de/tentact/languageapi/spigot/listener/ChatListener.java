@@ -44,17 +44,17 @@ public class ChatListener implements Listener {
                     event.setCancelled(true);
                     return;
                 }
-                String result = "";
+                StringBuilder result = new StringBuilder();
                 for(String message : editedMessage.get(player)) {
-                    result = result+message+" ";
+                    result.append(message).append(" ");
                 }
                 LanguageCommand.editingMessage.remove(player);
-                LanguageAPI.getInstance().updateMessage(LanguageCommand.givenParameter.get(player).get(0), LanguageCommand.givenParameter.get(player).get(1), result);
+                LanguageAPI.getInstance().updateMessage(LanguageCommand.givenParameter.get(player).get(0), LanguageCommand.givenParameter.get(player).get(1), result.toString());
                 event.setCancelled(true);
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&',LanguageAPI.getInstance().getMessage("languageapi-update-success", player.getUniqueId())
                         .replace("%KEY%", LanguageCommand.givenParameter.get(player).get(0))
                         .replace("%LANG%", LanguageCommand.givenParameter.get(player).get(1))
-                        .replace("%MSG%", result)));
+                        .replace("%MSG%", result.toString())));
                 editedMessage.remove(player);
             }
         }

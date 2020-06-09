@@ -5,12 +5,13 @@ package de.tentact.languageapi.mysql;
     Uhrzeit: 16:53
 */
 
-import org.bukkit.Bukkit;
+import de.tentact.languageapi.util.Source;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
 
 public class MySQL {
 
@@ -31,11 +32,11 @@ public class MySQL {
         if (!isConnected()) {
             try {
                 con = DriverManager.getConnection("jdbc:mysql://" + hostname + ":" + port + "/" + database, username, password);
-                Bukkit.getConsoleSender().sendMessage("§aMySQL Connected");
+                Source.defaultLog("§aMySQL Connected", Level.INFO);
             } catch (SQLException ex) {
-                Bukkit.getConsoleSender().sendMessage("§cDie MySQL konnte nicht verbunden werden. Prüfe, ob deine Angaben stimmen und der Server online ist.");
+                Source.defaultLog("§cDie MySQL konnte nicht verbunden werden. Prüfe, ob deine Angaben stimmen und der Server online ist.", Level.WARNING);
                 ex.printStackTrace();
-                Bukkit.getConsoleSender().sendMessage("§cDie MySQL konnte nicht verbunden werden. Prüfe, ob deine Angaben stimmen und der Server online ist.");
+                Source.defaultLog("§cDie MySQL konnte nicht verbunden werden. Prüfe, ob deine Angaben stimmen und der Server online ist.", Level.WARNING);
             }
         }
 
@@ -57,27 +58,32 @@ public class MySQL {
     }
 
     public void createDefaultTable() {
-        if(!isConnected())
-            return;
-        try {
-            con.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS choosenlang(uuid VARCHAR(64), language VARCHAR(64));");
-            con.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(64));");
-            con.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(transkey VARCHAR(64), param VARCHAR(2000));");
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        new Thread(() -> {
+            if(!isConnected())
+                return;
+            try {
+                con.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS choosenlang(uuid VARCHAR(64), language VARCHAR(64));");
+                con.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(64));");
+                con.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(transkey VARCHAR(64), param VARCHAR(2000));");
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }).start();
+
     }
 
     public void createTable(String tableName) {
-        if(!isConnected())
-            return;
-        try {
-            con.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS " + tableName + "(transkey VARCHAR(64), translation VARCHAR(2000));");
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        new Thread(() -> {
+            if(!isConnected())
+                return;
+            try {
+                con.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS " + tableName + "(transkey VARCHAR(64), translation VARCHAR(2000));");
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     public void update(String sql) {

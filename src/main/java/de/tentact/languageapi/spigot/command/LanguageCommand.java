@@ -19,7 +19,7 @@ public class LanguageCommand implements TabExecutor {
 
     public LanguageAPI languageAPI = LanguageAPI.getInstance();
 
-    private static List<String> tabComplete = Arrays.asList("add", "remove", "update", "create", "delete", "param", "copy", "translations");
+    private static final List<String> tabComplete = Arrays.asList("add", "remove", "update", "create", "delete", "param", "copy", "translations");
 
     public static ArrayList<Player> editingMessage = new ArrayList<>();
 
@@ -34,12 +34,12 @@ public class LanguageCommand implements TabExecutor {
                     switch (args[0].toLowerCase()) {
                         case "add":
                             if (!(args.length >= 4)) {
-                                player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-add-help", player.getUniqueId()));
+                                player.sendMessage(languageAPI.getMessage("languageapi-add-help", player.getUniqueId(), true));
                                 return false;
                             }
                             String lang = args[1].toLowerCase();
                             if (!languageAPI.getAvailableLanguages().contains(args[1].toLowerCase())) {
-                                player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId())
+                                player.sendMessage(languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId(), true)
                                         .replace("%LANG%", lang));
                                 return false;
                             }
@@ -51,27 +51,27 @@ public class LanguageCommand implements TabExecutor {
                                     msg.append(args[i]).append(" ");
                                 }
                                 languageAPI.addMessage(key, msg.toString(), lang);
-                                player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-add-success", player.getUniqueId())
+                                player.sendMessage(languageAPI.getMessage("languageapi-add-success", player.getUniqueId(), true)
                                         .replace("%KEY%", key)
                                         .replace("%LANG%", lang)
                                         .replace("%MSG%", msg.toString()));
+                                return true;
 
                             } else {
-                                player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-key-already-exists", player.getUniqueId())
+                                player.sendMessage(languageAPI.getMessage("languageapi-key-already-exists", player.getUniqueId(), true)
                                         .replace("%KEY%", key)
                                         .replace("%LANG%", lang));
+                                return false;
 
                             }
-
-                            break;
                         case "update":
                             if (!(args.length >= 3)) {
-                                //HELP
+                                player.sendMessage(languageAPI.getMessage("languageapi-update-help", player.getUniqueId(), true));
                                 return false;
                             }
                             lang = args[1].toLowerCase();
                             if (!languageAPI.getAvailableLanguages().contains(lang)) {
-                                player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId())
+                                player.sendMessage(languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId(), true)
                                         .replace("%LANG%", lang));
                                 return false;
                             }
@@ -80,20 +80,21 @@ public class LanguageCommand implements TabExecutor {
 
                                 editingMessage.add(player);
                                 givenParameter.put(player, Arrays.asList(key, lang));
-                                player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-update-instructions", player.getUniqueId()));
+                                player.sendMessage(languageAPI.getMessage("languageapi-update-instructions", player.getUniqueId(), true));
+                                return true;
                             } else {
-                                player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-key-not-found", player.getUniqueId())
+                                player.sendMessage(languageAPI.getMessage("languageapi-key-not-found", player.getUniqueId(), true)
                                         .replace("%KEY%", key)
                                         .replace("%LANG%", lang));
+                                return false;
                             }
-                            break;
                         case "create":
                             lang = args[1].toLowerCase();
                             if (!languageAPI.getAvailableLanguages().contains(lang)) {
                                 languageAPI.createLanguage(lang);
-                                player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-create-success", player.getUniqueId()).replace("%LANG%", lang));
+                                player.sendMessage(languageAPI.getMessage("languageapi-create-success", player.getUniqueId(), true).replace("%LANG%", lang));
                             } else {
-                                player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-lang-already-exists", player.getUniqueId()).replace("%LANG%", lang));
+                                player.sendMessage(languageAPI.getMessage("languageapi-lang-already-exists", player.getUniqueId(), true).replace("%LANG%", lang));
                             }
                             break;
 
@@ -101,13 +102,13 @@ public class LanguageCommand implements TabExecutor {
                             lang = args[1].toLowerCase();
                             if (languageAPI.getAvailableLanguages().contains(lang) && !languageAPI.getDefaultLanguage().equalsIgnoreCase(lang)) {
                                 languageAPI.deleteLanguage(lang);
-                                player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-delete-success", player.getUniqueId()).replace("%LANG%", lang));
+                                player.sendMessage(languageAPI.getMessage("languageapi-delete-success", player.getUniqueId(), true).replace("%LANG%", lang));
                             } else if (lang.equalsIgnoreCase("*")) {
                                 for (String langs : languageAPI.getAvailableLanguages()) {
                                     languageAPI.deleteLanguage(langs);
                                 }
                             } else {
-                                player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId())
+                                player.sendMessage(languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId(), true)
                                         .replace("%LANG%", lang));
                             }
                             break;
@@ -117,7 +118,7 @@ public class LanguageCommand implements TabExecutor {
                                 String langto = args[2].toLowerCase();
                                 if (languageAPI.getAvailableLanguages().contains(langfrom) && languageAPI.getAvailableLanguages().contains(langto)) {
                                     languageAPI.copyLanguage(langfrom, langto);
-                                    player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-copy-success", player.getUniqueId())
+                                    player.sendMessage(languageAPI.getMessage("languageapi-copy-success", player.getUniqueId(), true)
                                             .replace("%OLDLANG%", langfrom)
                                             .replace("%NEWLANG%", langto));
                                 } else {
@@ -125,7 +126,7 @@ public class LanguageCommand implements TabExecutor {
                                     if (languageAPI.getAvailableLanguages().contains(langfrom)) {
                                         lang = langto;
                                     }
-                                    player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId())
+                                    player.sendMessage(languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId(), true)
                                             .replace("%LANG%", lang));
 
                                 }
@@ -138,43 +139,46 @@ public class LanguageCommand implements TabExecutor {
                         case "param": //lang show key
                             key = args[1].toLowerCase();
                             if (!languageAPI.hasParameter(key) || languageAPI.getParameter(key).equalsIgnoreCase("")) {
-                                player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-key-has-no-param", player.getUniqueId()).replace("%KEY%", key));
+                                player.sendMessage(languageAPI.getMessage("languageapi-key-has-no-param", player.getUniqueId(), true).replace("%KEY%", key));
                                 break;
                             }
-                            player.sendMessage(languageAPI.getPrefix() + languageAPI.getMessage("languageapi-show-success", player.getUniqueId())
+                            player.sendMessage(languageAPI.getMessage("languageapi-show-success", player.getUniqueId(), true)
                                     .replace("%PARAM%", languageAPI.getParameter(key)).replace("%KEY%", key));
                         case "translations":
                             lang = args[1].toLowerCase();
                             if (languageAPI.getAvailableLanguages().contains(lang)) {
                                 ArrayList<String> allKeys = languageAPI.getAllKeys(lang);
                                 for (int i = 0; i < allKeys.size(); i++) {
-                                    player.sendMessage(languageAPI.getMessage("languageapi-translation-success", player.getUniqueId())
+                                    player.sendMessage(languageAPI.getMessage("languageapi-translation-success", player.getUniqueId(), true)
                                             .replace("%KEY%", allKeys.get(i))
                                             .replace("%MSG%", languageAPI.getAllMessages(lang).get(i)));
                                 }
+                            }else{
+                                player.sendMessage(languageAPI.getMessage("languageapi-lang-not-found", player.getUniqueId(), true)
+                                        .replace("%LANG%", lang));
                             }
                             break;
-                        case "remove": //lang drop lang key
+                        case "remove": //lang remove lang key
                             if (args.length >= 3) {
                                 lang = args[1].toLowerCase();
                                 key = args[2].toLowerCase();
                                 if (languageAPI.getDefaultLanguage().contains(lang)) {
                                     if (languageAPI.isKey(key, lang)) {
                                         languageAPI.deleteMessage(key, lang); //EINE SPRACHE EIN KEY
-                                        player.sendMessage(languageAPI.getMessage("languageapi-remove-key-in-lang", player.getUniqueId())
+                                        player.sendMessage(languageAPI.getMessage("languageapi-remove-key-in-lang", player.getUniqueId(), true)
                                                 .replace("%KEY%", key)
                                                 .replace("%LANG%", lang));
                                     } else if (key.endsWith("*")) {
-                                        for (String keys : languageAPI.getAllKeys(lang)) { //EINE SPRACJE JEDER KEY
+                                        for (String keys : languageAPI.getAllKeys(lang)) { //EINE SPRACHE JEDER KEY
                                             if (keys.startsWith(key.replace("*", ""))) {
                                                 languageAPI.deleteMessage(keys, lang);
                                             }
                                         }
-                                        player.sendMessage(languageAPI.getMessage("languageapi-remove-every-key-in-lang", player.getUniqueId())
+                                        player.sendMessage(languageAPI.getMessage("languageapi-remove-every-key-in-lang", player.getUniqueId(), true)
                                                 .replace("%LANG%", lang)
                                                 .replace("%STARTSWITH%", key.replace("*", "")));
                                     } else {
-                                        player.sendMessage(languageAPI.getMessage("languageapi-key-not-found", player.getUniqueId())
+                                        player.sendMessage(languageAPI.getMessage("languageapi-key-not-found", player.getUniqueId(), true)
                                                 .replace("%KEY%", key)
                                                 .replace("%LANG%", lang));
                                     }
@@ -187,7 +191,7 @@ public class LanguageCommand implements TabExecutor {
                                                 }
                                             }
                                         }
-                                        player.sendMessage(languageAPI.getMessage("languageapi-remove-every-key-in-every-lang", player.getUniqueId())
+                                        player.sendMessage(languageAPI.getMessage("languageapi-remove-every-key-in-every-lang", player.getUniqueId(), true)
                                                 .replace("%STARTSWITH%", key.replace("*", "")));
                                     } else { //JEDE SPRACHE EIN KEY
                                         for (String langs : languageAPI.getAvailableLanguages()) {
@@ -195,13 +199,15 @@ public class LanguageCommand implements TabExecutor {
                                                 languageAPI.deleteMessage(key, langs);
                                             }
                                         }
-                                        player.sendMessage(languageAPI.getMessage("languageapi-remove-key-in-every-lang", player.getUniqueId())
+                                        player.sendMessage(languageAPI.getMessage("languageapi-remove-key-in-every-lang", player.getUniqueId(), true)
                                                 .replace("%KEY%", key));
                                     }
                                 }
                             }
                             break;
                     }
+                }else{
+                    //SEND ALL COMMANDS
                 }
             }
         }
@@ -212,23 +218,23 @@ public class LanguageCommand implements TabExecutor {
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
         if (args.length == 1) {
-            return getCompletes(args[0], tabComplete);
+            return this.getCompletes(args[0], tabComplete);
         } else if (args.length == 2) {
             if (!args[0].equalsIgnoreCase("param")) {
-                return getCompletes(args[1], languageAPI.getAvailableLanguages());
+                return this.getCompletes(args[1], languageAPI.getAvailableLanguages());
             }
-            return getCompletes(args[1], languageAPI.getAllKeys(languageAPI.getDefaultLanguage()));
+            return this.getCompletes(args[1], languageAPI.getAllKeys(languageAPI.getDefaultLanguage()));
         } else if (args.length == 3) {
             List<String> keyComplete = Arrays.asList("add", "remove", "update");
             if (keyComplete.contains(args[0].toLowerCase())) {
-                return getCompletes(args[2], languageAPI.getAllKeys(args[1].toLowerCase()));
+                return this.getCompletes(args[2], languageAPI.getAllKeys(args[1].toLowerCase()));
             }
         }
         return Collections.emptyList();
 
     }
 
-    public List<String> getCompletes(String playerInput, List<String> tabComplete) {
+    private List<String> getCompletes(String playerInput, List<String> tabComplete) {
         List<String> possibleCompletes = new ArrayList<>();
         StringUtil.copyPartialMatches(playerInput, tabComplete, possibleCompletes);
         Collections.sort(possibleCompletes);

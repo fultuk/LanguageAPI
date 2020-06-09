@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class JoinListener implements Listener {
 
-    private Updater updater = LanguageSpigot.updater;
+    private Updater updater = LanguageSpigot.getPlugin(LanguageSpigot.class).getUpdater();
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -24,11 +24,14 @@ public class JoinListener implements Listener {
         Player player = event.getPlayer();
         LanguageAPI.getInstance().createPlayer(player.getUniqueId());
         if(Source.getUpdateNotfication()) {
-            if(updater.hasUpdate()) {
-                if(player.hasPermission("languageapi.notify")) {
-                    player.sendMessage(LanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"+updater.getLocalVersion()+"§7. Neuste Version: §c"+updater.getOnlineVersion()+"");
+            if(updater.isEnabled()) {
+                if(updater.hasUpdate()) {
+                    if(player.hasPermission("languageapi.notify")) {
+                        player.sendMessage(LanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"+updater.getLocalVersion()+"§7. Neuste Version: §c"+updater.getOnlineVersion()+"");
+                    }
                 }
             }
+
 
         }
 

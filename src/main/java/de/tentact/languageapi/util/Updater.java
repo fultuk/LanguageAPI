@@ -20,6 +20,7 @@ public class Updater {
     private int localVersion;
     private String fullLocalVersion;
     private String pluginName;
+    private boolean enabled = false;
 
     public Updater(Plugin plugin) {
         pluginName = plugin.getName();
@@ -30,6 +31,8 @@ public class Updater {
             Bukkit.broadcastMessage(LanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
                     +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+getOnlineVersion(pluginName));
         }
+        enabled = true;
+
 
 
     }
@@ -43,6 +46,7 @@ public class Updater {
             ProxyServer.getInstance().broadcast(LanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
                     +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+getOnlineVersion(pluginName));
         }
+        enabled = true;
 
     }
 
@@ -53,6 +57,10 @@ public class Updater {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if(scanner == null) {
+            return "0.0";
+        }
+
         if(scanner.hasNextLine()) {
             return scanner.nextLine();
         }
@@ -68,4 +76,7 @@ public class Updater {
         return fullLocalVersion;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
 }

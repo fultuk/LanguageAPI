@@ -17,6 +17,7 @@ public class DefaultMessages {
 
         languageAPI.addMessageExtra("languageapi-add-success", "Der Translationkey %KEY% wurde in %LANG% erfolgreich als ''%MSG%'' übersetzt.");
         languageAPI.addParameter("languageapi-add-success", "%MSG%");
+        languageAPI.addMessageExtra("languageapi-add-help", "Benutzte /lang add <Sprache> <Translationkey> <Übersetzung> um einen Translationkey zu übersetzten.");
 
         languageAPI.addMessageExtra("languageapi-key-already-exists", "Der Translationkey %KEY% wurde in %LANG% bereits übersetzt." +
                 " Verwende /lang update um die Übersetzung zu ändern.");
@@ -25,7 +26,7 @@ public class DefaultMessages {
         languageAPI.addMessageExtra("languageapi-lang-not-found", "Die Sprache %LANG% wurde nicht gefunden.");
         languageAPI.addParameter("languageapi-lang-not-found", "%LANG%");
 
-        languageAPI.addMessageExtra("languageapi-add-help", "Benutzte /lang add <Sprache> <Translationkey> <Übersetzung> um einen Translationkey zu übersetzten.");
+
 
         languageAPI.addMessageExtra("languageapi-remove-key-in-lang", "Die Übersetzung des Translationkeys %KEY% in %LANG% wurde erfolgreich entfernt.");
         languageAPI.addParameter("languageapi-remove-key-in-lan", "%KEY%, %LANG%");
@@ -43,9 +44,12 @@ public class DefaultMessages {
         languageAPI.addParameter("languageapi-update-success", "%MSG%");
         languageAPI.addMessageExtra("languageapi-update-instructions", "Nun kannst du die Übersetzung in den Chat eingeben, wenn benötigt auch mehrmals.\nMit ''finish'' wird die Übersetzung gespeichert.");
         languageAPI.addMessageExtra("languageapi-update-same", "Es wurde nichts verändert und die Übersetzung wurde abgebrochen.");
+        languageAPI.addMessageExtra("languageapi-update-help", "Verwende /lang update <Sprache> <Translationkey> <Übersetzung>");
+
 
         languageAPI.addMessageExtra("languageapi-create-success", "Die Sprache %LANG% wurde erfolgreich erstellt.");
         languageAPI.addParameter("languageapi-create-success", "%LANG%");
+        languageAPI.addMessageExtra("languageapi-create-help", "Verwende /lang create <Sprache>");
 
         languageAPI.addMessageExtra("languageapi-lang-already-exists", "Die Sprache %LANG% existiert bereits.");
         languageAPI.addParameter("languageapi-lang-already-exists", "%LANG%");
@@ -65,6 +69,9 @@ public class DefaultMessages {
         languageAPI.addParameter("languageapi-show-success", "%PARAM%, %KEY%");
 
         languageAPI.addMessageExtra("languageapi-translation-success", "&6%KEY%&7 - %MSG%");
+        languageAPI.addParameter("languageapi-translation-success", "%KEY%, %MSG%");
+
+        languageAPI.addMessageExtra("languageapi-copy-help", "Verwende /lang copy <Sprache> <Sprache2> um eine Sprache zu kopieren.");
     }
 
 }
