@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -26,7 +27,7 @@ public class LanguageCommand implements TabExecutor {
     public static HashMap<Player, List<String>> givenParameter = new HashMap<>();
 
 
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] args) {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender; //
             if (player.hasPermission("system.languageapi")) { //lang add lang key MSG | lang remove lang key | lang update lang key msg | lang createlang lang | lang deletelang lang

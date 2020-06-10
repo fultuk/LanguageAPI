@@ -19,9 +19,7 @@ import java.util.HashMap;
 
 public class ChatListener implements Listener {
 
-    private HashMap<Player, ArrayList<String>> editedMessage = new HashMap<>();
-
-
+    private final HashMap<Player, ArrayList<String>> editedMessage = new HashMap<>();
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {

@@ -5,19 +5,16 @@ package de.tentact.languageapi.mysql;
     Uhrzeit: 16:53
 */
 
-import de.tentact.languageapi.util.Source;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
 
 public class MySQL {
 
     private final String hostname, database, username, password;
 
-    private int port;
+    private final int port;
     private Connection con;
 
     public MySQL(String hostname, String database, String username, String password, int port) {

@@ -7,6 +7,7 @@ package de.tentact.languageapi.util;
 
 import de.tentact.languageapi.api.LanguageAPI;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -16,11 +17,11 @@ import java.util.Scanner;
 
 public class Updater {
 
-    private int onlineVersion;
-    private int localVersion;
-    private String fullLocalVersion;
-    private String pluginName;
-    private boolean enabled = false;
+    private final int onlineVersion;
+    private final int localVersion;
+    private final String fullLocalVersion;
+    private final String pluginName;
+    private final boolean enabled;
 
     public Updater(Plugin plugin) {
         pluginName = plugin.getName();
@@ -43,8 +44,8 @@ public class Updater {
         fullLocalVersion = plugin.getDescription().getVersion();
         onlineVersion = Integer.parseInt(getOnlineVersion(pluginName).replace(".", ""));
         if(onlineVersion > localVersion) {
-            ProxyServer.getInstance().broadcast(LanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
-                    +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+getOnlineVersion(pluginName));
+            ProxyServer.getInstance().broadcast(new TextComponent(LanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
+                    +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+getOnlineVersion(pluginName)));
         }
         enabled = true;
 

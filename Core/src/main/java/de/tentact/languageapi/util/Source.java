@@ -6,17 +6,15 @@ package de.tentact.languageapi.util;
 */
 
 import de.tentact.languageapi.ILanguageAPI;
+import de.tentact.languageapi.LanguageBungeecord;
 import de.tentact.languageapi.api.LanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
-import de.tentact.languageapi.LanguageBungeecord;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Source {
 

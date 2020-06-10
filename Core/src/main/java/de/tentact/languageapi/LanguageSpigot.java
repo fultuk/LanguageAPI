@@ -5,20 +5,18 @@ package de.tentact.languageapi;
     Uhrzeit: 17:01
 */
 
-import de.tentact.languageapi.api.LanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
+import de.tentact.languageapi.spigot.command.LanguageCommand;
 import de.tentact.languageapi.spigot.listener.ChatListener;
+import de.tentact.languageapi.spigot.listener.JoinListener;
 import de.tentact.languageapi.util.DefaultMessages;
 import de.tentact.languageapi.util.Source;
-import de.tentact.languageapi.spigot.command.LanguageCommand;
-import de.tentact.languageapi.spigot.listener.JoinListener;
 import de.tentact.languageapi.util.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
-import java.util.logging.Level;
 
 public class LanguageSpigot extends JavaPlugin {
 

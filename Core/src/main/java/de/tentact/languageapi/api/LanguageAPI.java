@@ -59,9 +59,12 @@ public class LanguageAPI extends ILanguageAPI {
             String language = getDefaultLanguage();
             if (!Source.bungeeCordMode) {
                 Player player = Bukkit.getPlayer(playerUUID);
-                if (this.getAvailableLanguages().contains(player.getLocale().toLowerCase())) {
-                    language = player.getLocale().toLowerCase();
+                if(player != null) {
+                    if (this.getAvailableLanguages().contains(player.getLocale().toLowerCase())) {
+                        language = player.getLocale().toLowerCase();
+                    }
                 }
+
             }
             this.mySQL.update("INSERT INTO choosenlang(uuid, language) VALUES ('" + playerUUID.toString() + "', '" + language + "');");
         } else {
@@ -139,7 +142,7 @@ public class LanguageAPI extends ILanguageAPI {
 
     }
 
-    public void addMessageExtra(final String transkey, final String translation) {
+    public void addMessageToDefault(final String transkey, final String translation) {
         if (this.isKey(transkey, this.getDefaultLanguage().toLowerCase())) {
             return;
         }
@@ -226,7 +229,7 @@ public class LanguageAPI extends ILanguageAPI {
         return false;
     }
     public String getMessage(String transkey, UUID playerUUID, boolean usePrefix) {
-        return usePrefix ? this.getPrefix()+this.getMessage(transkey, playerUUID) : this.getMessage(transkey, playerUUID);
+        return usePrefix ? this.getPrefix(this.getPlayerLanguage(playerUUID))+this.getMessage(transkey, playerUUID) : this.getMessage(transkey, playerUUID);
     }
 
     public String getMessage(String transkey, UUID playerUUID) {
@@ -322,5 +325,8 @@ public class LanguageAPI extends ILanguageAPI {
 
     public String getPrefix() {
         return this.getMessage("languageapi-prefix", this.getDefaultLanguage());
+    }
+    public String getPrefix(String langName) {
+        return this.getMessage("languageapi-prefix", langName);
     }
 }
