@@ -33,9 +33,7 @@ public class LanguageAPI extends ILanguageAPI {
         if (!isLanguage(langName)) {
             this.mySQL.createTable(langName.replace(" ", "").toLowerCase());
             this.languageCache.add(langName.toLowerCase());
-            new Thread(() -> this.mySQL.update("INSERT INTO languages(language) VALUES ('" + langName.toLowerCase() + "')")).start();
-
-
+            this.mySQL.update("INSERT INTO languages(language) VALUES ('" + langName.toLowerCase() + "')");
         }
 
     }
@@ -254,7 +252,7 @@ public class LanguageAPI extends ILanguageAPI {
     }
 
     public boolean isLanguage(String lang) {
-        return this.getAvailableLanguages().contains(lang.toLowerCase());
+        return this.getAvailableLanguages() != null && this.getAvailableLanguages().contains(lang.toLowerCase());
     }
 
     public ArrayList<String> getAvailableLanguages() {
@@ -270,7 +268,7 @@ public class LanguageAPI extends ILanguageAPI {
     }
 
     public ArrayList<String> getLangUpdate() {
-        ArrayList<String> langs = new ArrayList<String>();
+        ArrayList<String> langs = new ArrayList<>();
         ResultSet rs = this.mySQL.getResult("SELECT language FROM languages");
         try {
             while (rs.next()) {

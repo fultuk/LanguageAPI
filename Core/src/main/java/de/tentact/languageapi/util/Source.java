@@ -29,7 +29,6 @@ public class Source {
     static Configuration bungeecfg;
 
     private static MySQL mySQL;
-    private static Logger logger;
 
 
     public static void createSpigotMySQLConfig() {
@@ -49,31 +48,27 @@ public class Source {
 
         try {
             mySQLcfg.save(mySQLFile);
-
         } catch (IOException e) {
             e.printStackTrace();
-
-
         }
-
     }
 
     public static void initSpigot() {
-        ILanguageAPI.setInstance(new LanguageAPI());
         mySQL = new MySQL(mySQLcfg.getString("mysql.hostname"),
                 mySQLcfg.getString("mysql.database"),
                 mySQLcfg.getString("mysql.username"),
                 mySQLcfg.getString("mysql.password"),
                 mySQLcfg.getInt("mysql.port"));
+        ILanguageAPI.setInstance(new LanguageAPI());
     }
 
     public static void initBungeecord() {
-        ILanguageAPI.setInstance(new LanguageAPI());
         mySQL = new MySQL(bungeecfg.getString("mysql.hostname"),
                 bungeecfg.getString("mysql.database"),
                 bungeecfg.getString("mysql.username"),
                 bungeecfg.getString("mysql.password"),
                 bungeecfg.getInt("mysql.port"));
+        ILanguageAPI.setInstance(new LanguageAPI());
 
     }
 
@@ -111,18 +106,12 @@ public class Source {
     }
 
     public static MySQL getMySQL() {
+        if(mySQL == null) {
+            System.out.println("NULL (68)");
+        }
         return mySQL;
     }
 
-    public static void setLogger(Logger logger) {
-        Source.logger = logger;
-    }
 
-    public static void defaultLog(String message, Level logLevel) {
-        Source.logger.log(logLevel, message);
-    }
 
-    public static void logIntoFile(String message, Level logLevel) {
-
-    }
 }
