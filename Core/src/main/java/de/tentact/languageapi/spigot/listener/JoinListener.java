@@ -6,7 +6,7 @@ package de.tentact.languageapi.spigot.listener;
 */
 
 import de.tentact.languageapi.LanguageSpigot;
-import de.tentact.languageapi.api.LanguageImpl;
+import de.tentact.languageapi.api.LanguageAPI;
 import de.tentact.languageapi.util.Source;
 import de.tentact.languageapi.util.Updater;
 import org.bukkit.entity.Player;
@@ -22,12 +22,12 @@ public class JoinListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
 
         Player player = event.getPlayer();
-        LanguageImpl.getInstance().createPlayer(player.getUniqueId());
+        LanguageAPI.getInstance().createPlayer(player.getUniqueId());
         if(Source.getUpdateNotfication()) {
             if(updater.isEnabled()) {
                 if(updater.hasUpdate()) {
                     if(player.hasPermission("languageapi.notify")) {
-                        player.sendMessage(LanguageImpl.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"+updater.getLocalVersion()+"§7. Neuste Version: §c"+updater.getOnlineVersion()+"");
+                        player.sendMessage(LanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"+updater.getLocalVersion()+"§7. Neuste Version: §c"+updater.getOnlineVersion()+"");
                     }
                 }
             }

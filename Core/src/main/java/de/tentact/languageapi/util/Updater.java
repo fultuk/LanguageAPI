@@ -5,7 +5,7 @@ package de.tentact.languageapi.util;
     Uhrzeit: 16:53
 */
 
-import de.tentact.languageapi.api.LanguageImpl;
+import de.tentact.languageapi.api.LanguageAPI;
 import net.md_5.bungee.api.ProxyServer;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -28,7 +28,7 @@ public class Updater {
         fullLocalVersion = plugin.getDescription().getVersion();
         onlineVersion = Integer.parseInt(getOnlineVersion(pluginName).replace(".", ""));
         if(onlineVersion > localVersion) {
-            Bukkit.broadcastMessage(LanguageImpl.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
+            Bukkit.broadcastMessage(LanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
                     +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+getOnlineVersion(pluginName));
         }
         enabled = true;
@@ -43,7 +43,7 @@ public class Updater {
         fullLocalVersion = plugin.getDescription().getVersion();
         onlineVersion = Integer.parseInt(getOnlineVersion(pluginName).replace(".", ""));
         if(onlineVersion > localVersion) {
-            ProxyServer.getInstance().broadcast(LanguageImpl.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
+            ProxyServer.getInstance().broadcast(LanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
                     +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+getOnlineVersion(pluginName));
         }
         enabled = true;

@@ -5,7 +5,6 @@ package de.tentact.languageapi;
     Uhrzeit: 17:01
 */
 
-import de.tentact.languageapi.api.LanguageImpl;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.spigot.listener.ChatListener;
 import de.tentact.languageapi.util.DefaultMessages;
@@ -30,11 +29,10 @@ public class LanguageSpigot extends JavaPlugin {
         Source.bungeeCordMode = false;
         Source.setLogger(this.getLogger());
         Source.createSpigotMySQLConfig();
-        Source.initMySQLSpigot();
+        Source.initSpigot();
         this.mySQL = Source.getMySQL();
         this.mySQL.connect();
         this.mySQL.createDefaultTable();
-        LanguageImpl.getInstance().createLanguage(Source.getDefaultLanguage());
         DefaultMessages.createDefaultPluginMessages();
         this.updater = new Updater(this);
 

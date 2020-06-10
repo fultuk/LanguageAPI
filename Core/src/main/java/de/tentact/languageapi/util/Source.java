@@ -5,6 +5,8 @@ package de.tentact.languageapi.util;
     Uhrzeit: 17:05
 */
 
+import de.tentact.languageapi.ILanguageAPI;
+import de.tentact.languageapi.api.LanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.LanguageBungeecord;
 import net.md_5.bungee.config.Configuration;
@@ -56,7 +58,8 @@ public class Source {
 
     }
 
-    public static void initMySQLSpigot() {
+    public static void initSpigot() {
+        ILanguageAPI.setInstance(new LanguageAPI());
         mySQL = new MySQL(mySQLcfg.getString("mysql.hostname"),
                 mySQLcfg.getString("mysql.database"),
                 mySQLcfg.getString("mysql.username"),
@@ -64,7 +67,8 @@ public class Source {
                 mySQLcfg.getInt("mysql.port"));
     }
 
-    public static void initMySQLBungeecord() {
+    public static void initBungeecord() {
+        ILanguageAPI.setInstance(new LanguageAPI());
         mySQL = new MySQL(bungeecfg.getString("mysql.hostname"),
                 bungeecfg.getString("mysql.database"),
                 bungeecfg.getString("mysql.username"),

@@ -5,7 +5,7 @@ package de.tentact.languageapi.api;
     Uhrzeit: 16:52
 */
 
-import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.ILanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.Source;
 import org.bukkit.Bukkit;
@@ -17,9 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class LanguageImpl implements LanguageAPI {
-
-    private static LanguageImpl instance;
+public class LanguageAPI extends ILanguageAPI {
 
     private final MySQL mySQL = Source.getMySQL();
 
@@ -27,22 +25,15 @@ public class LanguageImpl implements LanguageAPI {
 
     public long lastupdatedCache = System.currentTimeMillis();
 
-    private LanguageImpl() {
+    public LanguageAPI() {
 
-    }
-
-    public static LanguageImpl getInstance() {
-        if (instance == null) {
-            instance = new LanguageImpl();
-        }
-        return instance;
     }
 
     public void createLanguage(final String langName) {
         if (!isLanguage(langName)) {
             this.mySQL.createTable(langName.replace(" ", "").toLowerCase());
             this.languageCache.add(langName.toLowerCase());
-            new Thread(() -> mySQL.update("INSERT INTO languages(language) VALUES ('" + langName.toLowerCase() + "')")).start();
+            new Thread(() -> this.mySQL.update("INSERT INTO languages(language) VALUES ('" + langName.toLowerCase() + "')")).start();
 
 
         }
