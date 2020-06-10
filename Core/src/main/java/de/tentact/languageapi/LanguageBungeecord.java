@@ -21,9 +21,8 @@ public class LanguageBungeecord extends Plugin {
     public void onEnable() {
         languageBungeecord = this;
         Source.bungeeCordMode = true;
-        Source.setLogger(this.getLogger());
         Source.createBungeeCordMySQLConfig();
-        Source.initMySQLBungeecord();
+        Source.initBungeecord();
         mySQL = Source.getMySQL();
         mySQL.connect();
         mySQL.createDefaultTable();

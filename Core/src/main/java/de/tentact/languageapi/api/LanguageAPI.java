@@ -5,6 +5,7 @@ package de.tentact.languageapi.api;
     Uhrzeit: 16:52
 */
 
+import de.tentact.languageapi.ILanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.Source;
 import org.bukkit.Bukkit;
@@ -16,9 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class LanguageAPI {
-
-    private static LanguageAPI instance;
+public class LanguageAPI extends ILanguageAPI {
 
     private final MySQL mySQL = Source.getMySQL();
 
@@ -26,24 +25,15 @@ public class LanguageAPI {
 
     public long lastupdatedCache = System.currentTimeMillis();
 
-    private LanguageAPI() {
+    public LanguageAPI() {
 
-    }
-
-    public static LanguageAPI getInstance() {
-        if (instance == null) {
-            instance = new LanguageAPI();
-        }
-        return instance;
     }
 
     public void createLanguage(final String langName) {
         if (!isLanguage(langName)) {
             this.mySQL.createTable(langName.replace(" ", "").toLowerCase());
             this.languageCache.add(langName.toLowerCase());
-            new Thread(() -> mySQL.update("INSERT INTO languages(language) VALUES ('" + langName.toLowerCase() + "')")).start();
-
-
+            this.mySQL.update("INSERT INTO languages(language) VALUES ('" + langName.toLowerCase() + "')");
         }
 
     }
@@ -262,7 +252,7 @@ public class LanguageAPI {
     }
 
     public boolean isLanguage(String lang) {
-        return this.getAvailableLanguages().contains(lang.toLowerCase());
+        return this.getAvailableLanguages() != null && this.getAvailableLanguages().contains(lang.toLowerCase());
     }
 
     public ArrayList<String> getAvailableLanguages() {
@@ -277,8 +267,8 @@ public class LanguageAPI {
         }
     }
 
-    private ArrayList<String> getLangUpdate() {
-        ArrayList<String> langs = new ArrayList<String>();
+    public ArrayList<String> getLangUpdate() {
+        ArrayList<String> langs = new ArrayList<>();
         ResultSet rs = this.mySQL.getResult("SELECT language FROM languages");
         try {
             while (rs.next()) {

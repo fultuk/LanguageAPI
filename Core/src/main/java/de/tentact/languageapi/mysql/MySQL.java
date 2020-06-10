@@ -32,11 +32,11 @@ public class MySQL {
         if (!isConnected()) {
             try {
                 con = DriverManager.getConnection("jdbc:mysql://" + hostname + ":" + port + "/" + database, username, password);
-                Source.defaultLog("§aMySQL Connected", Level.INFO);
+//                Source.defaultLog("§aMySQL Connected", Level.INFO);
             } catch (SQLException ex) {
-                Source.defaultLog("§cDie MySQL konnte nicht verbunden werden. Prüfe, ob deine Angaben stimmen und der Server online ist.", Level.WARNING);
+//                Source.defaultLog("§cDie MySQL konnte nicht verbunden werden. Prüfe, ob deine Angaben stimmen und der Server online ist.", Level.WARNING);
                 ex.printStackTrace();
-                Source.defaultLog("§cDie MySQL konnte nicht verbunden werden. Prüfe, ob deine Angaben stimmen und der Server online ist.", Level.WARNING);
+//                Source.defaultLog("§cDie MySQL konnte nicht verbunden werden. Prüfe, ob deine Angaben stimmen und der Server online ist.", Level.WARNING);
             }
         }
 
@@ -58,7 +58,6 @@ public class MySQL {
     }
 
     public void createDefaultTable() {
-        new Thread(() -> {
             if(!isConnected())
                 return;
             try {
@@ -69,12 +68,9 @@ public class MySQL {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-        }).start();
-
     }
 
     public void createTable(String tableName) {
-        new Thread(() -> {
             if(!isConnected())
                 return;
             try {
@@ -83,7 +79,6 @@ public class MySQL {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-        }).start();
     }
 
     public void update(String sql) {

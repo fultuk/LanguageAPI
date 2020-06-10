@@ -7,37 +7,38 @@ package de.tentact.languageapi;
 
 import de.tentact.languageapi.api.LanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
-import de.tentact.languageapi.spigot.command.LanguageCommand;
 import de.tentact.languageapi.spigot.listener.ChatListener;
-import de.tentact.languageapi.spigot.listener.JoinListener;
 import de.tentact.languageapi.util.DefaultMessages;
 import de.tentact.languageapi.util.Source;
+import de.tentact.languageapi.spigot.command.LanguageCommand;
+import de.tentact.languageapi.spigot.listener.JoinListener;
 import de.tentact.languageapi.util.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
+import java.util.logging.Level;
 
 public class LanguageSpigot extends JavaPlugin {
 
     private Updater updater;
     private MySQL mySQL;
 
-
     @Override
     public void onEnable() {
+
         Source.bungeeCordMode = false;
-        Source.setLogger(this.getLogger());
         Source.createSpigotMySQLConfig();
-        Source.initMySQLSpigot();
+        Source.initSpigot();
+
         this.mySQL = Source.getMySQL();
         this.mySQL.connect();
         this.mySQL.createDefaultTable();
-        LanguageAPI.getInstance().createLanguage(Source.getDefaultLanguage());
+
+        ILanguageAPI.getInstance().createLanguage(Source.getDefaultLanguage());
         DefaultMessages.createDefaultPluginMessages();
         this.updater = new Updater(this);
-
 
         Objects.requireNonNull(this.getCommand("languageapi")).setExecutor(new LanguageCommand());
         Objects.requireNonNull(this.getCommand("languageapi")).setTabCompleter(new LanguageCommand());
@@ -45,7 +46,6 @@ public class LanguageSpigot extends JavaPlugin {
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new JoinListener(), this);
         pm.registerEvents(new ChatListener(), this);
-
 
     }
 

@@ -5,6 +5,7 @@ package de.tentact.languageapi.spigot.listener;
     Uhrzeit: 15:29
 */
 
+import de.tentact.languageapi.ILanguageAPI;
 import de.tentact.languageapi.api.LanguageAPI;
 import de.tentact.languageapi.spigot.command.LanguageCommand;
 import org.bukkit.ChatColor;
@@ -40,7 +41,7 @@ public class ChatListener implements Listener {
 
             }else{
                 if(editedMessage.get(player) == null) {
-                    player.sendMessage(LanguageAPI.getInstance().getPrefix()+LanguageAPI.getInstance().getMessage("languageapi-update-same", player.getUniqueId()));
+                    player.sendMessage(LanguageAPI.getInstance().getPrefix()+ LanguageAPI.getInstance().getMessage("languageapi-update-same", player.getUniqueId()));
                     event.setCancelled(true);
                     return;
                 }
@@ -49,9 +50,9 @@ public class ChatListener implements Listener {
                     result.append(message).append(" ");
                 }
                 LanguageCommand.editingMessage.remove(player);
-                LanguageAPI.getInstance().updateMessage(LanguageCommand.givenParameter.get(player).get(0), LanguageCommand.givenParameter.get(player).get(1), result.toString());
+                ILanguageAPI.getInstance().updateMessage(LanguageCommand.givenParameter.get(player).get(0), LanguageCommand.givenParameter.get(player).get(1), result.toString());
                 event.setCancelled(true);
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&',LanguageAPI.getInstance().getMessage("languageapi-update-success", player.getUniqueId())
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', LanguageAPI.getInstance().getMessage("languageapi-update-success", player.getUniqueId())
                         .replace("%KEY%", LanguageCommand.givenParameter.get(player).get(0))
                         .replace("%LANG%", LanguageCommand.givenParameter.get(player).get(1))
                         .replace("%MSG%", result.toString())));

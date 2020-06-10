@@ -5,8 +5,10 @@ package de.tentact.languageapi.util;
     Uhrzeit: 17:05
 */
 
-import de.tentact.languageapi.LanguageBungeecord;
+import de.tentact.languageapi.ILanguageAPI;
+import de.tentact.languageapi.api.LanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
+import de.tentact.languageapi.LanguageBungeecord;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -27,7 +29,6 @@ public class Source {
     static Configuration bungeecfg;
 
     private static MySQL mySQL;
-    private static Logger logger;
 
 
     public static void createSpigotMySQLConfig() {
@@ -35,8 +36,8 @@ public class Source {
         mySQLcfg = YamlConfiguration.loadConfiguration(mySQLFile);
 
         mySQLcfg.addDefault("mysql.hostname", "hostname");
-        mySQLcfg.addDefault("mysql.database", "languageapi");
-        mySQLcfg.addDefault("mysql.username", "languageapi");
+        mySQLcfg.addDefault("mysql.database", "de/tentact/languageapi");
+        mySQLcfg.addDefault("mysql.username", "de/tentact/languageapi");
 
         mySQLcfg.addDefault("mysql.password", "password");
         mySQLcfg.addDefault("mysql.port", 3306);
@@ -47,29 +48,27 @@ public class Source {
 
         try {
             mySQLcfg.save(mySQLFile);
-
         } catch (IOException e) {
             e.printStackTrace();
-
-
         }
-
     }
 
-    public static void initMySQLSpigot() {
+    public static void initSpigot() {
         mySQL = new MySQL(mySQLcfg.getString("mysql.hostname"),
                 mySQLcfg.getString("mysql.database"),
                 mySQLcfg.getString("mysql.username"),
                 mySQLcfg.getString("mysql.password"),
                 mySQLcfg.getInt("mysql.port"));
+        ILanguageAPI.setInstance(new LanguageAPI());
     }
 
-    public static void initMySQLBungeecord() {
+    public static void initBungeecord() {
         mySQL = new MySQL(bungeecfg.getString("mysql.hostname"),
                 bungeecfg.getString("mysql.database"),
                 bungeecfg.getString("mysql.username"),
                 bungeecfg.getString("mysql.password"),
                 bungeecfg.getInt("mysql.port"));
+        ILanguageAPI.setInstance(new LanguageAPI());
 
     }
 
@@ -86,8 +85,8 @@ public class Source {
             if (!bungeeMySQL.exists()) {
                 bungeeMySQL.createNewFile();
                 bungeecfg.set("mysql.host", "hostname");
-                bungeecfg.set("mysql.username", "languageapi");
-                bungeecfg.set("mysql.database", "languageapi");
+                bungeecfg.set("mysql.username", "de/tentact/languageapi");
+                bungeecfg.set("mysql.database", "de/tentact/languageapi");
                 bungeecfg.set("mysql.password", "password");
                 bungeecfg.set("languageapi.defaultlang", "en_EN");
             }
@@ -107,18 +106,12 @@ public class Source {
     }
 
     public static MySQL getMySQL() {
+        if(mySQL == null) {
+            System.out.println("NULL (68)");
+        }
         return mySQL;
     }
 
-    public static void setLogger(Logger logger) {
-        Source.logger = logger;
-    }
 
-    public static void defaultLog(String message, Level logLevel) {
-        Source.logger.log(logLevel, message);
-    }
 
-    public static void logIntoFile(String message, Level logLevel) {
-
-    }
 }
