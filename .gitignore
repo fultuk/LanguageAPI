@@ -2,4 +2,7 @@
 /target/
 /out/
 /.idea/
+/API/target/
+/Core/target/
+/Core/dependency-reduced-pom.xml
 *.iml
