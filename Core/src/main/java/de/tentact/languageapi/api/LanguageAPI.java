@@ -59,7 +59,7 @@ public class LanguageAPI extends ILanguageAPI {
             String language = getDefaultLanguage();
             if (!Source.bungeeCordMode) {
                 Player player = Bukkit.getPlayer(playerUUID);
-                if(player != null) {
+                if (player != null) {
                     if (this.getAvailableLanguages().contains(player.getLocale().toLowerCase())) {
                         language = player.getLocale().toLowerCase();
                     }
@@ -90,7 +90,7 @@ public class LanguageAPI extends ILanguageAPI {
     public void addMessage(final String transkey, final String message, final String lang, String param) {
         if (this.isLanguage(lang)) {
             new Thread(() -> {
-                this.mySQL.update("INSERT INTO " + lang.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + message + "');");
+                this.addMessage(transkey, message, lang);
                 this.addParameter(transkey, param);
             }).start();
         }
@@ -190,7 +190,6 @@ public class LanguageAPI extends ILanguageAPI {
             if (this.isKey(transkey, langs)) {
                 this.deleteMessage(transkey, langs);
             }
-
         }
     }
 
@@ -228,20 +227,28 @@ public class LanguageAPI extends ILanguageAPI {
         }
         return false;
     }
+
     public String getMessage(String transkey, UUID playerUUID, boolean usePrefix) {
-        return usePrefix ? this.getPrefix(this.getPlayerLanguage(playerUUID))+this.getMessage(transkey, playerUUID) : this.getMessage(transkey, playerUUID);
+        return usePrefix ? this.getPrefix(this.getPlayerLanguage(playerUUID)) + this.getMessage(transkey, playerUUID) : this.getMessage(transkey, playerUUID);
+    }
+
+    public String getMessage(String transkey, Player player, boolean usePrefix) {
+        return usePrefix ? this.getPrefix(this.getPlayerLanguage(player.getUniqueId())) + this.getMessage(transkey, player.getUniqueId()) : this.getMessage(transkey, player.getUniqueId());
     }
 
     public String getMessage(String transkey, UUID playerUUID) {
         return this.getMessage(transkey, this.getPlayerLanguage(playerUUID));
     }
+    public String getMessage(String transkey, Player player) {
+        return this.getMessage(transkey, this.getPlayerLanguage(player.getUniqueId()));
+    }
 
     public String getMessage(String transkey, String lang) {
         if (!this.isLanguage(lang)) {
-            return "Language not found";
+            throw new IllegalArgumentException(lang + " was not found");
         }
         if (!this.isKey(transkey, lang)) {
-            return transkey + " not found for language " + lang;
+            throw new IllegalArgumentException(transkey + " not found for language " + lang);
         }
         ResultSet rs = this.mySQL.getResult("SELECT translation FROM " + lang.toLowerCase() + " WHERE transkey='" + transkey.toLowerCase() + "';");
         try {
@@ -270,7 +277,7 @@ public class LanguageAPI extends ILanguageAPI {
         }
     }
 
-    public ArrayList<String> getLangUpdate() {
+    private ArrayList<String> getLangUpdate() {
         ArrayList<String> langs = new ArrayList<>();
         ResultSet rs = this.mySQL.getResult("SELECT language FROM languages");
         try {
@@ -298,8 +305,7 @@ public class LanguageAPI extends ILanguageAPI {
             }
             return keys;
         }
-        keys.add("Language not found");
-        return keys;
+        throw new IllegalArgumentException(lang + " was not found");
     }
 
     public ArrayList<String> getAllMessages(String lang) {
@@ -315,8 +321,7 @@ public class LanguageAPI extends ILanguageAPI {
             }
             return messages;
         }
-        messages.add("Language not found");
-        return messages;
+        throw new IllegalArgumentException(lang + " was not found");
     }
 
     public String getDefaultLanguage() {
@@ -326,6 +331,7 @@ public class LanguageAPI extends ILanguageAPI {
     public String getPrefix() {
         return this.getMessage("languageapi-prefix", this.getDefaultLanguage());
     }
+
     public String getPrefix(String langName) {
         return this.getMessage("languageapi-prefix", langName);
     }

@@ -1,5 +1,7 @@
 package de.tentact.languageapi;
 
+import org.bukkit.entity.Player;
+
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -197,10 +199,26 @@ public abstract class ILanguageAPI {
     /**
      *
      * @param translationkey the translationkey to get the translation from
+     * @param player the player to get the language from
+     * @param usePrefix specify if the prefix should be returnt with the translation
+     * @return returns the translation for a given player
+     */
+
+    public abstract String getMessage(String translationkey, Player player, boolean usePrefix);
+    /**
+     *
+     * @param translationkey the translationkey to get the translation from
      * @param playerUUID the player uuid to get the language from
      * @return returns the translation for a given player
      */
     public abstract String getMessage(String translationkey, UUID playerUUID);
+    /**
+     *
+     * @param translationkey the translationkey to get the translation from
+     * @param player the player to get the language from
+     * @return returns the translation for a given player
+     */
+    public abstract String getMessage(String translationkey, Player player);
 
     /**
      *
@@ -220,16 +238,9 @@ public abstract class ILanguageAPI {
 
     /**
      *
-     * @return returns all the created languages cached
+     * @return returns all the created languages
      */
     public abstract ArrayList<String> getAvailableLanguages();
-
-    /**
-     *
-     * @return forces to update all created languages
-     * dont use this method
-     */
-    public abstract ArrayList<String> getLangUpdate();
 
     /**
      *
@@ -254,7 +265,7 @@ public abstract class ILanguageAPI {
 
     /**
      *
-     * @return returns the prefix of the api (languageapi-prefix)
+     * @return returns the prefix of the api (languageapi-prefix) in the default language {@link ILanguageAPI#getPrefix(String)}
      */
     public abstract String getPrefix();
 

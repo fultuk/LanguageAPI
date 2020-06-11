@@ -7,7 +7,7 @@ package de.tentact.languageapi.util;
 
 import de.tentact.languageapi.ILanguageAPI;
 
-public class DefaultMessages {
+public class I18N {
 
     private static final ILanguageAPI iLanguageAPI = ILanguageAPI.getInstance();
 
@@ -61,6 +61,7 @@ public class DefaultMessages {
 
         iLanguageAPI.addMessageToDefault("languageapi-copy-success", "%OLDLANG% wurde erfolgreich in %NEWLANG% kopiert.");
         iLanguageAPI.addParameter("languageapi-copy-success", "%OLDLANG%, %NEWLANG%");
+        iLanguageAPI.addMessageToDefault("languageapi-copy-help", "Verwende /lang copy <Sprache> <Sprache>");
 
         iLanguageAPI.addMessageToDefault("languageapi-key-has-no-param", "Der Translationkey %KEY% hat keine Parameter.");
         iLanguageAPI.addParameter("languageapi-key-has-no-param", "%LANG%");
