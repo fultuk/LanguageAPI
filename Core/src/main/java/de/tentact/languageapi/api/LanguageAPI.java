@@ -5,34 +5,31 @@ package de.tentact.languageapi.api;
     Uhrzeit: 16:52
 */
 
-import de.tentact.languageapi.ILanguageAPI;
+import de.tentact.languageapi.AbstractLanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.Source;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class LanguageAPI extends ILanguageAPI {
+public class LanguageAPI extends AbstractLanguageAPI {
 
     private final MySQL mySQL = Source.getMySQL();
 
-    public ArrayList<String> languageCache = new ArrayList<>();
-
-    public long lastupdatedCache = System.currentTimeMillis();
-
     public LanguageAPI() {
-
     }
 
     public void createLanguage(final String langName) {
         if (!isLanguage(langName)) {
             this.mySQL.createTable(langName.replace(" ", "").toLowerCase());
-            this.languageCache.add(langName.toLowerCase());
             this.mySQL.update("INSERT INTO languages(language) VALUES ('" + langName.toLowerCase() + "')");
         }
 
@@ -46,7 +43,7 @@ public class LanguageAPI extends ILanguageAPI {
 
     }
 
-    public void changePlayerLanguage(UUID playerUUID, String newLang) {
+    public void setPlayerLanguage(UUID playerUUID, String newLang) {
         this.createPlayer(playerUUID);
         if (!this.isLanguage(newLang)) {
             return;
@@ -57,7 +54,7 @@ public class LanguageAPI extends ILanguageAPI {
     public void createPlayer(UUID playerUUID) {
         if (!this.playerExists(playerUUID)) {
             String language = getDefaultLanguage();
-            if (!Source.bungeeCordMode) {
+            if (!Source.isBungeeCordMode) {
                 Player player = Bukkit.getPlayer(playerUUID);
                 if (player != null) {
                     if (this.getAvailableLanguages().contains(player.getLocale().toLowerCase())) {
@@ -89,10 +86,9 @@ public class LanguageAPI extends ILanguageAPI {
 
     public void addMessage(final String transkey, final String message, final String lang, String param) {
         if (this.isLanguage(lang)) {
-            new Thread(() -> {
-                this.addMessage(transkey, message, lang);
-                this.addParameter(transkey, param);
-            }).start();
+            this.addMessage(transkey, message, lang);
+            this.addParameter(transkey, param);
+
         }
     }
 
@@ -150,6 +146,14 @@ public class LanguageAPI extends ILanguageAPI {
                 + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + ChatColor.translateAlternateColorCodes('&', translation) + "');")).start();
 
     }
+    public void addMessageToDefault(final String transkey, final String translation, final String param) {
+        if (this.isKey(transkey, this.getDefaultLanguage().toLowerCase())) {
+            return;
+        }
+        this.addMessageToDefault(transkey, translation);
+        this.addParameter(transkey, param);
+
+    }
 
     public void copyLanguage(String langfrom, String langto) {
         if (this.isLanguage(langfrom) && this.isLanguage(langto)) {
@@ -169,6 +173,7 @@ public class LanguageAPI extends ILanguageAPI {
         return false;
     }
 
+    @Nullable
     public String getParameter(String translationKey) {
         if (!this.hasParameter(translationKey)) {
             throw new IllegalArgumentException(translationKey + " was not found");
@@ -195,14 +200,24 @@ public class LanguageAPI extends ILanguageAPI {
 
 
     public void updateMessage(String transkey, String lang, String message) {
-        new Thread(() -> this.mySQL.update("UPDATE " + lang.toLowerCase() + " SET translation='" + ChatColor.translateAlternateColorCodes('&', message) + "' WHERE transkey='" + transkey.toLowerCase() + "';")).start();
-
+        //new Thread(() -> this.mySQL.update("UPDATE " + lang.toLowerCase() + " SET translation='" + ChatColor.translateAlternateColorCodes('&', message) + "' WHERE transkey='" + transkey.toLowerCase() + "';")).start();
+        new Thread(() -> {
+            try{
+                PreparedStatement preparedStatement = this.mySQL.createStatement("UPDATE ? SET translation=? WHERE transkey=?");
+                preparedStatement.setString(0, lang.toLowerCase());
+                preparedStatement.setString(1, ChatColor.translateAlternateColorCodes('&', message));
+                preparedStatement.setString(2, transkey.toLowerCase());
+                preparedStatement.execute();
+            }catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }).start();
     }
 
     public void deleteMessage(String transkey, String lang) {
         new Thread(() -> this.mySQL.update("DELETE FROM " + lang.toLowerCase() + " WHERE transkey='" + transkey.toLowerCase() + "';")).start();
     }
-
+    @NotNull
     public String getPlayerLanguage(UUID playerUUID) {
         this.createPlayer(playerUUID);
         ResultSet rs = this.mySQL.getResult("SELECT language FROM choosenlang WHERE uuid='" + playerUUID.toString() + "';");
@@ -227,22 +242,24 @@ public class LanguageAPI extends ILanguageAPI {
         }
         return false;
     }
-
+    @NotNull
     public String getMessage(String transkey, UUID playerUUID, boolean usePrefix) {
         return usePrefix ? this.getPrefix(this.getPlayerLanguage(playerUUID)) + this.getMessage(transkey, playerUUID) : this.getMessage(transkey, playerUUID);
     }
-
+    @NotNull
     public String getMessage(String transkey, Player player, boolean usePrefix) {
         return usePrefix ? this.getPrefix(this.getPlayerLanguage(player.getUniqueId())) + this.getMessage(transkey, player.getUniqueId()) : this.getMessage(transkey, player.getUniqueId());
     }
-
+    @NotNull
     public String getMessage(String transkey, UUID playerUUID) {
         return this.getMessage(transkey, this.getPlayerLanguage(playerUUID));
     }
+    @NotNull
     public String getMessage(String transkey, Player player) {
         return this.getMessage(transkey, this.getPlayerLanguage(player.getUniqueId()));
     }
 
+    @NotNull
     public String getMessage(String transkey, String lang) {
         if (!this.isLanguage(lang)) {
             throw new IllegalArgumentException(lang + " was not found");
@@ -264,20 +281,8 @@ public class LanguageAPI extends ILanguageAPI {
     public boolean isLanguage(String lang) {
         return this.getAvailableLanguages() != null && this.getAvailableLanguages().contains(lang.toLowerCase());
     }
-
+    @NotNull
     public ArrayList<String> getAvailableLanguages() {
-        if (this.languageCache.isEmpty()) {
-            return this.getLangUpdate();
-        } else {
-            if (this.lastupdatedCache + 5 * 60000 <= System.currentTimeMillis()) {
-                return this.getLangUpdate();
-            } else {
-                return this.languageCache;
-            }
-        }
-    }
-
-    private ArrayList<String> getLangUpdate() {
         ArrayList<String> langs = new ArrayList<>();
         ResultSet rs = this.mySQL.getResult("SELECT language FROM languages");
         try {
@@ -287,11 +292,11 @@ public class LanguageAPI extends ILanguageAPI {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        this.languageCache = langs;
-        this.lastupdatedCache = System.currentTimeMillis();
         return langs;
     }
 
+
+    @NotNull
     public ArrayList<String> getAllKeys(String lang) {
         ArrayList<String> keys = new ArrayList<>();
         if (this.isLanguage(lang)) {
@@ -307,7 +312,7 @@ public class LanguageAPI extends ILanguageAPI {
         }
         throw new IllegalArgumentException(lang + " was not found");
     }
-
+    @NotNull
     public ArrayList<String> getAllMessages(String lang) {
         ArrayList<String> messages = new ArrayList<>();
         if (this.isLanguage(lang)) {
@@ -321,6 +326,7 @@ public class LanguageAPI extends ILanguageAPI {
             }
             return messages;
         }
+
         throw new IllegalArgumentException(lang + " was not found");
     }
 
@@ -334,5 +340,7 @@ public class LanguageAPI extends ILanguageAPI {
 
     public String getPrefix(String langName) {
         return this.getMessage("languageapi-prefix", langName);
+
     }
+
 }

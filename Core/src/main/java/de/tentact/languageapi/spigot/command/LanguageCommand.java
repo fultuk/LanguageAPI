@@ -5,7 +5,7 @@ package de.tentact.languageapi.spigot.command;
     Uhrzeit: 18:58
 */
 
-import de.tentact.languageapi.ILanguageAPI;
+import de.tentact.languageapi.AbstractLanguageAPI;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -18,9 +18,9 @@ import java.util.*;
 public class LanguageCommand implements TabExecutor {
 
 
-    public ILanguageAPI iLanguageAPI = ILanguageAPI.getInstance();
+    public AbstractLanguageAPI abstractLanguageAPI = AbstractLanguageAPI.getInstance();
 
-    private static final List<String> tabComplete = Arrays.asList("add", "remove", "update", "create", "delete", "param", "copy", "translations");
+    private final List<String> tabComplete = Arrays.asList("add", "remove", "update", "create", "delete", "param", "copy", "translations");
 
     public static ArrayList<Player> editingMessage = new ArrayList<>();
 
@@ -35,172 +35,171 @@ public class LanguageCommand implements TabExecutor {
                     switch (args[0].toLowerCase()) {
                         case "add":
                             if (!(args.length >= 4)) {
-                                player.sendMessage(iLanguageAPI.getMessage("languageapi-add-help", player, true));
+                                player.sendMessage(abstractLanguageAPI.getMessage("languageapi-add-help", player, true));
                                 return false;
                             }
-                            String lang = args[1].toLowerCase();
-                            if (!iLanguageAPI.getAvailableLanguages().contains(args[1].toLowerCase())) {
-                                player.sendMessage(iLanguageAPI.getMessage("languageapi-lang-not-found", player, true)
-                                        .replace("%LANG%", lang));
+                            String languages = args[1].toLowerCase();
+                            if (!abstractLanguageAPI.getAvailableLanguages().contains(args[1].toLowerCase())) {
+                                player.sendMessage(abstractLanguageAPI.getMessage("languageapi-languages-not-found", player, true)
+                                        .replace("%LANG%", languages));
                                 return false;
                             }
                             String key = args[2].toLowerCase();
-                            if (!iLanguageAPI.isKey(key, lang)) {
+                            if (!abstractLanguageAPI.isKey(key, languages)) {
                                 StringBuilder msg = new StringBuilder();
 
                                 for (int i = 3; i < args.length; i++) {
                                     msg.append(args[i]).append(" ");
                                 }
-                                iLanguageAPI.addMessage(key, msg.toString(), lang);
-                                player.sendMessage(iLanguageAPI.getMessage("languageapi-add-success", player, true)
+                                abstractLanguageAPI.addMessage(key, msg.toString(), languages);
+                                player.sendMessage(abstractLanguageAPI.getMessage("languageapi-add-success", player, true)
                                         .replace("%KEY%", key)
-                                        .replace("%LANG%", lang)
+                                        .replace("%LANG%", languages)
                                         .replace("%MSG%", msg.toString()));
                                 return true;
 
                             } else {
-                                player.sendMessage(iLanguageAPI.getMessage("languageapi-key-already-exists", player, true)
+                                player.sendMessage(abstractLanguageAPI.getMessage("languageapi-key-already-exists", player, true)
                                         .replace("%KEY%", key)
-                                        .replace("%LANG%", lang));
+                                        .replace("%LANG%", languages));
                                 return false;
 
                             }
                         case "update":
                             if (!(args.length >= 3)) {
-                                player.sendMessage(iLanguageAPI.getMessage("languageapi-update-help", player, true));
+                                player.sendMessage(abstractLanguageAPI.getMessage("languageapi-update-help", player, true));
                                 return false;
                             }
-                            lang = args[1].toLowerCase();
-                            if (!iLanguageAPI.getAvailableLanguages().contains(lang)) {
-                                player.sendMessage(iLanguageAPI.getMessage("languageapi-lang-not-found", player, true)
-                                        .replace("%LANG%", lang));
+                            languages = args[1].toLowerCase();
+                            if (!abstractLanguageAPI.getAvailableLanguages().contains(languages)) {
+                                player.sendMessage(abstractLanguageAPI.getMessage("languageapi-languages-not-found", player, true)
+                                        .replace("%LANG%", languages));
                                 return false;
                             }
                             key = args[2].toLowerCase();
-                            if (iLanguageAPI.isKey(key, lang)) {
-
+                            if (abstractLanguageAPI.isKey(key, languages)) {
                                 editingMessage.add(player);
-                                givenParameter.put(player, Arrays.asList(key, lang));
-                                player.sendMessage(iLanguageAPI.getMessage("languageapi-update-instructions", player, true));
+                                givenParameter.put(player, Arrays.asList(key, languages));
+                                player.sendMessage(abstractLanguageAPI.getMessage("languageapi-update-instructions", player, true));
                                 return true;
                             } else {
-                                player.sendMessage(iLanguageAPI.getMessage("languageapi-key-not-found", player, true)
+                                player.sendMessage(abstractLanguageAPI.getMessage("languageapi-key-not-found", player, true)
                                         .replace("%KEY%", key)
-                                        .replace("%LANG%", lang));
+                                        .replace("%LANG%", languages));
                                 return false;
                             }
                         case "create":
-                            lang = args[1].toLowerCase();
-                            if (!iLanguageAPI.getAvailableLanguages().contains(lang)) {
-                                iLanguageAPI.createLanguage(lang);
-                                player.sendMessage(iLanguageAPI.getMessage("languageapi-create-success", player, true).replace("%LANG%", lang));
+                            languages = args[1].toLowerCase();
+                            if (!abstractLanguageAPI.getAvailableLanguages().contains(languages)) {
+                                abstractLanguageAPI.createLanguage(languages);
+                                player.sendMessage(abstractLanguageAPI.getMessage("languageapi-create-success", player, true).replace("%LANG%", languages));
                             } else {
-                                player.sendMessage(iLanguageAPI.getMessage("languageapi-lang-already-exists", player, true).replace("%LANG%", lang));
+                                player.sendMessage(abstractLanguageAPI.getMessage("languageapi-languages-already-exists", player, true).replace("%LANG%", languages));
                             }
                             break;
 
                         case "delete":
-                            lang = args[1].toLowerCase();
-                            if (iLanguageAPI.getAvailableLanguages().contains(lang) && !iLanguageAPI.getDefaultLanguage().equalsIgnoreCase(lang)) {
-                                iLanguageAPI.deleteLanguage(lang);
-                                player.sendMessage(iLanguageAPI.getMessage("languageapi-delete-success", player, true).replace("%LANG%", lang));
-                            } else if (lang.equalsIgnoreCase("*")) {
-                                for (String langs : iLanguageAPI.getAvailableLanguages()) {
-                                    iLanguageAPI.deleteLanguage(langs);
+                            languages = args[1].toLowerCase();
+                            if (abstractLanguageAPI.getAvailableLanguages().contains(languages) && !abstractLanguageAPI.getDefaultLanguage().equalsIgnoreCase(languages)) {
+                                abstractLanguageAPI.deleteLanguage(languages);
+                                player.sendMessage(abstractLanguageAPI.getMessage("languageapi-delete-success", player, true).replace("%LANG%", languages));
+                            } else if (languages.equalsIgnoreCase("*")) {
+                                for (String langs : abstractLanguageAPI.getAvailableLanguages()) {
+                                    abstractLanguageAPI.deleteLanguage(langs);
                                 }
                             } else {
-                                player.sendMessage(iLanguageAPI.getMessage("languageapi-lang-not-found", player, true)
-                                        .replace("%LANG%", lang));
+                                player.sendMessage(abstractLanguageAPI.getMessage("languageapi-languages-not-found", player, true)
+                                        .replace("%LANG%", languages));
+
                             }
                             break;
                         case "copy":
                             if (args.length >= 3) {
                                 String langfrom = args[1].toLowerCase();
                                 String langto = args[2].toLowerCase();
-                                if (iLanguageAPI.getAvailableLanguages().contains(langfrom) && iLanguageAPI.getAvailableLanguages().contains(langto)) {
-                                    iLanguageAPI.copyLanguage(langfrom, langto);
-                                    player.sendMessage(iLanguageAPI.getMessage("languageapi-copy-success", player, true)
+                                if (abstractLanguageAPI.getAvailableLanguages().contains(langfrom) && abstractLanguageAPI.getAvailableLanguages().contains(langto)) {
+                                    abstractLanguageAPI.copyLanguage(langfrom, langto);
+                                    player.sendMessage(abstractLanguageAPI.getMessage("languageapi-copy-success", player, true)
                                             .replace("%OLDLANG%", langfrom)
                                             .replace("%NEWLANG%", langto));
                                 } else {
-                                    lang = langfrom;
-                                    if (iLanguageAPI.getAvailableLanguages().contains(langfrom)) {
-                                        lang = langto;
+                                    languages = langfrom;
+                                    if (abstractLanguageAPI.getAvailableLanguages().contains(langfrom)) {
+                                        languages = langto;
                                     }
-                                    player.sendMessage(iLanguageAPI.getMessage("languageapi-lang-not-found", player, true)
-                                            .replace("%LANG%", lang));
+                                    player.sendMessage(abstractLanguageAPI.getMessage("languageapi-languages-not-found", player, true)
+                                            .replace("%LANG%", languages));
 
                                 }
 
 
                             } else {
-                                player.sendMessage(iLanguageAPI.getMessage("languageapi-copy-help", player, true));
+                                player.sendMessage(abstractLanguageAPI.getMessage("languageapi-copy-help", player, true));
+
                             }
                             break;
-                        case "param": //lang show key
+                        case "param": //languages show key
                             key = args[1].toLowerCase();
-                            if (!iLanguageAPI.hasParameter(key) || iLanguageAPI.getParameter(key).equalsIgnoreCase("")) {
-                                player.sendMessage(iLanguageAPI.getMessage("languageapi-key-has-no-param", player, true).replace("%KEY%", key));
+                            if (!abstractLanguageAPI.hasParameter(key) || abstractLanguageAPI.getParameter(key).equalsIgnoreCase("")) {
+                                player.sendMessage(abstractLanguageAPI.getMessage("languageapi-key-has-no-param", player, true).replace("%KEY%", key));
                                 break;
                             }
-                            player.sendMessage(iLanguageAPI.getMessage("languageapi-show-success", player, true)
-                                    .replace("%PARAM%", iLanguageAPI.getParameter(key)).replace("%KEY%", key));
+                            player.sendMessage(abstractLanguageAPI.getMessage("languageapi-show-success", player, true)
+                                    .replace("%PARAM%", abstractLanguageAPI.getParameter(key)).replace("%KEY%", key));
                         case "translations":
-                            lang = args[1].toLowerCase();
-                            if (iLanguageAPI.getAvailableLanguages().contains(lang)) {
-                                ArrayList<String> allKeys = iLanguageAPI.getAllKeys(lang);
+                            languages = args[1].toLowerCase();
+                            if (abstractLanguageAPI.getAvailableLanguages().contains(languages)) {
+                                ArrayList<String> allKeys = abstractLanguageAPI.getAllKeys(languages);
                                 for (int i = 0; i < allKeys.size(); i++) {
-                                    player.sendMessage(iLanguageAPI.getMessage("languageapi-translation-success", player, true)
+                                    player.sendMessage(abstractLanguageAPI.getMessage("languageapi-translation-success", player, true)
                                             .replace("%KEY%", allKeys.get(i))
-                                            .replace("%MSG%", iLanguageAPI.getAllMessages(lang).get(i)));
+                                            .replace("%MSG%", abstractLanguageAPI.getAllMessages(languages).get(i)));
                                 }
                             } else {
-                                player.sendMessage(iLanguageAPI.getMessage("languageapi-lang-not-found", player, true)
-                                        .replace("%LANG%", lang));
+                                player.sendMessage(abstractLanguageAPI.getMessage("languageapi-languages-not-found", player, true)
+                                        .replace("%LANG%", languages));
                             }
                             break;
-                        case "remove": //lang remove lang key
+                        case "remove": //languages remove languages key
                             if (args.length >= 3) {
-                                lang = args[1].toLowerCase();
+                                languages = args[1].toLowerCase();
                                 key = args[2].toLowerCase();
-                                if (iLanguageAPI.getDefaultLanguage().contains(lang)) {
-                                    if (iLanguageAPI.isKey(key, lang)) {
-                                        iLanguageAPI.deleteMessage(key, lang); //EINE SPRACHE EIN KEY
-                                        player.sendMessage(iLanguageAPI.getMessage("languageapi-remove-key-in-lang", player, true)
+                                if (abstractLanguageAPI.getDefaultLanguage().contains(languages)) {
+                                    if (abstractLanguageAPI.isKey(key, languages)) {
+                                        abstractLanguageAPI.deleteMessage(key, languages); //EINE SPRACHE EIN KEY
+                                        player.sendMessage(abstractLanguageAPI.getMessage("languageapi-remove-key-in-languages", player, true)
                                                 .replace("%KEY%", key)
-                                                .replace("%LANG%", lang));
+                                                .replace("%LANG%", languages));
                                     } else if (key.endsWith("*")) {
-                                        for (String keys : iLanguageAPI.getAllKeys(lang)) { //EINE SPRACHE JEDER KEY
+                                        for (String keys : abstractLanguageAPI.getAllKeys(languages)) {
                                             if (keys.startsWith(key.replace("*", ""))) {
-                                                iLanguageAPI.deleteMessage(keys, lang);
+                                                abstractLanguageAPI.deleteMessage(keys, languages);
                                             }
                                         }
-                                        player.sendMessage(iLanguageAPI.getMessage("languageapi-remove-every-key-in-lang", player, true)
-                                                .replace("%LANG%", lang)
+                                        player.sendMessage(abstractLanguageAPI.getMessage("languageapi-remove-every-key-in-languages", player, true)
+                                                .replace("%LANG%", languages)
                                                 .replace("%STARTSWITH%", key.replace("*", "")));
                                     } else {
-                                        player.sendMessage(iLanguageAPI.getMessage("languageapi-key-not-found", player, true)
+                                        player.sendMessage(abstractLanguageAPI.getMessage("languageapi-key-not-found", player, true)
                                                 .replace("%KEY%", key)
-                                                .replace("%LANG%", lang));
+                                                .replace("%LANG%", languages));
                                     }
-                                } else if (lang.equalsIgnoreCase("*")) {
+                                } else if (languages.equalsIgnoreCase("*")) {
                                     if (key.endsWith("*")) { //JEDE SPRACHE JEDER KEY
-                                        for (String langs : iLanguageAPI.getAvailableLanguages()) {
-                                            for (String keys : iLanguageAPI.getAllKeys(langs)) {
-                                                if (keys.startsWith(key.replace("*", ""))) {
-                                                    iLanguageAPI.deleteMessage(keys, langs);
-                                                }
+                                        abstractLanguageAPI.getAvailableLanguages().forEach(langs -> abstractLanguageAPI.getAllKeys(langs).forEach(keys -> {
+                                            if (keys.startsWith(key.replace("*", ""))) {
+                                                abstractLanguageAPI.deleteMessage(keys, langs);
                                             }
-                                        }
-                                        player.sendMessage(iLanguageAPI.getMessage("languageapi-remove-every-key-in-every-lang", player, true)
+                                        }));
+                                        player.sendMessage(abstractLanguageAPI.getMessage("languageapi-remove-every-key-in-every-languages", player, true)
                                                 .replace("%STARTSWITH%", key.replace("*", "")));
                                     } else { //JEDE SPRACHE EIN KEY
-                                        for (String langs : iLanguageAPI.getAvailableLanguages()) {
-                                            if (iLanguageAPI.isKey(key, langs)) {
-                                                iLanguageAPI.deleteMessage(key, langs);
+                                        abstractLanguageAPI.getAvailableLanguages().forEach(langs -> {
+                                            if (abstractLanguageAPI.isKey(key, langs)) {
+                                                abstractLanguageAPI.deleteMessage(key, langs);
                                             }
-                                        }
-                                        player.sendMessage(iLanguageAPI.getMessage("languageapi-remove-key-in-every-lang", player, true)
+                                        });
+                                        player.sendMessage(abstractLanguageAPI.getMessage("languageapi-remove-key-in-every-languages", player, true)
                                                 .replace("%KEY%", key));
                                     }
                                 }
@@ -222,13 +221,13 @@ public class LanguageCommand implements TabExecutor {
             return this.getCompletes(args[0], tabComplete);
         } else if (args.length == 2) {
             if (!args[0].equalsIgnoreCase("param")) {
-                return this.getCompletes(args[1], iLanguageAPI.getAvailableLanguages());
+                return this.getCompletes(args[1], abstractLanguageAPI.getAvailableLanguages());
             }
-            return this.getCompletes(args[1], iLanguageAPI.getAllKeys(iLanguageAPI.getDefaultLanguage()));
+            return this.getCompletes(args[1], abstractLanguageAPI.getAllKeys(abstractLanguageAPI.getDefaultLanguage()));
         } else if (args.length == 3) {
             List<String> keyComplete = Arrays.asList("add", "remove", "update");
             if (keyComplete.contains(args[0].toLowerCase())) {
-                return this.getCompletes(args[2], iLanguageAPI.getAllKeys(args[1].toLowerCase()));
+                return this.getCompletes(args[2], abstractLanguageAPI.getAllKeys(args[1].toLowerCase()));
             }
         }
         return Collections.emptyList();

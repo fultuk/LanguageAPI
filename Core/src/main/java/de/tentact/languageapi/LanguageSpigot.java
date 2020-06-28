@@ -26,7 +26,7 @@ public class LanguageSpigot extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        Source.bungeeCordMode = false;
+        Source.isBungeeCordMode = false;
         Source.createSpigotMySQLConfig();
         Source.initSpigot();
 
@@ -34,7 +34,7 @@ public class LanguageSpigot extends JavaPlugin {
         this.mySQL.connect();
         this.mySQL.createDefaultTable();
 
-        ILanguageAPI.getInstance().createLanguage(Source.getDefaultLanguage());
+        AbstractLanguageAPI.getInstance().createLanguage(Source.getDefaultLanguage());
         I18N.createDefaultPluginMessages();
         this.updater = new Updater(this);
 

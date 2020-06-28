@@ -5,7 +5,6 @@ package de.tentact.languageapi;
     Uhrzeit: 17:20
 */
 
-import de.tentact.languageapi.api.LanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.I18N;
 import de.tentact.languageapi.util.Source;
@@ -14,19 +13,17 @@ import net.md_5.bungee.api.plugin.Plugin;
 
 public class LanguageBungeecord extends Plugin {
 
-    private static LanguageBungeecord languageBungeecord;
     private static MySQL mySQL;
 
     @Override
     public void onEnable() {
-        languageBungeecord = this;
-        Source.bungeeCordMode = true;
-        Source.createBungeeCordMySQLConfig();
+        Source.isBungeeCordMode = true;
+        Source.createBungeeCordMySQLConfig(this);
         Source.initBungeecord();
         mySQL = Source.getMySQL();
         mySQL.connect();
         mySQL.createDefaultTable();
-        LanguageAPI.getInstance().createLanguage(Source.getDefaultLanguage());
+        AbstractLanguageAPI.getInstance().createLanguage(Source.getDefaultLanguage());
         I18N.createDefaultPluginMessages();
 
         new Updater(this);
@@ -35,8 +32,5 @@ public class LanguageBungeecord extends Plugin {
     @Override
     public void onDisable() {
         mySQL.close();
-    }
-    public static LanguageBungeecord getLanguageBungeecord() {
-        return languageBungeecord;
     }
 }

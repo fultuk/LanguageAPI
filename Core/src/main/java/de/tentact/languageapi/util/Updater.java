@@ -5,7 +5,7 @@ package de.tentact.languageapi.util;
     Uhrzeit: 16:53
 */
 
-import de.tentact.languageapi.api.LanguageAPI;
+import de.tentact.languageapi.AbstractLanguageAPI;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -21,33 +21,33 @@ public class Updater {
     private final int localVersion;
     private final String fullLocalVersion;
     private final String pluginName;
-    private final boolean enabled;
+    private final boolean isEnabled;
 
     public Updater(Plugin plugin) {
-        pluginName = plugin.getName();
-        localVersion = Integer.parseInt(plugin.getDescription().getVersion().replace(".", ""));
-        fullLocalVersion = plugin.getDescription().getVersion();
-        onlineVersion = Integer.parseInt(getOnlineVersion(pluginName).replace(".", ""));
-        if(onlineVersion > localVersion) {
-            Bukkit.broadcastMessage(LanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
-                    +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+getOnlineVersion(pluginName));
+        this.pluginName = plugin.getName();
+        this.localVersion = Integer.parseInt(plugin.getDescription().getVersion().replace(".", ""));
+        this.fullLocalVersion = plugin.getDescription().getVersion();
+        this.onlineVersion = Integer.parseInt(this.getOnlineVersion(this.pluginName).replace(".", ""));
+        if(this.onlineVersion > this.localVersion) {
+            Bukkit.broadcastMessage(AbstractLanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
+                    +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+this.getOnlineVersion(this.pluginName));
         }
-        enabled = true;
+        this.isEnabled = true;
 
 
 
     }
 
     public Updater(net.md_5.bungee.api.plugin.Plugin plugin) {
-        pluginName = plugin.getDescription().getName();
-        localVersion = Integer.parseInt(plugin.getDescription().getVersion().replace(".", ""));
-        fullLocalVersion = plugin.getDescription().getVersion();
-        onlineVersion = Integer.parseInt(getOnlineVersion(pluginName).replace(".", ""));
-        if(onlineVersion > localVersion) {
-            ProxyServer.getInstance().broadcast(new TextComponent(LanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
-                    +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+getOnlineVersion(pluginName)));
+        this.pluginName = plugin.getDescription().getName();
+        this.localVersion = Integer.parseInt(plugin.getDescription().getVersion().replace(".", ""));
+        this.fullLocalVersion = plugin.getDescription().getVersion();
+        this.onlineVersion = Integer.parseInt(this.getOnlineVersion(this.pluginName).replace(".", ""));
+        if(this.onlineVersion > this.localVersion) {
+            ProxyServer.getInstance().broadcast(new TextComponent(AbstractLanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
+                    +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+this.getOnlineVersion(this.pluginName)));
         }
-        enabled = true;
+        this.isEnabled = true;
 
     }
 
@@ -68,16 +68,16 @@ public class Updater {
         return "0.0";
     }
     public String getOnlineVersion() {
-        return getOnlineVersion(pluginName);
+        return this.getOnlineVersion(pluginName);
     }
     public boolean hasUpdate() {
-        return onlineVersion > localVersion;
+        return this.onlineVersion > this.localVersion;
     }
     public String getLocalVersion() {
-        return fullLocalVersion;
+        return this.fullLocalVersion;
     }
 
     public boolean isEnabled() {
-        return enabled;
+        return this.isEnabled;
     }
 }

@@ -11,46 +11,46 @@ import java.util.UUID;
     Datum: 09.06.2020
     Uhrzeit: 23:29
 */
-public abstract class ILanguageAPI {
+public abstract class AbstractLanguageAPI {
 
-    private static ILanguageAPI iLanguageAPI;
+    private static AbstractLanguageAPI abstractLanguageAPI;
 
     /**
      * @return returns a reference to this interface
      */
-    public static ILanguageAPI getInstance() {
-        return iLanguageAPI;
+    public static AbstractLanguageAPI getInstance() {
+        return abstractLanguageAPI;
     }
 
     /**
      *
-     * @param iLanguageAPI instance of the interface
-     *
+     * @param abstractLanguageAPI instance of the interface
+     * sets the instance of the interface - set by the implementation
      */
-    public static void setInstance(ILanguageAPI iLanguageAPI) {
-        ILanguageAPI.iLanguageAPI = iLanguageAPI;
+    public static void setInstance(AbstractLanguageAPI abstractLanguageAPI) {
+        AbstractLanguageAPI.abstractLanguageAPI = abstractLanguageAPI;
     }
 
     /**
      *
-     * @param langName language that should be created
+     * @param language language that should be created
      * creates a table with langName and adds the language in the 'languages' table
      */
-    public abstract void createLanguage(final String langName);
+    public abstract void createLanguage(final String language);
 
     /**
      *
-     * @param langName Language that should be deleted
+     * @param language Language that should be deleted
      * Deletes the language table and removes it from 'languages'
      */
-    public abstract void deleteLanguage(String langName);
+    public abstract void deleteLanguage(String language);
 
     /**
      *
      * @param playerUUID player uuid for whom the language should be changed
-     * @param newLang the new language of the player
+     * @param newLanguage the new language of the player
      */
-    public abstract void changePlayerLanguage(UUID playerUUID, String newLang);
+    public abstract void setPlayerLanguage(UUID playerUUID, String newLanguage);
 
     /**
      *
@@ -70,26 +70,26 @@ public abstract class ILanguageAPI {
      *
      * @param transkey the translationkey to find the translation
      * @param message the translation to that translationkey
-     * @param lang the language of the translation
+     * @param language the language of the translation
      * @param param the parameters that are used in the translation (ex. %KEY%)
      */
-    public abstract void addMessage(final String transkey, final String message, final String lang, String param);
+    public abstract void addMessage(final String transkey, final String message, final String language, String param);
 
     /**
      *
      * @param transkey the translationkey to find the translation
      * @param message the translation to that translationkey
-     * @param lang the language of the translation
+     * @param language the language of the translation
      */
-    public abstract void addMessage(final String transkey, final String message, final String lang);
+    public abstract void addMessage(final String transkey, final String message, final String language);
 
     /**
      *
      * @param transkey the translationkey to the translation (the translation is the key)
-     * @param lang the language to the translationkey
+     * @param language the language to the translationkey
      * adds a translation without an proper translation, it just uses the translationkey to translate
      */
-    public abstract void addMessage(final String transkey, final String lang);
+    public abstract void addMessage(final String transkey, final String language);
 
     /**
      *
@@ -105,6 +105,14 @@ public abstract class ILanguageAPI {
      * adds a translation to the default language
      */
     public abstract void addMessageToDefault(final String transkey, final String translation);
+    /**
+     *
+     * @param transkey translationkey to the translation
+     * @param translation the translation to the translationkey
+     * @param param the parameters to the translation
+     * adds a translation to the default language with the parameters
+     */
+    public abstract void addMessageToDefault(final String transkey, final String translation, final String param);
 
     /**
      *
@@ -147,6 +155,7 @@ public abstract class ILanguageAPI {
      *
      * @param translationKey the translationkey to get the parameters for
      * @return returns all the parameters to the translationkey
+     * @throws IllegalArgumentException if the translationkey was not found
      */
     public abstract String getParameter(String translationKey);
 
@@ -159,17 +168,17 @@ public abstract class ILanguageAPI {
     /**
      *
      * @param transkey the translationkey to update the translation
-     * @param lang the language to the translationkey
+     * @param language the language to the translationkey
      * @param message the new translation to the translationkey
      */
-    public abstract void updateMessage(String transkey, String lang, String message);
+    public abstract void updateMessage(String transkey, String language, String message);
 
     /**
      *
      * @param translationkey the translationkey to delete the translation from
-     * @param lang the language to the translationkey
+     * @param language the language to the translationkey
      */
-    public abstract void deleteMessage(String translationkey, String lang);
+    public abstract void deleteMessage(String translationkey, String language);
 
     /**
      *
@@ -181,11 +190,11 @@ public abstract class ILanguageAPI {
     /**
      *
      * @param translationkey the translationkey to check if it is one
-     * @param lang the language to the translationkey
+     * @param language the language to the translationkey
      * @return returns if the translationkey is in the database for that language
      */
 
-    public abstract boolean isKey(String translationkey, String lang);
+    public abstract boolean isKey(String translationkey, String language);
 
     /**
      *
@@ -223,39 +232,43 @@ public abstract class ILanguageAPI {
     /**
      *
      * @param translationkey translationkey to get the translation from
-     * @param lang the language of the translation
+     * @param language the language of the translation
      * @return returns the translation to the key and language
+     * @throws IllegalArgumentException if the language was not found
+     * @throws IllegalArgumentException if the translationKey was not found for the language
      */
 
-    public abstract String getMessage(String translationkey, String lang);
+    public abstract String getMessage(String translationkey, String language);
 
     /**
      *
-     * @param lang the language to check if it is a language
+     * @param language the language to check if it is a language
      * @return returns if it is a language
      */
-    public abstract boolean isLanguage(String lang);
+    public abstract boolean isLanguage(String language);
 
     /**
      *
-     * @return returns all the created languages
+     * @return returns all created languages
      */
     public abstract ArrayList<String> getAvailableLanguages();
 
     /**
      *
-     * @param lang the loanguage to get the keys from
+     * @param language the loanguage to get the keys from
      * @return returns all the translationkeys for the language
+     * @throws IllegalArgumentException if the language was not found
      */
 
-    public abstract ArrayList<String> getAllKeys(String lang);
+    public abstract ArrayList<String> getAllKeys(String language);
 
     /**
      *
-     * @param lang the language to get the translations from
+     * @param language the language to get the translations from
      * @return returns all the translations for that language
+     * @throws IllegalArgumentException if the language was not found
      */
-    public abstract ArrayList<String> getAllMessages(String lang);
+    public abstract ArrayList<String> getAllMessages(String language);
 
     /**
      *
@@ -265,14 +278,14 @@ public abstract class ILanguageAPI {
 
     /**
      *
-     * @return returns the prefix of the api (languageapi-prefix) in the default language {@link ILanguageAPI#getPrefix(String)}
+     * @return returns the prefix of the api (languageapi-prefix) in the default language {@link AbstractLanguageAPI#getPrefix(String)}
      */
     public abstract String getPrefix();
 
     /**
      *
-     * @param langName the language of the prefix
+     * @param language the language of the prefix
      * @return returns the prefix to the language
      */
-    public abstract String getPrefix(String langName);
+    public abstract String getPrefix(String language);
 }

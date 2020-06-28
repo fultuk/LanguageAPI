@@ -5,10 +5,7 @@ package de.tentact.languageapi.mysql;
     Uhrzeit: 16:53
 */
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class MySQL {
 
@@ -35,6 +32,7 @@ public class MySQL {
                 ex.printStackTrace();
 //                Source.defaultLog("§cDie MySQL konnte nicht verbunden werden. Prüfe, ob deine Angaben stimmen und der Server online ist.", Level.WARNING);
             }
+
         }
 
     }
@@ -86,6 +84,14 @@ public class MySQL {
                 e.printStackTrace();
             }
         }
+    }
+    public PreparedStatement createStatement(String query) {
+        try {
+            return con.prepareStatement(query);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
     }
 
     public ResultSet getResult(String sql) {

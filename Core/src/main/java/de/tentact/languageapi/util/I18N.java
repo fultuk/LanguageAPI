@@ -5,11 +5,11 @@ package de.tentact.languageapi.util;
     Uhrzeit: 14:02
 */
 
-import de.tentact.languageapi.ILanguageAPI;
+import de.tentact.languageapi.AbstractLanguageAPI;
 
 public class I18N {
 
-    private static final ILanguageAPI iLanguageAPI = ILanguageAPI.getInstance();
+    private static final AbstractLanguageAPI iLanguageAPI = AbstractLanguageAPI.getInstance();
 
     public static void createDefaultPluginMessages() {
 
