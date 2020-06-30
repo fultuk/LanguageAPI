@@ -29,7 +29,7 @@ public class LanguageCommand implements TabExecutor {
 
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] args) {
         if (commandSender instanceof Player) {
-            Player player = (Player) commandSender; //
+            Player player = (Player) commandSender;
             if (player.hasPermission("system.languageapi")) { //lang add lang key MSG | lang remove lang key | lang update lang key msg | lang createlang lang | lang deletelang lang
                 if (args.length >= 2) {
                     switch (args[0].toLowerCase()) {
@@ -149,11 +149,11 @@ public class LanguageCommand implements TabExecutor {
                         case "translations":
                             languages = args[1].toLowerCase();
                             if (abstractLanguageAPI.getAvailableLanguages().contains(languages)) {
-                                ArrayList<String> allKeys = abstractLanguageAPI.getAllKeys(languages);
+                                ArrayList<String> allKeys = abstractLanguageAPI.getAllTranslationKeys(languages);
                                 for (int i = 0; i < allKeys.size(); i++) {
                                     player.sendMessage(abstractLanguageAPI.getMessage("languageapi-translation-success", player, true)
                                             .replace("%KEY%", allKeys.get(i))
-                                            .replace("%MSG%", abstractLanguageAPI.getAllMessages(languages).get(i)));
+                                            .replace("%MSG%", abstractLanguageAPI.getAllTranslations(languages).get(i)));
                                 }
                             } else {
                                 player.sendMessage(abstractLanguageAPI.getMessage("languageapi-languages-not-found", player, true)
@@ -171,7 +171,7 @@ public class LanguageCommand implements TabExecutor {
                                                 .replace("%KEY%", key)
                                                 .replace("%LANG%", languages));
                                     } else if (key.endsWith("*")) {
-                                        for (String keys : abstractLanguageAPI.getAllKeys(languages)) {
+                                        for (String keys : abstractLanguageAPI.getAllTranslationKeys(languages)) {
                                             if (keys.startsWith(key.replace("*", ""))) {
                                                 abstractLanguageAPI.deleteMessage(keys, languages);
                                             }
@@ -186,7 +186,7 @@ public class LanguageCommand implements TabExecutor {
                                     }
                                 } else if (languages.equalsIgnoreCase("*")) {
                                     if (key.endsWith("*")) { //JEDE SPRACHE JEDER KEY
-                                        abstractLanguageAPI.getAvailableLanguages().forEach(langs -> abstractLanguageAPI.getAllKeys(langs).forEach(keys -> {
+                                        abstractLanguageAPI.getAvailableLanguages().forEach(langs -> abstractLanguageAPI.getAllTranslationKeys(langs).forEach(keys -> {
                                             if (keys.startsWith(key.replace("*", ""))) {
                                                 abstractLanguageAPI.deleteMessage(keys, langs);
                                             }
@@ -223,11 +223,11 @@ public class LanguageCommand implements TabExecutor {
             if (!args[0].equalsIgnoreCase("param")) {
                 return this.getCompletes(args[1], abstractLanguageAPI.getAvailableLanguages());
             }
-            return this.getCompletes(args[1], abstractLanguageAPI.getAllKeys(abstractLanguageAPI.getDefaultLanguage()));
+            return this.getCompletes(args[1], abstractLanguageAPI.getAllTranslationKeys(abstractLanguageAPI.getDefaultLanguage()));
         } else if (args.length == 3) {
             List<String> keyComplete = Arrays.asList("add", "remove", "update");
             if (keyComplete.contains(args[0].toLowerCase())) {
-                return this.getCompletes(args[2], abstractLanguageAPI.getAllKeys(args[1].toLowerCase()));
+                return this.getCompletes(args[2], abstractLanguageAPI.getAllTranslationKeys(args[1].toLowerCase()));
             }
         }
         return Collections.emptyList();

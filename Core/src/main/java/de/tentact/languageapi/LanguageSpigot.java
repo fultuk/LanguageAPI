@@ -36,13 +36,13 @@ public class LanguageSpigot extends JavaPlugin {
 
         AbstractLanguageAPI.getInstance().createLanguage(Source.getDefaultLanguage());
         I18N.createDefaultPluginMessages();
-        this.updater = new Updater(this);
+       // this.updater = new Updater(this);
 
         Objects.requireNonNull(this.getCommand("languageapi")).setExecutor(new LanguageCommand());
         Objects.requireNonNull(this.getCommand("languageapi")).setTabCompleter(new LanguageCommand());
 
         PluginManager pm = Bukkit.getPluginManager();
-        pm.registerEvents(new JoinListener(), this);
+        //pm.registerEvents(new JoinListener(), this);
         pm.registerEvents(new ChatListener(), this);
 
     }

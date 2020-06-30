@@ -26,7 +26,7 @@ public class LanguageBungeecord extends Plugin {
         AbstractLanguageAPI.getInstance().createLanguage(Source.getDefaultLanguage());
         I18N.createDefaultPluginMessages();
 
-        new Updater(this);
+       // new Updater(this);
     }
 
     @Override

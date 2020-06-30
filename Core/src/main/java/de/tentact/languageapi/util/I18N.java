@@ -44,12 +44,12 @@ public class I18N {
         iLanguageAPI.addParameter("languageapi-update-success", "%MSG%");
         iLanguageAPI.addMessageToDefault("languageapi-update-instructions", "Nun kannst du die Übersetzung in den Chat eingeben, wenn benötigt auch mehrmals.\nMit ''finish'' wird die Übersetzung gespeichert.");
         iLanguageAPI.addMessageToDefault("languageapi-update-same", "Es wurde nichts verändert und die Übersetzung wurde abgebrochen.");
-        iLanguageAPI.addMessageToDefault("languageapi-update-help", "Verwende /lang update <Sprache> <Translationkey> <Übersetzung>");
+        iLanguageAPI.addMessageToDefault("languageapi-update-help", "Verwende /lang update <Sprache> <Translationkey> <Übersetzung> um eine Übersetzung zu ändern");
 
 
         iLanguageAPI.addMessageToDefault("languageapi-create-success", "Die Sprache %LANG% wurde erfolgreich erstellt.");
         iLanguageAPI.addParameter("languageapi-create-success", "%LANG%");
-        iLanguageAPI.addMessageToDefault("languageapi-create-help", "Verwende /lang create <Sprache>");
+        iLanguageAPI.addMessageToDefault("languageapi-create-help", "Verwende /lang create <Sprache> um eine Sprache zu erstellen");
 
         iLanguageAPI.addMessageToDefault("languageapi-lang-already-exists", "Die Sprache %LANG% existiert bereits.");
         iLanguageAPI.addParameter("languageapi-lang-already-exists", "%LANG%");

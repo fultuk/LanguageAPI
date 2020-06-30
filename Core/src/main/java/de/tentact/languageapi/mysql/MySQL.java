@@ -59,6 +59,7 @@ public class MySQL {
                 con.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS choosenlang(uuid VARCHAR(64), language VARCHAR(64));");
                 con.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(64));");
                 con.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(transkey VARCHAR(64), param VARCHAR(2000));");
+                con.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS MultipleTranslation(transkey VARCHAR(64), keys VARCHAR(2000))");
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

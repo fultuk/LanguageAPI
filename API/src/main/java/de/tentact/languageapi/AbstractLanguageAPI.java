@@ -1,8 +1,10 @@
 package de.tentact.languageapi;
 
-import org.bukkit.entity.Player;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /*  Created in the IntelliJ IDEA.
@@ -34,7 +36,7 @@ public abstract class AbstractLanguageAPI {
     /**
      *
      * @param language language that should be created
-     * creates a table with langName and adds the language in the 'languages' table
+     * creates a table with a language and adds the language in the 'languages' table
      */
     public abstract void createLanguage(final String language);
 
@@ -49,6 +51,15 @@ public abstract class AbstractLanguageAPI {
      *
      * @param playerUUID player uuid for whom the language should be changed
      * @param newLanguage the new language of the player
+     * @param orElseDefault should set default if the language was not found {@link AbstractLanguageAPI#getDefaultLanguage()}
+     * Sets the player specific language
+     */
+    public abstract void setPlayerLanguage(UUID playerUUID, String newLanguage, boolean orElseDefault);
+    /**
+     *
+     * @param playerUUID player uuid for whom the language should be changed
+     * @param newLanguage the new language of the player
+     * Sets the player specific language, if the language exists
      */
     public abstract void setPlayerLanguage(UUID playerUUID, String newLanguage);
 
@@ -64,7 +75,7 @@ public abstract class AbstractLanguageAPI {
      * @param playerUUID player uuid the player was created with
      * @return returns if a player is in the database
      */
-    public abstract boolean playerExists(UUID playerUUID);
+    public abstract boolean isRegisteredPlayer(UUID playerUUID);
 
     /**
      *
@@ -113,6 +124,10 @@ public abstract class AbstractLanguageAPI {
      * adds a translation to the default language with the parameters
      */
     public abstract void addMessageToDefault(final String transkey, final String translation, final String param);
+
+    public abstract void addTranslationKeyToMultipleTranslation(final String multipleTranslation, final String translationKey);
+
+
 
     /**
      *
@@ -173,6 +188,9 @@ public abstract class AbstractLanguageAPI {
      */
     public abstract void updateMessage(String transkey, String language, String message);
 
+    public abstract void setMultipleTranslation(final String multipleTranslation, List<String> translationKeys);
+    public abstract void removeMultipleTranslation(final String multipleTranslation);
+
     /**
      *
      * @param translationkey the translationkey to delete the translation from
@@ -195,6 +213,30 @@ public abstract class AbstractLanguageAPI {
      */
 
     public abstract boolean isKey(String translationkey, String language);
+    /**
+     *
+     * @param transkey the translationkey which holds the other keys
+     * @return returns a {@link ArrayList<String>} with the translated messages in the default language
+     */
+
+    public abstract ArrayList<String> getMultipleMessages(String transkey);
+    /**
+     *
+     * @param transkey the translationkey which holds the other keys
+     * @param playerUUID the player UUID is needed to select the language
+     * @return returns a {@link ArrayList<String>} with the translated messages
+     */
+
+    public abstract ArrayList<String> getMultipleMessages(String transkey, UUID playerUUID);
+
+    /**
+     *
+     * @param transkey the translationkey which holds the other keys
+     * @param language the language to get the translation in
+     * @return returns a {@link ArrayList<String>} with the translated messages
+     */
+
+    public abstract ArrayList<String> getMultipleMessages(String transkey, String language);
 
     /**
      *
@@ -205,15 +247,7 @@ public abstract class AbstractLanguageAPI {
      */
 
     public abstract String getMessage(String translationkey, UUID playerUUID, boolean usePrefix);
-    /**
-     *
-     * @param translationkey the translationkey to get the translation from
-     * @param player the player to get the language from
-     * @param usePrefix specify if the prefix should be returnt with the translation
-     * @return returns the translation for a given player
-     */
 
-    public abstract String getMessage(String translationkey, Player player, boolean usePrefix);
     /**
      *
      * @param translationkey the translationkey to get the translation from
@@ -221,13 +255,7 @@ public abstract class AbstractLanguageAPI {
      * @return returns the translation for a given player
      */
     public abstract String getMessage(String translationkey, UUID playerUUID);
-    /**
-     *
-     * @param translationkey the translationkey to get the translation from
-     * @param player the player to get the language from
-     * @return returns the translation for a given player
-     */
-    public abstract String getMessage(String translationkey, Player player);
+
 
     /**
      *
@@ -260,7 +288,7 @@ public abstract class AbstractLanguageAPI {
      * @throws IllegalArgumentException if the language was not found
      */
 
-    public abstract ArrayList<String> getAllKeys(String language);
+    public abstract ArrayList<String> getAllTranslationKeys(String language);
 
     /**
      *
@@ -268,7 +296,7 @@ public abstract class AbstractLanguageAPI {
      * @return returns all the translations for that language
      * @throws IllegalArgumentException if the language was not found
      */
-    public abstract ArrayList<String> getAllMessages(String language);
+    public abstract ArrayList<String> getAllTranslations(String language);
 
     /**
      *
