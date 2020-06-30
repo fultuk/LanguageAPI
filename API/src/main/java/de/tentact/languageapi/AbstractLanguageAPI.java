@@ -188,7 +188,21 @@ public abstract class AbstractLanguageAPI {
      */
     public abstract void updateMessage(String transkey, String language, String message);
 
-    public abstract void setMultipleTranslation(final String multipleTranslation, List<String> translationKeys);
+    /**
+     *
+     * @param multipleTranslation the translationkey to the set of translations
+     * @param translationKeys a list of all translationskey to add in the set
+     * @param overwrite decides whether it will overwrite a current set if it already exists
+     *
+     */
+    public abstract void setMultipleTranslation(final String multipleTranslation, List<String> translationKeys, boolean overwrite);
+
+    /**
+     *
+     * @param multipleTranslation the translationkey to the set of translations
+     * Deletes a set of translations
+     */
+
     public abstract void removeMultipleTranslation(final String multipleTranslation);
 
     /**

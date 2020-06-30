@@ -180,8 +180,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
             translationKeysAsArrayList.add(translationKey);
         }
         translationKeysAsArrayList.add(transkey);
-        this.removeMultipleTranslation(multipleTranslation);
-        this.setMultipleTranslation(multipleTranslation, translationKeysAsArrayList);
+        this.setMultipleTranslation(multipleTranslation, translationKeysAsArrayList, true);
     }
 
     public void copyLanguage(String langfrom, String langto) {
@@ -251,7 +250,10 @@ public class LanguageAPI extends AbstractLanguageAPI {
         }).start();
     }
 
-    public void setMultipleTranslation(String multipleTranslation, List<String> translationKeys) {
+    public void setMultipleTranslation(String multipleTranslation, List<String> translationKeys, boolean overwrite) {
+        if(isMultipleTranslation(multipleTranslation) && overwrite) {
+            this.removeMultipleTranslation(multipleTranslation);
+        }
         StringBuilder stringBuilder = new StringBuilder();
 
         for (String translationKey : translationKeys) {
@@ -261,11 +263,15 @@ public class LanguageAPI extends AbstractLanguageAPI {
     }
 
     public void removeMultipleTranslation(final String multipleTranslation) {
+        if(!isMultipleTranslation(multipleTranslation)) {
+            //THROW
+            return;
+        }
         new Thread(() -> this.mySQL.update("DELETE FROM MultipleTranslation WHERE transkey='" + multipleTranslation + "'")).start();
     }
 
     public void removeSingleTranslationFromMultipleTranslation(final String multipleTranslation, final String transkey) {
-        ResultSet resultSet = this.mySQL.getResult("SELECT keys FROM MultipleTranslation WHERE transkey='" + transkey.toLowerCase() + "'");
+        ResultSet resultSet = this.mySQL.getResult("SELECT keys FROM MultipleTranslation WHERE transkey='" + multipleTranslation.toLowerCase() + "'");
         String[] translationKeys = new String[]{};
         try {
             if (resultSet.next()) {
@@ -274,13 +280,20 @@ public class LanguageAPI extends AbstractLanguageAPI {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        ArrayList<String> translationKeysAsArrayList = new ArrayList<>();
-        for (String translationKey : translationKeys) {
-            translationKeysAsArrayList.add(translationKey);
-        }
+        ArrayList<String> translationKeysAsArrayList = new ArrayList<>(Arrays.asList(translationKeys));
         translationKeysAsArrayList.remove(transkey);
-        this.removeMultipleTranslation(multipleTranslation);
-        this.setMultipleTranslation(multipleTranslation, translationKeysAsArrayList);
+        this.setMultipleTranslation(multipleTranslation, translationKeysAsArrayList, true);
+    }
+    public boolean isMultipleTranslation(final String multipleTranslation) {
+        ResultSet rs = this.mySQL.getResult("SELECT * FROM MultipleTranslation WHERE transkey='" + multipleTranslation.toLowerCase() + "';");
+        try {
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
     }
 
     public void deleteMessage(String transkey, String language) {

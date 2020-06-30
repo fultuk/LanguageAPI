@@ -7,6 +7,8 @@ package de.tentact.languageapi.util;
 
 import de.tentact.languageapi.AbstractLanguageAPI;
 
+import java.util.Arrays;
+
 public class I18N {
 
     private static final AbstractLanguageAPI iLanguageAPI = AbstractLanguageAPI.getInstance();
@@ -17,7 +19,7 @@ public class I18N {
 
         iLanguageAPI.addMessageToDefault("languageapi-add-success", "Der Translationkey %KEY% wurde in %LANG% erfolgreich als ''%MSG%'' übersetzt.");
         iLanguageAPI.addParameter("languageapi-add-success", "%MSG%");
-        iLanguageAPI.addMessageToDefault("languageapi-add-help", "Benutzte /lang add <Sprache> <Translationkey> <Übersetzung> um einen Translationkey zu übersetzten.");
+        iLanguageAPI.addMessageToDefault("languageapi-add-help", "Verwende /lang add <Sprache> <Translationkey> <Übersetzung> um einen Translationkey zu übersetzten.");
 
         iLanguageAPI.addMessageToDefault("languageapi-key-already-exists", "Der Translationkey %KEY% wurde in %LANG% bereits übersetzt." +
                 " Verwende /lang update um die Übersetzung zu ändern.");
@@ -25,7 +27,6 @@ public class I18N {
 
         iLanguageAPI.addMessageToDefault("languageapi-lang-not-found", "Die Sprache %LANG% wurde nicht gefunden.");
         iLanguageAPI.addParameter("languageapi-lang-not-found", "%LANG%");
-
 
 
         iLanguageAPI.addMessageToDefault("languageapi-remove-key-in-lang", "Die Übersetzung des Translationkeys %KEY% in %LANG% wurde erfolgreich entfernt.");
@@ -61,7 +62,7 @@ public class I18N {
 
         iLanguageAPI.addMessageToDefault("languageapi-copy-success", "%OLDLANG% wurde erfolgreich in %NEWLANG% kopiert.");
         iLanguageAPI.addParameter("languageapi-copy-success", "%OLDLANG%, %NEWLANG%");
-        iLanguageAPI.addMessageToDefault("languageapi-copy-help", "Verwende /lang copy <Sprache> <Sprache>");
+        iLanguageAPI.addMessageToDefault("languageapi-copy-help", "Verwende /lang copy <Sprache> <Sprache2> um eine Sprache zu kopieren.");
 
         iLanguageAPI.addMessageToDefault("languageapi-key-has-no-param", "Der Translationkey %KEY% hat keine Parameter.");
         iLanguageAPI.addParameter("languageapi-key-has-no-param", "%LANG%");
@@ -72,7 +73,11 @@ public class I18N {
         iLanguageAPI.addMessageToDefault("languageapi-translation-success", "&6%KEY%&7 - %MSG%");
         iLanguageAPI.addParameter("languageapi-translation-success", "%KEY%, %MSG%");
 
-        iLanguageAPI.addMessageToDefault("languageapi-copy-help", "Verwende /lang copy <Sprache> <Sprache2> um eine Sprache zu kopieren.");
+
+        iLanguageAPI.setMultipleTranslation("languageapi-help", Arrays.asList("languageapi-add-help",
+                "languageapi-update-help",
+                "languageapi-copy-help",
+                "languageapi-create-help"), true);
     }
 
 }

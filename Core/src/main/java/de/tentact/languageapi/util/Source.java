@@ -88,7 +88,7 @@ public class Source {
                 bungeecordmySQLConfiguration.set("mysql.username", "de/tentact/languageapi");
                 bungeecordmySQLConfiguration.set("mysql.database", "de/tentact/languageapi");
                 bungeecordmySQLConfiguration.set("mysql.password", "password");
-                bungeecordmySQLConfiguration.set("languageapi.defaultlang", "en_EN");
+                bungeecordmySQLConfiguration.set("languageapi.defaultlang", "de_de");
             }
             ConfigurationProvider.getProvider(net.md_5.bungee.config.YamlConfiguration.class).save(bungeecordmySQLConfiguration, bungeecordmySQLConfigFile);
 
