@@ -123,6 +123,13 @@ public abstract class AbstractLanguageAPI {
      */
     public abstract void addMessageToDefault(final String transkey, final String translation, final String param);
 
+    /**
+     *
+     * @param multipleTranslation the translationkey to the set of translations
+     * @param translationKey the translationkey that should be added to the set
+     * adds an single translationkey to an set of keys
+     */
+
     public abstract void addTranslationKeyToMultipleTranslation(final String multipleTranslation, final String translationKey);
 
 
@@ -174,6 +181,15 @@ public abstract class AbstractLanguageAPI {
 
     /**
      *
+     * @param translationKey the translationkey to check the parameters for
+     * @param param the parameter to check for
+     * @return returns if {@param param} is a parameter of the given translationkey
+     */
+
+    public abstract boolean isParameter(String translationKey, String param);
+
+    /**
+     *
      * @param translationKey the translationkey to delete in every language
      */
     public abstract void deleteMessageInEveryLang(String translationKey);
@@ -202,6 +218,21 @@ public abstract class AbstractLanguageAPI {
      */
 
     public abstract void removeMultipleTranslation(final String multipleTranslation);
+
+    /**
+     *
+     * @param multipleTranslation the translationkey to the set of translations
+     * @param translationKey the translationkey that should be removed from the set
+     */
+
+    public abstract void removeSingleTranslationFromMultipleTranslation(final String multipleTranslation, final String translationKey);
+
+    /**
+     *
+     * @param multipleTranslation the translationkey to the set of translations
+     * @return returns if the translationkey is a set of translations
+     */
+    public abstract boolean isMultipleTranslation(final String multipleTranslation);
 
     /**
      *
