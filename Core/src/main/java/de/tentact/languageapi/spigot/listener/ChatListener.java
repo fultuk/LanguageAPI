@@ -6,7 +6,6 @@ package de.tentact.languageapi.spigot.listener;
 */
 
 import de.tentact.languageapi.AbstractLanguageAPI;
-import de.tentact.languageapi.api.LanguageAPI;
 import de.tentact.languageapi.spigot.command.LanguageCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

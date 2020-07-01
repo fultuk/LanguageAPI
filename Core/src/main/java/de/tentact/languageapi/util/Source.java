@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class Source {
 
@@ -96,9 +97,9 @@ public class Source {
 
         }
     }
-    @Nullable
+    @NotNull
     public static String getDefaultLanguage() {
-        return isBungeeCordMode ? bungeecordmySQLConfiguration.getString("languageapi.defaultlang") : mySQLConfiguration.getString("languageapi.defaultlang");
+        return isBungeeCordMode ? bungeecordmySQLConfiguration.getString("languageapi.defaultlang") : Objects.requireNonNull(mySQLConfiguration.getString("languageapi.defaultlang"));
     }
 
     public static boolean getUpdateNotfication() {

@@ -8,7 +8,6 @@ package de.tentact.languageapi;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.spigot.command.LanguageCommand;
 import de.tentact.languageapi.spigot.listener.ChatListener;
-import de.tentact.languageapi.spigot.listener.JoinListener;
 import de.tentact.languageapi.util.I18N;
 import de.tentact.languageapi.util.Source;
 import de.tentact.languageapi.util.Updater;

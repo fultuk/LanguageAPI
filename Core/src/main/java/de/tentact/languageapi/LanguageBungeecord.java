@@ -8,7 +8,6 @@ package de.tentact.languageapi;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.I18N;
 import de.tentact.languageapi.util.Source;
-import de.tentact.languageapi.util.Updater;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class LanguageBungeecord extends Plugin {

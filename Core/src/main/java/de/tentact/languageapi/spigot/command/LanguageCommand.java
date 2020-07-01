@@ -207,9 +207,7 @@ public class LanguageCommand implements TabExecutor {
                             break;
                     }
                 } else {
-                    abstractLanguageAPI.getMultipleMessages("languageapi-help", player.getUniqueId()).forEach((s1 -> {
-                        player.sendMessage(abstractLanguageAPI.getMessage(s1, player.getUniqueId(), true));
-                    }));
+                    abstractLanguageAPI.getMultipleMessages("languageapi-help", player.getUniqueId()).forEach((s1 -> player.sendMessage(abstractLanguageAPI.getMessage(s1, player.getUniqueId(), true))));
                 }
             }
         }

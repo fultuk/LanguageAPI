@@ -5,65 +5,65 @@ package de.tentact.languageapi.api;
     Uhrzeit: 16:52
 */
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import de.tentact.languageapi.AbstractLanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.Source;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class LanguageAPI extends AbstractLanguageAPI {
 
     private final MySQL mySQL = Source.getMySQL();
 
+    private final Cache<String, HashMap<String, String>> translationCache = CacheBuilder.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
 
-    public void createLanguage(final String langName) {
-        if (!this.isLanguage(langName)) {
-            this.mySQL.createTable(langName.replace(" ", "").toLowerCase());
-            this.mySQL.update("INSERT INTO languages(language) VALUES ('" + langName.toLowerCase() + "')");
+
+    public void createLanguage(final String language) {
+        if (!this.isLanguage(language)) {
+            this.mySQL.createTable(language.replace(" ", "").toLowerCase());
+            this.mySQL.update("INSERT INTO languages(language) VALUES ('" + language.toLowerCase() + "')");
         }
 
     }
 
-    public void deleteLanguage(String langName) {
-        if (!this.getDefaultLanguage().equalsIgnoreCase(langName) && this.isLanguage(langName)) {
-            this.mySQL.update("DROP TABLE " + langName.toLowerCase());
-            this.mySQL.update("DELETE FROM languages WHERE language='" + langName.toLowerCase() + "'");
+    public void deleteLanguage(String language) {
+        if (!this.getDefaultLanguage().equalsIgnoreCase(language) && this.isLanguage(language)) {
+            this.mySQL.update("DROP TABLE " + language.toLowerCase());
+            this.mySQL.update("DELETE FROM languages WHERE language='" + language.toLowerCase() + "'");
         }
 
     }
 
-    public void setPlayerLanguage(UUID playerUUID, String newLang, boolean orElseDefault) {
+    public void setPlayerLanguage(UUID playerUUID, String newLanguage, boolean orElseDefault) {
         this.createPlayer(playerUUID);
-        if (!this.isLanguage(newLang)) {
+        if (!this.isLanguage(newLanguage)) {
             this.setPlayerLanguage(playerUUID, this.getDefaultLanguage());
             return;
         }
-        this.mySQL.update("UPDATE choosenlang WHERE uuid='" + playerUUID.toString() + "' SET language='" + newLang.toLowerCase() + "';");
+        this.mySQL.update("UPDATE choosenlang WHERE uuid='" + playerUUID.toString() + "' SET language='" + newLanguage.toLowerCase() + "';");
     }
 
-    public void setPlayerLanguage(UUID playerUUID, String newLang) {
+    public void setPlayerLanguage(UUID playerUUID, String newLanguage) {
         this.createPlayer(playerUUID);
-        if (!this.isLanguage(newLang)) {
-            throw new IllegalArgumentException("Language " + newLang + " was not found!");
+        if (!this.isLanguage(newLanguage)) {
+            throw new IllegalArgumentException("Language " + newLanguage + " was not found!");
         }
-        this.mySQL.update("UPDATE choosenlang WHERE uuid='" + playerUUID.toString() + "' SET language='" + newLang.toLowerCase() + "';");
+        this.mySQL.update("UPDATE choosenlang WHERE uuid='" + playerUUID.toString() + "' SET language='" + newLanguage.toLowerCase() + "';");
     }
 
     public void createPlayer(UUID playerUUID) {
         if (!this.isRegisteredPlayer(playerUUID)) {
             String language = getDefaultLanguage();
-            if (!Source.isBungeeCordMode) {
+            /*if (!Source.isBungeeCordMode) {
                 Player player = Bukkit.getPlayer(playerUUID);
                 if (player != null) {
                     if (this.getAvailableLanguages().contains(player.getLocale().toLowerCase())) {
@@ -71,7 +71,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
                     }
                 }
 
-            }
+            }*/
             this.mySQL.update("INSERT INTO choosenlang(uuid, language) VALUES ('" + playerUUID.toString() + "', '" + language + "');");
         } else {
             if (!this.getAvailableLanguages().contains(this.getPlayerLanguage(playerUUID))) {
@@ -101,9 +101,9 @@ public class LanguageAPI extends AbstractLanguageAPI {
         this.addParameter(transkey, param);
     }
 
-    public void addMessage(final String transkey, final String message, final String lang) {
-        if (this.isLanguage(lang)) {
-            new Thread(() -> this.mySQL.update("INSERT INTO " + lang.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + ChatColor.translateAlternateColorCodes('&', message) + "');")).start();
+    public void addMessage(final String transkey, final String message, final String language) {
+        if (this.isLanguage(language)) {
+            new Thread(() -> this.mySQL.update("INSERT INTO " + language.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + ChatColor.translateAlternateColorCodes('&', message) + "');")).start();
         }
     }
 
@@ -113,6 +113,9 @@ public class LanguageAPI extends AbstractLanguageAPI {
     }
 
     public void deleteParameter(final String transkey, final String param) {
+        if(!this.hasParameter(transkey)) {
+            return;
+        }
         if (!this.getParameter(transkey).contains(param)) {
             return;
         }
@@ -128,14 +131,14 @@ public class LanguageAPI extends AbstractLanguageAPI {
 
     }
 
-    public void addMessage(final String transkey, final String lang) {
-        if (!this.isLanguage(lang)) {
+    public void addMessage(final String transkey, final String language) {
+        if (!this.isLanguage(language)) {
             return;
         }
-        if (this.isKey(transkey, lang)) {
+        if (this.isKey(transkey, language)) {
             return;
         }
-        new Thread(() -> this.mySQL.update("INSERT INTO " + lang.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + transkey + "');")).start();
+        new Thread(() -> this.mySQL.update("INSERT INTO " + language.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + transkey + "');")).start();
 
     }
 
@@ -175,10 +178,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        ArrayList<String> translationKeysAsArrayList = new ArrayList<>();
-        for (String translationKey : translationKeys) {
-            translationKeysAsArrayList.add(translationKey);
-        }
+        ArrayList<String> translationKeysAsArrayList = new ArrayList<>(Arrays.asList(translationKeys));
         translationKeysAsArrayList.add(transkey);
         this.setMultipleTranslation(multipleTranslation, translationKeysAsArrayList, true);
     }
@@ -202,7 +202,6 @@ public class LanguageAPI extends AbstractLanguageAPI {
         return false;
     }
 
-    @Nullable
     public String getParameter(String translationKey) {
         if (!this.hasParameter(translationKey)) {
             throw new IllegalArgumentException(translationKey + " has no parameter");
@@ -215,7 +214,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return null;
+        throw new IllegalArgumentException(translationKey + " has no parameter");
 
     }
 
@@ -272,15 +271,16 @@ public class LanguageAPI extends AbstractLanguageAPI {
 
     public void removeSingleTranslationFromMultipleTranslation(final String multipleTranslation, final String transkey) {
         ResultSet resultSet = this.mySQL.getResult("SELECT keys FROM MultipleTranslation WHERE transkey='" + multipleTranslation.toLowerCase() + "'");
-        String[] translationKeys = new String[]{};
+        ArrayList<String> translationKeysAsArrayList = null;
         try {
             if (resultSet.next()) {
-                translationKeys = resultSet.getString("keys").split(",");
+                translationKeysAsArrayList = new ArrayList<>(Arrays.asList(resultSet.getString("keys").split(",")));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        ArrayList<String> translationKeysAsArrayList = new ArrayList<>(Arrays.asList(translationKeys));
+
+        assert translationKeysAsArrayList != null;
         translationKeysAsArrayList.remove(transkey);
         this.setMultipleTranslation(multipleTranslation, translationKeysAsArrayList, true);
     }
@@ -337,19 +337,10 @@ public class LanguageAPI extends AbstractLanguageAPI {
         return usePrefix ? this.getPrefix(this.getPlayerLanguage(playerUUID)) + this.getMessage(transkey, playerUUID) : this.getMessage(transkey, playerUUID);
     }
 
-    @NotNull
-    public String getMessage(String transkey, Player player, boolean usePrefix) {
-        return usePrefix ? this.getPrefix(this.getPlayerLanguage(player.getUniqueId())) + this.getMessage(transkey, player.getUniqueId()) : this.getMessage(transkey, player.getUniqueId());
-    }
 
     @NotNull
     public String getMessage(String transkey, UUID playerUUID) {
         return this.getMessage(transkey, this.getPlayerLanguage(playerUUID));
-    }
-
-    @NotNull
-    public String getMessage(String transkey, Player player) {
-        return this.getMessage(transkey, this.getPlayerLanguage(player.getUniqueId()));
     }
 
     @NotNull
@@ -388,10 +379,17 @@ public class LanguageAPI extends AbstractLanguageAPI {
         if (!this.isKey(transkey, lang)) {
             throw new IllegalArgumentException(transkey + " not found for language " + lang);
         }
+        if(this.translationCache.getIfPresent(transkey) != null && Objects.requireNonNull(this.translationCache.getIfPresent(transkey)).containsKey(lang)) {
+                return Objects.requireNonNull(this.translationCache.getIfPresent(transkey)).get(lang);
+        }
         ResultSet rs = this.mySQL.getResult("SELECT translation FROM " + lang.toLowerCase() + " WHERE transkey='" + transkey.toLowerCase() + "';");
         try {
             if (rs.next()) {
-                return ChatColor.translateAlternateColorCodes('&', rs.getString("translation"));
+                String translation = ChatColor.translateAlternateColorCodes('&', rs.getString("translation"));
+                HashMap<String, String> cacheMap = new HashMap<>();
+                cacheMap.put(lang, translation);
+                translationCache.put(transkey, cacheMap);
+                return translation;
             }
         } catch (SQLException throwables) {
             return transkey;
