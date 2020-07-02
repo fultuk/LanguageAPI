@@ -17,7 +17,6 @@ import java.util.logging.Level;
 public class MySQL {
 
     private final String hostname, database, username, password;
-
     private final int port;
     private HikariDataSource dataSource;
 
