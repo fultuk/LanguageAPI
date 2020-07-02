@@ -11,6 +11,13 @@ import java.util.UUID;
     Datum: 09.06.2020
     Uhrzeit: 23:29
 */
+
+/**
+ * An API, which together with the LanguageAPI aims to make the translation of messages into different languages efficient and easy.
+ * Everything works with a unique key that returns the translation in the correct language. A key can not only lead to a translation,
+ * but can lead also to a collection of keys that lead back to the translations.
+ *
+ */
 public abstract class AbstractLanguageAPI {
 
     private static AbstractLanguageAPI abstractLanguageAPI;
@@ -23,7 +30,6 @@ public abstract class AbstractLanguageAPI {
     }
 
     /**
-     *
      * @param abstractLanguageAPI instance of the interface
      * sets the instance of the interface - set by the implementation
      */
@@ -32,21 +38,18 @@ public abstract class AbstractLanguageAPI {
     }
 
     /**
-     *
      * @param language language that should be created
      * creates a table with a language and adds the language in the 'languages' table
      */
     public abstract void createLanguage(final String language);
 
     /**
-     *
      * @param language Language that should be deleted
      * Deletes the language table and removes it from 'languages'
      */
     public abstract void deleteLanguage(String language);
 
     /**
-     *
      * @param playerUUID player uuid for whom the language should be changed
      * @param newLanguage the new language of the player
      * @param orElseDefault should set default if the language was not found {@link AbstractLanguageAPI#getDefaultLanguage()}
@@ -54,7 +57,6 @@ public abstract class AbstractLanguageAPI {
      */
     public abstract void setPlayerLanguage(UUID playerUUID, String newLanguage, boolean orElseDefault);
     /**
-     *
      * @param playerUUID player uuid for whom the language should be changed
      * @param newLanguage the new language of the player
      * Sets the player specific language, if the language exists
@@ -66,7 +68,16 @@ public abstract class AbstractLanguageAPI {
      * @param playerUUID player uuid the player is created with
      * creates the player in the database
      */
-    public abstract void createPlayer(UUID playerUUID);
+    public abstract void registerPlayer(UUID playerUUID);
+
+    /**
+     *
+     * @param playerUUID player uuid the player is created with
+     * @param language the language that the player has on creation
+     * creates the player in the database
+     */
+
+    public abstract void registerPlayer(UUID playerUUID, String language);
 
     /**
      *
@@ -80,7 +91,8 @@ public abstract class AbstractLanguageAPI {
      * @param transkey the translationkey to find the translation
      * @param message the translation to that translationkey
      * @param language the language of the translation
-     * @param param the parameters that are used in the translation (ex. %KEY%)
+     * @param param the parameters that are used in the translation (ex. %KEY%) - seperate them by ',' (ex. %PARAM1%,%PARAM2%)
+     * adds an translation to the given language with a proper translation and parameters
      */
     public abstract void addMessage(final String transkey, final String message, final String language, String param);
 
@@ -96,14 +108,14 @@ public abstract class AbstractLanguageAPI {
      *
      * @param transkey the translationkey to the translation (the translation is the key)
      * @param language the language to the translationkey
-     * adds a translation without an proper translation, it just uses the translationkey to translate
+     * adds a translation without an proper translation, it just uses the translationkey as translation
      */
     public abstract void addMessage(final String transkey, final String language);
 
     /**
      *
      * @param transkey the translationkey to the translation
-     * adds a translation without an proper translation to the default language, it just uses the translationkey to translate
+     * adds a translation without an proper translation to the default language, it just uses the translationkey as translation
      */
     public abstract void addMessage(final String transkey);
 
@@ -131,8 +143,6 @@ public abstract class AbstractLanguageAPI {
      */
 
     public abstract void addTranslationKeyToMultipleTranslation(final String multipleTranslation, final String translationKey);
-
-
 
     /**
      *

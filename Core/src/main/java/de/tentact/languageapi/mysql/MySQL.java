@@ -5,14 +5,21 @@ package de.tentact.languageapi.mysql;
     Uhrzeit: 16:53
 */
 
-import java.sql.*;
+import com.zaxxer.hikari.HikariDataSource;
+import de.tentact.languageapi.util.Source;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
 
 public class MySQL {
 
     private final String hostname, database, username, password;
 
     private final int port;
-    private Connection con;
+    private HikariDataSource dataSource;
 
     public MySQL(String hostname, String database, String username, String password, int port) {
         this.hostname = hostname;
@@ -24,42 +31,33 @@ public class MySQL {
 
     public void connect() {
         if (!isConnected()) {
-            try {
-                con = DriverManager.getConnection("jdbc:mysql://" + hostname + ":" + port + "/" + database, username, password);
-//                Source.defaultLog("§aMySQL Connected", Level.INFO);
-            } catch (SQLException ex) {
-//                Source.defaultLog("§cDie MySQL konnte nicht verbunden werden. Prüfe, ob deine Angaben stimmen und der Server online ist.", Level.WARNING);
-                ex.printStackTrace();
-//                Source.defaultLog("§cDie MySQL konnte nicht verbunden werden. Prüfe, ob deine Angaben stimmen und der Server online ist.", Level.WARNING);
-            }
+            dataSource = new HikariDataSource();
+            dataSource.setJdbcUrl("jdbc:mysql://"+hostname+":"+port+"/"+database);
+            dataSource.setUsername(this.username);
+            dataSource.setPassword(this.password);
+            Source.log("Creating connection to database", Level.INFO);
 
         }
-
     }
 
     public boolean isConnected() {
-        return con != null;
+        return dataSource != null;
     }
-
-    public void close() {
-        if (isConnected()) {
-            try {
-                con.close();
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+    public void closeConnection() {
+        if(!isConnected()) {
+            return;
         }
+        dataSource.close();
     }
 
     public void createDefaultTable() {
             if(!isConnected())
                 return;
-            try {
-                con.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS choosenlang(uuid VARCHAR(64), language VARCHAR(64));");
-                con.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(64));");
-                con.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(transkey VARCHAR(64), param VARCHAR(2000));");
-                con.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS MultipleTranslation(transkey VARCHAR(64), keys VARCHAR(2000))");
+            try (Connection connection = dataSource.getConnection()){
+                connection.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS choosenlang(uuid VARCHAR(64), language VARCHAR(64));");
+                connection.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(64));");
+                connection.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(transkey VARCHAR(64), param VARCHAR(2000));");
+                connection.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS MultipleTranslation(transkey VARCHAR(64), keys VARCHAR(2000))");
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -69,26 +67,25 @@ public class MySQL {
     public void createTable(String tableName) {
             if(!isConnected())
                 return;
-            try {
-                con.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS " + tableName + "(transkey VARCHAR(64), translation VARCHAR(2000));");
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            try(Connection connection = dataSource.getConnection()) {
+                connection.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS " + tableName + "(transkey VARCHAR(64), translation VARCHAR(2000));");
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
     }
 
     public void update(String sql) {
         if (isConnected()) {
-            try {
-                con.createStatement().executeUpdate(sql);
-            } catch (SQLException e) {
-                e.printStackTrace();
+            try(Connection connection = dataSource.getConnection()) {
+                connection.createStatement().executeUpdate(sql);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
         }
     }
     public PreparedStatement createStatement(String query) {
-        try {
-            return con.prepareStatement(query);
+        try(Connection connection = dataSource.getConnection()) {
+            return connection.prepareStatement(query);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -97,11 +94,10 @@ public class MySQL {
 
     public ResultSet getResult(String sql) {
         if (isConnected()) {
-            try {
-                return con.createStatement().executeQuery(sql);
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            try(Connection connection = dataSource.getConnection()) {
+                return connection.createStatement().executeQuery(sql);
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
         }
         return null;

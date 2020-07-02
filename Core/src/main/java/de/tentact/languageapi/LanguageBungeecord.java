@@ -19,6 +19,7 @@ public class LanguageBungeecord extends Plugin {
         Source.isBungeeCordMode = true;
         Source.createBungeeCordMySQLConfig(this);
         Source.initBungeecord();
+        Source.initLogger(this.getLogger());
         mySQL = Source.getMySQL();
         mySQL.connect();
         mySQL.createDefaultTable();
@@ -30,6 +31,6 @@ public class LanguageBungeecord extends Plugin {
 
     @Override
     public void onDisable() {
-        mySQL.close();
+        mySQL.closeConnection();
     }
 }

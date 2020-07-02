@@ -35,8 +35,6 @@ public class ChatListener implements Listener {
                 currentArray.add(event.getMessage());
                 editedMessage.put(player, currentArray);
                 event.setCancelled(true);
-
-
             }else{
                 if(editedMessage.get(player) == null) {
                     player.sendMessage(abstractLanguageAPI.getPrefix()+ abstractLanguageAPI.getMessage("languageapi-update-same", player.getUniqueId()));

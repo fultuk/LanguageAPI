@@ -10,9 +10,7 @@ import com.google.common.cache.CacheBuilder;
 import de.tentact.languageapi.AbstractLanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.Source;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.PreparedStatement;
@@ -47,7 +45,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
 
     @Override
     public void setPlayerLanguage(UUID playerUUID, String newLanguage, boolean orElseDefault) {
-        this.createPlayer(playerUUID);
+        this.registerPlayer(playerUUID);
         if (!this.isLanguage(newLanguage)) {
             this.setPlayerLanguage(playerUUID, this.getDefaultLanguage());
             return;
@@ -57,7 +55,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
 
     @Override
     public void setPlayerLanguage(UUID playerUUID, String newLanguage) {
-        this.createPlayer(playerUUID);
+        this.registerPlayer(playerUUID);
         if (!this.isLanguage(newLanguage)) {
             throw new IllegalArgumentException("Language " + newLanguage + " was not found!");
         }
@@ -65,28 +63,23 @@ public class LanguageAPI extends AbstractLanguageAPI {
     }
 
     @Override
-    public void createPlayer(UUID playerUUID) {
+    public void registerPlayer(UUID playerUUID) {
+        this.registerPlayer(playerUUID, this.getDefaultLanguage());
+    }
+
+    @Override
+    public void registerPlayer(UUID playerUUID, String language) {
         if (!this.isRegisteredPlayer(playerUUID)) {
-            String language = getDefaultLanguage();
-            if (!Source.isBungeeCordMode) {
-                Player player = Bukkit.getPlayer(playerUUID);
-                if (player != null) {
-                    String localLanguage = player.getLocale().toLowerCase();
-                    if (this.isLanguage(localLanguage)) {
-                        language = localLanguage;
-                    }
-                }
-
+            if(!this.isLanguage(language)) {
+                new Thread(() -> this.mySQL.update("INSERT INTO choosenlang(uuid, language) VALUES ('" + playerUUID.toString() + "', '" + this.getDefaultLanguage() + "');")).start();
+                return;
             }
-            String finalLanguage = language;
-            new Thread(() -> this.mySQL.update("INSERT INTO choosenlang(uuid, language) VALUES ('" + playerUUID.toString() + "', '" + finalLanguage + "');")).start();
-
+            new Thread(() -> this.mySQL.update("INSERT INTO choosenlang(uuid, language) VALUES ('" + playerUUID.toString() + "', '" + language.toLowerCase() + "');")).start();
         } else {
             if (!this.isLanguage(this.getPlayerLanguage(playerUUID))) {
                 new Thread(() -> this.mySQL.update("UPDATE choosenlang SET language='" + this.getDefaultLanguage() + "' WHERE uuid='" + playerUUID.toString() + "';")).start();
             }
         }
-
     }
 
     @Override
@@ -298,14 +291,16 @@ public class LanguageAPI extends AbstractLanguageAPI {
     @Override
     public void removeMultipleTranslation(final String multipleTranslation) {
         if (!isMultipleTranslation(multipleTranslation)) {
-            //THROW
-            return;
+            throw new IllegalArgumentException(multipleTranslation+" was not found");
         }
         new Thread(() -> this.mySQL.update("DELETE FROM MultipleTranslation WHERE transkey='" + multipleTranslation + "'")).start();
     }
 
     @Override
     public void removeSingleTranslationFromMultipleTranslation(final String multipleTranslation, final String transkey) {
+        if(!isMultipleTranslation(multipleTranslation)) {
+            throw new IllegalArgumentException(multipleTranslation+" was not found");
+        }
         ResultSet resultSet = this.mySQL.getResult("SELECT keys FROM MultipleTranslation WHERE transkey='" + multipleTranslation.toLowerCase() + "'");
         ArrayList<String> translationKeysAsArrayList = null;
         try {
@@ -348,10 +343,11 @@ public class LanguageAPI extends AbstractLanguageAPI {
     @NotNull
     @Override
     public String getPlayerLanguage(UUID playerUUID) {
-        this.createPlayer(playerUUID);
+        this.registerPlayer(playerUUID);
         ResultSet rs = this.mySQL.getResult("SELECT language FROM choosenlang WHERE uuid='" + playerUUID.toString() + "';");
         try {
             if (rs.next()) {
+
                 return rs.getString("language").toLowerCase();
             }
         } catch (SQLException throwables) {
@@ -461,16 +457,16 @@ public class LanguageAPI extends AbstractLanguageAPI {
     @NotNull
     @Override
     public ArrayList<String> getAvailableLanguages() {
-        ArrayList<String> langs = new ArrayList<>();
+        ArrayList<String> languages = new ArrayList<>();
         ResultSet rs = this.mySQL.getResult("SELECT language FROM languages");
         try {
             while (rs.next()) {
-                langs.add(rs.getString("language").toLowerCase());
+                languages.add(rs.getString("language").toLowerCase());
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return langs;
+        return languages;
     }
 
     @Override

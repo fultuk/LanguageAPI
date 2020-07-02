@@ -16,6 +16,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
+import java.util.logging.Level;
 
 public class LanguageSpigot extends JavaPlugin {
 
@@ -24,10 +25,11 @@ public class LanguageSpigot extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
+        getLogger().log(Level.INFO, "Starting LanguageAPI");
         Source.isBungeeCordMode = false;
         Source.createSpigotMySQLConfig();
         Source.initSpigot();
+        Source.initLogger(this.getLogger());
 
         this.mySQL = Source.getMySQL();
         this.mySQL.connect();
@@ -48,7 +50,7 @@ public class LanguageSpigot extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        mySQL.close();
+        mySQL.closeConnection();
     }
 
     public Updater getUpdater() {

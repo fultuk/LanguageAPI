@@ -73,6 +73,8 @@ public class I18N {
         iLanguageAPI.addMessageToDefault("languageapi-translation-success", "&6%KEY%&7 - %MSG%");
         iLanguageAPI.addParameter("languageapi-translation-success", "%KEY%, %MSG%");
 
+        iLanguageAPI.addMessageToDefault("languageapi-reload-success", "Die Configuration wurde neugeladen.");
+
 
         iLanguageAPI.setMultipleTranslation("languageapi-help", Arrays.asList("languageapi-add-help",
                 "languageapi-update-help",
