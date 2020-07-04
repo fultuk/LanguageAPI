@@ -8,6 +8,7 @@ package de.tentact.languageapi;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.I18N;
 import de.tentact.languageapi.util.Source;
+import de.tentact.languageapi.util.Updater;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class LanguageBungeecord extends Plugin {
@@ -26,7 +27,7 @@ public class LanguageBungeecord extends Plugin {
         AbstractLanguageAPI.getInstance().createLanguage(Source.getDefaultLanguage());
         I18N.createDefaultPluginMessages();
 
-       // new Updater(this);
+        new Updater(this);
     }
 
     @Override

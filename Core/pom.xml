@@ -15,20 +15,25 @@
                 <configuration>
                     <source>9</source>
                     <target>9</target>
+                    <!--<outputDirectory>C:/Users/ado20/Desktop/Test-Cloud/local/templates/Lobby/default/plugins</outputDirectory> -->
+               </configuration>
+           </plugin>
+
+           <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-shade-plugin</artifactId>
+               <version>3.2.3</version>
+               <executions>
+                   <execution>
+                       <phase>package</phase>
+                       <goals>
+                           <goal>shade</goal>
+                       </goals>
+                   </execution>
+               </executions>
+               <configuration>
+                   <!--<outputDirectory>C:/Users/ado20/Desktop/Test-Cloud/local/templates/Lobby/default/plugins</outputDirectory> -->
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.3</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

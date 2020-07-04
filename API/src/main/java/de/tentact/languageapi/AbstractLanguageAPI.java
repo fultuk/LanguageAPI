@@ -13,7 +13,7 @@ import java.util.UUID;
 */
 
 /**
- * An API, which together with the LanguageAPI aims to make the translation of messages into different languages efficient and easy.
+ * An API to the LanguageAPI, which aims to make the translation of messages into different languages efficient and easy.
  * Everything works with a unique key that returns the translation in the correct language. A key can not only lead to a translation,
  * but can lead also to a collection of keys that lead back to the translations.
  *
@@ -293,13 +293,43 @@ public abstract class AbstractLanguageAPI {
 
     /**
      *
+     * @param transkey the translationkey which holds the other keys
+     * @param language the language to get the translation in
+     * @param usePrefix specify if the prefix should be returned with the translation
+     * @return returns a {@link ArrayList<String>} with the translated messages
+     */
+
+    public abstract ArrayList<String> getMultipleMessages(String transkey, String language, boolean usePrefix);
+
+    /**
+     *
+     * @param transkey the translationkey which holds the other keys
+     * @param playerUUID  the player uuid to get the language from
+     * @param usePrefix specify if the prefix should be returned with the translation
+     * @return returns a {@link ArrayList<String>} with the translated messages
+     */
+    public abstract ArrayList<String> getMultipleMessages(String transkey, UUID playerUUID, boolean usePrefix);
+
+    /**
+     *
      * @param translationkey the translationkey to get the translation from
      * @param playerUUID the player uuid to get the language from
-     * @param usePrefix specify if the prefix should be returnt with the translation
+     * @param usePrefix specify if the prefix should be returned with the translation
      * @return returns the translation for a given player
      */
 
     public abstract String getMessage(String translationkey, UUID playerUUID, boolean usePrefix);
+
+    /**
+     *
+     * @param translationkey the translationkey to get the translation from
+     * @param language the language of the translation
+     * @param usePrefix specify if the prefix should be returned with the translation
+     * @return returns the translation for a given language
+     */
+
+
+    public abstract String getMessage(String translationkey, String language, boolean usePrefix);
 
     /**
      *
