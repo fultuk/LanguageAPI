@@ -7,6 +7,7 @@ package de.tentact.languageapi.spigot.command;
 
 import de.tentact.languageapi.AbstractLanguageAPI;
 import de.tentact.languageapi.LanguageSpigot;
+import de.tentact.languageapi.event.LanguageCopyEvent;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.I18N;
 import de.tentact.languageapi.util.Source;

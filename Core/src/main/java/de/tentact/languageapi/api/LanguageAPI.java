@@ -8,10 +8,15 @@ package de.tentact.languageapi.api;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.LanguageSpigot;
+import de.tentact.languageapi.event.LanguageCopyEvent;
+import de.tentact.languageapi.event.LanguageCreateEvent;
+import de.tentact.languageapi.event.LanguageDeleteEvent;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.Source;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -26,6 +31,8 @@ public class LanguageAPI extends AbstractLanguageAPI {
     private final MySQL mySQL = Source.getMySQL();
 
     private final Cache<String, HashMap<String, String>> translationCache = CacheBuilder.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
+    private final LanguageSpigot languageSpigot = LanguageSpigot.getPlugin(LanguageSpigot.class);
+    private final PluginManager pluginManager = Bukkit.getPluginManager();
 
     @Override
     public void createLanguage(final String language) {
@@ -33,6 +40,10 @@ public class LanguageAPI extends AbstractLanguageAPI {
             this.mySQL.createTable(language.replace(" ", "").toLowerCase());
             this.mySQL.update("INSERT INTO languages(language) VALUES ('" + language.toLowerCase() + "')");
             logInfo("Creating new language:" +language);
+            LanguageCreateEvent languageCreateEvent = new LanguageCreateEvent(language.toLowerCase());
+            if(!languageCreateEvent.isCancelled()) {
+                pluginManager.callEvent(languageCreateEvent);
+            }
         }
 
     }
@@ -43,6 +54,10 @@ public class LanguageAPI extends AbstractLanguageAPI {
             this.mySQL.update("DROP TABLE " + language.toLowerCase());
             this.mySQL.update("DELETE FROM languages WHERE language='" + language.toLowerCase() + "'");
             logInfo("Deleting language:" +language);
+            LanguageDeleteEvent languageDeleteEvent = new LanguageDeleteEvent(language.toLowerCase());
+            if(!languageDeleteEvent.isCancelled()) {
+                pluginManager.callEvent(languageDeleteEvent);
+            }
         }
 
     }
@@ -74,13 +89,15 @@ public class LanguageAPI extends AbstractLanguageAPI {
     @Override
     public void registerPlayer(UUID playerUUID, String language) {
         if (!this.isRegisteredPlayer(playerUUID)) {
-            if (!this.isLanguage(language)) {
-                logInfo("Registering player with default language ("+this.getDefaultLanguage()+")");
-                new Thread(() -> this.mySQL.update("INSERT INTO choosenlang(uuid, language) VALUES ('" + playerUUID.toString() + "', '" + this.getDefaultLanguage() + "');")).start();
-                return;
-            }
-            new Thread(() -> this.mySQL.update("INSERT INTO choosenlang(uuid, language) VALUES ('" + playerUUID.toString() + "', '" + language.toLowerCase() + "');")).start();
-            logInfo("Registering player with language: "+language);
+            Bukkit.getScheduler().runTaskLater(languageSpigot, () -> {
+                if (!this.isLanguage(language)) {
+                    logInfo("Registering player with default language ("+this.getDefaultLanguage()+")");
+                    new Thread(() -> this.mySQL.update("INSERT INTO choosenlang(uuid, language) VALUES ('" + playerUUID.toString() + "', '" + this.getDefaultLanguage() + "');")).start();
+                    return;
+                }
+                new Thread(() -> this.mySQL.update("INSERT INTO choosenlang(uuid, language) VALUES ('" + playerUUID.toString() + "', '" + language.toLowerCase() + "');")).start();
+                logInfo("Registering player with language: "+language);
+            }, 50L);
         } else {
             if (!this.isLanguage(this.getPlayerLanguage(playerUUID))) {
                 new Thread(() -> this.mySQL.update("UPDATE choosenlang SET language='" + this.getDefaultLanguage() + "' WHERE uuid='" + playerUUID.toString() + "';")).start();
@@ -209,10 +226,14 @@ public class LanguageAPI extends AbstractLanguageAPI {
 
     @Override
     public void copyLanguage(String langfrom, String langto) {
-        if (!this.isLanguage(langfrom) || !this.isLanguage(langto)) {
+        if (!this.isLanguage(langfrom.toLowerCase()) || !this.isLanguage(langto.toLowerCase())) {
             throw new IllegalArgumentException("Language " + langfrom + " or " + langto + " was not found!");
         }
-        this.mySQL.update("INSERT INTO " + langto + " SELECT * FROM " + langfrom + ";");
+        this.mySQL.update("INSERT INTO " + langto.toLowerCase() + " SELECT * FROM " + langfrom.toLowerCase() + ";");
+        LanguageCopyEvent languageCopyEvent = new LanguageCopyEvent(langfrom.toLowerCase(), langto.toLowerCase());
+        if(!languageCopyEvent.isCancelled()) {
+            pluginManager.callEvent(languageCopyEvent);
+        }
     }
 
     @Override
@@ -405,6 +426,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     public ArrayList<String> getMultipleMessages(String transkey, String language) {
         return this.getMultipleMessages(transkey, language, false);
     }
+    @Override
     public ArrayList<String> getMultipleMessages(String transkey, UUID playerUUID, boolean usePrefix) {
         return this.getMultipleMessages(transkey, this.getPlayerLanguage(playerUUID), usePrefix);
     }
@@ -412,7 +434,6 @@ public class LanguageAPI extends AbstractLanguageAPI {
     @NotNull
     @Override
     public ArrayList<String> getMultipleMessages(String transkey, String language, boolean usePrefix) {
-
         ArrayList<String> resolvedMessages = new ArrayList<>();
         String[] translationKeys = new String[]{};
         try (Connection connection = this.mySQL.dataSource.getConnection()) {
@@ -428,6 +449,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
         for (String translationKey : translationKeys) {
             resolvedMessages.add(this.getMessage(translationKey, language, usePrefix));
         }
+
         return resolvedMessages;
     }
 

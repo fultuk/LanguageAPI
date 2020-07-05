@@ -9,6 +9,7 @@ import de.tentact.languageapi.AbstractLanguageAPI;
 import de.tentact.languageapi.LanguageSpigot;
 import de.tentact.languageapi.util.Source;
 import de.tentact.languageapi.util.Updater;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,7 +17,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class JoinListener implements Listener {
 
-    private final Updater updater = LanguageSpigot.getPlugin(LanguageSpigot.class).getUpdater();
+
+    LanguageSpigot languageSpigot = LanguageSpigot.getPlugin(LanguageSpigot.class);
+    private final Updater updater = languageSpigot.getUpdater();
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
