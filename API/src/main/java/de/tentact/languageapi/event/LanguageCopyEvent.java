@@ -6,6 +6,7 @@ package de.tentact.languageapi.event;
     Uhrzeit: 10:45
 */
 
+import de.tentact.languageapi.translation.Translation;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -14,9 +15,15 @@ import org.jetbrains.annotations.NotNull;
 public class LanguageCopyEvent extends Event implements Cancellable {
 
     private final String language;
-    private String newLanguage;
+    private final String newLanguage;
     private boolean cancel;
     private final HandlerList handlerList = new HandlerList();
+
+    /**
+     * This event is called when {@link de.tentact.languageapi.AbstractLanguageAPI#copyLanguage(String, String)} is called and the given languages are correct
+     * @param language the old language to copy from
+     * @param newLanguage the language to copy to
+     */
 
     public LanguageCopyEvent(@NotNull String language, @NotNull String newLanguage) {
         this.language = language;

@@ -18,7 +18,6 @@ public class LanguageDeleteEvent extends Event implements Cancellable {
     private final HandlerList handlerList = new HandlerList();
 
     public LanguageDeleteEvent(@NotNull String language) {
-
         this.language = language;
     }
 
@@ -38,6 +37,6 @@ public class LanguageDeleteEvent extends Event implements Cancellable {
     }
 
     public String getLanguage() {
-        return language;
+        return this.language;
     }
 }

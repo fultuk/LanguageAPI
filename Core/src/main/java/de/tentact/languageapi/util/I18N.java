@@ -6,6 +6,7 @@ package de.tentact.languageapi.util;
 */
 
 import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.translation.Translation;
 
 import java.util.Arrays;
 

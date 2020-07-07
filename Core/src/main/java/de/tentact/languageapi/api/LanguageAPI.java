@@ -13,6 +13,7 @@ import de.tentact.languageapi.event.LanguageCopyEvent;
 import de.tentact.languageapi.event.LanguageCreateEvent;
 import de.tentact.languageapi.event.LanguageDeleteEvent;
 import de.tentact.languageapi.mysql.MySQL;
+import de.tentact.languageapi.translation.Translation;
 import de.tentact.languageapi.util.Source;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -290,6 +291,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
             throw new IllegalArgumentException("Translationkey " + transkey + " was not found!");
         }
         new Thread(() -> this.mySQL.update("UPDATE " + language.toLowerCase() + " SET translation='" + ChatColor.translateAlternateColorCodes('&', message) + "' WHERE transkey='" + transkey.toLowerCase() + "';")).start();
+        translationCache.invalidate(transkey.toLowerCase());
 
     }
 
@@ -539,6 +541,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
                 }
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
+
             }
             return messages;
         }

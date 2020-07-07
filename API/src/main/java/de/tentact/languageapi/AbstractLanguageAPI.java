@@ -1,6 +1,8 @@
 package de.tentact.languageapi;
 
 
+import de.tentact.languageapi.translation.Translation;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

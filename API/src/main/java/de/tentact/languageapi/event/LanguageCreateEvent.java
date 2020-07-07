@@ -17,10 +17,8 @@ public class LanguageCreateEvent extends Event implements Cancellable {
     private final HandlerList handlerList = new HandlerList();
 
     public LanguageCreateEvent(@NotNull String language) {
-
         this.language = language;
     }
-
 
     @Override
     public @NotNull HandlerList getHandlers() {
