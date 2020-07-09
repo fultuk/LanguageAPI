@@ -7,11 +7,10 @@ package de.tentact.languageapi.event;
 */
 
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class LanguageDeleteEvent extends Event implements Cancellable {
+public class LanguageDeleteEvent extends AbstractLanguageEvent implements Cancellable {
 
     private final String language;
     private boolean cancel;
