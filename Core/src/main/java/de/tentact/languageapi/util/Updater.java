@@ -14,6 +14,7 @@ import org.bukkit.plugin.Plugin;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Scanner;
+import java.util.logging.Level;
 
 public class Updater {
 
@@ -27,7 +28,9 @@ public class Updater {
         this.pluginName = plugin.getName();
         this.localVersion = Integer.parseInt(plugin.getDescription().getVersion().replace(".", ""));
         this.fullLocalVersion = plugin.getDescription().getVersion();
-        this.onlineVersion = Integer.parseInt(this.getOnlineVersion(this.pluginName).replace(".", ""));
+        String online = this.getOnlineVersion(this.pluginName).replace(".", "");
+        Source.log(online, Level.WARNING);
+        this.onlineVersion = Integer.parseInt(online);
         if(this.onlineVersion > this.localVersion) {
             Bukkit.broadcastMessage(AbstractLanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
                     +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+this.getOnlineVersion(this.pluginName));
@@ -44,7 +47,7 @@ public class Updater {
         this.fullLocalVersion = plugin.getDescription().getVersion();
         this.onlineVersion = Integer.parseInt(this.getOnlineVersion(this.pluginName).replace(".", ""));
         if(this.onlineVersion > this.localVersion) {
-            ProxyServer.getInstance().broadcast(new TextComponent(AbstractLanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
+            ProxyServer.getInstance().broadcast(TextComponent.fromLegacyText(AbstractLanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
                     +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+this.getOnlineVersion(this.pluginName)));
         }
         this.isEnabled = true;
@@ -54,14 +57,13 @@ public class Updater {
     private String getOnlineVersion(String pluginName){
         Scanner scanner = null;
         try {
-            scanner = new Scanner(new URL("http://tentact.de/plugins?"+pluginName.toLowerCase()).openStream());
+            scanner = new Scanner(new URL("https://tentact.de/plugins?"+pluginName.toLowerCase()).openStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
         if(scanner == null) {
             return "0.0";
         }
-
         if(scanner.hasNextLine()) {
             return scanner.nextLine();
         }

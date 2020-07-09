@@ -29,14 +29,14 @@ public class I18N {
         iLanguageAPI.addParameter("languageapi-lang-not-found", "%LANG%");
 
 
-        iLanguageAPI.addMessageToDefault("languageapi-remove-key-in-lang", "Die Übersetzung des Translationkeys %KEY% in %LANG% wurde erfolgreich entfernt.");
-        iLanguageAPI.addParameter("languageapi-remove-key-in-lan", "%KEY%, %LANG%");
-        iLanguageAPI.addMessageToDefault("languageapi-remove-key-in-every-lang", "Der Translationkey %KEY% wurde in jeder Sprache entfernt.");
-        iLanguageAPI.addParameter("languageapi-remove-key-in-every-lang", "%KEY%");
-        iLanguageAPI.addMessageToDefault("languageapi-remove-every-key-in-lang", "Jeder Translationkey beginnend mit %STARTSWITH% wurde in %LANG% entfernt.");
-        iLanguageAPI.addParameter("languageapi-remove-every-key-in-lang", "%STARTSWITH%, %LANG%");
-        iLanguageAPI.addMessageToDefault("languageapi-remove-every-key-in-every-lang", "Jeder Translationkey beginnend mit %STARTSWITH% wurde in jeder Sprache entfernt.");
-        iLanguageAPI.addParameter("languageapi-remove-every-key-in-every-lang", "%STARTSWITH%");
+        iLanguageAPI.addMessageToDefault("languageapi-remove-key-in-language", "Die Übersetzung des Translationkeys %KEY% in %LANG% wurde erfolgreich entfernt.");
+        iLanguageAPI.addParameter("languageapi-remove-key-in-language", "%KEY%, %LANG%");
+        iLanguageAPI.addMessageToDefault("languageapi-remove-key-in-every-language", "Der Translationkey %KEY% wurde in jeder Sprache entfernt.");
+        iLanguageAPI.addParameter("languageapi-remove-key-in-every-language", "%KEY%");
+        iLanguageAPI.addMessageToDefault("languageapi-remove-every-key-in-language", "Jeder Translationkey beginnend mit %STARTSWITH% wurde in %LANG% entfernt.");
+        iLanguageAPI.addParameter("languageapi-remove-every-key-in-language", "%STARTSWITH%, %LANG%");
+        iLanguageAPI.addMessageToDefault("languageapi-remove-every-key-in-every-language", "Jeder Translationkey beginnend mit %STARTSWITH% wurde in jeder Sprache entfernt.");
+        iLanguageAPI.addParameter("languageapi-remove-every-key-in-every-language", "%STARTSWITH%");
 
         iLanguageAPI.addMessageToDefault("languageapi-key-not-found", "Der Translationkey %KEY% wurde in %LANG% nicht gefunden.");
         iLanguageAPI.addParameter("languageapi-key-not-found", "%KEY%, %LANG%");
@@ -74,6 +74,75 @@ public class I18N {
         iLanguageAPI.addParameter("languageapi-translation-success", "%KEY%, %MSG%");
 
         iLanguageAPI.addMessageToDefault("languageapi-reload-success", "Die Configuration wurde neugeladen.");
+
+
+        iLanguageAPI.setMultipleTranslation("languageapi-help", Arrays.asList("languageapi-add-help",
+                "languageapi-update-help",
+                "languageapi-copy-help",
+                "languageapi-create-help"), true);
+    }
+
+    public static void createDefaultPluginMessages(String language) {
+
+        iLanguageAPI.addMessage("languageapi-prefix", "&eLanguageAPI x &7", language);
+
+        iLanguageAPI.addMessage("languageapi-add-success", "Der Translationkey %KEY% wurde in %LANG% erfolgreich als ''%MSG%'' übersetzt.", language);
+        iLanguageAPI.addParameter("languageapi-add-success", "%MSG%");
+        iLanguageAPI.addMessage("languageapi-add-help", "Verwende /lang add <Sprache> <Translationkey> <Übersetzung> um einen Translationkey zu übersetzten.", language);
+
+        iLanguageAPI.addMessage("languageapi-key-already-exists", "Der Translationkey %KEY% wurde in %LANG% bereits übersetzt." +
+                " Verwende /lang update um die Übersetzung zu ändern.", language);
+        iLanguageAPI.addParameter("languageapi-key-already-exists", "%KEY%, %LANG%");
+
+        iLanguageAPI.addMessage("languageapi-lang-not-found", "Die Sprache %LANG% wurde nicht gefunden.", language);
+        iLanguageAPI.addParameter("languageapi-lang-not-found", "%LANG%");
+
+
+        iLanguageAPI.addMessage("languageapi-remove-key-in-language", "Die Übersetzung des Translationkeys %KEY% in %LANG% wurde erfolgreich entfernt.", language);
+        iLanguageAPI.addParameter("languageapi-remove-key-in-language", "%KEY%, %LANG%");
+        iLanguageAPI.addMessage("languageapi-remove-key-in-every-language", "Der Translationkey %KEY% wurde in jeder Sprache entfernt.", language);
+        iLanguageAPI.addParameter("languageapi-remove-key-in-every-language", "%KEY%");
+        iLanguageAPI.addMessage("languageapi-remove-every-key-in-language", "Jeder Translationkey beginnend mit %STARTSWITH% wurde in %LANG% entfernt.", language);
+        iLanguageAPI.addParameter("languageapi-remove-every-key-in-language", "%STARTSWITH%, %LANG%");
+        iLanguageAPI.addMessage("languageapi-remove-every-key-in-every-language", "Jeder Translationkey beginnend mit %STARTSWITH% wurde in jeder Sprache entfernt.", language);
+        iLanguageAPI.addParameter("languageapi-remove-every-key-in-every-language", "%STARTSWITH%");
+
+        iLanguageAPI.addMessage("languageapi-key-not-found", "Der Translationkey %KEY% wurde in %LANG% nicht gefunden.", language);
+        iLanguageAPI.addParameter("languageapi-key-not-found", "%KEY%, %LANG%");
+
+        iLanguageAPI.addMessage("languageapi-update-success", "&7Die Übersetzung des Translationkeys %KEY% in %LANG% wurde erfolgreich zu ''%MSG%''&7 geändert.", language);
+        iLanguageAPI.addParameter("languageapi-update-success", "%MSG%");
+        iLanguageAPI.addMessage("languageapi-update-instructions", "Nun kannst du die Übersetzung in den Chat eingeben, wenn benötigt auch mehrmals.\nMit ''finish'' wird die Übersetzung gespeichert.", language);
+        iLanguageAPI.addMessage("languageapi-update-same", "Es wurde nichts verändert und die Übersetzung wurde abgebrochen.", language);
+        iLanguageAPI.addMessage("languageapi-update-help", "Verwende /lang update <Sprache> <Translationkey> <Übersetzung> um eine Übersetzung zu ändern", language);
+
+
+        iLanguageAPI.addMessage("languageapi-create-success", "Die Sprache %LANG% wurde erfolgreich erstellt.", language);
+        iLanguageAPI.addParameter("languageapi-create-success", "%LANG%");
+        iLanguageAPI.addMessage("languageapi-create-help", "Verwende /lang create <Sprache> um eine Sprache zu erstellen", language);
+
+        iLanguageAPI.addMessage("languageapi-lang-already-exists", "Die Sprache %LANG% existiert bereits.", language);
+        iLanguageAPI.addParameter("languageapi-lang-already-exists", "%LANG%");
+
+        iLanguageAPI.addMessage("languageapi-delete-success", "Die Sprache %LANG% wurde erfolgreich gelöscht.", language);
+        iLanguageAPI.addParameter("languageapi-delete-success", "%LANG%");
+        iLanguageAPI.addMessage("languageapi-delete-all-langs", "Es wurde jede Sprache gelöscht.");
+        iLanguageAPI.addParameter("languageapi-delete-all-langs", "");
+
+        iLanguageAPI.addMessage("languageapi-copy-success", "%OLDLANG% wurde erfolgreich in %NEWLANG% kopiert.", language);
+        iLanguageAPI.addParameter("languageapi-copy-success", "%OLDLANG%, %NEWLANG%");
+        iLanguageAPI.addMessage("languageapi-copy-help", "Verwende /lang copy <Sprache> <Sprache2> um eine Sprache zu kopieren.", language);
+
+        iLanguageAPI.addMessage("languageapi-key-has-no-param", "Der Translationkey %KEY% hat keine Parameter.", language);
+        iLanguageAPI.addParameter("languageapi-key-has-no-param", "%LANG%");
+
+        iLanguageAPI.addMessage("languageapi-show-success", "Es wurden folgende Parameter zu %KEY% gefunden: \nParameter: %PARAM%", language);
+        iLanguageAPI.addParameter("languageapi-show-success", "%PARAM%, %KEY%");
+
+        iLanguageAPI.addMessage("languageapi-translation-success", "&6%KEY%&7 - %MSG%", language);
+        iLanguageAPI.addParameter("languageapi-translation-success", "%KEY%, %MSG%");
+
+        iLanguageAPI.addMessage("languageapi-reload-success", "Die Configuration wurde neugeladen.", language);
 
 
         iLanguageAPI.setMultipleTranslation("languageapi-help", Arrays.asList("languageapi-add-help",

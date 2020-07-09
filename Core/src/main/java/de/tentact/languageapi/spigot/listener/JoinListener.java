@@ -16,7 +16,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class JoinListener implements Listener {
 
-    private final Updater updater = LanguageSpigot.getPlugin(LanguageSpigot.class).getUpdater();
+
+    LanguageSpigot languageSpigot = LanguageSpigot.getPlugin(LanguageSpigot.class);
+    private final Updater updater = languageSpigot.getUpdater();
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {

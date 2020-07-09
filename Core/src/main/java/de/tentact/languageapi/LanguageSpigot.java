@@ -8,6 +8,7 @@ package de.tentact.languageapi;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.spigot.command.LanguageCommand;
 import de.tentact.languageapi.spigot.listener.ChatListener;
+import de.tentact.languageapi.spigot.listener.JoinListener;
 import de.tentact.languageapi.util.I18N;
 import de.tentact.languageapi.util.Source;
 import de.tentact.languageapi.util.Updater;
@@ -37,13 +38,13 @@ public class LanguageSpigot extends JavaPlugin {
 
         AbstractLanguageAPI.getInstance().createLanguage(Source.getDefaultLanguage());
         I18N.createDefaultPluginMessages();
-       // this.updater = new Updater(this);
+        this.updater = new Updater(this);
 
-        Objects.requireNonNull(this.getCommand("languageapi")).setExecutor(new LanguageCommand());
-        Objects.requireNonNull(this.getCommand("languageapi")).setTabCompleter(new LanguageCommand());
+        Objects.requireNonNull(this.getCommand("languageapi")).setExecutor(new LanguageCommand(this));
+        Objects.requireNonNull(this.getCommand("languageapi")).setTabCompleter(new LanguageCommand(this));
 
         PluginManager pm = Bukkit.getPluginManager();
-        //pm.registerEvents(new JoinListener(), this);
+        pm.registerEvents(new JoinListener(), this);
         pm.registerEvents(new ChatListener(), this);
 
     }
