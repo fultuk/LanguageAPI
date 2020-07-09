@@ -105,5 +105,16 @@ public class MySQL {
         }
         return null;
     }
+    public boolean exists(String query) {
+        try (Connection connection = this.dataSource.getConnection()) {
+            ResultSet resultSet = connection.createStatement().executeQuery(query);
+            if(resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
+    }
 
 }

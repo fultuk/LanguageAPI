@@ -13,7 +13,6 @@ import de.tentact.languageapi.event.LanguageCopyEvent;
 import de.tentact.languageapi.event.LanguageCreateEvent;
 import de.tentact.languageapi.event.LanguageDeleteEvent;
 import de.tentact.languageapi.mysql.MySQL;
-import de.tentact.languageapi.translation.Translation;
 import de.tentact.languageapi.util.Source;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -109,15 +108,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
 
     @Override
     public boolean isRegisteredPlayer(UUID playerUUID) {
-        try (Connection connection = this.mySQL.dataSource.getConnection()) {
-            ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM choosenlang WHERE uuid='" + playerUUID.toString() + "';");
-            if (rs.next()) {
-                return true;
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return false;
+        return this.mySQL.exists("SELECT * FROM choosenlang WHERE uuid='" + playerUUID.toString() + "';");
     }
 
     @Override
@@ -239,15 +230,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
 
     @Override
     public boolean hasParameter(String translationKey) {
-        ResultSet rs = this.mySQL.getResult("SELECT param FROM Parameter WHERE transkey='" + translationKey + "';");
-        try {
-            if (rs.next()) {
-                return true;
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return false;
+        return this.mySQL.exists("SELECT param FROM Parameter WHERE transkey='" + translationKey + "';");
     }
 
     @Override
@@ -339,16 +322,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
 
     @Override
     public boolean isMultipleTranslation(final String multipleTranslation) {
-
-        try (Connection connection = this.mySQL.dataSource.getConnection()) {
-            ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM MultipleTranslation WHERE multipleKey='" + multipleTranslation.toLowerCase() + "';");
-            if (rs.next()) {
-                return true;
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return false;
+        return this.mySQL.exists("SELECT * FROM MultipleTranslation WHERE multipleKey='" + multipleTranslation.toLowerCase() + "';");
     }
 
     @Override
@@ -383,15 +357,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
 
     @Override
     public boolean isKey(String transkey, String lang) {
-        try (Connection connection = this.mySQL.dataSource.getConnection()) {
-            ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM " + lang.toLowerCase() + " WHERE transkey='" + transkey.toLowerCase() + "';");
-            if (rs.next()) {
-                return true;
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return false;
+        return this.mySQL.exists("SELECT * FROM " + lang.toLowerCase() + " WHERE transkey='" + transkey.toLowerCase() + "';");
     }
 
     @NotNull

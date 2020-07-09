@@ -6,7 +6,6 @@ package de.tentact.languageapi.event;
     Uhrzeit: 10:45
 */
 
-import de.tentact.languageapi.translation.Translation;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
