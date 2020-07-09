@@ -8,8 +8,8 @@ package de.tentact.languageapi.spigot.listener;
 import de.tentact.languageapi.AbstractLanguageAPI;
 import de.tentact.languageapi.event.LanguageUpdateTranslationEvent;
 import de.tentact.languageapi.spigot.command.LanguageCommand;
+import de.tentact.languageapi.util.ChatColorTranslator;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -57,7 +57,7 @@ public class ChatListener implements Listener {
                 abstractLanguageAPI.updateMessage(transkey, language, result.toString());
 
                 event.setCancelled(true);
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', abstractLanguageAPI.getMessage("languageapi-update-success", player.getUniqueId())
+                player.sendMessage(ChatColorTranslator.translateAlternateColorCodes('&', abstractLanguageAPI.getMessage("languageapi-update-success", player.getUniqueId())
                         .replace("%KEY%", transkey)
                         .replace("%LANG%", language)
                         .replace("%MSG%", result.toString())));

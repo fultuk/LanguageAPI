@@ -9,7 +9,6 @@ import de.tentact.languageapi.AbstractLanguageAPI;
 import de.tentact.languageapi.LanguageSpigot;
 import de.tentact.languageapi.util.Source;
 import de.tentact.languageapi.util.Updater;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

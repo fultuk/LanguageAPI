@@ -8,12 +8,9 @@ package de.tentact.languageapi.api;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import de.tentact.languageapi.AbstractLanguageAPI;
-import de.tentact.languageapi.LanguageSpigot;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.ChatColorTranslator;
 import de.tentact.languageapi.util.Source;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -28,8 +25,6 @@ public class LanguageAPI extends AbstractLanguageAPI {
     private final MySQL mySQL = Source.getMySQL();
 
     private final Cache<String, HashMap<String, String>> translationCache = CacheBuilder.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
-    private final LanguageSpigot languageSpigot = LanguageSpigot.getPlugin(LanguageSpigot.class);
-    private final PluginManager pluginManager = Bukkit.getPluginManager();
 
     @Override
     public void createLanguage(final String language) {
@@ -80,7 +75,6 @@ public class LanguageAPI extends AbstractLanguageAPI {
     @Override
     public void registerPlayer(UUID playerUUID, String language) {
         if (!this.isRegisteredPlayer(playerUUID)) {
-            Bukkit.getScheduler().runTaskLater(languageSpigot, () -> {
                 if (!this.isLanguage(language)) {
                     logInfo("Registering player with default language (" + this.getDefaultLanguage() + ")");
                     new Thread(() -> this.mySQL.update("INSERT INTO choosenlang(uuid, language) VALUES ('" + playerUUID.toString() + "', '" + this.getDefaultLanguage() + "');")).start();
@@ -88,7 +82,6 @@ public class LanguageAPI extends AbstractLanguageAPI {
                 }
                 new Thread(() -> this.mySQL.update("INSERT INTO choosenlang(uuid, language) VALUES ('" + playerUUID.toString() + "', '" + language.toLowerCase() + "');")).start();
                 logInfo("Registering player with language: " + language);
-            }, 50L);
         } else {
             if (!this.isLanguage(this.getPlayerLanguage(playerUUID))) {
                 new Thread(() -> this.mySQL.update("UPDATE choosenlang SET language='" + this.getDefaultLanguage() + "' WHERE uuid='" + playerUUID.toString() + "';")).start();
@@ -395,7 +388,6 @@ public class LanguageAPI extends AbstractLanguageAPI {
             ResultSet resultSet = connection.createStatement().executeQuery("SELECT transkeys FROM MultipleTranslation WHERE multipleKey='" + transkey.toLowerCase() + "'");
             if (resultSet.next()) {
                 String mysqlString = resultSet.getString("transkeys");
-                Bukkit.broadcastMessage(resultSet.getString("transkeys"));
                 translationKeys = mysqlString.split(",");
             }
         } catch (SQLException throwables) {
