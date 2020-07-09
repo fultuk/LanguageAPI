@@ -6,7 +6,9 @@ package de.tentact.languageapi.spigot.listener;
 */
 
 import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.event.LanguageUpdateTranslationEvent;
 import de.tentact.languageapi.spigot.command.LanguageCommand;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -45,12 +47,19 @@ public class ChatListener implements Listener {
                 for(String message : editedMessage.get(player)) {
                     result.append(message).append(" ");
                 }
+                String transkey = LanguageCommand.givenParameter.get(player).get(0);
+                String language = LanguageCommand.givenParameter.get(player).get(1);
                 LanguageCommand.editingMessage.remove(player);
-                abstractLanguageAPI.updateMessage(LanguageCommand.givenParameter.get(player).get(0), LanguageCommand.givenParameter.get(player).get(1), result.toString());
+                LanguageUpdateTranslationEvent languageUpdateTranslationEvent = new LanguageUpdateTranslationEvent(language, transkey, abstractLanguageAPI.getMessage(transkey, language), result.toString());
+                if (!languageUpdateTranslationEvent.isCancelled()) {
+                    Bukkit.getPluginManager().callEvent(languageUpdateTranslationEvent);
+                }
+                abstractLanguageAPI.updateMessage(transkey, language, result.toString());
+
                 event.setCancelled(true);
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', abstractLanguageAPI.getMessage("languageapi-update-success", player.getUniqueId())
-                        .replace("%KEY%", LanguageCommand.givenParameter.get(player).get(0))
-                        .replace("%LANG%", LanguageCommand.givenParameter.get(player).get(1))
+                        .replace("%KEY%", transkey)
+                        .replace("%LANG%", language)
                         .replace("%MSG%", result.toString())));
                 editedMessage.remove(player);
             }

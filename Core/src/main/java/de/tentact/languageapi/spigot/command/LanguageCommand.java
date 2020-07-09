@@ -8,7 +8,8 @@ package de.tentact.languageapi.spigot.command;
 import de.tentact.languageapi.AbstractLanguageAPI;
 import de.tentact.languageapi.LanguageSpigot;
 import de.tentact.languageapi.event.LanguageCopyEvent;
-import de.tentact.languageapi.mysql.MySQL;
+import de.tentact.languageapi.event.LanguageCreateEvent;
+import de.tentact.languageapi.event.LanguageDeleteEvent;
 import de.tentact.languageapi.util.I18N;
 import de.tentact.languageapi.util.Source;
 import org.bukkit.Bukkit;
@@ -16,6 +17,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,8 +35,9 @@ public class LanguageCommand implements TabExecutor {
 
     public static HashMap<Player, List<String>> givenParameter = new HashMap<>();
 
+    private final LanguageSpigot languageSpigot;
 
-    private LanguageSpigot languageSpigot;
+    private final PluginManager pluginManager = Bukkit.getPluginManager();
 
     public LanguageCommand(LanguageSpigot languageSpigot) {
         this.languageSpigot = languageSpigot;
@@ -111,6 +114,10 @@ public class LanguageCommand implements TabExecutor {
                             if (!abstractLanguageAPI.getAvailableLanguages().contains(languages)) {
                                 abstractLanguageAPI.createLanguage(languages);
                                 player.sendMessage(abstractLanguageAPI.getMessage("languageapi-create-success", player.getUniqueId(), true).replace("%LANG%", languages));
+                                LanguageCreateEvent languageCreateEvent = new LanguageCreateEvent(languages);
+                                if (!languageCreateEvent.isCancelled()) {
+                                    pluginManager.callEvent(languageCreateEvent);
+                                }
                                 return true;
                             } else {
                                 player.sendMessage(abstractLanguageAPI.getMessage("languageapi-languages-already-exists", player.getUniqueId(), true)
@@ -129,9 +136,17 @@ public class LanguageCommand implements TabExecutor {
                                         player.getUniqueId(),
                                         true)
                                         .replace("%LANG%", languages));
+                                LanguageDeleteEvent languageDeleteEvent = new LanguageDeleteEvent(languages);
+                                if (!languageDeleteEvent.isCancelled()) {
+                                    pluginManager.callEvent(languageDeleteEvent);
+                                }
                                 return true;
                             } else if (languages.equalsIgnoreCase("*")) {
                                 for (String langs : abstractLanguageAPI.getAvailableLanguages()) {
+                                    LanguageDeleteEvent languageDeleteEvent = new LanguageDeleteEvent(langs.toLowerCase());
+                                    if (!languageDeleteEvent.isCancelled()) {
+                                        pluginManager.callEvent(languageDeleteEvent);
+                                    }
                                     abstractLanguageAPI.deleteLanguage(langs);
                                 }
                                 player.sendMessage(abstractLanguageAPI.getMessage("languageapi-delete-success",
@@ -154,6 +169,10 @@ public class LanguageCommand implements TabExecutor {
                                     player.sendMessage(abstractLanguageAPI.getMessage("languageapi-copy-success", player.getUniqueId(), true)
                                             .replace("%OLDLANG%", langfrom)
                                             .replace("%NEWLANG%", langto));
+                                    LanguageCopyEvent languageCopyEvent = new LanguageCopyEvent(langfrom, langto);
+                                    if (!languageCopyEvent.isCancelled()) {
+                                        pluginManager.callEvent(languageCopyEvent);
+                                    }
                                     return true;
                                 } else {
                                     languages = langfrom;
@@ -224,6 +243,7 @@ public class LanguageCommand implements TabExecutor {
                                         player.sendMessage(abstractLanguageAPI.getMessage("languageapi-key-not-found", player.getUniqueId(), true)
                                                 .replace("%KEY%", key)
                                                 .replace("%LANG%", languages));
+
                                         return false;
                                     }
                                 } else if (languages.equalsIgnoreCase("*")) {

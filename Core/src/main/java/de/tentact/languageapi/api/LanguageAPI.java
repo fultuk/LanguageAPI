@@ -9,14 +9,10 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import de.tentact.languageapi.AbstractLanguageAPI;
 import de.tentact.languageapi.LanguageSpigot;
-import de.tentact.languageapi.event.LanguageCopyEvent;
-import de.tentact.languageapi.event.LanguageCreateEvent;
-import de.tentact.languageapi.event.LanguageDeleteEvent;
-import de.tentact.languageapi.event.LanguageUpdateTranslationEvent;
 import de.tentact.languageapi.mysql.MySQL;
+import de.tentact.languageapi.util.ChatColorTranslator;
 import de.tentact.languageapi.util.Source;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,11 +36,8 @@ public class LanguageAPI extends AbstractLanguageAPI {
         if (this.getAvailableLanguages().isEmpty() || !this.isLanguage(language)) {
             this.mySQL.createTable(language.replace(" ", "").toLowerCase());
             this.mySQL.update("INSERT INTO languages(language) VALUES ('" + language.toLowerCase() + "')");
-            logInfo("Creating new language:" +language);
-            LanguageCreateEvent languageCreateEvent = new LanguageCreateEvent(language.toLowerCase());
-            if(!languageCreateEvent.isCancelled()) {
-                pluginManager.callEvent(languageCreateEvent);
-            }
+            logInfo("Creating new language:" + language);
+
         }
 
     }
@@ -54,11 +47,8 @@ public class LanguageAPI extends AbstractLanguageAPI {
         if (!this.getDefaultLanguage().equalsIgnoreCase(language) && this.isLanguage(language)) {
             this.mySQL.update("DROP TABLE " + language.toLowerCase());
             this.mySQL.update("DELETE FROM languages WHERE language='" + language.toLowerCase() + "'");
-            logInfo("Deleting language:" +language);
-            LanguageDeleteEvent languageDeleteEvent = new LanguageDeleteEvent(language.toLowerCase());
-            if(!languageDeleteEvent.isCancelled()) {
-                pluginManager.callEvent(languageDeleteEvent);
-            }
+            logInfo("Deleting language:" + language);
+
         }
 
     }
@@ -92,12 +82,12 @@ public class LanguageAPI extends AbstractLanguageAPI {
         if (!this.isRegisteredPlayer(playerUUID)) {
             Bukkit.getScheduler().runTaskLater(languageSpigot, () -> {
                 if (!this.isLanguage(language)) {
-                    logInfo("Registering player with default language ("+this.getDefaultLanguage()+")");
+                    logInfo("Registering player with default language (" + this.getDefaultLanguage() + ")");
                     new Thread(() -> this.mySQL.update("INSERT INTO choosenlang(uuid, language) VALUES ('" + playerUUID.toString() + "', '" + this.getDefaultLanguage() + "');")).start();
                     return;
                 }
                 new Thread(() -> this.mySQL.update("INSERT INTO choosenlang(uuid, language) VALUES ('" + playerUUID.toString() + "', '" + language.toLowerCase() + "');")).start();
-                logInfo("Registering player with language: "+language);
+                logInfo("Registering player with language: " + language);
             }, 50L);
         } else {
             if (!this.isLanguage(this.getPlayerLanguage(playerUUID))) {
@@ -124,12 +114,9 @@ public class LanguageAPI extends AbstractLanguageAPI {
     @Override
     public void addMessage(final String transkey, final String message, final String language) {
         if (this.isLanguage(language)) {
-            if (!Source.isBungeeCordMode) {
-                new Thread(() -> this.mySQL.update("INSERT INTO " + language.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + ChatColor.translateAlternateColorCodes('&', message) + "');")).start();
-            } else {
-                new Thread(() -> this.mySQL.update("INSERT INTO " + language.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() + "', '" + net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', message) + "');")).start();
-            }
-
+            new Thread(()
+                    -> this.mySQL.update("INSERT INTO " + language.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() +
+                    "', '" + ChatColorTranslator.translateAlternateColorCodes('&', message) + "');")).start();
         }
     }
 
@@ -177,7 +164,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
         if (this.isKey(transkey, this.getDefaultLanguage().toLowerCase())) {
             return;
         }
-       this.addMessage(transkey, transkey, this.getDefaultLanguage());
+        this.addMessage(transkey, transkey, this.getDefaultLanguage());
 
     }
 
@@ -223,10 +210,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
             throw new IllegalArgumentException("Language " + langfrom + " or " + langto + " was not found!");
         }
         this.mySQL.update("INSERT INTO " + langto.toLowerCase() + " SELECT * FROM " + langfrom.toLowerCase() + ";");
-        LanguageCopyEvent languageCopyEvent = new LanguageCopyEvent(langfrom.toLowerCase(), langto.toLowerCase());
-        if(!languageCopyEvent.isCancelled()) {
-            pluginManager.callEvent(languageCopyEvent);
-        }
+
     }
 
     @Override
@@ -274,11 +258,8 @@ public class LanguageAPI extends AbstractLanguageAPI {
         if (!this.isKey(transkey, language)) {
             throw new IllegalArgumentException("Translationkey " + transkey + " was not found!");
         }
-        LanguageUpdateTranslationEvent languageUpdateTranslationEvent = new LanguageUpdateTranslationEvent(language, transkey, this.getMessage(transkey, language),message);
-        if(!languageUpdateTranslationEvent.isCancelled()) {
-            Bukkit.getPluginManager().callEvent(languageUpdateTranslationEvent);
-        }
-        new Thread(() -> this.mySQL.update("UPDATE " + language.toLowerCase() + " SET translation='" + ChatColor.translateAlternateColorCodes('&', message) + "' WHERE transkey='" + transkey.toLowerCase() + "';")).start();
+
+        new Thread(() -> this.mySQL.update("UPDATE " + language.toLowerCase() + " SET translation='" + ChatColorTranslator.translateAlternateColorCodes('&', message) + "' WHERE transkey='" + transkey.toLowerCase() + "';")).start();
         translationCache.invalidate(transkey.toLowerCase());
 
     }
@@ -344,7 +325,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     @NotNull
     @Override
     public String getPlayerLanguage(UUID playerUUID) {
-        if(!isRegisteredPlayer(playerUUID)) {
+        if (!isRegisteredPlayer(playerUUID)) {
             this.registerPlayer(playerUUID);
         }
 
@@ -399,6 +380,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     public ArrayList<String> getMultipleMessages(String transkey, String language) {
         return this.getMultipleMessages(transkey, language, false);
     }
+
     @Override
     public ArrayList<String> getMultipleMessages(String transkey, UUID playerUUID, boolean usePrefix) {
         return this.getMultipleMessages(transkey, this.getPlayerLanguage(playerUUID), usePrefix);
@@ -438,16 +420,11 @@ public class LanguageAPI extends AbstractLanguageAPI {
         if (this.translationCache.getIfPresent(transkey) != null && Objects.requireNonNull(this.translationCache.getIfPresent(transkey)).containsKey(lang)) {
             return Objects.requireNonNull(this.translationCache.getIfPresent(transkey)).get(lang);
         }
-        
+
         try (Connection connection = this.mySQL.dataSource.getConnection()) {
             ResultSet rs = connection.createStatement().executeQuery("SELECT translation FROM " + lang.toLowerCase() + " WHERE transkey='" + transkey.toLowerCase() + "';");
             if (rs.next()) {
-                String translation;
-                if (!Source.isBungeeCordMode) {
-                    translation = ChatColor.translateAlternateColorCodes('&', rs.getString("translation"));
-                } else {
-                    translation = net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', rs.getString("translation"));
-                }
+                String translation = ChatColorTranslator.translateAlternateColorCodes('&', rs.getString("translation"));
 
                 HashMap<String, String> cacheMap = new HashMap<>();
                 cacheMap.put(lang, translation);
