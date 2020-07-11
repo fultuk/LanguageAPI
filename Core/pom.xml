@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>Core</artifactId>
-    <version>1.5-SNAPSHOT</version>
+    <version>1.6-SNAPSHOT</version>
     <groupId>de.tentact.languageapi</groupId>
     <build>
         <plugins>
@@ -15,7 +15,6 @@
                 <configuration>
                     <source>9</source>
                     <target>9</target>
-                    <!--<outputDirectory>C:/Users/ado20/Desktop/Test-Cloud/local/templates/Lobby/default/plugins</outputDirectory> -->
                </configuration>
            </plugin>
 
@@ -32,7 +31,6 @@
                    </execution>
                </executions>
                <configuration>
-                   <!--<outputDirectory>C:/Users/ado20/Desktop/Test-Cloud/local/templates/Lobby/default/plugins</outputDirectory> -->
                 </configuration>
             </plugin>
         </plugins>
@@ -51,7 +49,7 @@
         <dependency>
             <groupId>de.tentact.languageapi</groupId>
             <artifactId>API</artifactId>
-            <version>1.5-SNAPSHOT</version>
+            <version>1.6-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
