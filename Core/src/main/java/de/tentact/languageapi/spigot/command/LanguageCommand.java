@@ -29,7 +29,7 @@ public class LanguageCommand implements TabExecutor {
 
     public AbstractLanguageAPI abstractLanguageAPI = AbstractLanguageAPI.getInstance();
 
-    private final List<String> tabComplete = Arrays.asList("add", "remove", "update", "create", "delete", "param", "copy", "translations");
+    private final List<String> tabComplete = Arrays.asList("add", "remove", "update", "create", "delete", "param", "copy", "translations", "reload");
 
     public static ArrayList<Player> editingMessage = new ArrayList<>();
 
@@ -243,14 +243,13 @@ public class LanguageCommand implements TabExecutor {
                                         player.sendMessage(abstractLanguageAPI.getMessage("languageapi-key-not-found", player.getUniqueId(), true)
                                                 .replace("%KEY%", key)
                                                 .replace("%LANG%", languages));
-
                                         return false;
                                     }
                                 } else if (languages.equalsIgnoreCase("*")) {
                                     if (key.endsWith("*")) { //JEDE SPRACHE JEDER KEY
                                         abstractLanguageAPI.getAvailableLanguages().forEach(langs -> abstractLanguageAPI.getAllTranslationKeys(langs).forEach(keys -> {
                                             if (keys.startsWith(key.replace("*", ""))) {
-                                                if(!keys.startsWith("languageapi-")) {
+                                                if (!keys.startsWith("languageapi-")) {
                                                     abstractLanguageAPI.deleteMessage(keys, langs);
                                                     Bukkit.getScheduler().runTaskLater(languageSpigot, () -> {
                                                         abstractLanguageAPI.deleteAllParameter(key);
@@ -281,7 +280,7 @@ public class LanguageCommand implements TabExecutor {
                             I18N.createDefaultPluginMessages();
                             Source.initSpigot();
                             Source.defaultLanguage = null;
-                            Bukkit.getScheduler().runTaskLater(languageSpigot, () ->  {
+                            Bukkit.getScheduler().runTaskLater(languageSpigot, () -> {
                                 player.sendMessage(abstractLanguageAPI.getMessage("languageapi-reload-success", player.getUniqueId(), true));
                                 Source.log("Reloading config", Level.INFO);
                             }, 50L);

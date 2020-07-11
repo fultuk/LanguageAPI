@@ -45,6 +45,7 @@ public class Source {
         mySQLConfiguration.addDefault("mysql.port", 3306);
         mySQLConfiguration.addDefault("languageapi.defaultlang", "de_de");
         mySQLConfiguration.addDefault("languageapi.notify", true);
+        
 
 
         mySQLConfiguration.options().copyDefaults(true);

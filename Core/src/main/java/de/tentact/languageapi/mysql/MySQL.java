@@ -9,7 +9,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.util.Source;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -18,7 +17,7 @@ public class MySQL {
 
     private final String hostname, database, username, password;
     private final int port;
-    public HikariDataSource dataSource;
+    private HikariDataSource dataSource;
 
     public MySQL(String hostname, String database, String username, String password, int port) {
         this.hostname = hostname;
@@ -85,6 +84,7 @@ public class MySQL {
             }
         }
     }
+    /*
     public PreparedStatement createStatement(String query) {
         try(Connection connection = dataSource.getConnection()) {
             return connection.prepareStatement(query);
@@ -104,7 +104,7 @@ public class MySQL {
             }
         }
         return null;
-    }
+    }*/
     public boolean exists(String query) {
         try (Connection connection = this.dataSource.getConnection()) {
             ResultSet resultSet = connection.createStatement().executeQuery(query);
@@ -116,5 +116,7 @@ public class MySQL {
         }
         return false;
     }
-
+    public HikariDataSource getDataSource() {
+        return this.dataSource;
+    }
 }
