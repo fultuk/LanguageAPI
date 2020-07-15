@@ -7,8 +7,9 @@ package de.tentact.languageapi.event;
 */
 
 import org.bukkit.event.Event;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractLanguageEvent extends Event {
 
-    public abstract String getLanguage();
+    public abstract @NotNull String getLanguage();
 }

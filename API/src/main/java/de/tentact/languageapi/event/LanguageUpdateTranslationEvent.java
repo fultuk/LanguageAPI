@@ -17,7 +17,10 @@ public class LanguageUpdateTranslationEvent extends AbstractLanguageEvent implem
     private final String oldMessage;
     private final String newMessage;
 
-    public LanguageUpdateTranslationEvent(String language, String translation, String oldMessage, String newMessage) {
+    public LanguageUpdateTranslationEvent(@NotNull String language,
+                                          @NotNull String translation,
+                                          @NotNull String oldMessage,
+                                          @NotNull String newMessage) {
         this.language = language;
         this.translation = translation;
         this.oldMessage = oldMessage;
@@ -46,7 +49,7 @@ public class LanguageUpdateTranslationEvent extends AbstractLanguageEvent implem
     }
 
     @Override
-    public String getLanguage() {
+    public @NotNull String getLanguage() {
         return this.language;
     }
 
