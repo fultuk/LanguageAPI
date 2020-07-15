@@ -33,6 +33,7 @@ public class Translation {
      *
      * @return returns a translation of the key in the default language
      */
+    @NotNull
     public String getMessage() {
         return this.getMessage(this.abstractLanguageAPI.getDefaultLanguage());
     }
@@ -42,6 +43,7 @@ public class Translation {
      * @param playerUUID the player's uniqueid to fetch the language from
      * @return returns a translation of the key in the language fetched by {@link UUID}
      */
+    @NotNull
     public String getMessage(@NotNull UUID playerUUID) {
         return this.abstractLanguageAPI.getMessage(this.translationkey, playerUUID, usePrefix);
     }
@@ -51,6 +53,7 @@ public class Translation {
      * @param language the language to get the translation in
      * @return returns a translation of the key in the given language
      */
+    @NotNull
     public String getMessage(@NotNull String language) {
         return this.abstractLanguageAPI.getMessage(this.translationkey, language, usePrefix);
     }
@@ -59,6 +62,7 @@ public class Translation {
      *
      * @return returns the parameter for a key
      */
+
     public String getParameter() {
        return this.abstractLanguageAPI.getParameter(this.translationkey);
     }

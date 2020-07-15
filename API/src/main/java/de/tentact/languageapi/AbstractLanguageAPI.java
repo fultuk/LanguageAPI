@@ -1,6 +1,8 @@
 package de.tentact.languageapi;
 
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -231,6 +233,7 @@ public abstract class AbstractLanguageAPI {
      * @param playerUUID the player uuid to specify the player
      * @return returns a String with the language of the player in the database
      */
+    @NotNull
     public abstract String getPlayerLanguage(UUID playerUUID);
 
     /**
@@ -245,7 +248,7 @@ public abstract class AbstractLanguageAPI {
      * @param transkey the translationkey which holds the other keys
      * @return returns a {@link ArrayList<String>} with the translated messages in the default language
      */
-
+    @NotNull
     public abstract ArrayList<String> getMultipleMessages(String transkey);
 
     /**
@@ -253,7 +256,7 @@ public abstract class AbstractLanguageAPI {
      * @param playerUUID the player UUID is needed to select the language
      * @return returns a {@link ArrayList<String>} with the translated messages
      */
-
+    @NotNull
     public abstract ArrayList<String> getMultipleMessages(String transkey, UUID playerUUID);
 
     /**
@@ -261,7 +264,7 @@ public abstract class AbstractLanguageAPI {
      * @param language the language to get the translation in
      * @return returns a {@link ArrayList<String>} with the translated messages
      */
-
+    @NotNull
     public abstract ArrayList<String> getMultipleMessages(String transkey, String language);
 
     /**
@@ -270,7 +273,7 @@ public abstract class AbstractLanguageAPI {
      * @param usePrefix specify if the prefix should be returned with the translation
      * @return returns a {@link ArrayList<String>} with the translated messages
      */
-
+    @NotNull
     public abstract ArrayList<String> getMultipleMessages(String transkey, String language, boolean usePrefix);
 
     /**
@@ -279,6 +282,7 @@ public abstract class AbstractLanguageAPI {
      * @param usePrefix  specify if the prefix should be returned with the translation
      * @return returns a {@link ArrayList<String>} with the translated messages
      */
+    @NotNull
     public abstract ArrayList<String> getMultipleMessages(String transkey, UUID playerUUID, boolean usePrefix);
 
     /**
@@ -287,7 +291,7 @@ public abstract class AbstractLanguageAPI {
      * @param usePrefix      specify if the prefix should be returned with the translation
      * @return returns the translation for a given player
      */
-
+    @NotNull
     public abstract String getMessage(String translationkey, UUID playerUUID, boolean usePrefix);
 
     /**
@@ -297,7 +301,7 @@ public abstract class AbstractLanguageAPI {
      * @return returns the translation for a given language
      */
 
-
+    @NotNull
     public abstract String getMessage(String translationkey, String language, boolean usePrefix);
 
     /**
@@ -305,6 +309,7 @@ public abstract class AbstractLanguageAPI {
      * @param playerUUID     the player uuid to get the language from
      * @return returns the translation for a given player
      */
+    @NotNull
     public abstract String getMessage(String translationkey, UUID playerUUID);
 
 
@@ -315,18 +320,20 @@ public abstract class AbstractLanguageAPI {
      * @throws IllegalArgumentException if the language was not found
      * @throws IllegalArgumentException if the translationKey was not found for the language
      */
-
+    @NotNull
     public abstract String getMessage(String translationkey, String language);
 
     /**
      * @param language the language to check if it is a language
      * @return returns if it is a language
      */
+
     public abstract boolean isLanguage(String language);
 
     /**
      * @return returns all created languages
      */
+    @NotNull
     public abstract ArrayList<String> getAvailableLanguages();
 
     /**
@@ -334,7 +341,7 @@ public abstract class AbstractLanguageAPI {
      * @return returns all the translationkeys for the language
      * @throws IllegalArgumentException if the language was not found
      */
-
+    @NotNull
     public abstract ArrayList<String> getAllTranslationKeys(String language);
 
     /**
@@ -342,21 +349,25 @@ public abstract class AbstractLanguageAPI {
      * @return returns all the translations for that language
      * @throws IllegalArgumentException if the language was not found
      */
+    @NotNull
     public abstract ArrayList<String> getAllTranslations(String language);
 
     /**
      * @return returns the default language from the config
      */
+    @NotNull
     public abstract String getDefaultLanguage();
 
     /**
      * @return returns the prefix of the api (languageapi-prefix) in the default language {@link AbstractLanguageAPI#getPrefix(String)}
      */
+    @NotNull
     public abstract String getPrefix();
 
     /**
      * @param language the language of the prefix
      * @return returns the prefix to the language
      */
+    @NotNull
     public abstract String getPrefix(String language);
 }

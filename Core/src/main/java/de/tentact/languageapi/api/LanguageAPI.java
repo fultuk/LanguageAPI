@@ -369,9 +369,9 @@ public class LanguageAPI extends AbstractLanguageAPI {
     }
 
     @Override
-    public String getMessage(@NotNull String translationkey,
-                             @NotNull String language,
-                             boolean usePrefix) {
+    public @NotNull String getMessage(@NotNull String translationkey,
+                                      @NotNull String language,
+                                      boolean usePrefix) {
         return usePrefix ? this.getPrefix(language) + this.getMessage(translationkey, language) : this.getMessage(translationkey, language);
     }
 
@@ -397,15 +397,15 @@ public class LanguageAPI extends AbstractLanguageAPI {
     }
 
     @Override
-    public ArrayList<String> getMultipleMessages(@NotNull String transkey,
-                                                 @NotNull String language) {
+    public @NotNull ArrayList<String> getMultipleMessages(@NotNull String transkey,
+                                                          @NotNull String language) {
         return this.getMultipleMessages(transkey, language, false);
     }
 
     @Override
-    public ArrayList<String> getMultipleMessages(@NotNull String transkey,
-                                                 @NotNull UUID playerUUID,
-                                                 boolean usePrefix) {
+    public @NotNull ArrayList<String> getMultipleMessages(@NotNull String transkey,
+                                                          @NotNull UUID playerUUID,
+                                                          boolean usePrefix) {
         return this.getMultipleMessages(transkey, this.getPlayerLanguage(playerUUID), usePrefix);
     }
 
@@ -486,7 +486,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     }
 
     @Override
-    public ArrayList<String> getAllTranslationKeys(@NotNull String language) {
+    public @NotNull ArrayList<String> getAllTranslationKeys(@NotNull String language) {
         ArrayList<String> keys = new ArrayList<>();
         if (this.isLanguage(language)) {
             try (Connection connection = this.mySQL.dataSource.getConnection()) {
@@ -503,7 +503,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     }
 
     @Override
-    public ArrayList<String> getAllTranslations(@NotNull String language) {
+    public @NotNull ArrayList<String> getAllTranslations(@NotNull String language) {
         ArrayList<String> messages = new ArrayList<>();
         if (this.isLanguage(language)) {
             try (Connection connection = this.mySQL.dataSource.getConnection()) {
@@ -522,17 +522,17 @@ public class LanguageAPI extends AbstractLanguageAPI {
     }
 
     @Override
-    public String getDefaultLanguage() {
+    public @NotNull String getDefaultLanguage() {
         return Source.getDefaultLanguage().toLowerCase();
     }
 
     @Override
-    public String getPrefix() {
+    public @NotNull String getPrefix() {
         return this.getMessage("languageapi-prefix", this.getDefaultLanguage());
     }
 
     @Override
-    public String getPrefix(@NotNull String language) {
+    public @NotNull String getPrefix(@NotNull String language) {
         return this.getMessage("languageapi-prefix", language);
     }
 
