@@ -9,6 +9,8 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import de.tentact.languageapi.AbstractLanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
+import de.tentact.languageapi.player.ILanguagePlayer;
+import de.tentact.languageapi.spigot.player.LanguagePlayer;
 import de.tentact.languageapi.util.ChatColorTranslator;
 import de.tentact.languageapi.util.Source;
 import org.jetbrains.annotations.NotNull;
@@ -535,6 +537,12 @@ public class LanguageAPI extends AbstractLanguageAPI {
     public @NotNull String getPrefix(@NotNull String language) {
         return this.getMessage("languageapi-prefix", language);
     }
+
+    @Override
+    public ILanguagePlayer get(UUID playerID) {
+        return new LanguagePlayer(playerID);
+    }
+
 
     private void logInfo(@NotNull String message) {
         Source.log(message, Level.INFO);

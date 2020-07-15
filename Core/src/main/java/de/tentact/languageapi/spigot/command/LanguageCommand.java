@@ -10,6 +10,7 @@ import de.tentact.languageapi.LanguageSpigot;
 import de.tentact.languageapi.event.LanguageCopyEvent;
 import de.tentact.languageapi.event.LanguageCreateEvent;
 import de.tentact.languageapi.event.LanguageDeleteEvent;
+import de.tentact.languageapi.spigot.player.LanguagePlayer;
 import de.tentact.languageapi.util.I18N;
 import de.tentact.languageapi.util.Source;
 import org.bukkit.Bukkit;
@@ -64,6 +65,7 @@ public class LanguageCommand implements TabExecutor {
                             String key = args[2].toLowerCase();
                             if (!abstractLanguageAPI.isKey(key, languages)) {
                                 StringBuilder msg = new StringBuilder();
+
 
                                 for (int i = 3; i < args.length; i++) {
                                     msg.append(args[i]).append(" ");
