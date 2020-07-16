@@ -29,6 +29,7 @@ public abstract class AbstractLanguageAPI {
     /**
      * @return returns a reference to this interface
      */
+    @NotNull
     public static AbstractLanguageAPI getInstance() {
         return abstractLanguageAPI;
     }
@@ -37,7 +38,10 @@ public abstract class AbstractLanguageAPI {
      * @param abstractLanguageAPI instance of the interface
      *                            sets the instance of the interface - set by the implementation
      */
-    public static void setInstance(AbstractLanguageAPI abstractLanguageAPI) {
+    public static void setInstance(@NotNull AbstractLanguageAPI abstractLanguageAPI) {
+        if(AbstractLanguageAPI.abstractLanguageAPI != null) {
+            throw new UnsupportedOperationException("Cannot redefine singleton LanguageAPI");
+        }
         AbstractLanguageAPI.abstractLanguageAPI = abstractLanguageAPI;
     }
 

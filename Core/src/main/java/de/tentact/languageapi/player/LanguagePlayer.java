@@ -1,9 +1,8 @@
-package de.tentact.languageapi.spigot.player;
+package de.tentact.languageapi.player;
 
 
 import de.tentact.languageapi.AbstractLanguageAPI;
 import de.tentact.languageapi.i18n.Translation;
-import de.tentact.languageapi.player.ILanguagePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -24,10 +23,10 @@ public class LanguagePlayer implements ILanguagePlayer {
 
     @Override
     public void sendMessage(@NotNull Translation translation) {
-        if(getPlayer() == null) {
+        if(this.getPlayer() == null) {
             throw new NullPointerException();
         }
-        getPlayer().sendMessage(translation.getMessage());
+        this.getPlayer().sendMessage(translation.getMessage());
 
     }
 
@@ -48,6 +47,21 @@ public class LanguagePlayer implements ILanguagePlayer {
             throw new IllegalArgumentException(language+" was not found");
         }
         this.abstractLanguageAPI.setPlayerLanguage(this.playerID, language, orElseDefault);
+    }
+
+    @Override
+    public void sendMultipleTranslation(@NotNull String multipleTranslationKey) {
+        this.sendMultipleTranslation(multipleTranslationKey, this.getLanguage());
+    }
+    @Override
+    public void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language) {
+        if(this.getPlayer() == null) {
+            throw new NullPointerException();
+        }
+        if(!this.abstractLanguageAPI.isMultipleTranslation(multipleTranslationKey)) {
+            throw new IllegalArgumentException(multipleTranslationKey+" was not found");
+        }
+        this.abstractLanguageAPI.getMultipleMessages(multipleTranslationKey, language).forEach(this.getPlayer() :: sendMessage);
     }
 
     @Override

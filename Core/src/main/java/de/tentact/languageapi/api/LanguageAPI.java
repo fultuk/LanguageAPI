@@ -76,13 +76,13 @@ public class LanguageAPI extends AbstractLanguageAPI {
     @Override
     public void registerPlayer(UUID playerUUID, String language) {
         if (!this.isRegisteredPlayer(playerUUID)) {
-                if (!this.isLanguage(language)) {
-                    logInfo("Registering player with default language (" + this.getDefaultLanguage() + ")");
-                    new Thread(() -> this.mySQL.update("INSERT INTO choosenlang(uuid, language) VALUES ('" + playerUUID.toString() + "', '" + this.getDefaultLanguage() + "');")).start();
-                    return;
-                }
-                new Thread(() -> this.mySQL.update("INSERT INTO choosenlang(uuid, language) VALUES ('" + playerUUID.toString() + "', '" + language.toLowerCase() + "');")).start();
-                logInfo("Registering player with language: " + language);
+            if (!this.isLanguage(language)) {
+                logInfo("Registering player with default language (" + this.getDefaultLanguage() + ")");
+                new Thread(() -> this.mySQL.update("INSERT INTO choosenlang(uuid, language) VALUES ('" + playerUUID.toString() + "', '" + this.getDefaultLanguage() + "');")).start();
+                return;
+            }
+            new Thread(() -> this.mySQL.update("INSERT INTO choosenlang(uuid, language) VALUES ('" + playerUUID.toString() + "', '" + language.toLowerCase() + "');")).start();
+            logInfo("Registering player with language: " + language);
         } else {
             if (!this.isLanguage(this.getPlayerLanguage(playerUUID))) {
                 new Thread(() -> this.mySQL.update("UPDATE choosenlang SET language='" + this.getDefaultLanguage() + "' WHERE uuid='" + playerUUID.toString() + "';")).start();
@@ -347,7 +347,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     }
 
     @Override
-    public String getMessage(String translationkey, String language, boolean usePrefix) {
+    public @NotNull String getMessage(String translationkey, String language, boolean usePrefix) {
         return usePrefix ? this.getPrefix(language) + this.getMessage(translationkey, language) : this.getMessage(translationkey, language);
     }
 
@@ -371,12 +371,12 @@ public class LanguageAPI extends AbstractLanguageAPI {
     }
 
     @Override
-    public ArrayList<String> getMultipleMessages(String transkey, String language) {
+    public @NotNull ArrayList<String> getMultipleMessages(String transkey, String language) {
         return this.getMultipleMessages(transkey, language, false);
     }
 
     @Override
-    public ArrayList<String> getMultipleMessages(String transkey, UUID playerUUID, boolean usePrefix) {
+    public @NotNull ArrayList<String> getMultipleMessages(String transkey, UUID playerUUID, boolean usePrefix) {
         return this.getMultipleMessages(transkey, this.getPlayerLanguage(playerUUID), usePrefix);
     }
 
@@ -455,7 +455,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     }
 
     @Override
-    public ArrayList<String> getAllTranslationKeys(String language) {
+    public @NotNull ArrayList<String> getAllTranslationKeys(String language) {
         ArrayList<String> keys = new ArrayList<>();
         if (this.isLanguage(language)) {
             try (Connection connection = this.mySQL.getDataSource().getConnection()) {
@@ -472,7 +472,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     }
 
     @Override
-    public ArrayList<String> getAllTranslations(String language) {
+    public @NotNull ArrayList<String> getAllTranslations(String language) {
         ArrayList<String> messages = new ArrayList<>();
         if (this.isLanguage(language)) {
             try (Connection connection = this.mySQL.getDataSource().getConnection()) {
@@ -490,17 +490,17 @@ public class LanguageAPI extends AbstractLanguageAPI {
     }
 
     @Override
-    public String getDefaultLanguage() {
+    public @NotNull String getDefaultLanguage() {
         return Source.getDefaultLanguage().toLowerCase();
     }
 
     @Override
-    public String getPrefix() {
+    public @NotNull String getPrefix() {
         return this.getMessage("languageapi-prefix", this.getDefaultLanguage());
     }
 
     @Override
-    public String getPrefix(String language) {
+    public @NotNull String getPrefix(String language) {
         return this.getMessage("languageapi-prefix", language);
     }
 

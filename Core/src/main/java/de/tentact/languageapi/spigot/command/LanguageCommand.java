@@ -10,7 +10,6 @@ import de.tentact.languageapi.LanguageSpigot;
 import de.tentact.languageapi.event.LanguageCopyEvent;
 import de.tentact.languageapi.event.LanguageCreateEvent;
 import de.tentact.languageapi.event.LanguageDeleteEvent;
-import de.tentact.languageapi.spigot.player.LanguagePlayer;
 import de.tentact.languageapi.util.I18N;
 import de.tentact.languageapi.util.Source;
 import org.bukkit.Bukkit;
