@@ -84,27 +84,6 @@ public class MySQL {
             }
         }
     }
-    /*
-    public PreparedStatement createStatement(String query) {
-        try(Connection connection = dataSource.getConnection()) {
-            return connection.prepareStatement(query);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return null;
-    }
-
-    public ResultSet getResult(String sql) {
-        if (isConnected()) {
-            try {
-                Connection connection = dataSource.getConnection();
-                return connection.createStatement().executeQuery(sql);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        }
-        return null;
-    }*/
     public boolean exists(String query) {
         try (Connection connection = this.dataSource.getConnection()) {
             ResultSet resultSet = connection.createStatement().executeQuery(query);
