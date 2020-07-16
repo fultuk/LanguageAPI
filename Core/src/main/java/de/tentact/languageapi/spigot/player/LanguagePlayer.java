@@ -24,6 +24,9 @@ public class LanguagePlayer implements ILanguagePlayer {
 
     @Override
     public void sendMessage(@NotNull Translation translation) {
+        if(getPlayer() == null) {
+            throw new NullPointerException();
+        }
         getPlayer().sendMessage(translation.getMessage());
 
     }
@@ -36,7 +39,15 @@ public class LanguagePlayer implements ILanguagePlayer {
 
     @Override
     public void setLanguage(@NotNull String language) {
-        this.abstractLanguageAPI.setPlayerLanguage(this.playerID, language, true);
+        this.setLanguage(language, false);
+    }
+
+    @Override
+    public void setLanguage(@NotNull String language, boolean orElseDefault) {
+        if(!this.abstractLanguageAPI.isLanguage(language) && !orElseDefault) {
+            throw new IllegalArgumentException(language+" was not found");
+        }
+        this.abstractLanguageAPI.setPlayerLanguage(this.playerID, language, orElseDefault);
     }
 
     @Override
@@ -46,9 +57,11 @@ public class LanguagePlayer implements ILanguagePlayer {
 
     @Nullable
     private Player getPlayer() {
+        if(this.player != null) {
+            return this.player;
+        }
         this.player = Bukkit.getPlayer(this.playerID);
         return this.player;
-
     }
 
 }

@@ -374,6 +374,11 @@ public abstract class AbstractLanguageAPI {
     @NotNull
     public abstract String getPrefix(String language);
 
+    /**
+     *
+     * @param playerID
+     * @return
+     */
     public ILanguagePlayer getILanguagePlayer(UUID playerID) {
         Player player = Bukkit.getPlayer(playerID);
         if(player == null) {
@@ -381,6 +386,12 @@ public abstract class AbstractLanguageAPI {
         }
         return this.get(playerID);
     }
+
+    /**
+     *
+     * @param playerID
+     * @return
+     */
     public abstract ILanguagePlayer get(UUID playerID);
 
 }

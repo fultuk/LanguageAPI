@@ -11,6 +11,8 @@ public interface ILanguagePlayer {
 
     void setLanguage(@NotNull String language);
 
+    void setLanguage(@NotNull String language, boolean orElseDefault);
+
     String getLanguage();
 
 }

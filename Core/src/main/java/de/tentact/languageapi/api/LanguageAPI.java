@@ -52,7 +52,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     @Override
     public void setPlayerLanguage(UUID playerUUID, String newLanguage, boolean orElseDefault) {
         this.registerPlayer(playerUUID);
-        if (!this.isLanguage(newLanguage)) {
+        if (!this.isLanguage(newLanguage) && orElseDefault) {
             this.setPlayerLanguage(playerUUID, this.getDefaultLanguage());
             return;
         }
