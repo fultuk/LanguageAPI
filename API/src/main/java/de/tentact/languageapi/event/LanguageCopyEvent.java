@@ -19,11 +19,13 @@ public class LanguageCopyEvent extends AbstractLanguageEvent implements Cancella
 
     /**
      * This event is called when {@link de.tentact.languageapi.AbstractLanguageAPI#copyLanguage(String, String)} is called and the given languages are correct
-     * @param language the old language to copy from
+     *
+     * @param language    the old language to copy from
      * @param newLanguage the language to copy to
      */
 
-    public LanguageCopyEvent(@NotNull String language, @NotNull String newLanguage) {
+    public LanguageCopyEvent(@NotNull String language,
+                             @NotNull String newLanguage) {
         this.language = language;
         this.newLanguage = newLanguage;
     }
@@ -49,7 +51,7 @@ public class LanguageCopyEvent extends AbstractLanguageEvent implements Cancella
     }
 
     @Override
-    public String getLanguage() {
+    public @NotNull String getLanguage() {
         return this.language;
     }
 }

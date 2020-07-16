@@ -105,6 +105,9 @@ public class Source {
     public static String getDefaultLanguage() {
         if(defaultLanguage == null) {
             defaultLanguage = isBungeeCordMode ? bungeecordmySQLConfiguration.getString("languageapi.defaultlang") : Objects.requireNonNull(mySQLConfiguration.getString("languageapi.defaultlang"));
+            if(defaultLanguage == null) {
+                defaultLanguage = "de_de";
+            }
         }
         return defaultLanguage;
     }

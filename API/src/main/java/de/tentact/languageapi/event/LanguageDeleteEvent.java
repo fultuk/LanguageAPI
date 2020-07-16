@@ -35,7 +35,7 @@ public class LanguageDeleteEvent extends AbstractLanguageEvent implements Cancel
         this.cancel = b;
     }
 
-    public String getLanguage() {
+    public @NotNull String getLanguage() {
         return this.language;
     }
 }

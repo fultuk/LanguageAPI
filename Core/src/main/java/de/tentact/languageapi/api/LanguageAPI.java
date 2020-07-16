@@ -184,7 +184,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     public void addTranslationKeyToMultipleTranslation(final String multipleTranslation, final String transkey) {
 
         String[] translationKeys = new String[]{};
-        try (Connection connection = this.mySQL.getDataSource().getConnection()) {
+        try (Connection connection = this.mySQL.dataSource.getConnection()) {
             ResultSet resultSet = connection.createStatement().executeQuery("SELECT transkeys FROM MultipleTranslation WHERE multipleKey='" + multipleTranslation.toLowerCase() + "'");
             if (resultSet.next()) {
                 translationKeys = resultSet.getString("transkeys").split(",");
@@ -217,7 +217,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
             throw new IllegalArgumentException(translationKey + " has no parameter");
         }
 
-        try (Connection connection = this.mySQL.getDataSource().getConnection()) {
+        try (Connection connection = this.mySQL.dataSource.getConnection()) {
             ResultSet rs = connection.createStatement().executeQuery("SELECT param FROM Parameter WHERE transkey='" + translationKey.toLowerCase() + "';");
             if (rs.next()) {
                 return rs.getString("param");
@@ -285,7 +285,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
         }
 
         ArrayList<String> translationKeysAsArrayList = null;
-        try (Connection connection = this.mySQL.getDataSource().getConnection()) {
+        try (Connection connection = this.mySQL.dataSource.getConnection()) {
             ResultSet resultSet = connection.createStatement().executeQuery("SELECT transkeys FROM MultipleTranslation WHERE multipleKey='" + multipleTranslation.toLowerCase() + "'");
             if (resultSet.next()) {
                 translationKeysAsArrayList = new ArrayList<>(Arrays.asList(resultSet.getString("transkeys").split(",")));
@@ -322,7 +322,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
             this.registerPlayer(playerUUID);
         }
 
-        try (Connection connection = this.mySQL.getDataSource().getConnection()) {
+        try (Connection connection = this.mySQL.dataSource.getConnection()) {
             ResultSet rs = connection.createStatement().executeQuery("SELECT language FROM choosenlang WHERE uuid='" + playerUUID.toString() + "';");
             if (rs.next()) {
 
@@ -384,7 +384,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     public ArrayList<String> getMultipleMessages(String transkey, String language, boolean usePrefix) {
         ArrayList<String> resolvedMessages = new ArrayList<>();
         String[] translationKeys = new String[]{};
-        try (Connection connection = this.mySQL.getDataSource().getConnection()) {
+        try (Connection connection = this.mySQL.dataSource.getConnection()) {
             ResultSet resultSet = connection.createStatement().executeQuery("SELECT transkeys FROM MultipleTranslation WHERE multipleKey='" + transkey.toLowerCase() + "'");
             if (resultSet.next()) {
                 String mysqlString = resultSet.getString("transkeys");
@@ -413,7 +413,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
             return Objects.requireNonNull(this.translationCache.getIfPresent(transkey)).get(lang);
         }
 
-        try (Connection connection = this.mySQL.getDataSource().getConnection()) {
+        try (Connection connection = this.mySQL.dataSource.getConnection()) {
             ResultSet rs = connection.createStatement().executeQuery("SELECT translation FROM " + lang.toLowerCase() + " WHERE transkey='" + transkey.toLowerCase() + "';");
             if (rs.next()) {
                 String translation = ChatColorTranslator.translateAlternateColorCodes('&', rs.getString("translation"));
@@ -442,7 +442,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     public ArrayList<String> getAvailableLanguages() {
         ArrayList<String> languages = new ArrayList<>();
 
-        try (Connection connection = this.mySQL.getDataSource().getConnection()) {
+        try (Connection connection = this.mySQL.dataSource.getConnection()) {
             ResultSet rs = connection.createStatement().executeQuery("SELECT language FROM languages");
             while (rs.next()) {
                 languages.add(rs.getString("language").toLowerCase());
@@ -457,7 +457,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     public ArrayList<String> getAllTranslationKeys(String language) {
         ArrayList<String> keys = new ArrayList<>();
         if (this.isLanguage(language)) {
-            try (Connection connection = this.mySQL.getDataSource().getConnection()) {
+            try (Connection connection = this.mySQL.dataSource.getConnection()) {
                 ResultSet rs = connection.createStatement().executeQuery("SELECT transkey FROM " + language);
                 while (rs.next()) {
                     keys.add(rs.getString("transkey"));
@@ -474,7 +474,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     public ArrayList<String> getAllTranslations(String language) {
         ArrayList<String> messages = new ArrayList<>();
         if (this.isLanguage(language)) {
-            try (Connection connection = this.mySQL.getDataSource().getConnection()) {
+            try (Connection connection = this.mySQL.dataSource.getConnection()) {
                 ResultSet rs = connection.createStatement().executeQuery("SELECT translation FROM " + language);
                 while (rs.next()) {
                     messages.add(rs.getString("translation"));
