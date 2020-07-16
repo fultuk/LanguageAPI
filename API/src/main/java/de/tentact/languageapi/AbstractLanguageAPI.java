@@ -1,10 +1,10 @@
 package de.tentact.languageapi;
 
 
-import de.tentact.languageapi.player.ILanguagePlayer;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import de.tentact.languageapi.player.LanguageOfflinePlayer;
+import de.tentact.languageapi.player.LanguagePlayer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -383,19 +383,9 @@ public abstract class AbstractLanguageAPI {
      * @param playerID
      * @return
      */
-    public ILanguagePlayer getILanguagePlayer(UUID playerID) {
-        Player player = Bukkit.getPlayer(playerID);
-        if(player == null) {
-            return null;
-        }
-        return this.get(playerID);
-    }
+    @Nullable
+    public abstract LanguagePlayer getLanguagePlayer(UUID playerID);
 
-    /**
-     *
-     * @param playerID
-     * @return
-     */
-    public abstract ILanguagePlayer get(UUID playerID);
+    public abstract LanguageOfflinePlayer getLanguageOfflinePlayer(UUID playerID);
 
 }

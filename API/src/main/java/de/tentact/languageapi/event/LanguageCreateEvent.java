@@ -6,11 +6,10 @@ package de.tentact.languageapi.event;
     Uhrzeit: 10:32
 */
 
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class LanguageCreateEvent extends AbstractLanguageEvent implements Cancellable {
+public class LanguageCreateEvent extends AbstractLanguageEvent {
     private final String language;
     private boolean cancel;
     private final HandlerList handlerList = new HandlerList();

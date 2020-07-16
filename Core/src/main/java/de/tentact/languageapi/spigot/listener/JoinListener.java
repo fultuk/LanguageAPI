@@ -19,11 +19,14 @@ public class JoinListener implements Listener {
 
     LanguageSpigot languageSpigot = LanguageSpigot.getPlugin(LanguageSpigot.class);
     private final Updater updater = languageSpigot.getUpdater();
+    private final AbstractLanguageAPI abstractLanguageAPI = AbstractLanguageAPI.getInstance();
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        AbstractLanguageAPI.getInstance().registerPlayer(player.getUniqueId(), player.getLocale().toLowerCase());
+
+        abstractLanguageAPI.registerPlayer(player.getUniqueId(), player.getLocale().toLowerCase());
+
         if(!Source.getUpdateNotfication()) {
             return;
         }

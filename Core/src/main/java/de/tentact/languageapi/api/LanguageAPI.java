@@ -9,10 +9,14 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import de.tentact.languageapi.AbstractLanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
-import de.tentact.languageapi.player.ILanguagePlayer;
+import de.tentact.languageapi.player.LanguageOfflinePlayer;
+import de.tentact.languageapi.player.LanguageOfflinePlayerImpl;
+import de.tentact.languageapi.player.LanguagePlayer;
+import de.tentact.languageapi.player.LanguagePlayerImpl;
 import de.tentact.languageapi.util.ChatColorTranslator;
 import de.tentact.languageapi.util.Source;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -52,8 +56,11 @@ public class LanguageAPI extends AbstractLanguageAPI {
     @Override
     public void setPlayerLanguage(UUID playerUUID, String newLanguage, boolean orElseDefault) {
         this.registerPlayer(playerUUID);
-        if (!this.isLanguage(newLanguage) && orElseDefault) {
-            this.setPlayerLanguage(playerUUID, this.getDefaultLanguage());
+        if (!this.isLanguage(newLanguage)) {
+            if(orElseDefault) {
+                this.setPlayerLanguage(playerUUID, this.getDefaultLanguage());
+                return;
+            }
             return;
         }
         this.mySQL.update("UPDATE choosenlang WHERE uuid='" + playerUUID.toString() + "' SET language='" + newLanguage.toLowerCase() + "';");
@@ -505,9 +512,16 @@ public class LanguageAPI extends AbstractLanguageAPI {
     }
 
     @Override
-    public ILanguagePlayer get(UUID playerID) {
-        return null;
+    public @Nullable LanguagePlayer getLanguagePlayer(UUID playerID) {
+        return new LanguagePlayerImpl(playerID);
     }
+
+    @Override
+    public LanguageOfflinePlayer getLanguageOfflinePlayer(UUID playerID) {
+        return new LanguageOfflinePlayerImpl(playerID);
+    }
+
+
 
     private void logInfo(String message) {
         Source.log(message, Level.INFO);
