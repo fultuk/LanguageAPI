@@ -1,9 +1,7 @@
 package de.tentact.languageapi.player;
 
 import de.tentact.languageapi.i18n.Translation;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public interface LanguagePlayer extends LanguageOfflinePlayer {
 
@@ -17,6 +15,8 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
      * @param transkey
      */
     void sendMessageByKey(@NotNull String transkey);
+
+    void sendMessageByKey(@NotNull String transkey, boolean usePrefix);
 
 
     /**
@@ -35,9 +35,5 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
      */
     boolean isOnline();
 
-    /**
-     * @return
-     */
-    @Nullable Player getPlayer();
 
 }

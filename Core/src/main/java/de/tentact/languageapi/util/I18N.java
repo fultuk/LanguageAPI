@@ -6,12 +6,14 @@ package de.tentact.languageapi.util;
 */
 
 import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.i18n.Translation;
 
 import java.util.Arrays;
 
 public class I18N {
 
     private static final AbstractLanguageAPI iLanguageAPI = AbstractLanguageAPI.getInstance();
+
 
     public static void createDefaultPluginMessages() {
 
@@ -150,5 +152,31 @@ public class I18N {
                 "languageapi-copy-help",
                 "languageapi-create-help"), true);
     }
+
+    public static Translation LANGUAGEAPI_ADD_HELP = new Translation("languageapi-add-help", true);
+    public static Translation LANGUAGEAPI_ADD_SUCCESS = new Translation("languageapi-add-success", true);
+    public static Translation LANGUAGEAPI_KEY_ALREADY_EXISTS = new Translation("languageapi-key-already-exists", true);
+    public static Translation LANGUAGEAPI_LANG_NOT_FOUND = new Translation("languageapi-lang-not-found");
+    public static Translation LANGUAGEAPI_REMOVE_KEY_IN_LANGUAGE = new Translation("languageapi-remove-key-in-language",true);
+    public static Translation LANGUAGEAPI_REMOVE_KEY_IN_EVERY_LANGUAGE = new Translation("languageapi-remove-key-in-every-language",true);
+    public static Translation LANGUAGEAPI_REMOVE_EVERY_KEY_IN_LANGUAGE = new Translation("languageapi-remove-every-key-in-language",true);
+    public static Translation LANGUAGEAPI_REMOVE_EVERY_KEY_IN_EVERY_LANGUAGE = new Translation("languageapi-remove-every-key-in-every-language",true);
+    public static Translation LANGUAGEAPI_KEY_NOT_FOUND = new Translation("languageapi-key-not-found", true);
+    public static Translation LANGUAGEAPI_UPDATE_SUCCESS = new Translation("languageapi-update-success", true);
+    public static Translation LANGUAGEAPI_UPDATE_INSTRUCTIONS = new Translation("languageapi-update-instructions", true);
+    public static Translation LANGUAGEAPI_UPDATE_SAME = new Translation("languageapi-update-same", true);
+    public static Translation LANGUAGEAPI_UPDATE_HELP = new Translation("languageapi-update-help", true);
+    public static Translation LANGUAGEAPI_CREATE_SUCCESS = new Translation("languageapi-create-success", true);
+    public static Translation LANGUAGEAPI_CREATE_HELP = new Translation("languageapi-create-help", true);
+    public static Translation LANGUAGEAPI_LANG_ALREADY_EXISTS = new Translation("languageapi-lang-already-exists", true);
+    public static Translation LANGUAGEAPI_DELETE_SUCCESS = new Translation("languageapi-delete-success", true);
+    public static Translation LANGUAGEAPI_DELETE_ALL_LANGS = new Translation("languageapi-delete-all-langs", true);
+    public static Translation LANGUAGEAPI_COPY_SUCCESS = new Translation("languageapi-copy-success", true);
+    public static Translation LANGUAGEAPI_COPY_HELP = new Translation("languageapi-copy-help", true);
+    public static Translation LANGUAGEAPI_KEY_HAS_NO_PARAM = new Translation("languageapi-key-has-no-param", true);
+    public static Translation LANGUAGEAPI_SHOW_SUCCESS = new Translation("languageapi-show-success", true);
+    public static Translation LANGUAGEAPI_TRANSLATION_SUCCESS = new Translation("languageapi-translation-success", true);
+    public static Translation LANGUAGEAPI_RELOAD_SUCCESS = new Translation("languageapi-reload-success", true);
+    public static Translation LANGUAGEAPI_HELP = new Translation("languageapi-help", true);
 
 }
