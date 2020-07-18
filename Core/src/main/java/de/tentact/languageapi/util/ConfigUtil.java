@@ -20,7 +20,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Source {
+public class ConfigUtil {
 
     private static YamlConfiguration mySQLConfiguration;
 
@@ -106,7 +106,7 @@ public class Source {
         if(defaultLanguage == null) {
             defaultLanguage = isBungeeCordMode ? bungeecordmySQLConfiguration.getString("languageapi.defaultlang") : Objects.requireNonNull(mySQLConfiguration.getString("languageapi.defaultlang"));
             if(defaultLanguage == null) {
-                defaultLanguage = "de_de";
+                defaultLanguage = "de_dethe ";
             }
         }
         return defaultLanguage;

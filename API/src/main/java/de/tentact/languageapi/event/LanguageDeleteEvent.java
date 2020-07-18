@@ -15,6 +15,11 @@ public class LanguageDeleteEvent extends AbstractLanguageEvent{
     private boolean cancel;
     private final HandlerList handlerList = new HandlerList();
 
+    /**
+     * this event is called when a player deletes a language by command
+     * @param language the deleted language
+     */
+
     public LanguageDeleteEvent(@NotNull String language) {
         this.language = language;
     }

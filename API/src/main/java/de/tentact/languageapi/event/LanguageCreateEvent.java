@@ -14,6 +14,10 @@ public class LanguageCreateEvent extends AbstractLanguageEvent {
     private boolean cancel;
     private final HandlerList handlerList = new HandlerList();
 
+    /**
+     * this event is called when a player creates a language by commnd
+     * @param language the new created language
+     */
     public LanguageCreateEvent(@NotNull String language) {
         this.language = language;
     }

@@ -17,7 +17,7 @@ public class LanguageCopyEvent extends AbstractLanguageEvent {
     private final HandlerList handlerList = new HandlerList();
 
     /**
-     * This event is called when {@link de.tentact.languageapi.AbstractLanguageAPI#copyLanguage(String, String)} is called and the given languages are correct
+     * This event is called when a language is copied by command
      *
      * @param language    the old language to copy from
      * @param newLanguage the language to copy to

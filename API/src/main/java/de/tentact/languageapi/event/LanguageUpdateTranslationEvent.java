@@ -12,16 +12,24 @@ import org.jetbrains.annotations.NotNull;
 public class LanguageUpdateTranslationEvent extends AbstractLanguageEvent{
 
     private final String language;
-    private final String translation;
+    private final String translationkey;
     private final String oldMessage;
     private final String newMessage;
 
+    /**
+     * this event is called when a player updates an translation by command
+     * @param language the language in which the translation was changed
+     * @param translationkey the translationkey to the translation which was updated
+     * @param oldMessage the old translation
+     * @param newMessage the new translation
+     */
+
     public LanguageUpdateTranslationEvent(@NotNull String language,
-                                          @NotNull String translation,
+                                          @NotNull String translationkey,
                                           @NotNull String oldMessage,
                                           @NotNull String newMessage) {
         this.language = language;
-        this.translation = translation;
+        this.translationkey = translationkey;
         this.oldMessage = oldMessage;
         this.newMessage = newMessage;
     }
@@ -43,8 +51,8 @@ public class LanguageUpdateTranslationEvent extends AbstractLanguageEvent{
     }
 
 
-    public String getTranslation() {
-        return this.translation;
+    public String getTranslationkey() {
+        return this.translationkey;
     }
 
     @Override

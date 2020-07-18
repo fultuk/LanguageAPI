@@ -10,7 +10,7 @@ import de.tentact.languageapi.spigot.command.LanguageCommand;
 import de.tentact.languageapi.spigot.listener.ChatListener;
 import de.tentact.languageapi.spigot.listener.JoinListener;
 import de.tentact.languageapi.util.I18N;
-import de.tentact.languageapi.util.Source;
+import de.tentact.languageapi.util.ConfigUtil;
 import de.tentact.languageapi.util.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
@@ -27,16 +27,16 @@ public class LanguageSpigot extends JavaPlugin {
     @Override
     public void onEnable() {
         getLogger().log(Level.INFO, "Starting LanguageAPI");
-        Source.isBungeeCordMode = false;
-        Source.createSpigotMySQLConfig();
-        Source.initSpigot();
-        Source.initLogger(this.getLogger());
+        ConfigUtil.isBungeeCordMode = false;
+        ConfigUtil.createSpigotMySQLConfig();
+        ConfigUtil.initSpigot();
+        ConfigUtil.initLogger(this.getLogger());
 
-        this.mySQL = Source.getMySQL();
+        this.mySQL = ConfigUtil.getMySQL();
         this.mySQL.connect();
         this.mySQL.createDefaultTable();
 
-        AbstractLanguageAPI.getInstance().createLanguage(Source.getDefaultLanguage());
+        AbstractLanguageAPI.getInstance().createLanguage(ConfigUtil.getDefaultLanguage());
         I18N.createDefaultPluginMessages();
         this.updater = new Updater(this);
 

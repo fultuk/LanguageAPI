@@ -29,7 +29,7 @@ public class Updater {
         this.localVersion = Integer.parseInt(plugin.getDescription().getVersion().replace(".", ""));
         this.fullLocalVersion = plugin.getDescription().getVersion();
         String online = this.getOnlineVersion(this.pluginName).replace(".", "");
-        Source.log(online, Level.WARNING);
+        ConfigUtil.log(online, Level.WARNING);
         this.onlineVersion = Integer.parseInt(online);
         if(this.onlineVersion > this.localVersion) {
             Bukkit.broadcastMessage(AbstractLanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"

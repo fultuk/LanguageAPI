@@ -6,7 +6,7 @@ package de.tentact.languageapi.mysql;
 */
 
 import com.zaxxer.hikari.HikariDataSource;
-import de.tentact.languageapi.util.Source;
+import de.tentact.languageapi.util.ConfigUtil;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -34,7 +34,7 @@ public class MySQL {
             dataSource.setUsername(this.username);
             dataSource.setPassword(this.password);
 
-            Source.log("Creating connection to database", Level.INFO);
+            ConfigUtil.log("Creating connection to database", Level.INFO);
 
         }
     }
@@ -57,7 +57,7 @@ public class MySQL {
                 connection.createStatement().execute("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(64));");
                 connection.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(transkey VARCHAR(64), param VARCHAR(2000));");
                 connection.createStatement().execute("CREATE TABLE IF NOT EXISTS MultipleTranslation(multipleKey VARCHAR(64), transkeys VARCHAR(2000));");
-                Source.log("Creating default tables", Level.INFO);
+                ConfigUtil.log("Creating default tables", Level.INFO);
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -69,7 +69,7 @@ public class MySQL {
                 return;
             try(Connection connection = dataSource.getConnection()) {
                 connection.createStatement().execute("CREATE TABLE IF NOT EXISTS " + tableName + "(transkey VARCHAR(64), translation VARCHAR(2000));");
-                Source.log("creating table: "+tableName, Level.INFO);
+                ConfigUtil.log("creating table: "+tableName, Level.INFO);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }

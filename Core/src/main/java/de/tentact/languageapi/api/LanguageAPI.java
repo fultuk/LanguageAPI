@@ -14,7 +14,7 @@ import de.tentact.languageapi.player.LanguageOfflinePlayerImpl;
 import de.tentact.languageapi.player.LanguagePlayer;
 import de.tentact.languageapi.player.LanguagePlayerImpl;
 import de.tentact.languageapi.util.ChatColorTranslator;
-import de.tentact.languageapi.util.Source;
+import de.tentact.languageapi.util.ConfigUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +27,7 @@ import java.util.logging.Level;
 
 public class LanguageAPI extends AbstractLanguageAPI {
 
-    private final MySQL mySQL = Source.getMySQL();
+    private final MySQL mySQL = ConfigUtil.getMySQL();
 
     private final Cache<String, HashMap<String, String>> translationCache = CacheBuilder.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
 
@@ -498,7 +498,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
 
     @Override
     public @NotNull String getDefaultLanguage() {
-        return Source.getDefaultLanguage().toLowerCase();
+        return ConfigUtil.getDefaultLanguage().toLowerCase();
     }
 
     @Override
@@ -524,7 +524,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
 
 
     private void logInfo(String message) {
-        Source.log(message, Level.INFO);
+        ConfigUtil.log(message, Level.INFO);
     }
 
 }

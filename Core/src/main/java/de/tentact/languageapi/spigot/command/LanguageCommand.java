@@ -12,7 +12,7 @@ import de.tentact.languageapi.event.LanguageCreateEvent;
 import de.tentact.languageapi.event.LanguageDeleteEvent;
 import de.tentact.languageapi.player.LanguagePlayer;
 import de.tentact.languageapi.util.I18N;
-import de.tentact.languageapi.util.Source;
+import de.tentact.languageapi.util.ConfigUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -260,13 +260,13 @@ public class LanguageCommand implements TabExecutor {
                             }
                             break;
                         case "reload":
-                            Source.createSpigotMySQLConfig();
+                            ConfigUtil.createSpigotMySQLConfig();
                             I18N.createDefaultPluginMessages();
-                            Source.initSpigot();
-                            Source.defaultLanguage = null;
+                            ConfigUtil.initSpigot();
+                            ConfigUtil.defaultLanguage = null;
                             Bukkit.getScheduler().runTaskLater(languageSpigot, () -> {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_RELOAD_SUCCESS);
-                                Source.log("Reloading config", Level.INFO);
+                                ConfigUtil.log("Reloading config", Level.INFO);
                             }, 50L);
                             break;
 
