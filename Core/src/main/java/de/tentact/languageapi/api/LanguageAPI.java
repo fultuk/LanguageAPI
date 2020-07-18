@@ -7,6 +7,7 @@ package de.tentact.languageapi.api;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.AbstractLanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.player.LanguageOfflinePlayer;
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -57,7 +59,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     public void setPlayerLanguage(UUID playerUUID, String newLanguage, boolean orElseDefault) {
         this.registerPlayer(playerUUID);
         if (!this.isLanguage(newLanguage)) {
-            if(orElseDefault) {
+            if (orElseDefault) {
                 this.setPlayerLanguage(playerUUID, this.getDefaultLanguage());
                 return;
             }
@@ -260,7 +262,15 @@ public class LanguageAPI extends AbstractLanguageAPI {
             throw new IllegalArgumentException("Translationkey " + transkey + " was not found!");
         }
 
-        new Thread(() -> this.mySQL.update("UPDATE " + language.toLowerCase() + " SET translation='" + ChatColorTranslator.translateAlternateColorCodes('&', message) + "' WHERE transkey='" + transkey.toLowerCase() + "';")).start();
+        //new Thread(() -> this.mySQL.update("UPDATE " + language.toLowerCase() + " SET translation='" + ChatColorTranslator.translateAlternateColorCodes('&', message) + "' WHERE transkey='" + transkey.toLowerCase() + "';")).start();
+        try (Connection connection = this.getDataSouce().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE ? SET translation= ? WHERE transkey=?;")) {
+            preparedStatement.setString(1, language.toLowerCase());
+            preparedStatement.setString(2, ChatColorTranslator.translateAlternateColorCodes('&', message));
+            preparedStatement.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         translationCache.invalidate(transkey.toLowerCase());
 
     }
@@ -275,8 +285,18 @@ public class LanguageAPI extends AbstractLanguageAPI {
         for (String translationKey : translationKeys) {
             stringBuilder.append(translationKey.toLowerCase()).append(",");
         }
-        new Thread(() -> this.mySQL.update("INSERT INTO MultipleTranslation(multipleKey, transkeys) VALUES ('" + multipleTranslation.toLowerCase() + "','" + stringBuilder.toString() + "');")).start();
+        //new Thread(() -> this.mySQL.update("INSERT INTO MultipleTranslation(multipleKey, transkeys) VALUES ('" + multipleTranslation.toLowerCase() + "','" + stringBuilder.toString() + "');")).start();
+        try (Connection connection = this.getDataSouce().getConnection();
+             PreparedStatement preparedStatement =
+                     connection.prepareStatement("INSERT INTO MultipleTranslation(multipleKey, transkey) VALUES (?,?)")) {
+            preparedStatement.setString(1, multipleTranslation);
+            preparedStatement.setString(2, stringBuilder.toString());
+            preparedStatement.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
+
 
     @Override
     public void removeMultipleTranslation(final String multipleTranslation) {
@@ -521,7 +541,9 @@ public class LanguageAPI extends AbstractLanguageAPI {
         return new LanguageOfflinePlayerImpl(playerID);
     }
 
-
+    private HikariDataSource getDataSouce() {
+        return this.mySQL.getDataSource();
+    }
 
     private void logInfo(String message) {
         ConfigUtil.log(message, Level.INFO);

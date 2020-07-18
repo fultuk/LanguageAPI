@@ -25,11 +25,12 @@ public class Updater {
     private final boolean isEnabled;
 
     public Updater(Plugin plugin) {
+        ConfigUtil.log("Checking for updates...", Level.INFO);
         this.pluginName = plugin.getName();
         this.localVersion = Integer.parseInt(plugin.getDescription().getVersion().replace(".", ""));
         this.fullLocalVersion = plugin.getDescription().getVersion();
         String online = this.getOnlineVersion(this.pluginName).replace(".", "");
-        ConfigUtil.log(online, Level.WARNING);
+
         this.onlineVersion = Integer.parseInt(online);
         if(this.onlineVersion > this.localVersion) {
             Bukkit.broadcastMessage(AbstractLanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
@@ -42,6 +43,7 @@ public class Updater {
     }
 
     public Updater(net.md_5.bungee.api.plugin.Plugin plugin) {
+        ConfigUtil.log("Checking for updates...", Level.INFO);
         this.pluginName = plugin.getDescription().getName();
         this.localVersion = Integer.parseInt(plugin.getDescription().getVersion().replace(".", ""));
         this.fullLocalVersion = plugin.getDescription().getVersion();
@@ -57,7 +59,9 @@ public class Updater {
     private String getOnlineVersion(String pluginName){
         Scanner scanner = null;
         try {
+            ConfigUtil.log("Creating connection to webserver", Level.INFO);
             scanner = new Scanner(new URL("https://tentact.de/plugins?"+pluginName.toLowerCase()).openStream());
+            ConfigUtil.log("Fetched online version", Level.INFO);
         } catch (IOException e) {
             e.printStackTrace();
         }
