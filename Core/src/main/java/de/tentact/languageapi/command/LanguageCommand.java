@@ -7,9 +7,6 @@ package de.tentact.languageapi.command;
 
 import de.tentact.languageapi.AbstractLanguageAPI;
 import de.tentact.languageapi.LanguageSpigot;
-import de.tentact.languageapi.event.LanguageCopyEvent;
-import de.tentact.languageapi.event.LanguageCreateEvent;
-import de.tentact.languageapi.event.LanguageDeleteEvent;
 import de.tentact.languageapi.player.LanguagePlayer;
 import de.tentact.languageapi.util.I18N;
 import de.tentact.languageapi.util.ConfigUtil;
@@ -48,7 +45,7 @@ public class LanguageCommand implements TabExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] args) {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
-            LanguagePlayer languagePlayer = abstractLanguageAPI.getLanguagePlayer(player.getUniqueId());
+            LanguagePlayer languagePlayer = abstractLanguageAPI.getPlayerManager().getLanguagePlayer(player.getUniqueId());
             assert languagePlayer != null;
             if (player.hasPermission("system.languageapi")) { //lang add lang key MSG | lang remove lang key | lang update lang key msg | lang createlang lang | lang deletelang lang
                 if (args.length >= 1) { //lang reload
@@ -116,10 +113,6 @@ public class LanguageCommand implements TabExecutor {
                             if (!abstractLanguageAPI.getAvailableLanguages().contains(languages)) {
                                 abstractLanguageAPI.createLanguage(languages);
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_CREATE_SUCCESS.replace("%LANG%", languages));
-                                LanguageCreateEvent languageCreateEvent = new LanguageCreateEvent(languages);
-                                if (!languageCreateEvent.isCancelled()) {
-                                    pluginManager.callEvent(languageCreateEvent);
-                                }
                                 return true;
                             } else {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_ALREADY_EXISTS.replace("%LANG%", languages));
@@ -134,17 +127,10 @@ public class LanguageCommand implements TabExecutor {
                             if (abstractLanguageAPI.getAvailableLanguages().contains(languages) && !abstractLanguageAPI.getDefaultLanguage().equalsIgnoreCase(languages)) {
                                 abstractLanguageAPI.deleteLanguage(languages);
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_DELETE_SUCCESS.replace("%LANG%", languages));
-                                LanguageDeleteEvent languageDeleteEvent = new LanguageDeleteEvent(languages);
-                                if (!languageDeleteEvent.isCancelled()) {
-                                    pluginManager.callEvent(languageDeleteEvent);
-                                }
+
                                 return true;
                             } else if (languages.equalsIgnoreCase("*")) {
                                 for (String langs : abstractLanguageAPI.getAvailableLanguages()) {
-                                    LanguageDeleteEvent languageDeleteEvent = new LanguageDeleteEvent(langs.toLowerCase());
-                                    if (!languageDeleteEvent.isCancelled()) {
-                                        pluginManager.callEvent(languageDeleteEvent);
-                                    }
                                     abstractLanguageAPI.deleteLanguage(langs);
                                 }
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_DELETE_SUCCESS.replace("%LANG%", languages));
@@ -163,10 +149,7 @@ public class LanguageCommand implements TabExecutor {
                                     abstractLanguageAPI.copyLanguage(langfrom, langto);
                                     languagePlayer.sendMessage(I18N.LANGUAGEAPI_COPY_SUCCESS.replace("%OLDLANG%", langfrom)
                                             .replace("%NEWLANG%", langto));
-                                    LanguageCopyEvent languageCopyEvent = new LanguageCopyEvent(langfrom, langto);
-                                    if (!languageCopyEvent.isCancelled()) {
-                                        pluginManager.callEvent(languageCopyEvent);
-                                    }
+
                                     return true;
                                 } else {
                                     languages = langfrom;
