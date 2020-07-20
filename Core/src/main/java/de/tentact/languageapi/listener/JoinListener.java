@@ -1,4 +1,4 @@
-package de.tentact.languageapi.spigot.listener;
+package de.tentact.languageapi.listener;
 /*  Created in the IntelliJ IDEA.
     Created by 0utplay | Aldin Sijamhodzic
     Datum: 25.04.2020

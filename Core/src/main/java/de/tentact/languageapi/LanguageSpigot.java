@@ -6,9 +6,9 @@ package de.tentact.languageapi;
 */
 
 import de.tentact.languageapi.mysql.MySQL;
-import de.tentact.languageapi.spigot.command.LanguageCommand;
-import de.tentact.languageapi.spigot.listener.ChatListener;
-import de.tentact.languageapi.spigot.listener.JoinListener;
+import de.tentact.languageapi.command.LanguageCommand;
+import de.tentact.languageapi.listener.ChatListener;
+import de.tentact.languageapi.listener.JoinListener;
 import de.tentact.languageapi.util.I18N;
 import de.tentact.languageapi.util.ConfigUtil;
 import de.tentact.languageapi.util.Updater;
@@ -27,9 +27,8 @@ public class LanguageSpigot extends JavaPlugin {
     @Override
     public void onEnable() {
         getLogger().log(Level.INFO, "Starting LanguageAPI");
-        ConfigUtil.isBungeeCordMode = false;
         ConfigUtil.createSpigotMySQLConfig();
-        ConfigUtil.initSpigot();
+        ConfigUtil.init();
         ConfigUtil.initLogger(this.getLogger());
 
         this.mySQL = ConfigUtil.getMySQL();

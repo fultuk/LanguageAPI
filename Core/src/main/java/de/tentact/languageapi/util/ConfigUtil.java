@@ -6,11 +6,8 @@ package de.tentact.languageapi.util;
 */
 
 import de.tentact.languageapi.AbstractLanguageAPI;
-import de.tentact.languageapi.LanguageBungeecord;
 import de.tentact.languageapi.api.LanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
-import net.md_5.bungee.config.Configuration;
-import net.md_5.bungee.config.ConfigurationProvider;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,9 +21,6 @@ public class ConfigUtil {
 
     private static YamlConfiguration mySQLConfiguration;
 
-    public static boolean isBungeeCordMode;
-
-    private static Configuration bungeecordmySQLConfiguration;
 
     private static MySQL mySQL;
 
@@ -58,7 +52,7 @@ public class ConfigUtil {
 
     }
 
-    public static void initSpigot() {
+    public static void init() {
         mySQL = new MySQL(mySQLConfiguration.getString("mysql.hostname"),
                 mySQLConfiguration.getString("mysql.database"),
                 mySQLConfiguration.getString("mysql.username"),
@@ -67,53 +61,19 @@ public class ConfigUtil {
         AbstractLanguageAPI.setInstance(new LanguageAPI());
     }
 
-    public static void initBungeecord() {
-        mySQL = new MySQL(bungeecordmySQLConfiguration.getString("mysql.hostname"),
-                bungeecordmySQLConfiguration.getString("mysql.database"),
-                bungeecordmySQLConfiguration.getString("mysql.username"),
-                bungeecordmySQLConfiguration.getString("mysql.password"),
-                bungeecordmySQLConfiguration.getInt("mysql.port"));
-        AbstractLanguageAPI.setInstance(new LanguageAPI());
-
-    }
-
-    public static void createBungeeCordMySQLConfig(LanguageBungeecord languageBungeecord) {
-
-        File bungeecordmySQLConfigFile = new File("plugins/LanguageAPI", "config.yml");
-        if (!languageBungeecord.getDataFolder().exists()) {
-            languageBungeecord.getDataFolder().mkdir();
-        }
-
-        try {
-            bungeecordmySQLConfiguration = ConfigurationProvider.getProvider(net.md_5.bungee.config.YamlConfiguration.class).load(bungeecordmySQLConfigFile);
-
-            if (!bungeecordmySQLConfigFile.exists()) {
-                bungeecordmySQLConfigFile.createNewFile();
-                bungeecordmySQLConfiguration.set("mysql.host", "hostname");
-                bungeecordmySQLConfiguration.set("mysql.username", "de/tentact/languageapi");
-                bungeecordmySQLConfiguration.set("mysql.database", "de/tentact/languageapi");
-                bungeecordmySQLConfiguration.set("mysql.password", "password");
-                bungeecordmySQLConfiguration.set("languageapi.defaultlang", "de_de");
-            }
-            ConfigurationProvider.getProvider(net.md_5.bungee.config.YamlConfiguration.class).save(bungeecordmySQLConfiguration, bungeecordmySQLConfigFile);
-
-        } catch (IOException ignored) {
-
-        }
-    }
     @NotNull
     public static String getDefaultLanguage() {
         if(defaultLanguage == null) {
-            defaultLanguage = isBungeeCordMode ? bungeecordmySQLConfiguration.getString("languageapi.defaultlang") : Objects.requireNonNull(mySQLConfiguration.getString("languageapi.defaultlang"));
+            defaultLanguage = mySQLConfiguration.getString("language.defaultlang");
             if(defaultLanguage == null) {
-                defaultLanguage = "de_de";
+                defaultLanguage = "en_en";
             }
         }
         return defaultLanguage;
     }
 
     public static boolean getUpdateNotfication() {
-        return isBungeeCordMode ? bungeecordmySQLConfiguration.getBoolean("languageapi.notify") : mySQLConfiguration.getBoolean("languageapi.notify");
+        return mySQLConfiguration.getBoolean("language.notify");
     }
     @NotNull
     public static MySQL getMySQL() {

@@ -6,8 +6,6 @@ package de.tentact.languageapi.util;
 */
 
 import de.tentact.languageapi.AbstractLanguageAPI;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -32,53 +30,42 @@ public class Updater {
         String online = this.getOnlineVersion(this.pluginName).replace(".", "");
 
         this.onlineVersion = Integer.parseInt(online);
-        if(this.onlineVersion > this.localVersion) {
-            Bukkit.broadcastMessage(AbstractLanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
-                    +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+this.getOnlineVersion(this.pluginName));
+        if (this.onlineVersion > this.localVersion) {
+            Bukkit.broadcastMessage(AbstractLanguageAPI.getInstance().getPrefix() + "Es ist ein neues Update verfügbar. Aktuelle Version: §6"
+                    + plugin.getDescription().getVersion() + "§7, neuste Version: §c" + this.getOnlineVersion(this.pluginName));
         }
         this.isEnabled = true;
 
 
-
     }
 
-    public Updater(net.md_5.bungee.api.plugin.Plugin plugin) {
-        ConfigUtil.log("Checking for updates...", Level.INFO);
-        this.pluginName = plugin.getDescription().getName();
-        this.localVersion = Integer.parseInt(plugin.getDescription().getVersion().replace(".", ""));
-        this.fullLocalVersion = plugin.getDescription().getVersion();
-        this.onlineVersion = Integer.parseInt(this.getOnlineVersion(this.pluginName).replace(".", ""));
-        if(this.onlineVersion > this.localVersion) {
-            ProxyServer.getInstance().broadcast(TextComponent.fromLegacyText(AbstractLanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
-                    +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+this.getOnlineVersion(this.pluginName)));
-        }
-        this.isEnabled = true;
 
-    }
-
-    private String getOnlineVersion(String pluginName){
+    private String getOnlineVersion(String pluginName) {
         Scanner scanner = null;
         try {
             ConfigUtil.log("Creating connection to webserver", Level.INFO);
-            scanner = new Scanner(new URL("https://tentact.de/plugins?"+pluginName.toLowerCase()).openStream());
+            scanner = new Scanner(new URL("https://tentact.de/plugins?" + pluginName.toLowerCase()).openStream());
             ConfigUtil.log("Fetched online version", Level.INFO);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if(scanner == null) {
+        if (scanner == null) {
             return "0.0";
         }
-        if(scanner.hasNextLine()) {
+        if (scanner.hasNextLine()) {
             return scanner.nextLine();
         }
         return "0.0";
     }
+
     public String getOnlineVersion() {
         return this.getOnlineVersion(pluginName);
     }
+
     public boolean hasUpdate() {
         return this.onlineVersion > this.localVersion;
     }
+
     public String getLocalVersion() {
         return this.fullLocalVersion;
     }

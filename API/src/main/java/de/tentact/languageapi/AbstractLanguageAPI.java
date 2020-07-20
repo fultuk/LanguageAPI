@@ -3,6 +3,7 @@ package de.tentact.languageapi;
 
 import de.tentact.languageapi.player.LanguageOfflinePlayer;
 import de.tentact.languageapi.player.LanguagePlayer;
+import de.tentact.languageapi.player.PlayerManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +40,7 @@ public abstract class AbstractLanguageAPI {
      *                            sets the instance of the interface - set by the implementation
      */
     public static void setInstance(@NotNull AbstractLanguageAPI abstractLanguageAPI) {
-        if(AbstractLanguageAPI.abstractLanguageAPI != null) {
+        if (AbstractLanguageAPI.abstractLanguageAPI != null) {
             throw new UnsupportedOperationException("Cannot redefine singleton LanguageAPI");
         }
         AbstractLanguageAPI.abstractLanguageAPI = abstractLanguageAPI;
@@ -378,14 +379,6 @@ public abstract class AbstractLanguageAPI {
     @NotNull
     public abstract String getPrefix(String language);
 
-    /**
-     *
-     * @param playerID
-     * @return
-     */
-    @Nullable
-    public abstract LanguagePlayer getLanguagePlayer(UUID playerID);
-
-    public abstract LanguageOfflinePlayer getLanguageOfflinePlayer(UUID playerID);
-
+    @NotNull
+    public abstract PlayerManager getPlayerManager();
 }

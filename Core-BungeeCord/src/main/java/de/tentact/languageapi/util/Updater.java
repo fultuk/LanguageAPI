@@ -8,8 +8,7 @@ package de.tentact.languageapi.util;
 import de.tentact.languageapi.AbstractLanguageAPI;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
+import net.md_5.bungee.api.plugin.Plugin;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,25 +23,8 @@ public class Updater {
     private final String pluginName;
     private final boolean isEnabled;
 
+
     public Updater(Plugin plugin) {
-        ConfigUtil.log("Checking for updates...", Level.INFO);
-        this.pluginName = plugin.getName();
-        this.localVersion = Integer.parseInt(plugin.getDescription().getVersion().replace(".", ""));
-        this.fullLocalVersion = plugin.getDescription().getVersion();
-        String online = this.getOnlineVersion(this.pluginName).replace(".", "");
-
-        this.onlineVersion = Integer.parseInt(online);
-        if(this.onlineVersion > this.localVersion) {
-            Bukkit.broadcastMessage(AbstractLanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
-                    +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+this.getOnlineVersion(this.pluginName));
-        }
-        this.isEnabled = true;
-
-
-
-    }
-
-    public Updater(net.md_5.bungee.api.plugin.Plugin plugin) {
         ConfigUtil.log("Checking for updates...", Level.INFO);
         this.pluginName = plugin.getDescription().getName();
         this.localVersion = Integer.parseInt(plugin.getDescription().getVersion().replace(".", ""));

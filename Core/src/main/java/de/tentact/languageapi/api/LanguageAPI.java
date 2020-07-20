@@ -10,12 +10,9 @@ import com.google.common.cache.CacheBuilder;
 import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.AbstractLanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
-import de.tentact.languageapi.player.LanguageOfflinePlayer;
-import de.tentact.languageapi.player.LanguageOfflinePlayerImpl;
-import de.tentact.languageapi.player.LanguagePlayer;
-import de.tentact.languageapi.player.LanguagePlayerImpl;
-import de.tentact.languageapi.util.ChatColorTranslator;
+import de.tentact.languageapi.player.*;
 import de.tentact.languageapi.util.ConfigUtil;
+import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,6 +29,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     private final MySQL mySQL = ConfigUtil.getMySQL();
 
     private final Cache<String, HashMap<String, String>> translationCache = CacheBuilder.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
+    private PlayerManager playerManager = new PlayerManagerImpl();
 
     @Override
     public void createLanguage(final String language) {
@@ -133,12 +131,12 @@ public class LanguageAPI extends AbstractLanguageAPI {
         if (this.isLanguage(language)) {
             /*new Thread(()
                     -> this.mySQL.update("INSERT INTO " + language.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() +
-                    "', '" + ChatColorTranslator.translateAlternateColorCodes('&', message) + "');")).start();*/
+                    "', '" + ChatColor.translateAlternateColorCodes('&', message) + "');")).start();*/
             try (Connection connection = this.getDataSouce().getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO ?(transkey, translation) VALUES (?,?);")) {
                 preparedStatement.setString(1, language.toLowerCase());
                 preparedStatement.setString(2, transkey.toLowerCase());
-                preparedStatement.setString(3, ChatColorTranslator.translateAlternateColorCodes('&', message));
+                preparedStatement.setString(3, ChatColor.translateAlternateColorCodes('&', message));
 
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -315,11 +313,11 @@ public class LanguageAPI extends AbstractLanguageAPI {
             throw new IllegalArgumentException("Translationkey " + transkey + " was not found!");
         }
 
-        //new Thread(() -> this.mySQL.update("UPDATE " + language.toLowerCase() + " SET translation='" + ChatColorTranslator.translateAlternateColorCodes('&', message) + "' WHERE transkey='" + transkey.toLowerCase() + "';")).start();
+        //new Thread(() -> this.mySQL.update("UPDATE " + language.toLowerCase() + " SET translation='" + ChatColor.translateAlternateColorCodes('&', message) + "' WHERE transkey='" + transkey.toLowerCase() + "';")).start();
         try (Connection connection = this.getDataSouce().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("UPDATE ? SET translation= ? WHERE transkey=?;")) {
             preparedStatement.setString(1, language.toLowerCase());
-            preparedStatement.setString(2, ChatColorTranslator.translateAlternateColorCodes('&', message));
+            preparedStatement.setString(2, ChatColor.translateAlternateColorCodes('&', message));
             preparedStatement.execute();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -512,7 +510,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
         try (Connection connection = this.mySQL.getDataSource().getConnection()) {
             ResultSet rs = connection.createStatement().executeQuery("SELECT translation FROM " + lang.toLowerCase() + " WHERE transkey='" + transkey.toLowerCase() + "';");
             if (rs.next()) {
-                String translation = ChatColorTranslator.translateAlternateColorCodes('&', rs.getString("translation"));
+                String translation = ChatColor.translateAlternateColorCodes('&', rs.getString("translation"));
 
                 HashMap<String, String> cacheMap = new HashMap<>();
                 cacheMap.put(lang, translation);
@@ -600,17 +598,8 @@ public class LanguageAPI extends AbstractLanguageAPI {
     }
 
     @Override
-    public @Nullable LanguagePlayer getLanguagePlayer(UUID playerID) {
-        LanguagePlayer languagePlayer = new LanguagePlayerImpl(playerID);
-        if (!languagePlayer.isOnline()) {
-            return null;
-        }
-        return languagePlayer;
-    }
-
-    @Override
-    public LanguageOfflinePlayer getLanguageOfflinePlayer(UUID playerID) {
-        return new LanguageOfflinePlayerImpl(playerID);
+    public @NotNull PlayerManager getPlayerManager() {
+        return this.playerManager;
     }
 
     private HikariDataSource getDataSouce() {

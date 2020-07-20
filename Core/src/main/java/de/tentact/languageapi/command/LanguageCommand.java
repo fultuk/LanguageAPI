@@ -1,4 +1,4 @@
-package de.tentact.languageapi.spigot.command;
+package de.tentact.languageapi.command;
 /*  Created in the IntelliJ IDEA.
     Created by 0utplay | Aldin Sijamhodzic
     Datum: 25.04.2020
@@ -263,7 +263,7 @@ public class LanguageCommand implements TabExecutor {
                         case "reload":
                             ConfigUtil.createSpigotMySQLConfig();
                             I18N.createDefaultPluginMessages();
-                            ConfigUtil.initSpigot();
+                            ConfigUtil.init();
                             ConfigUtil.defaultLanguage = null;
                             Bukkit.getScheduler().runTaskLater(languageSpigot, () -> {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_RELOAD_SUCCESS);
