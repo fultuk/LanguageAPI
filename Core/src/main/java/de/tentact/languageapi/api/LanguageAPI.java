@@ -108,7 +108,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
             this.logInfo("Creating user: "+playerUUID.toString()+" with language "+ validLanguage);
         } else {
             if (!this.isLanguage(this.getPlayerLanguage(playerUUID))) {
-                new Thread(() -> this.mySQL.update("UPDATE choosenlang SET language='" + this.getDefaultLanguage() + "' WHERE uuid='" + playerUUID.toString() + "';")).start();
+                this.setPlayerLanguage(playerUUID, this.getDefaultLanguage());
                 logInfo("Updating players selected language");
             }
         }
