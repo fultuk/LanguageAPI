@@ -77,10 +77,11 @@ public class LanguageAPI extends AbstractLanguageAPI {
         this.setPlayerLanguage(playerUUID, newLanguage);
 
     }
-
     @Override
     public void setPlayerLanguage(UUID playerUUID, String newLanguage) {
-        this.registerPlayer(playerUUID);
+        if (!this.isRegisteredPlayer(playerUUID)) {
+            throw new UnsupportedOperationException();
+        }
         if (!this.isLanguage(newLanguage)) {
             throw new IllegalArgumentException("Language " + newLanguage + " was not found!");
         }
@@ -101,14 +102,10 @@ public class LanguageAPI extends AbstractLanguageAPI {
 
     @Override
     public void registerPlayer(UUID playerUUID, String language) {
+        String validLanguage = this.validateLanguage(language);
         if (!this.isRegisteredPlayer(playerUUID)) {
-            if (!this.isLanguage(language)) {
-                logInfo("Registering player with default language (" + this.getDefaultLanguage() + ")");
-                new Thread(() -> this.mySQL.update("INSERT INTO choosenlang(uuid, language) VALUES ('" + playerUUID.toString() + "', '" + this.getDefaultLanguage() + "');")).start();
-                return;
-            }
-            new Thread(() -> this.mySQL.update("INSERT INTO choosenlang(uuid, language) VALUES ('" + playerUUID.toString() + "', '" + language.toLowerCase() + "');")).start();
-            logInfo("Registering player with language: " + language);
+            this.setPlayerLanguage(playerUUID, validLanguage);
+            this.logInfo("Creating user: "+playerUUID.toString()+" with language "+ validLanguage);
         } else {
             if (!this.isLanguage(this.getPlayerLanguage(playerUUID))) {
                 new Thread(() -> this.mySQL.update("UPDATE choosenlang SET language='" + this.getDefaultLanguage() + "' WHERE uuid='" + playerUUID.toString() + "';")).start();
@@ -624,4 +621,10 @@ public class LanguageAPI extends AbstractLanguageAPI {
         ConfigUtil.log(message, Level.INFO);
     }
 
+    private String validateLanguage(String language) {
+        if(!this.isLanguage(language)) {
+            return this.getDefaultLanguage();
+        }
+        return language;
+    }
 }
