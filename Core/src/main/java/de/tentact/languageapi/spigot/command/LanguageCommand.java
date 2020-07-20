@@ -76,6 +76,7 @@ public class LanguageCommand implements TabExecutor {
                                         .replace("%MSG%", msg.toString()));
                                 return true;
 
+
                             } else {
 
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_KEY_ALREADY_EXISTS

@@ -47,8 +47,18 @@ public class LanguageAPI extends AbstractLanguageAPI {
     @Override
     public void deleteLanguage(String language) {
         if (!this.getDefaultLanguage().equalsIgnoreCase(language) && this.isLanguage(language)) {
-            this.mySQL.update("DROP TABLE " + language.toLowerCase());
-            this.mySQL.update("DELETE FROM languages WHERE language='" + language.toLowerCase() + "'");
+            try (Connection connection = this.getDataSouce().getConnection()) {
+                try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE ?;")) {
+                    preparedStatement.setString(1, language.toLowerCase());
+                    preparedStatement.execute();
+                }
+                try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM languages WHERE language=?;")) {
+                    preparedStatement.setString(1, language.toLowerCase());
+                    preparedStatement.execute();
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
             logInfo("Deleting language:" + language);
 
         }
@@ -57,7 +67,6 @@ public class LanguageAPI extends AbstractLanguageAPI {
 
     @Override
     public void setPlayerLanguage(UUID playerUUID, String newLanguage, boolean orElseDefault) {
-        this.registerPlayer(playerUUID);
         if (!this.isLanguage(newLanguage)) {
             if (orElseDefault) {
                 this.setPlayerLanguage(playerUUID, this.getDefaultLanguage());
@@ -65,7 +74,8 @@ public class LanguageAPI extends AbstractLanguageAPI {
             }
             return;
         }
-        this.mySQL.update("UPDATE choosenlang WHERE uuid='" + playerUUID.toString() + "' SET language='" + newLanguage.toLowerCase() + "';");
+        this.setPlayerLanguage(playerUUID, newLanguage);
+
     }
 
     @Override
@@ -74,7 +84,14 @@ public class LanguageAPI extends AbstractLanguageAPI {
         if (!this.isLanguage(newLanguage)) {
             throw new IllegalArgumentException("Language " + newLanguage + " was not found!");
         }
-        this.mySQL.update("UPDATE choosenlang WHERE uuid='" + playerUUID.toString() + "' SET language='" + newLanguage.toLowerCase() + "';");
+        try (Connection connection = this.getDataSouce().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE choosenlang WHERE uuid=? SET language=?;")) {
+            preparedStatement.setString(1, playerUUID.toString());
+            preparedStatement.setString(2, newLanguage.toLowerCase());
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @Override
@@ -117,16 +134,32 @@ public class LanguageAPI extends AbstractLanguageAPI {
     @Override
     public void addMessage(final String transkey, final String message, final String language) {
         if (this.isLanguage(language)) {
-            new Thread(()
+            /*new Thread(()
                     -> this.mySQL.update("INSERT INTO " + language.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() +
-                    "', '" + ChatColorTranslator.translateAlternateColorCodes('&', message) + "');")).start();
+                    "', '" + ChatColorTranslator.translateAlternateColorCodes('&', message) + "');")).start();*/
+            try (Connection connection = this.getDataSouce().getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO ?(transkey, translation) VALUES (?,?);")) {
+                preparedStatement.setString(1, language.toLowerCase());
+                preparedStatement.setString(2, transkey.toLowerCase());
+                preparedStatement.setString(3, ChatColorTranslator.translateAlternateColorCodes('&', message));
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
         }
     }
 
     @Override
     public void addParameter(final String transkey, final String param) {
-        new Thread(() -> this.mySQL.update("INSERT INTO Parameter (transkey, param) VALUES ('" + transkey.toLowerCase() + "', '" + param + "');")).start();
+        //new Thread(() -> this.mySQL.update("INSERT INTO Parameter (transkey, param) VALUES ('" + transkey.toLowerCase() + "', '" + param + "');")).start();
+        try (Connection connection = this.getDataSouce().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Parameter(transkey, param) VALUES (?,?);")) {
+            preparedStatement.setString(1, transkey.toLowerCase());
+            preparedStatement.setString(2, param);
 
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @Override
@@ -137,8 +170,15 @@ public class LanguageAPI extends AbstractLanguageAPI {
         if (!this.getParameter(transkey).contains(param)) {
             return;
         }
-        new Thread(() -> this.mySQL.update("UPDATE Parameter SET param='" + getParameter(transkey).replace(param, "") + "' WHERE transkey='" + transkey + "';")).start();
-
+        //new Thread(() -> this.mySQL.update("UPDATE Parameter SET param='" + getParameter(transkey).replace(param, "") + "' WHERE transkey='" + transkey + "';")).start();
+        try (Connection connection = this.getDataSouce().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Parameter SET param=? WHERE transkey=?;")) {
+            preparedStatement.setString(1, this.getParameter(transkey).replace(param, ""));
+            preparedStatement.setString(2, transkey);
+            preparedStatement.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @Override
@@ -146,7 +186,15 @@ public class LanguageAPI extends AbstractLanguageAPI {
         if (!this.hasParameter(transkey)) {
             return;
         }
-        new Thread(() -> this.mySQL.update("DELETE FROM Parameter WHERE transkey='" + transkey + "';")).start();
+        //new Thread(() -> this.mySQL.update("DELETE FROM Parameter WHERE transkey='" + transkey + "';")).start();
+        try (Connection connection = this.getDataSouce().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Parameter WHERE transkey=?;")) {
+            preparedStatement.setString(1, transkey);
+            preparedStatement.execute();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
     }
 
@@ -213,6 +261,14 @@ public class LanguageAPI extends AbstractLanguageAPI {
             throw new IllegalArgumentException("Language " + langfrom + " or " + langto + " was not found!");
         }
         this.mySQL.update("INSERT INTO " + langto.toLowerCase() + " SELECT * FROM " + langfrom.toLowerCase() + ";");
+        try (Connection connection = this.getDataSouce().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO ? SELECT * FROM ?;")) {
+            preparedStatement.setString(1, langto.toLowerCase());
+            preparedStatement.setString(2, langfrom.toLowerCase());
+            preparedStatement.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
     }
 
@@ -303,7 +359,14 @@ public class LanguageAPI extends AbstractLanguageAPI {
         if (!isMultipleTranslation(multipleTranslation)) {
             throw new IllegalArgumentException(multipleTranslation + " was not found");
         }
-        new Thread(() -> this.mySQL.update("DELETE FROM MultipleTranslation WHERE multipleKey='" + multipleTranslation + "';")).start();
+        //new Thread(() -> this.mySQL.update("DELETE FROM MultipleTranslation WHERE multipleKey='" + multipleTranslation + "';")).start();
+        try (Connection connection = this.getDataSouce().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM MultipleTranslation WHERE multipleKey=?;")) {
+            preparedStatement.setString(1, multipleTranslation);
+            preparedStatement.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @Override
@@ -340,7 +403,15 @@ public class LanguageAPI extends AbstractLanguageAPI {
         if (!this.isKey(transkey, language)) {
             throw new IllegalArgumentException("Translationkey " + transkey + " was not found!");
         }
-        new Thread(() -> this.mySQL.update("DELETE FROM " + language.toLowerCase() + " WHERE transkey='" + transkey.toLowerCase() + "';")).start();
+        // new Thread(() -> this.mySQL.update("DELETE FROM " + language.toLowerCase() + " WHERE transkey='" + transkey.toLowerCase() + "';")).start();
+        try (Connection connection = this.getDataSouce().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM ? WHERE transkey=?;")) {
+            preparedStatement.setString(1, language.toLowerCase());
+            preparedStatement.setString(2, transkey.toLowerCase());
+            preparedStatement.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @NotNull
@@ -533,7 +604,11 @@ public class LanguageAPI extends AbstractLanguageAPI {
 
     @Override
     public @Nullable LanguagePlayer getLanguagePlayer(UUID playerID) {
-        return new LanguagePlayerImpl(playerID);
+        LanguagePlayer languagePlayer = new LanguagePlayerImpl(playerID);
+        if (!languagePlayer.isOnline()) {
+            return null;
+        }
+        return languagePlayer;
     }
 
     @Override

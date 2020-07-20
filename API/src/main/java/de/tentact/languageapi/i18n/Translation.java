@@ -32,9 +32,8 @@ public class Translation {
     }
 
     /**
-     *
      * @param translationkey the translationkey to fetch the translation from
-     * @param usePrefix wether to use the prefix of the languageapi or not
+     * @param usePrefix      wether to use the prefix of the languageapi or not
      */
     public Translation(String translationkey, boolean usePrefix) {
         this(translationkey);
@@ -92,7 +91,8 @@ public class Translation {
 
     /**
      * a method to replace parameter in the specific translation for a player - this is reset after {@link Translation#getMessage()}
-     * @param old the old String to replace
+     *
+     * @param old         the old String to replace
      * @param replacement the replacement for the paramater
      * @return returns {@link Translation} after inserting the parameter
      */
@@ -102,7 +102,6 @@ public class Translation {
     }
 
     /**
-     *
      * @return returns the translationkey which was given
      */
     public String getTranslationKey() {

@@ -17,8 +17,12 @@ public class LanguageOfflinePlayerImpl implements LanguageOfflinePlayer {
 
     private final UUID playerID;
 
+    private final String language;
+
     public LanguageOfflinePlayerImpl(@NotNull UUID playerID) {
         this.playerID = playerID;
+        this.language = this.abstractLanguageAPI.getPlayerLanguage(playerID);
+
     }
 
     @Override
@@ -36,7 +40,7 @@ public class LanguageOfflinePlayerImpl implements LanguageOfflinePlayer {
 
     @Override
     public @NotNull String getLanguage() {
-        return this.abstractLanguageAPI.getPlayerLanguage(this.playerID);
+        return this.language;
     }
 
     @Override

@@ -16,6 +16,7 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
     private Player player;
     private final AbstractLanguageAPI abstractLanguageAPI = AbstractLanguageAPI.getInstance();
 
+
     public LanguagePlayerImpl(UUID playerID) {
         super(playerID);
         this.playerID = playerID;
@@ -23,7 +24,7 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
 
     @Override
     public void sendMessage(@NotNull Translation translation) {
-        this.getPlayer().sendMessage(translation.getMessage());
+        this.getPlayer().sendMessage(translation.getMessage(this.getLanguage()));
 
     }
 
@@ -50,6 +51,7 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
             throw new IllegalArgumentException(multipleTranslationKey + " was not found");
         }
         this.abstractLanguageAPI.getMultipleMessages(multipleTranslationKey, language).forEach(Objects.requireNonNull(this.getPlayer())::sendMessage);
+
     }
 
     @Override
@@ -67,5 +69,4 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
         }
         return this.player;
     }
-
 }

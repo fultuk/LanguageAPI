@@ -69,7 +69,7 @@ public class MySQL {
                 return;
             try(Connection connection = dataSource.getConnection()) {
                 connection.createStatement().execute("CREATE TABLE IF NOT EXISTS " + tableName + "(transkey VARCHAR(64), translation VARCHAR(2000));");
-                ConfigUtil.log("creating table: "+tableName, Level.INFO);
+                ConfigUtil.log("Creating table: "+tableName, Level.INFO);
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }

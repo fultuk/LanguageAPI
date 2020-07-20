@@ -106,7 +106,7 @@ public class ConfigUtil {
         if(defaultLanguage == null) {
             defaultLanguage = isBungeeCordMode ? bungeecordmySQLConfiguration.getString("languageapi.defaultlang") : Objects.requireNonNull(mySQLConfiguration.getString("languageapi.defaultlang"));
             if(defaultLanguage == null) {
-                defaultLanguage = "de_dethe ";
+                defaultLanguage = "de_de";
             }
         }
         return defaultLanguage;
