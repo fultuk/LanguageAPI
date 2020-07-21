@@ -15,13 +15,15 @@ public class LanguageOfflinePlayerImpl implements LanguageOfflinePlayer {
 
     private final AbstractLanguageAPI abstractLanguageAPI = AbstractLanguageAPI.getInstance();
 
+    private final PlayerExecutor playerExecutor = this.abstractLanguageAPI.getPlayerExecutor();
+
     private final UUID playerID;
 
     private final String language;
 
     public LanguageOfflinePlayerImpl(@NotNull UUID playerID) {
         this.playerID = playerID;
-        this.language = this.abstractLanguageAPI.getPlayerLanguage(playerID);
+        this.language = this.playerExecutor.getPlayerLanguage(playerID);
 
     }
 
@@ -35,7 +37,7 @@ public class LanguageOfflinePlayerImpl implements LanguageOfflinePlayer {
         if (!this.abstractLanguageAPI.isLanguage(language) && !orElseDefault) {
             throw new IllegalArgumentException(language + " was not found");
         }
-        this.abstractLanguageAPI.setPlayerLanguage(this.playerID, language, orElseDefault);
+        this.playerExecutor.setPlayerLanguage(this.playerID, language, orElseDefault);
     }
 
     @Override

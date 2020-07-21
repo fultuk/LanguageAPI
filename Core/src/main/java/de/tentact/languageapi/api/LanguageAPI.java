@@ -11,8 +11,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.AbstractLanguageAPI;
 import de.tentact.languageapi.i18n.Translation;
 import de.tentact.languageapi.mysql.MySQL;
-import de.tentact.languageapi.player.PlayerManager;
-import de.tentact.languageapi.player.PlayerManagerImpl;
+import de.tentact.languageapi.player.*;
 import de.tentact.languageapi.util.ConfigUtil;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +30,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
 
     private final Cache<String, HashMap<String, String>> translationCache = CacheBuilder.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
     private final PlayerManager playerManager = new PlayerManagerImpl();
+    private final PlayerExecutor playerExecutor = new PlayerExecutorImpl();
 
     @Override
     public void createLanguage(final String language) {
@@ -65,59 +65,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
 
     }
 
-    @Override
-    public void setPlayerLanguage(UUID playerUUID, String newLanguage, boolean orElseDefault) {
-        if (!this.isLanguage(newLanguage)) {
-            if (orElseDefault) {
-                this.setPlayerLanguage(playerUUID, this.getDefaultLanguage());
-                return;
-            }
-            return;
-        }
-        this.setPlayerLanguage(playerUUID, newLanguage);
 
-    }
-    @Override
-    public void setPlayerLanguage(UUID playerUUID, String newLanguage) {
-        if (!this.isRegisteredPlayer(playerUUID)) {
-            throw new UnsupportedOperationException();
-        }
-        if (!this.isLanguage(newLanguage)) {
-            throw new IllegalArgumentException("Language " + newLanguage + " was not found!");
-        }
-        try (Connection connection = this.getDataSouce().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE choosenlang WHERE uuid=? SET language=?;")) {
-            preparedStatement.setString(1, playerUUID.toString());
-            preparedStatement.setString(2, newLanguage.toLowerCase());
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-    }
-
-    @Override
-    public void registerPlayer(UUID playerUUID) {
-        this.registerPlayer(playerUUID, this.getDefaultLanguage());
-    }
-
-    @Override
-    public void registerPlayer(UUID playerUUID, String language) {
-        String validLanguage = this.validateLanguage(language);
-        if (!this.isRegisteredPlayer(playerUUID)) {
-            this.setPlayerLanguage(playerUUID, validLanguage);
-            this.logInfo("Creating user: "+playerUUID.toString()+" with language "+ validLanguage);
-        } else {
-            if (!this.isLanguage(this.getPlayerLanguage(playerUUID))) {
-                this.setPlayerLanguage(playerUUID, this.getDefaultLanguage());
-                logInfo("Updating players selected language");
-            }
-        }
-    }
-
-    @Override
-    public boolean isRegisteredPlayer(UUID playerUUID) {
-        return this.mySQL.exists("SELECT * FROM choosenlang WHERE uuid='" + playerUUID.toString() + "';");
-    }
 
     @Override
     public void addMessage(final String transkey, final String message, final String language, String param) {
@@ -411,24 +359,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
         }
     }
 
-    @NotNull
-    @Override
-    public String getPlayerLanguage(UUID playerUUID) {
-        if (!isRegisteredPlayer(playerUUID)) {
-            this.registerPlayer(playerUUID);
-        }
 
-        try (Connection connection = this.mySQL.getDataSource().getConnection()) {
-            ResultSet rs = connection.createStatement().executeQuery("SELECT language FROM choosenlang WHERE uuid='" + playerUUID.toString() + "';");
-            if (rs.next()) {
-
-                return rs.getString("language").toLowerCase();
-            }
-        } catch (SQLException throwables) {
-            return this.getDefaultLanguage();
-        }
-        return this.getDefaultLanguage();
-    }
 
     @Override
     public boolean isKey(String transkey, String lang) {
@@ -438,7 +369,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     @NotNull
     @Override
     public String getMessage(String transkey, UUID playerUUID, boolean usePrefix) {
-        return this.getMessage(transkey, this.getPlayerLanguage(playerUUID), usePrefix);
+        return this.getMessage(transkey, this.playerExecutor.getPlayerLanguage(playerUUID), usePrefix);
     }
 
     @Override
@@ -450,7 +381,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     @NotNull
     @Override
     public String getMessage(String transkey, UUID playerUUID) {
-        return this.getMessage(transkey, this.getPlayerLanguage(playerUUID));
+        return this.getMessage(transkey, this.playerExecutor.getPlayerLanguage(playerUUID));
     }
 
     @NotNull
@@ -462,7 +393,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     @NotNull
     @Override
     public ArrayList<String> getMultipleMessages(String transkey, UUID playerUUID) {
-        return this.getMultipleMessages(transkey, this.getPlayerLanguage(playerUUID));
+        return this.getMultipleMessages(transkey, this.playerExecutor.getPlayerLanguage(playerUUID));
     }
 
     @Override
@@ -472,7 +403,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
 
     @Override
     public @NotNull ArrayList<String> getMultipleMessages(String transkey, UUID playerUUID, boolean usePrefix) {
-        return this.getMultipleMessages(transkey, this.getPlayerLanguage(playerUUID), usePrefix);
+        return this.getMultipleMessages(transkey, this.playerExecutor.getPlayerLanguage(playerUUID), usePrefix);
     }
 
     @NotNull
@@ -614,6 +545,16 @@ public class LanguageAPI extends AbstractLanguageAPI {
         return new TranslationImpl(translationkey, usePrefix);
     }
 
+    @Override
+    public @NotNull PlayerExecutor getPlayerExecutor() {
+        return this.playerExecutor;
+    }
+
+    @Override
+    public @NotNull SpecificPlayerExecutor getSpecificPlayerExecutor(UUID playerId) {
+        return new SpecificPlayerExecutorImpl(playerId);
+    }
+
     private HikariDataSource getDataSouce() {
         return this.mySQL.getDataSource();
     }
@@ -622,10 +563,5 @@ public class LanguageAPI extends AbstractLanguageAPI {
         ConfigUtil.log(message, Level.INFO);
     }
 
-    private String validateLanguage(String language) {
-        if(!this.isLanguage(language)) {
-            return this.getDefaultLanguage();
-        }
-        return language;
-    }
+
 }

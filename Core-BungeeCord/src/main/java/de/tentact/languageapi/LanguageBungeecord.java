@@ -4,8 +4,6 @@ package de.tentact.languageapi;
     Datum: 25.04.2020
     Uhrzeit: 17:20
 */
-
-import de.tentact.languageapi.AbstractLanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.ConfigUtil;
 import de.tentact.languageapi.util.I18N;
@@ -18,7 +16,6 @@ public class LanguageBungeecord extends Plugin {
 
     @Override
     public void onEnable() {
-        ConfigUtil.isBungeeCordMode = true;
         ConfigUtil.createBungeeCordMySQLConfig(this);
         ConfigUtil.initBungeecord();
         ConfigUtil.initLogger(this.getLogger());

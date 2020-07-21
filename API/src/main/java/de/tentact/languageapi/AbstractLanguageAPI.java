@@ -2,9 +2,7 @@ package de.tentact.languageapi;
 
 
 import de.tentact.languageapi.i18n.Translation;
-import de.tentact.languageapi.player.LanguageOfflinePlayer;
-import de.tentact.languageapi.player.LanguagePlayer;
-import de.tentact.languageapi.player.PlayerManager;
+import de.tentact.languageapi.player.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,40 +57,7 @@ public abstract class AbstractLanguageAPI {
      */
     public abstract void deleteLanguage(String language);
 
-    /**
-     * @param playerUUID    player uuid for whom the language should be changed
-     * @param newLanguage   the new language of the player
-     * @param orElseDefault should set default if the language was not found {@link AbstractLanguageAPI#getDefaultLanguage()}
-     *                      Sets the player specific language
-     */
-    public abstract void setPlayerLanguage(UUID playerUUID, String newLanguage, boolean orElseDefault);
 
-    /**
-     * @param playerUUID  player uuid for whom the language should be changed
-     * @param newLanguage the new language of the player
-     *                    Sets the player specific language, if the language exists
-     */
-    public abstract void setPlayerLanguage(UUID playerUUID, String newLanguage);
-
-    /**
-     * @param playerUUID player uuid the player is created with
-     *                   creates the player in the database
-     */
-    public abstract void registerPlayer(UUID playerUUID);
-
-    /**
-     * @param playerUUID player uuid the player is created with
-     * @param language   the language that the player has on creation
-     *                   creates the player in the database
-     */
-
-    public abstract void registerPlayer(UUID playerUUID, String language);
-
-    /**
-     * @param playerUUID player uuid the player was created with
-     * @return returns if a player is in the database
-     */
-    public abstract boolean isRegisteredPlayer(UUID playerUUID);
 
     /**
      * @param transkey the translationkey to find the translation
@@ -238,12 +203,7 @@ public abstract class AbstractLanguageAPI {
      */
     public abstract void deleteMessage(String translationkey, String language);
 
-    /**
-     * @param playerUUID the player uuid to specify the player
-     * @return returns a String with the language of the player in the database
-     */
-    @NotNull
-    public abstract String getPlayerLanguage(UUID playerUUID);
+
 
     /**
      * @param translationkey the translationkey to check if it is one
@@ -388,6 +348,13 @@ public abstract class AbstractLanguageAPI {
 
     @NotNull
     public abstract Translation getTranslation(String translationkey, boolean usePrefix);
+
+    @NotNull
+    public abstract PlayerExecutor getPlayerExecutor();
+
+    @NotNull
+    public abstract SpecificPlayerExecutor getSpecificPlayerExecutor(UUID playerId);
+
 
 
 }

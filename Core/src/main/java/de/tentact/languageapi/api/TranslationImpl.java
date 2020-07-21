@@ -59,11 +59,6 @@ public class TranslationImpl implements Translation {
         return message;
     }
 
-    /**
-     * @param playerUUID the player's uniqueid to fetch the language from
-     * @return returns a translation of the key in the language fetched by {@link UUID}
-     */
-
 
     /**
      * @param language the language to get the translation in

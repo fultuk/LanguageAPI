@@ -4,7 +4,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-
+/**
+ * This interface can only be accessed via {@link de.tentact.languageapi.AbstractLanguageAPI#getTranslation(String)}
+ */
 public interface Translation {
 
 
