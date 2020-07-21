@@ -9,12 +9,13 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.i18n.Translation;
 import de.tentact.languageapi.mysql.MySQL;
-import de.tentact.languageapi.player.*;
+import de.tentact.languageapi.player.PlayerManager;
+import de.tentact.languageapi.player.PlayerManagerImpl;
 import de.tentact.languageapi.util.ConfigUtil;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,7 +30,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
     private final MySQL mySQL = ConfigUtil.getMySQL();
 
     private final Cache<String, HashMap<String, String>> translationCache = CacheBuilder.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
-    private PlayerManager playerManager = new PlayerManagerImpl();
+    private final PlayerManager playerManager = new PlayerManagerImpl();
 
     @Override
     public void createLanguage(final String language) {
@@ -37,6 +38,7 @@ public class LanguageAPI extends AbstractLanguageAPI {
             this.mySQL.createTable(language.replace(" ", "").toLowerCase());
             this.mySQL.update("INSERT INTO languages(language) VALUES ('" + language.toLowerCase() + "')");
             logInfo("Creating new language:" + language);
+
 
         }
 
@@ -600,6 +602,16 @@ public class LanguageAPI extends AbstractLanguageAPI {
     @Override
     public @NotNull PlayerManager getPlayerManager() {
         return this.playerManager;
+    }
+
+    @Override
+    public @NotNull Translation getTranslation(String translationkey) {
+        return new TranslationImpl(translationkey);
+    }
+
+    @Override
+    public @NotNull Translation getTranslation(String translationkey, boolean usePrefix) {
+        return new TranslationImpl(translationkey, usePrefix);
     }
 
     private HikariDataSource getDataSouce() {

@@ -9,6 +9,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.i18n.Translation;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.player.*;
 import de.tentact.languageapi.util.ConfigUtil;
@@ -600,6 +601,16 @@ public class LanguageAPI extends AbstractLanguageAPI {
     @Override
     public @NotNull PlayerManager getPlayerManager() {
         return this.playerManager;
+    }
+
+    @Override
+    public @NotNull Translation getTranslation(String translationkey) {
+        return new TranslationImpl(translationkey);
+    }
+
+    @Override
+    public @NotNull Translation getTranslation(String translationkey, boolean usePrefix) {
+        return new TranslationImpl(translationkey, usePrefix);
     }
 
 

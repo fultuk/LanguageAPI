@@ -1,6 +1,7 @@
 package de.tentact.languageapi;
 
 
+import de.tentact.languageapi.i18n.Translation;
 import de.tentact.languageapi.player.LanguageOfflinePlayer;
 import de.tentact.languageapi.player.LanguagePlayer;
 import de.tentact.languageapi.player.PlayerManager;
@@ -381,4 +382,12 @@ public abstract class AbstractLanguageAPI {
 
     @NotNull
     public abstract PlayerManager getPlayerManager();
+
+    @NotNull
+    public abstract Translation getTranslation(String translationkey);
+
+    @NotNull
+    public abstract Translation getTranslation(String translationkey, boolean usePrefix);
+
+
 }

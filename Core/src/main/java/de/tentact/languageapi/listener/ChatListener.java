@@ -6,9 +6,7 @@ package de.tentact.languageapi.listener;
 */
 
 import de.tentact.languageapi.AbstractLanguageAPI;
-import de.tentact.languageapi.event.LanguageUpdateTranslationEvent;
 import de.tentact.languageapi.command.LanguageCommand;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -50,10 +48,6 @@ public class ChatListener implements Listener {
                 String transkey = LanguageCommand.givenParameter.get(player).get(0);
                 String language = LanguageCommand.givenParameter.get(player).get(1);
                 LanguageCommand.editingMessage.remove(player);
-                LanguageUpdateTranslationEvent languageUpdateTranslationEvent = new LanguageUpdateTranslationEvent(language, transkey, abstractLanguageAPI.getMessage(transkey, language), result.toString());
-                if (!languageUpdateTranslationEvent.isCancelled()) {
-                    Bukkit.getPluginManager().callEvent(languageUpdateTranslationEvent);
-                }
                 abstractLanguageAPI.updateMessage(transkey, language, result.toString());
 
                 event.setCancelled(true);

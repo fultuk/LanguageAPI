@@ -41,7 +41,7 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
     void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language);
 
     /**
-     * @return returns wether the player is online or not, if false the {@link org.bukkit.entity.Player} is null
+     * @return returns wether the player is online or not, if false the Player is null
      */
     boolean isOnline();
 

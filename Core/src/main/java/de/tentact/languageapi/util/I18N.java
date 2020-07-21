@@ -6,7 +6,7 @@ package de.tentact.languageapi.util;
 */
 
 import de.tentact.languageapi.AbstractLanguageAPI;
-import de.tentact.languageapi.i18n.Translation;
+import de.tentact.languageapi.api.TranslationImpl;
 
 import java.util.Arrays;
 
@@ -153,30 +153,30 @@ public class I18N {
                 "languageapi-create-help"), true);
     }
 
-    public static Translation LANGUAGEAPI_ADD_HELP = new Translation("languageapi-add-help", true);
-    public static Translation LANGUAGEAPI_ADD_SUCCESS = new Translation("languageapi-add-success", true);
-    public static Translation LANGUAGEAPI_KEY_ALREADY_EXISTS = new Translation("languageapi-key-already-exists", true);
-    public static Translation LANGUAGEAPI_LANG_NOT_FOUND = new Translation("languageapi-lang-not-found");
-    public static Translation LANGUAGEAPI_REMOVE_KEY_IN_LANGUAGE = new Translation("languageapi-remove-key-in-language",true);
-    public static Translation LANGUAGEAPI_REMOVE_KEY_IN_EVERY_LANGUAGE = new Translation("languageapi-remove-key-in-every-language",true);
-    public static Translation LANGUAGEAPI_REMOVE_EVERY_KEY_IN_LANGUAGE = new Translation("languageapi-remove-every-key-in-language",true);
-    public static Translation LANGUAGEAPI_REMOVE_EVERY_KEY_IN_EVERY_LANGUAGE = new Translation("languageapi-remove-every-key-in-every-language",true);
-    public static Translation LANGUAGEAPI_KEY_NOT_FOUND = new Translation("languageapi-key-not-found", true);
-    public static Translation LANGUAGEAPI_UPDATE_SUCCESS = new Translation("languageapi-update-success", true);
-    public static Translation LANGUAGEAPI_UPDATE_INSTRUCTIONS = new Translation("languageapi-update-instructions", true);
-    public static Translation LANGUAGEAPI_UPDATE_SAME = new Translation("languageapi-update-same", true);
-    public static Translation LANGUAGEAPI_UPDATE_HELP = new Translation("languageapi-update-help", true);
-    public static Translation LANGUAGEAPI_CREATE_SUCCESS = new Translation("languageapi-create-success", true);
-    public static Translation LANGUAGEAPI_CREATE_HELP = new Translation("languageapi-create-help", true);
-    public static Translation LANGUAGEAPI_LANG_ALREADY_EXISTS = new Translation("languageapi-lang-already-exists", true);
-    public static Translation LANGUAGEAPI_DELETE_SUCCESS = new Translation("languageapi-delete-success", true);
-    public static Translation LANGUAGEAPI_DELETE_ALL_LANGS = new Translation("languageapi-delete-all-langs", true);
-    public static Translation LANGUAGEAPI_COPY_SUCCESS = new Translation("languageapi-copy-success", true);
-    public static Translation LANGUAGEAPI_COPY_HELP = new Translation("languageapi-copy-help", true);
-    public static Translation LANGUAGEAPI_KEY_HAS_NO_PARAM = new Translation("languageapi-key-has-no-param", true);
-    public static Translation LANGUAGEAPI_SHOW_SUCCESS = new Translation("languageapi-show-success", true);
-    public static Translation LANGUAGEAPI_TRANSLATION_SUCCESS = new Translation("languageapi-translation-success", true);
-    public static Translation LANGUAGEAPI_RELOAD_SUCCESS = new Translation("languageapi-reload-success", true);
-    public static Translation LANGUAGEAPI_HELP = new Translation("languageapi-help", true);
+    public static TranslationImpl LANGUAGEAPI_ADD_HELP = new TranslationImpl("languageapi-add-help", true);
+    public static TranslationImpl LANGUAGEAPI_ADD_SUCCESS = new TranslationImpl("languageapi-add-success", true);
+    public static TranslationImpl LANGUAGEAPI_KEY_ALREADY_EXISTS = new TranslationImpl("languageapi-key-already-exists", true);
+    public static TranslationImpl LANGUAGEAPI_LANG_NOT_FOUND = new TranslationImpl("languageapi-lang-not-found");
+    public static TranslationImpl LANGUAGEAPI_REMOVE_KEY_IN_LANGUAGE = new TranslationImpl("languageapi-remove-key-in-language",true);
+    public static TranslationImpl LANGUAGEAPI_REMOVE_KEY_IN_EVERY_LANGUAGE = new TranslationImpl("languageapi-remove-key-in-every-language",true);
+    public static TranslationImpl LANGUAGEAPI_REMOVE_EVERY_KEY_IN_LANGUAGE = new TranslationImpl("languageapi-remove-every-key-in-language",true);
+    public static TranslationImpl LANGUAGEAPI_REMOVE_EVERY_KEY_IN_EVERY_LANGUAGE = new TranslationImpl("languageapi-remove-every-key-in-every-language",true);
+    public static TranslationImpl LANGUAGEAPI_KEY_NOT_FOUND = new TranslationImpl("languageapi-key-not-found", true);
+    public static TranslationImpl LANGUAGEAPI_UPDATE_SUCCESS = new TranslationImpl("languageapi-update-success", true);
+    public static TranslationImpl LANGUAGEAPI_UPDATE_INSTRUCTIONS = new TranslationImpl("languageapi-update-instructions", true);
+    public static TranslationImpl LANGUAGEAPI_UPDATE_SAME = new TranslationImpl("languageapi-update-same", true);
+    public static TranslationImpl LANGUAGEAPI_UPDATE_HELP = new TranslationImpl("languageapi-update-help", true);
+    public static TranslationImpl LANGUAGEAPI_CREATE_SUCCESS = new TranslationImpl("languageapi-create-success", true);
+    public static TranslationImpl LANGUAGEAPI_CREATE_HELP = new TranslationImpl("languageapi-create-help", true);
+    public static TranslationImpl LANGUAGEAPI_LANG_ALREADY_EXISTS = new TranslationImpl("languageapi-lang-already-exists", true);
+    public static TranslationImpl LANGUAGEAPI_DELETE_SUCCESS = new TranslationImpl("languageapi-delete-success", true);
+    public static TranslationImpl LANGUAGEAPI_DELETE_ALL_LANGS = new TranslationImpl("languageapi-delete-all-langs", true);
+    public static TranslationImpl LANGUAGEAPI_COPY_SUCCESS = new TranslationImpl("languageapi-copy-success", true);
+    public static TranslationImpl LANGUAGEAPI_COPY_HELP = new TranslationImpl("languageapi-copy-help", true);
+    public static TranslationImpl LANGUAGEAPI_KEY_HAS_NO_PARAM = new TranslationImpl("languageapi-key-has-no-param", true);
+    public static TranslationImpl LANGUAGEAPI_SHOW_SUCCESS = new TranslationImpl("languageapi-show-success", true);
+    public static TranslationImpl LANGUAGEAPI_TRANSLATION_SUCCESS = new TranslationImpl("languageapi-translation-success", true);
+    public static TranslationImpl LANGUAGEAPI_RELOAD_SUCCESS = new TranslationImpl("languageapi-reload-success", true);
+    public static TranslationImpl LANGUAGEAPI_HELP = new TranslationImpl("languageapi-help", true);
 
 }

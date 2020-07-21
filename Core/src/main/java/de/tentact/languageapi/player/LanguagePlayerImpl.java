@@ -2,6 +2,7 @@ package de.tentact.languageapi.player;
 
 
 import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.api.TranslationImpl;
 import de.tentact.languageapi.i18n.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -36,7 +37,7 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
 
     @Override
     public void sendMessageByKey(@NotNull String transkey, boolean usePrefix) {
-        this.sendMessage(new Translation(transkey).setPrefix(usePrefix));
+        this.sendMessage(new TranslationImpl(transkey).setPrefix(usePrefix));
     }
 
 
