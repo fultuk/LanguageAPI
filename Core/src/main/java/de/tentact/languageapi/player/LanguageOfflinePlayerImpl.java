@@ -52,7 +52,7 @@ public class LanguageOfflinePlayerImpl implements LanguageOfflinePlayer {
 
     @Override
     public SpecificPlayerExecutor getSpecificPlayerExecutor() {
-        return new SpecificPlayerExecutorImpl(this.playerID);
+        return this.abstractLanguageAPI.getSpecificPlayerExecutor(this.playerID);
     }
 
 
