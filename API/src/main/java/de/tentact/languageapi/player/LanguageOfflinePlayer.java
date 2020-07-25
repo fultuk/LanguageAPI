@@ -35,4 +35,6 @@ public interface LanguageOfflinePlayer {
      */
     UUID getUniqueId();
 
+    SpecificPlayerExecutor getSpecificPlayerExecutor();
+
 }
