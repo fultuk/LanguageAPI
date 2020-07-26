@@ -12,4 +12,30 @@ Powerful API
 
 Ingame commands to do changes
 
+How to use?
+-
+``
+    @Override
+    public void onEnable() {
+        //Add your keys in the database
+        LanguageAPI languageAPI = LanguageAPI.getInstance();
+
+        languageAPI.addMessage("an-example-translation-key");
+
+        languageAPI.addMessageToDefault("an-example-translation-key", "This is an example translation in the default language");
+
+        //Get a Message
+        String translatedMessage = languageAPI.getMessage("an-example-translation-key", "examplelanguage");
+
+        //Get a LanguagePlayer
+        UUID playerId = UUID.randomUUID();
+        LanguagePlayer languagePlayer = languageAPI.getPlayerManager().getLanguagePlayer(playerId);
+        //Get an LanguageOfflinePlayer
+        LanguageOfflinePlayer languageOfflinePlayer = languageAPI.getPlayerManager().getLanguageOfflinePlayer(playerId);
+        
+        //Change / Create player properties
+        languageAPI.getPlayerExecutor().registerPlayer(playerId);
+    }
+``
+
 
