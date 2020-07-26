@@ -3,6 +3,9 @@ package de.tentact.languageapi.player;
 import de.tentact.languageapi.LanguageAPI;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * This is the {@link PlayerExecutor} but for an specific player
+ */
 public interface SpecificPlayerExecutor {
 
     /**

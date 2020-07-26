@@ -10,6 +10,10 @@ import java.util.UUID;
     Datum: 16.07.2020
     Uhrzeit: 23:11
 */
+
+/**
+ * You can get this interface by {@link PlayerManager#getLanguageOfflinePlayer(UUID)} or {@link PlayerExecutor#getLanguageOfflinePlayer(UUID)}
+ */
 public interface LanguageOfflinePlayer {
 
     /**

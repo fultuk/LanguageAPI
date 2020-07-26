@@ -3,6 +3,11 @@ package de.tentact.languageapi.player;
 import de.tentact.languageapi.i18n.Translation;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
+/**
+ * You can get this interface by {@link PlayerManager#getLanguagePlayer(UUID)} or {@link PlayerExecutor#getLanguagePlayer(UUID)}
+ */
 public interface LanguagePlayer extends LanguageOfflinePlayer {
     /**
      * Sends a message to the player by a {@link Translation}

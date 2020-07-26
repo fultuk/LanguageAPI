@@ -5,7 +5,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public interface PlayerExecutor extends PlayerManager{
+/**
+ * An interface to set and get properties of an player by it's uniqueId
+ */
+public interface PlayerExecutor extends PlayerManager {
 
     /**
      * @param playerUUID the player uuid to specify the player

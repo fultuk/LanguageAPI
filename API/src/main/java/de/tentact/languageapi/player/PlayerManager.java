@@ -5,6 +5,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
+/**
+ * An interface to get the {@link LanguagePlayer} & {@link LanguageOfflinePlayer}
+ */
 public interface PlayerManager {
 
     /**
