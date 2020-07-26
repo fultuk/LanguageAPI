@@ -1,11 +1,12 @@
 package de.tentact.languageapi.i18n;
 
+import de.tentact.languageapi.LanguageAPI;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
 /**
- * This interface can only be accessed via {@link de.tentact.languageapi.AbstractLanguageAPI#getTranslation(String)}
+ * This interface can only be accessed via {@link LanguageAPI#getTranslation(String)}
  */
 public interface Translation {
 

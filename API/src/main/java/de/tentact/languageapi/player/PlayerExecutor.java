@@ -1,6 +1,6 @@
 package de.tentact.languageapi.player;
 
-import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.LanguageAPI;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -17,7 +17,7 @@ public interface PlayerExecutor extends PlayerManager{
     /**
      * @param playerUUID    player uuid for whom the language should be changed
      * @param newLanguage   the new language of the player
-     * @param orElseDefault should set default if the language was not found {@link AbstractLanguageAPI#getDefaultLanguage()}
+     * @param orElseDefault should set default if the language was not found {@link LanguageAPI#getDefaultLanguage()}
      *                      Sets the player specific language
      */
     void setPlayerLanguage(UUID playerUUID, String newLanguage, boolean orElseDefault);

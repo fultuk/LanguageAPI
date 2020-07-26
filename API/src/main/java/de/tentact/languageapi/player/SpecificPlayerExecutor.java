@@ -1,6 +1,6 @@
 package de.tentact.languageapi.player;
 
-import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.LanguageAPI;
 import org.jetbrains.annotations.NotNull;
 
 public interface SpecificPlayerExecutor {
@@ -13,7 +13,7 @@ public interface SpecificPlayerExecutor {
 
     /**
      * @param newLanguage   the new language of the player
-     * @param orElseDefault should set default if the language was not found {@link AbstractLanguageAPI#getDefaultLanguage()}
+     * @param orElseDefault should set default if the language was not found {@link LanguageAPI#getDefaultLanguage()}
      *                      Sets the player specific language
      */
     void setPlayerLanguage(String newLanguage, boolean orElseDefault);
@@ -41,8 +41,17 @@ public interface SpecificPlayerExecutor {
      */
     boolean isRegisteredPlayer();
 
+    /**
+     *
+     * @return returns a {@link LanguagePlayer}
+     */
+
     LanguagePlayer getLanguagePlayer();
 
+    /**
+     *
+     * @return returns a {@link LanguageOfflinePlayer}
+     */
     LanguageOfflinePlayer getLanguageOfflinePlayer();
 
 }

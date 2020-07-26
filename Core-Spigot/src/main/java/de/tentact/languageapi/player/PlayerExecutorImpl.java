@@ -1,7 +1,7 @@
 package de.tentact.languageapi.player;
 
 import com.zaxxer.hikari.HikariDataSource;
-import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.ConfigUtil;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +16,7 @@ import java.util.logging.Level;
 public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecutor {
 
     private final MySQL mySQL = ConfigUtil.getMySQL();
-    private final AbstractLanguageAPI abstractLanguageAPI = AbstractLanguageAPI.getInstance();
+    private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private final HikariDataSource dataSource = mySQL.getDataSource();
 
     @NotNull
@@ -33,16 +33,16 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
                 return rs.getString("language").toLowerCase();
             }
         } catch (SQLException throwables) {
-            return abstractLanguageAPI.getDefaultLanguage();
+            return languageAPI.getDefaultLanguage();
         }
-        return abstractLanguageAPI.getDefaultLanguage();
+        return languageAPI.getDefaultLanguage();
     }
 
     @Override
     public void setPlayerLanguage(UUID playerUUID, String newLanguage, boolean orElseDefault) {
-        if (!abstractLanguageAPI.isLanguage(newLanguage)) {
+        if (!languageAPI.isLanguage(newLanguage)) {
             if (orElseDefault) {
-                this.setPlayerLanguage(playerUUID, abstractLanguageAPI.getDefaultLanguage());
+                this.setPlayerLanguage(playerUUID, languageAPI.getDefaultLanguage());
                 return;
             }
             return;
@@ -56,7 +56,7 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
         if (!this.isRegisteredPlayer(playerUUID)) {
             throw new UnsupportedOperationException();
         }
-        if (!abstractLanguageAPI.isLanguage(newLanguage)) {
+        if (!languageAPI.isLanguage(newLanguage)) {
             throw new IllegalArgumentException("Language " + newLanguage + " was not found!");
         }
         try (Connection connection = this.dataSource.getConnection();
@@ -71,7 +71,7 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
 
     @Override
     public void registerPlayer(UUID playerUUID) {
-        this.registerPlayer(playerUUID, abstractLanguageAPI.getDefaultLanguage());
+        this.registerPlayer(playerUUID, languageAPI.getDefaultLanguage());
     }
 
     @Override
@@ -81,8 +81,8 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
             this.setPlayerLanguage(playerUUID, validLanguage);
             this.logInfo("Creating user: " + playerUUID.toString() + " with language " + validLanguage);
         } else {
-            if (!abstractLanguageAPI.isLanguage(this.getPlayerLanguage(playerUUID))) {
-                this.setPlayerLanguage(playerUUID, abstractLanguageAPI.getDefaultLanguage());
+            if (!languageAPI.isLanguage(this.getPlayerLanguage(playerUUID))) {
+                this.setPlayerLanguage(playerUUID, languageAPI.getDefaultLanguage());
                 logInfo("Updating players selected language");
             }
         }
@@ -94,8 +94,8 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
     }
 
     private String validateLanguage(String language) {
-        if (!abstractLanguageAPI.isLanguage(language)) {
-            return abstractLanguageAPI.getDefaultLanguage();
+        if (!languageAPI.isLanguage(language)) {
+            return languageAPI.getDefaultLanguage();
         }
         return language;
     }

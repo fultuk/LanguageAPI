@@ -6,16 +6,16 @@ package de.tentact.languageapi.player;
     Uhrzeit: 23:12
 */
 
-import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.LanguageAPI;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
 public class LanguageOfflinePlayerImpl implements LanguageOfflinePlayer {
 
-    private final AbstractLanguageAPI abstractLanguageAPI = AbstractLanguageAPI.getInstance();
+    private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
-    private final PlayerExecutor playerExecutor = this.abstractLanguageAPI.getPlayerExecutor();
+    private final PlayerExecutor playerExecutor = this.languageAPI.getPlayerExecutor();
 
     private final UUID playerID;
 
@@ -34,7 +34,7 @@ public class LanguageOfflinePlayerImpl implements LanguageOfflinePlayer {
 
     @Override
     public void setLanguage(@NotNull String language, boolean orElseDefault) {
-        if (!this.abstractLanguageAPI.isLanguage(language) && !orElseDefault) {
+        if (!this.languageAPI.isLanguage(language) && !orElseDefault) {
             throw new IllegalArgumentException(language + " was not found");
         }
         this.playerExecutor.setPlayerLanguage(this.playerID, language, orElseDefault);
@@ -52,7 +52,7 @@ public class LanguageOfflinePlayerImpl implements LanguageOfflinePlayer {
 
     @Override
     public SpecificPlayerExecutor getSpecificPlayerExecutor() {
-        return this.abstractLanguageAPI.getSpecificPlayerExecutor(this.playerID);
+        return this.languageAPI.getSpecificPlayerExecutor(this.playerID);
     }
 
 

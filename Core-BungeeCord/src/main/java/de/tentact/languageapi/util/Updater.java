@@ -5,7 +5,7 @@ package de.tentact.languageapi.util;
     Uhrzeit: 16:53
 */
 
-import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.LanguageAPI;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -31,7 +31,7 @@ public class Updater {
         this.fullLocalVersion = plugin.getDescription().getVersion();
         this.onlineVersion = Integer.parseInt(this.getOnlineVersion(this.pluginName).replace(".", ""));
         if(this.onlineVersion > this.localVersion) {
-            ProxyServer.getInstance().broadcast(TextComponent.fromLegacyText(AbstractLanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
+            ProxyServer.getInstance().broadcast(TextComponent.fromLegacyText(LanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
                     +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+this.getOnlineVersion(this.pluginName)));
         }
         this.isEnabled = true;

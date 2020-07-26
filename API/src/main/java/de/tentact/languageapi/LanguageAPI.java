@@ -2,9 +2,10 @@ package de.tentact.languageapi;
 
 
 import de.tentact.languageapi.i18n.Translation;
-import de.tentact.languageapi.player.*;
+import de.tentact.languageapi.player.PlayerExecutor;
+import de.tentact.languageapi.player.PlayerManager;
+import de.tentact.languageapi.player.SpecificPlayerExecutor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,27 +23,27 @@ import java.util.UUID;
  * Everything works with a unique key that returns the translation in the correct language. A key can not only lead to a translation,
  * but can lead also to a collection of keys that lead back to the translations.
  */
-public abstract class AbstractLanguageAPI {
+public abstract class LanguageAPI {
 
-    private static AbstractLanguageAPI abstractLanguageAPI;
+    private static LanguageAPI languageAPI;
 
     /**
      * @return returns a reference to this interface
      */
     @NotNull
-    public static AbstractLanguageAPI getInstance() {
-        return abstractLanguageAPI;
+    public static LanguageAPI getInstance() {
+        return languageAPI;
     }
 
     /**
-     * @param abstractLanguageAPI instance of the interface
+     * @param languageAPI instance of the interface
      *                            sets the instance of the interface - set by the implementation
      */
-    public static void setInstance(@NotNull AbstractLanguageAPI abstractLanguageAPI) {
-        if (AbstractLanguageAPI.abstractLanguageAPI != null) {
+    public static void setInstance(@NotNull LanguageAPI languageAPI) {
+        if (LanguageAPI.languageAPI != null) {
             throw new UnsupportedOperationException("Cannot redefine singleton LanguageAPI");
         }
-        AbstractLanguageAPI.abstractLanguageAPI = abstractLanguageAPI;
+        LanguageAPI.languageAPI = languageAPI;
     }
 
     /**
@@ -328,7 +329,7 @@ public abstract class AbstractLanguageAPI {
     public abstract String getDefaultLanguage();
 
     /**
-     * @return returns the prefix of the api (languageapi-prefix) in the default language {@link AbstractLanguageAPI#getPrefix(String)}
+     * @return returns the prefix of the api (languageapi-prefix) in the default language {@link LanguageAPI#getPrefix(String)}
      */
     @NotNull
     public abstract String getPrefix();

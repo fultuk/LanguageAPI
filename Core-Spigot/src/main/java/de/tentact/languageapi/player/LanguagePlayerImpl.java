@@ -1,7 +1,7 @@
 package de.tentact.languageapi.player;
 
 
-import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.api.TranslationImpl;
 import de.tentact.languageapi.i18n.Translation;
 import org.bukkit.Bukkit;
@@ -15,7 +15,7 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
 
     private final UUID playerID;
     private Player player;
-    private final AbstractLanguageAPI abstractLanguageAPI = AbstractLanguageAPI.getInstance();
+    private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
 
     public LanguagePlayerImpl(UUID playerID) {
@@ -48,10 +48,10 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
 
     @Override
     public void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language) {
-        if (!this.abstractLanguageAPI.isMultipleTranslation(multipleTranslationKey)) {
+        if (!this.languageAPI.isMultipleTranslation(multipleTranslationKey)) {
             throw new IllegalArgumentException(multipleTranslationKey + " was not found");
         }
-        this.abstractLanguageAPI.getMultipleMessages(multipleTranslationKey, language).forEach(Objects.requireNonNull(this.getPlayer())::sendMessage);
+        this.languageAPI.getMultipleMessages(multipleTranslationKey, language).forEach(Objects.requireNonNull(this.getPlayer())::sendMessage);
 
     }
 

@@ -5,9 +5,9 @@ package de.tentact.languageapi.util;
     Uhrzeit: 17:05
 */
 
-import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.LanguageBungeecord;
-import de.tentact.languageapi.api.LanguageAPI;
+import de.tentact.languageapi.api.LanguageAPIImpl;
 import de.tentact.languageapi.mysql.MySQL;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,7 +36,7 @@ public class ConfigUtil {
                 bungeecordmySQLConfiguration.getString("mysql.username"),
                 bungeecordmySQLConfiguration.getString("mysql.password"),
                 bungeecordmySQLConfiguration.getInt("mysql.port"));
-        AbstractLanguageAPI.setInstance(new LanguageAPI());
+        LanguageAPI.setInstance(new LanguageAPIImpl());
 
     }
 

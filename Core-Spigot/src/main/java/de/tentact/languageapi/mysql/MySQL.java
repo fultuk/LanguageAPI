@@ -61,7 +61,6 @@ public class MySQL {
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS MultipleTranslation(multipleKey VARCHAR(64), transkeys VARCHAR(2000));");
             ConfigUtil.log("Creating default tables", Level.INFO);
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -77,6 +76,7 @@ public class MySQL {
         }
     }
 
+    //TODO remove non preparedstatements
     public void update(String sql) {
         if (isConnected()) {
             try (Connection connection = dataSource.getConnection()) {

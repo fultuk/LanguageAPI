@@ -35,7 +35,7 @@ public class LanguageSpigot extends JavaPlugin {
         this.mySQL.connect();
         this.mySQL.createDefaultTable();
 
-        AbstractLanguageAPI.getInstance().createLanguage(ConfigUtil.getDefaultLanguage());
+        LanguageAPI.getInstance().createLanguage(ConfigUtil.getDefaultLanguage());
         I18N.createDefaultPluginMessages();
         this.updater = new Updater(this);
 

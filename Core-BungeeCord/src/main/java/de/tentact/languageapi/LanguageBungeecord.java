@@ -22,7 +22,7 @@ public class LanguageBungeecord extends Plugin {
         mySQL = ConfigUtil.getMySQL();
         mySQL.connect();
         mySQL.createDefaultTable();
-        AbstractLanguageAPI.getInstance().createLanguage(ConfigUtil.getDefaultLanguage());
+        LanguageAPI.getInstance().createLanguage(ConfigUtil.getDefaultLanguage());
         I18N.createDefaultPluginMessages();
 
         new Updater(this);

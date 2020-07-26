@@ -5,7 +5,7 @@ package de.tentact.languageapi.listener;
     Uhrzeit: 19:03
 */
 
-import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.LanguageSpigot;
 import de.tentact.languageapi.util.ConfigUtil;
 import de.tentact.languageapi.util.Updater;
@@ -19,13 +19,13 @@ public class JoinListener implements Listener {
 
     LanguageSpigot languageSpigot = LanguageSpigot.getPlugin(LanguageSpigot.class);
     private final Updater updater = languageSpigot.getUpdater();
-    private final AbstractLanguageAPI abstractLanguageAPI = AbstractLanguageAPI.getInstance();
+    private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-
+        languageAPI.getSpecificPlayerExecutor(player.getUniqueId()).registerPlayer(player.getLocale().toLowerCase());
 
         if(!ConfigUtil.getUpdateNotfication()) {
             return;
@@ -39,7 +39,7 @@ public class JoinListener implements Listener {
         if (!player.hasPermission("languageapi.notify")) {
             return;
         }
-        player.sendMessage(AbstractLanguageAPI.getInstance().getPrefix() + "Es ist ein neues Update verfügbar. Aktuelle Version: §6" + updater.getLocalVersion()
+        player.sendMessage(LanguageAPI.getInstance().getPrefix() + "Es ist ein neues Update verfügbar. Aktuelle Version: §6" + updater.getLocalVersion()
                 + "§7. Neuste Version: §c" + updater.getOnlineVersion() + "");
 
 

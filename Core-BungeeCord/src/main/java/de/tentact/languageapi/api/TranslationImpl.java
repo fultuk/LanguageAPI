@@ -6,7 +6,7 @@ package de.tentact.languageapi.api;
     Uhrzeit: 15:47
 */
 
-import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.i18n.Translation;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +20,7 @@ import java.util.UUID;
 public class TranslationImpl implements Translation {
 
     private final String translationkey;
-    private final AbstractLanguageAPI abstractLanguageAPI = AbstractLanguageAPI.getInstance();
+    private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private boolean usePrefix = false;
     private final HashMap<String, String> params = new HashMap<>();
     private String message;
@@ -47,23 +47,17 @@ public class TranslationImpl implements Translation {
     @NotNull
     @Override
     public String getMessage() {
-        return this.getMessage(this.abstractLanguageAPI.getDefaultLanguage());
+        return this.getMessage(this.languageAPI.getDefaultLanguage());
     }
 
     @NotNull
     @Override
     public String getMessage(@NotNull UUID playerUUID) {
-        message = this.abstractLanguageAPI.getMessage(this.translationkey, playerUUID, usePrefix);
+        message = this.languageAPI.getMessage(this.translationkey, playerUUID, usePrefix);
         params.forEach((key, value) -> message = message.replace(key, value));
         params.clear();
         return message;
     }
-
-    /**
-     * @param playerUUID the player's uniqueid to fetch the language from
-     * @return returns a translation of the key in the language fetched by {@link UUID}
-     */
-
 
     /**
      * @param language the language to get the translation in
@@ -72,7 +66,7 @@ public class TranslationImpl implements Translation {
     @NotNull
     @Override
     public String getMessage(@NotNull String language) {
-        message = this.abstractLanguageAPI.getMessage(this.translationkey, language, usePrefix);
+        message = this.languageAPI.getMessage(this.translationkey, language, usePrefix);
         params.forEach((key, value) -> message = message.replace(key, value));
         params.clear();
         return message;
@@ -83,7 +77,7 @@ public class TranslationImpl implements Translation {
      */
     @Override
     public String getParameter() {
-        return this.abstractLanguageAPI.getParameter(this.translationkey);
+        return this.languageAPI.getParameter(this.translationkey);
     }
 
     /**

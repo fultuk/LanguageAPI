@@ -5,8 +5,8 @@ package de.tentact.languageapi.util;
     Uhrzeit: 17:05
 */
 
-import de.tentact.languageapi.AbstractLanguageAPI;
-import de.tentact.languageapi.api.LanguageAPI;
+import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.api.LanguageAPIImpl;
 import de.tentact.languageapi.mysql.MySQL;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -57,7 +57,7 @@ public class ConfigUtil {
                 mySQLConfiguration.getString("mysql.username"),
                 mySQLConfiguration.getString("mysql.password"),
                 mySQLConfiguration.getInt("mysql.port"));
-        AbstractLanguageAPI.setInstance(new LanguageAPI());
+        LanguageAPI.setInstance(new LanguageAPIImpl());
     }
 
     @NotNull

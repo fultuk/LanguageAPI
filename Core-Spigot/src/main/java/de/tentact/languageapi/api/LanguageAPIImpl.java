@@ -8,7 +8,7 @@ package de.tentact.languageapi.api;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.zaxxer.hikari.HikariDataSource;
-import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.i18n.Translation;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.player.*;
@@ -24,7 +24,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-public class LanguageAPI extends AbstractLanguageAPI {
+public class LanguageAPIImpl extends LanguageAPI {
 
     private final MySQL mySQL = ConfigUtil.getMySQL();
 
@@ -38,8 +38,6 @@ public class LanguageAPI extends AbstractLanguageAPI {
             this.mySQL.createTable(language.replace(" ", "").toLowerCase());
             this.mySQL.update("INSERT INTO languages(language) VALUES ('" + language.toLowerCase() + "')");
             logInfo("Creating new language:" + language);
-
-
         }
 
     }
@@ -60,11 +58,8 @@ public class LanguageAPI extends AbstractLanguageAPI {
                 throwables.printStackTrace();
             }
             logInfo("Deleting language:" + language);
-
         }
-
     }
-
 
 
     @Override
@@ -319,10 +314,11 @@ public class LanguageAPI extends AbstractLanguageAPI {
         if (!isMultipleTranslation(multipleTranslation)) {
             throw new IllegalArgumentException(multipleTranslation + " was not found");
         }
-
         ArrayList<String> translationKeysAsArrayList = null;
-        try (Connection connection = this.mySQL.getDataSource().getConnection()) {
-            ResultSet resultSet = connection.createStatement().executeQuery("SELECT transkeys FROM MultipleTranslation WHERE multipleKey='" + multipleTranslation.toLowerCase() + "'");
+        try (Connection connection = this.mySQL.getDataSource().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT transkeys FROM MultipleTranslation WHERE multipleKey=?")) {
+            preparedStatement.setString(1, multipleTranslation.toLowerCase());
+            ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 translationKeysAsArrayList = new ArrayList<>(Arrays.asList(resultSet.getString("transkeys").split(",")));
             }
@@ -358,7 +354,6 @@ public class LanguageAPI extends AbstractLanguageAPI {
             throwables.printStackTrace();
         }
     }
-
 
 
     @Override

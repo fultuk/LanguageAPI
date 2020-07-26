@@ -5,7 +5,7 @@ package de.tentact.languageapi.util;
     Uhrzeit: 16:53
 */
 
-import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.LanguageAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
@@ -31,7 +31,7 @@ public class Updater {
 
         this.onlineVersion = Integer.parseInt(online);
         if (this.onlineVersion > this.localVersion) {
-            Bukkit.broadcastMessage(AbstractLanguageAPI.getInstance().getPrefix() + "Es ist ein neues Update verfügbar. Aktuelle Version: §6"
+            Bukkit.broadcastMessage(LanguageAPI.getInstance().getPrefix() + "Es ist ein neues Update verfügbar. Aktuelle Version: §6"
                     + plugin.getDescription().getVersion() + "§7, neuste Version: §c" + this.getOnlineVersion(this.pluginName));
         }
         this.isEnabled = true;

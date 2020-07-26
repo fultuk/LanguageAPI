@@ -5,7 +5,7 @@ package de.tentact.languageapi.listener;
     Uhrzeit: 15:29
 */
 
-import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.command.LanguageCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 public class ChatListener implements Listener {
 
     private final HashMap<Player, ArrayList<String>> editedMessage = new HashMap<>();
-    private final AbstractLanguageAPI abstractLanguageAPI = AbstractLanguageAPI.getInstance();
+    private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
@@ -37,7 +37,7 @@ public class ChatListener implements Listener {
                 event.setCancelled(true);
             }else{
                 if(editedMessage.get(player) == null) {
-                    player.sendMessage(abstractLanguageAPI.getPrefix()+ abstractLanguageAPI.getMessage("languageapi-update-same", player.getUniqueId()));
+                    player.sendMessage(languageAPI.getPrefix()+ languageAPI.getMessage("languageapi-update-same", player.getUniqueId()));
                     event.setCancelled(true);
                     return;
                 }
@@ -48,10 +48,10 @@ public class ChatListener implements Listener {
                 String transkey = LanguageCommand.givenParameter.get(player).get(0);
                 String language = LanguageCommand.givenParameter.get(player).get(1);
                 LanguageCommand.editingMessage.remove(player);
-                abstractLanguageAPI.updateMessage(transkey, language, result.toString());
+                languageAPI.updateMessage(transkey, language, result.toString());
 
                 event.setCancelled(true);
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', abstractLanguageAPI.getMessage("languageapi-update-success", player.getUniqueId())
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', languageAPI.getMessage("languageapi-update-success", player.getUniqueId())
                         .replace("%KEY%", transkey)
                         .replace("%LANG%", language)
                         .replace("%MSG%", result.toString())));
