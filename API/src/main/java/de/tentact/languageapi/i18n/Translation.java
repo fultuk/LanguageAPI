@@ -1,66 +1,65 @@
 package de.tentact.languageapi.i18n;
-/*  Created in the IntelliJ IDEA.
-    Copyright(c) 2020
-    Created by 0utplay | Aldin Sijamhodzic
-    Datum: 07.07.2020
-    Uhrzeit: 15:47
-*/
 
-import de.tentact.languageapi.AbstractLanguageAPI;
+import de.tentact.languageapi.LanguageAPI;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
 /**
- *
+ * This interface can only be accessed via {@link LanguageAPI#getTranslation(String)}
  */
+public interface Translation {
 
-public class Translation {
-
-    private final String translationkey;
-    private final AbstractLanguageAPI abstractLanguageAPI = AbstractLanguageAPI.getInstance();
-    private boolean usePrefix = false;
 
     /**
-     *
-     * @param translationkey
+     * @return returns a translation of the key in the default language
      */
-    public Translation(String translationkey) {
-        this.translationkey = translationkey;
-    }
+    @NotNull
+    String getMessage();
 
     /**
-     *
      * @param playerUUID the player's uniqueid to fetch the language from
-     * @return returns a translation of the key in the language fetched by {@link UUID}
+     * @return returns a translation of the key in the language fetched by @link UUID
      */
-    public String getMessage(UUID playerUUID) {
-        return this.abstractLanguageAPI.getMessage(this.translationkey, playerUUID, usePrefix);
-    }
+    @NotNull
+    String getMessage(@NotNull UUID playerUUID);
+
 
     /**
-     *
      * @param language the language to get the translation in
      * @return returns a translation of the key in the given language
      */
-    public String getMessage(String language) {
-        return this.abstractLanguageAPI.getMessage(this.translationkey, language, usePrefix);
-    }
+    @NotNull
+    String getMessage(@NotNull String language);
+
 
     /**
-     *
      * @return returns the parameter for a key
      */
-    public String getParameter() {
-       return this.abstractLanguageAPI.getParameter(this.translationkey);
-    }
+
+    String getParameter();
+
 
     /**
-     *
-     * @param usePrefix
-     * @return returns a {@link Translation}
+     * @param usePrefix wether to use the languageapi prefix in the translation or not
+     * @return returns a @link TranslationImpl
      */
-    public Translation setPrefix(boolean usePrefix) {
-        this.usePrefix = usePrefix;
-        return this;
-    }
+    Translation setPrefix(boolean usePrefix);
+
+    /**
+     * a method to replace parameter in the specific translation for a player - this is reset after @link TranslationImpl#getMessage()
+     *
+     * @param old         the old String to replace
+     * @param replacement the replacement for the paramater
+     * @return returns @link TranslationImpl after inserting the parameter
+     */
+    Translation replace(String old, String replacement);
+
+
+    /**
+     * @return returns the translationkey which was given
+     */
+    String getTranslationKey();
+
+
 }
