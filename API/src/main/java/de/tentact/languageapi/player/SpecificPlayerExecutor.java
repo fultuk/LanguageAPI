@@ -42,15 +42,14 @@ public interface SpecificPlayerExecutor {
     boolean isRegisteredPlayer();
 
     /**
-     *
+     * Gets an {@link LanguagePlayer} - null when the player is not online
      * @return returns a {@link LanguagePlayer}
      */
-
     LanguagePlayer getLanguagePlayer();
 
     /**
-     *
-     * @return returns a {@link LanguageOfflinePlayer}
+     *Gets an {@link LanguageOfflinePlayer}
+     * @return returns a LanguageOfflinePlayer
      */
     LanguageOfflinePlayer getLanguageOfflinePlayer();
 

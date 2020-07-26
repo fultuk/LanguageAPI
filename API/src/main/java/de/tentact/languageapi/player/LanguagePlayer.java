@@ -4,34 +4,39 @@ import de.tentact.languageapi.i18n.Translation;
 import org.jetbrains.annotations.NotNull;
 
 public interface LanguagePlayer extends LanguageOfflinePlayer {
-
     /**
-     * @param translation
+     * Sends a message to the player by a {@link Translation}
+     * @param translation the {@link Translation} to get the translated message from
      */
-
     void sendMessage(@NotNull Translation translation);
 
     /**
-     * @param transkey
+     * Sends a message to the player by a translationkey
+     * @param transkey the translationkey to get the translation from
      */
     void sendMessageByKey(@NotNull String transkey);
-
+    /**
+     * Sends a message to the player by a translationkey
+     * @param transkey the translationkey to get the translation from
+     * @param usePrefix whether to use the default languageapi prefix
+     */
     void sendMessageByKey(@NotNull String transkey, boolean usePrefix);
 
-
     /**
-     * @param multipleTranslationKey
+     * Sends multiple messages to the player by a single multipleTranslationKey
+     * @param multipleTranslationKey the multipleTranslationKey to get the Collection of translationkeys
      */
     void sendMultipleTranslation(@NotNull String multipleTranslationKey);
 
     /**
-     * @param multipleTranslationKey
-     * @param language
+     * Sends multiple messages to the player by a single multipleTranslationKey
+     * @param multipleTranslationKey the multipleTranslationKey to get the Collection of translationkeys
+     * @param language the language to get the translation in
      */
     void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language);
 
     /**
-     * @return
+     * @return returns if the player is online
      */
     boolean isOnline();
 

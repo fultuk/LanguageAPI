@@ -341,18 +341,42 @@ public abstract class LanguageAPI {
     @NotNull
     public abstract String getPrefix(String language);
 
+    /**
+     * Gets an {@link PlayerManager} to get {@link de.tentact.languageapi.player.LanguagePlayer} & {@link de.tentact.languageapi.player.LanguageOfflinePlayer}
+     * @return returns a {@link PlayerManager}
+     */
     @NotNull
     public abstract PlayerManager getPlayerManager();
 
+    /**
+     * Gets a {@link Translation} by its key
+     * @param translationkey the translationkey to fetch the translation from
+     * @return returns an {@link Translation}
+     */
     @NotNull
     public abstract Translation getTranslation(String translationkey);
 
+    /**
+     * Gets a {@link Translation} by its key - with the option to use the prefix
+     * @param translationkey the translationkey to fetch the translation from
+     * @param usePrefix whether use the prefix in the translation
+     * @return returns an {@link Translation} with usePrefix set
+     */
     @NotNull
     public abstract Translation getTranslation(String translationkey, boolean usePrefix);
 
+    /**
+     * Gets a {@link PlayerExecutor} without an specific player
+     * @return returns a {@link PlayerExecutor}
+     */
     @NotNull
     public abstract PlayerExecutor getPlayerExecutor();
 
+    /**
+     * Gets a {@link SpecificPlayerExecutor} to do updates for a specific player
+     * @param playerId the uniqueId to identify the player with
+     * @return returns a {@link SpecificPlayerExecutor} for the given playerId
+     */
     @NotNull
     public abstract SpecificPlayerExecutor getSpecificPlayerExecutor(UUID playerId);
 
