@@ -14,9 +14,10 @@ Ingame commands to do changes
 
 How to use?
 -
-``
-    @Override
-    public void onEnable() {
+```java
+
+       @Override
+       public void onEnable() {
         //Add your keys in the database
         LanguageAPI languageAPI = LanguageAPI.getInstance();
 
@@ -36,6 +37,6 @@ How to use?
         //Change / Create player properties
         languageAPI.getPlayerExecutor().registerPlayer(playerId);
     }
-``
+```
 
 
