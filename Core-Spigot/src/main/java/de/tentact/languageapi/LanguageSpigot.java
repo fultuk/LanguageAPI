@@ -5,12 +5,12 @@ package de.tentact.languageapi;
     Uhrzeit: 17:01
 */
 
-import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.command.LanguageCommand;
 import de.tentact.languageapi.listener.ChatListener;
 import de.tentact.languageapi.listener.JoinListener;
-import de.tentact.languageapi.util.I18N;
+import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.ConfigUtil;
+import de.tentact.languageapi.util.I18N;
 import de.tentact.languageapi.util.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;

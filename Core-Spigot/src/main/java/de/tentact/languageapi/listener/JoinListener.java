@@ -25,8 +25,7 @@ public class JoinListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        abstractLanguageAPI.getSpecificPlayerExecutor(player.getUniqueId())
-                .registerPlayer(player.getLocale().toLowerCase());
+
 
         if(!ConfigUtil.getUpdateNotfication()) {
             return;

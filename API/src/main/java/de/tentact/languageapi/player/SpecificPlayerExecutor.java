@@ -3,8 +3,6 @@ package de.tentact.languageapi.player;
 import de.tentact.languageapi.AbstractLanguageAPI;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
-
 public interface SpecificPlayerExecutor {
 
     /**
@@ -27,13 +25,13 @@ public interface SpecificPlayerExecutor {
     void setPlayerLanguage(String newLanguage);
 
     /**
-     *                   creates the player in the database
+     * creates the player in the database
      */
     void registerPlayer();
 
     /**
-     * @param language   the language that the player has on creation
-     *                   creates the player in the database
+     * @param language the language that the player has on creation
+     *                 creates the player in the database
      */
 
     void registerPlayer(String language);
@@ -42,5 +40,9 @@ public interface SpecificPlayerExecutor {
      * @return returns if a player is in the database
      */
     boolean isRegisteredPlayer();
+
+    LanguagePlayer getLanguagePlayer();
+
+    LanguageOfflinePlayer getLanguageOfflinePlayer();
 
 }

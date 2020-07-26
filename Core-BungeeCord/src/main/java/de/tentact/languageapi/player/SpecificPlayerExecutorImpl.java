@@ -1,6 +1,7 @@
 package de.tentact.languageapi.player;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -42,5 +43,15 @@ public class SpecificPlayerExecutorImpl implements SpecificPlayerExecutor {
     @Override
     public boolean isRegisteredPlayer() {
         return this.playerExecutor.isRegisteredPlayer(this.playerId);
+    }
+
+    @Override
+    public @Nullable LanguagePlayer getLanguagePlayer() {
+        return this.playerExecutor.getLanguagePlayer(this.playerId);
+    }
+
+    @Override
+    public @NotNull LanguageOfflinePlayer getLanguageOfflinePlayer() {
+        return this.playerExecutor.getLanguageOfflinePlayer(this.playerId);
     }
 }

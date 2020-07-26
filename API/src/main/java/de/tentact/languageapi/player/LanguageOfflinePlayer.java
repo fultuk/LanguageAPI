@@ -13,26 +13,21 @@ import java.util.UUID;
 public interface LanguageOfflinePlayer {
 
     /**
-     * set the selected language of a player
-     * @param language the language to set
+     * @param language
      */
     void setLanguage(@NotNull String language);
 
     /**
-     * set the selected language of a player with an option to use default
-     * @param language the language to set
-     * @param orElseDefault wether use default if the language was not found
+     * @param language
+     * @param orElseDefault
      */
     void setLanguage(@NotNull String language, boolean orElseDefault);
 
     /**
-     * @return returns a players selected language
+     * @return
      */
     @NotNull String getLanguage();
 
-    /**
-     * @return returns a players uniqueId
-     */
     UUID getUniqueId();
 
     SpecificPlayerExecutor getSpecificPlayerExecutor();
