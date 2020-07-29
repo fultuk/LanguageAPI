@@ -17,6 +17,7 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Node;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -48,6 +49,7 @@ public class LanguageCommand implements TabExecutor {
                     switch (args[0].toLowerCase()) {
                         case "add":
                             if (!(args.length >= 4)) {
+
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_ADD_HELP);
                                 return false;
                             }

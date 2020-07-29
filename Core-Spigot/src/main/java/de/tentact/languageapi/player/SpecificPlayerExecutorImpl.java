@@ -22,17 +22,16 @@ public class SpecificPlayerExecutorImpl implements SpecificPlayerExecutor {
     }
 
     @Override
-    public boolean isPlayersLanguage(UUID playerUUID, String language) {
+    public boolean isPlayersLanguage(String language) {
         if (!this.languageAPI.isLanguage(language)) {
             return false;
         }
-        return this.languageAPI.getSpecificPlayerExecutor(playerUUID).getPlayerLanguage().equalsIgnoreCase(language);
+        return this.playerExecutor.getPlayerLanguage(this.playerId).equalsIgnoreCase(language);
     }
 
     @Override
     public void setPlayerLanguage(String newLanguage, boolean orElseDefault) {
         this.playerExecutor.setPlayerLanguage(this.playerId, newLanguage, orElseDefault);
-
     }
 
     @Override

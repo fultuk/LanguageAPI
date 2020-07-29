@@ -76,16 +76,6 @@ public class MySQL {
         }
     }
 
-    //TODO remove non preparedstatements
-    public void update(String sql) {
-        if (isConnected()) {
-            try (Connection connection = dataSource.getConnection()) {
-                connection.createStatement().executeUpdate(sql);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        }
-    }
 
     public boolean exists(String query) {
         try (Connection connection = this.dataSource.getConnection();

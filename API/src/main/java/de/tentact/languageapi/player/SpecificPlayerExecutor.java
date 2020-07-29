@@ -18,12 +18,11 @@ public interface SpecificPlayerExecutor {
 
     /**
      *
-     * @param playerUUID
-     * @param language
-     * @return
+     * @param language the language to check
+     * @return returns if the given language is the players set language
      */
 
-    boolean isPlayersLanguage(UUID playerUUID, String language);
+    boolean isPlayersLanguage(String language);
 
     /**
      * @param newLanguage   the new language of the player
