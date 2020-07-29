@@ -32,11 +32,16 @@ public interface Translation {
     @NotNull
     String getMessage(@NotNull String language);
 
+    /**
+     * @param language the language to get the translation in
+     * @param orElseDefault whether to use the default language if the given one was not found
+     * @return returns a translation of the key in the given language if found, else uses default language if orElseDefault is <code>true<code/>
+     */
     @NotNull
     String getMessage(@NotNull String language, boolean orElseDefault);
 
     /**
-     * @return returns the parameter for a key
+     * @return returns all parameters for the key in the {@link Translation#getTranslationKey()}
      */
 
     String getParameter();
