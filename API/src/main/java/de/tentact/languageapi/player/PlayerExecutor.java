@@ -17,6 +17,12 @@ public interface PlayerExecutor extends PlayerManager {
     @NotNull
     String getPlayerLanguage(UUID playerUUID);
 
+    /**
+     *
+     * @param playerUUID
+     * @param language
+     * @return
+     */
     boolean isPlayersLanguage(UUID playerUUID, String language);
 
     /**

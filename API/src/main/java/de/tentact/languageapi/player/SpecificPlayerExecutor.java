@@ -8,7 +8,9 @@ import java.util.UUID;
 /**
  * This is the {@link PlayerExecutor} but for an specific player
  */
-public interface SpecificPlayerExecutor {
+public interface SpecificPlayerExecutor extends PlayerManager {
+
+
 
     /**
      * @return returns a String with the language of the player in the database

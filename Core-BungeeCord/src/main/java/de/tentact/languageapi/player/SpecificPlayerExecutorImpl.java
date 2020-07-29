@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class SpecificPlayerExecutorImpl implements SpecificPlayerExecutor {
+public class SpecificPlayerExecutorImpl extends PlayerManagerImpl implements SpecificPlayerExecutor {
 
     private final UUID playerId;
     private final PlayerExecutor playerExecutor = new PlayerExecutorImpl();
