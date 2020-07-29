@@ -50,9 +50,4 @@ public class LanguageOfflinePlayerImpl implements LanguageOfflinePlayer {
         return this.playerID;
     }
 
-    @Override
-    public SpecificPlayerExecutor getSpecificPlayerExecutor() {
-        return this.languageAPI.getSpecificPlayerExecutor(this.playerID);
-    }
-
 }

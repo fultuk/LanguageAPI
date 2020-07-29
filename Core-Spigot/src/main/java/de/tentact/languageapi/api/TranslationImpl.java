@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 
 /**
  *
@@ -53,10 +54,7 @@ public class TranslationImpl implements Translation {
     @NotNull
     @Override
     public String getMessage(@NotNull UUID playerUUID) {
-        message = this.languageAPI.getMessage(this.translationkey, playerUUID, usePrefix);
-        params.forEach((key, value) -> message = message.replace(key, value));
-        params.clear();
-        return message;
+        return this.getMessage(this.languageAPI.getPlayerExecutor().getPlayerLanguage(playerUUID));
     }
 
 
@@ -67,6 +65,18 @@ public class TranslationImpl implements Translation {
     @NotNull
     @Override
     public String getMessage(@NotNull String language) {
+        return this.getMessage(language, false);
+    }
+
+    /**
+     *
+     * @param language the language to get the translation in
+     * @param orElseDefault whether to use the default language if the given one was not found
+     * @return returns a translation of the key in the given language if found, else uses default language if orElseDefault is <code>true<code/>
+     */
+    @NotNull
+    @Override
+    public String getMessage(@NotNull String language, boolean orElseDefault) {
         message = this.languageAPI.getMessage(this.translationkey, language, usePrefix);
         params.forEach((key, value) -> message = message.replace(key, value));
         params.clear();

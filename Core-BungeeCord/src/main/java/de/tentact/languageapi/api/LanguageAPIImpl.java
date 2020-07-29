@@ -36,10 +36,15 @@ public class LanguageAPIImpl extends LanguageAPI {
     public void createLanguage(final String language) {
         if (this.getAvailableLanguages().isEmpty() || !this.isLanguage(language)) {
             this.mySQL.createTable(language.replace(" ", "").toLowerCase());
-            this.mySQL.update("INSERT INTO languages(language) VALUES ('" + language.toLowerCase() + "')");
+            try(Connection connection = this.getDataSouce().getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO languages(language) VALUES (?)")) {
+                preparedStatement.setString(1, language.toLowerCase());
+                preparedStatement.execute();
+            }catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             logInfo("Creating new language:" + language);
         }
-
     }
 
     @Override
@@ -200,7 +205,6 @@ public class LanguageAPIImpl extends LanguageAPI {
         if (!this.isLanguage(langfrom.toLowerCase()) || !this.isLanguage(langto.toLowerCase())) {
             throw new IllegalArgumentException("Language " + langfrom + " or " + langto + " was not found!");
         }
-        this.mySQL.update("INSERT INTO " + langto.toLowerCase() + " SELECT * FROM " + langfrom.toLowerCase() + ";");
         try (Connection connection = this.getDataSouce().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO ? SELECT * FROM ?;")) {
             preparedStatement.setString(1, langto.toLowerCase());

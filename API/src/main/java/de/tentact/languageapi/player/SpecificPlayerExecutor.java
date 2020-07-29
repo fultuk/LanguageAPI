@@ -3,16 +3,28 @@ package de.tentact.languageapi.player;
 import de.tentact.languageapi.LanguageAPI;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 /**
  * This is the {@link PlayerExecutor} but for an specific player
  */
-public interface SpecificPlayerExecutor {
+public interface SpecificPlayerExecutor extends PlayerManager {
+
+
 
     /**
      * @return returns a String with the language of the player in the database
      */
     @NotNull
     String getPlayerLanguage();
+
+    /**
+     *
+     * @param language the language to check
+     * @return returns if the given language is the players set language
+     */
+
+    boolean isPlayersLanguage(String language);
 
     /**
      * @param newLanguage   the new language of the player

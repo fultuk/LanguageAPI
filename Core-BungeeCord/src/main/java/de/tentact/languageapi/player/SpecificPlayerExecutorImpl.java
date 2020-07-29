@@ -1,14 +1,16 @@
 package de.tentact.languageapi.player;
 
+import de.tentact.languageapi.LanguageAPI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class SpecificPlayerExecutorImpl implements SpecificPlayerExecutor {
+public class SpecificPlayerExecutorImpl extends PlayerManagerImpl implements SpecificPlayerExecutor {
 
     private final UUID playerId;
     private final PlayerExecutor playerExecutor = new PlayerExecutorImpl();
+    private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
     public SpecificPlayerExecutorImpl(UUID playerId) {
         this.playerId = playerId;
@@ -17,6 +19,14 @@ public class SpecificPlayerExecutorImpl implements SpecificPlayerExecutor {
     @Override
     public @NotNull String getPlayerLanguage() {
         return this.playerExecutor.getPlayerLanguage(this.playerId);
+    }
+
+    @Override
+    public boolean isPlayersLanguage(String language) {
+        if (!this.languageAPI.isLanguage(language)) {
+            return false;
+        }
+        return this.playerExecutor.getPlayerLanguage(this.playerId).equalsIgnoreCase(language);
     }
 
     @Override

@@ -32,9 +32,16 @@ public interface Translation {
     @NotNull
     String getMessage(@NotNull String language);
 
+    /**
+     * @param language the language to get the translation in
+     * @param orElseDefault whether to use the default language if the given one was not found
+     * @return returns a translation of the key in the given language if found, else uses default language if orElseDefault is <code>true<code/>
+     */
+    @NotNull
+    String getMessage(@NotNull String language, boolean orElseDefault);
 
     /**
-     * @return returns the parameter for a key
+     * @return returns all parameters for the key in the {@link Translation#getTranslationKey()}
      */
 
     String getParameter();
@@ -42,16 +49,16 @@ public interface Translation {
 
     /**
      * @param usePrefix wether to use the languageapi prefix in the translation or not
-     * @return returns a @link TranslationImpl
+     * @return returns a {@link Translation} after setting the prefix
      */
     Translation setPrefix(boolean usePrefix);
 
     /**
-     * a method to replace parameter in the specific translation for a player - this is reset after @link TranslationImpl#getMessage()
+     * a method to replace parameter in the specific translation for a player - this is reset after {@link Translation#getMessage()}
      *
      * @param old         the old String to replace
      * @param replacement the replacement for the paramater
-     * @return returns @link TranslationImpl after inserting the parameter
+     * @return returns {@link Translation} after replacing the parameter
      */
     Translation replace(String old, String replacement);
 
