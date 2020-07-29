@@ -33,9 +33,11 @@ How to use?
         LanguagePlayer languagePlayer = languageAPI.getPlayerManager().getLanguagePlayer(playerId);
         //Get an LanguageOfflinePlayer
         LanguageOfflinePlayer languageOfflinePlayer = languageAPI.getPlayerManager().getLanguageOfflinePlayer(playerId);
+        //Use the PlayerExecutor to change properties
+        PlayerExecutor playerExecutor = languageAPI.getPlayerExecutor();
         
-        //Change / Create player properties
-        languageAPI.getPlayerExecutor().registerPlayer(playerId);
+        //Use the playerexecutor
+        playerExecutor.registerPlayer(playerId);
     }
 ```
 
