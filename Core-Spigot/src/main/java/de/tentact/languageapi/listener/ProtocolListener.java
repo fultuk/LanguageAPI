@@ -16,7 +16,7 @@ import de.tentact.languageapi.LanguageSpigot;
 
 public class ProtocolListener {
 
-    private LanguageAPI languageAPI = LanguageAPI.getInstance();
+    private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
     public ProtocolListener(LanguageSpigot languageSpigot) {
         languageSpigot.getProtocolManager().addPacketListener(new PacketAdapter(languageSpigot, ListenerPriority.NORMAL, PacketType.Play.Client.SETTINGS) {

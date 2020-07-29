@@ -10,6 +10,7 @@ import com.comphenix.protocol.ProtocolManager;
 import de.tentact.languageapi.command.LanguageCommand;
 import de.tentact.languageapi.listener.ChatListener;
 import de.tentact.languageapi.listener.JoinListener;
+import de.tentact.languageapi.listener.ProtocolListener;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.ConfigUtil;
 import de.tentact.languageapi.util.I18N;
@@ -44,6 +45,7 @@ public class LanguageSpigot extends JavaPlugin {
         } else {
             getLogger().log(Level.INFO, "Found ProtocolLib...");
             protocolManager = ProtocolLibrary.getProtocolManager();
+            new ProtocolListener(this);
         }
 
         ConfigUtil.createSpigotMySQLConfig();

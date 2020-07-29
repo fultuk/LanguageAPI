@@ -47,6 +47,11 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
     }
 
     @Override
+    public void sendMultipleTranslation(@NotNull Translation multipleTranslation) {
+        this.sendMultipleTranslation(multipleTranslation.getTranslationKey());
+    }
+
+    @Override
     public void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language) {
         if (!this.languageAPI.isMultipleTranslation(multipleTranslationKey)) {
             throw new IllegalArgumentException(multipleTranslationKey + " was not found");
