@@ -3,6 +3,8 @@ package de.tentact.languageapi.player;
 import de.tentact.languageapi.LanguageAPI;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 /**
  * This is the {@link PlayerExecutor} but for an specific player
  */
@@ -13,6 +15,15 @@ public interface SpecificPlayerExecutor {
      */
     @NotNull
     String getPlayerLanguage();
+
+    /**
+     *
+     * @param playerUUID
+     * @param language
+     * @return
+     */
+
+    boolean isPlayersLanguage(UUID playerUUID, String language);
 
     /**
      * @param newLanguage   the new language of the player

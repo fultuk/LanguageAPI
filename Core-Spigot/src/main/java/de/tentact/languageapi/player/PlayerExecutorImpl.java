@@ -38,6 +38,14 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
     }
 
     @Override
+    public boolean isPlayersLanguage(UUID playerUUID, String language) {
+        if(!this.languageAPI.isLanguage(language)) {
+            return false;
+        }
+        return this.getPlayerLanguage(playerUUID).equalsIgnoreCase(language);
+    }
+
+    @Override
     public void setPlayerLanguage(UUID playerUUID, String newLanguage, boolean orElseDefault) {
         if (!languageAPI.isLanguage(newLanguage)) {
             if (orElseDefault) {

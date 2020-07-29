@@ -17,6 +17,8 @@ public interface PlayerExecutor extends PlayerManager {
     @NotNull
     String getPlayerLanguage(UUID playerUUID);
 
+    boolean isPlayersLanguage(UUID playerUUID, String language);
+
     /**
      * @param playerUUID    player uuid for whom the language should be changed
      * @param newLanguage   the new language of the player

@@ -74,9 +74,6 @@ public class LanguageAPIImpl extends LanguageAPI {
     @Override
     public void addMessage(final String transkey, final String message, final String language) {
         if (this.isLanguage(language)) {
-            /*new Thread(()
-                    -> this.mySQL.update("INSERT INTO " + language.toLowerCase() + "(transkey, translation) VALUES ('" + transkey.toLowerCase() +
-                    "', '" + ChatColor.translateAlternateColorCodes('&', message) + "');")).start();*/
             try (Connection connection = this.getDataSouce().getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO ?(transkey, translation) VALUES (?,?);")) {
                 preparedStatement.setString(1, language.toLowerCase());
@@ -91,7 +88,6 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @Override
     public void addParameter(final String transkey, final String param) {
-        //new Thread(() -> this.mySQL.update("INSERT INTO Parameter (transkey, param) VALUES ('" + transkey.toLowerCase() + "', '" + param + "');")).start();
         try (Connection connection = this.getDataSouce().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Parameter(transkey, param) VALUES (?,?);")) {
             preparedStatement.setString(1, transkey.toLowerCase());
@@ -110,7 +106,6 @@ public class LanguageAPIImpl extends LanguageAPI {
         if (!this.getParameter(transkey).contains(param)) {
             return;
         }
-        //new Thread(() -> this.mySQL.update("UPDATE Parameter SET param='" + getParameter(transkey).replace(param, "") + "' WHERE transkey='" + transkey + "';")).start();
         try (Connection connection = this.getDataSouce().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Parameter SET param=? WHERE transkey=?;")) {
             preparedStatement.setString(1, this.getParameter(transkey).replace(param, ""));
@@ -126,7 +121,6 @@ public class LanguageAPIImpl extends LanguageAPI {
         if (!this.hasParameter(transkey)) {
             return;
         }
-        //new Thread(() -> this.mySQL.update("DELETE FROM Parameter WHERE transkey='" + transkey + "';")).start();
         try (Connection connection = this.getDataSouce().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Parameter WHERE transkey=?;")) {
             preparedStatement.setString(1, transkey);
@@ -180,7 +174,6 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @Override
     public void addTranslationKeyToMultipleTranslation(final String multipleTranslation, final String transkey) {
-
         String[] translationKeys = new String[]{};
         try (Connection connection = this.mySQL.getDataSource().getConnection()) {
             ResultSet resultSet = connection.createStatement().executeQuery("SELECT transkeys FROM MultipleTranslation WHERE multipleKey='" + multipleTranslation.toLowerCase() + "'");
