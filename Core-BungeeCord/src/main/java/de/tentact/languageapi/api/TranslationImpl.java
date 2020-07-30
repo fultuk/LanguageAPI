@@ -12,11 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.function.BiConsumer;
 
-/**
- *
- */
 
 public class TranslationImpl implements Translation {
 

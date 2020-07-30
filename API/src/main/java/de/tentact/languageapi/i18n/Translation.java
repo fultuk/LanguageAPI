@@ -7,6 +7,7 @@ import java.util.UUID;
 
 /**
  * This interface can only be accessed via {@link LanguageAPI#getTranslation(String)}
+ * Used to store translationkey and send them directly to a player instead of fetching
  */
 public interface Translation {
 
