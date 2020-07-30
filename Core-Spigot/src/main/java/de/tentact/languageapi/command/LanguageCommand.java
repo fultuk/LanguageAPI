@@ -253,11 +253,11 @@ public class LanguageCommand implements TabExecutor {
                             break;
 
                         default:
-                            languagePlayer.sendMultipleTranslation(I18N.LANGUAGEAPI_HELP.getTranslationKey());
+                            languagePlayer.sendMultipleTranslation(I18N.LANGUAGEAPI_HELP);
                             break;
                     }
                 } else {
-                    languagePlayer.sendMultipleTranslation(I18N.LANGUAGEAPI_HELP.getTranslationKey());
+                    languagePlayer.sendMultipleTranslation(I18N.LANGUAGEAPI_HELP);
                     return false;
                 }
             }

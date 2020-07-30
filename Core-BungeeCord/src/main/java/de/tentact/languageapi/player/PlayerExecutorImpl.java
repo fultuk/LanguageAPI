@@ -1,5 +1,7 @@
 package de.tentact.languageapi.player;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.mysql.MySQL;
@@ -10,7 +12,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecutor {
@@ -18,6 +22,7 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
     private final MySQL mySQL = ConfigUtil.getMySQL();
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private final HikariDataSource dataSource = mySQL.getDataSource();
+    private final Cache<UUID, String> languageCache = CacheBuilder.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
 
     @NotNull
     @Override
@@ -25,12 +30,15 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
         if (!isRegisteredPlayer(playerUUID)) {
             this.registerPlayer(playerUUID);
         }
-
+        if(languageCache.getIfPresent(playerUUID) != null) {
+            return Objects.requireNonNull(languageCache.getIfPresent(playerUUID));
+        }
         try (Connection connection = this.mySQL.getDataSource().getConnection()) {
             ResultSet rs = connection.createStatement().executeQuery("SELECT language FROM choosenlang WHERE uuid='" + playerUUID.toString() + "';");
             if (rs.next()) {
-
-                return rs.getString("language").toLowerCase();
+                String language = rs.getString("language").toLowerCase();
+                languageCache.put(playerUUID, language);
+                return language;
             }
         } catch (SQLException throwables) {
             return languageAPI.getDefaultLanguage();
@@ -75,6 +83,7 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+        languageCache.put(playerUUID, newLanguage.toLowerCase());
     }
 
     @Override

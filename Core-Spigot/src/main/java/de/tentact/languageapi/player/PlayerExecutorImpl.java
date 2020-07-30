@@ -25,7 +25,6 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
         if (!isRegisteredPlayer(playerUUID)) {
             this.registerPlayer(playerUUID);
         }
-
         try (Connection connection = this.mySQL.getDataSource().getConnection()) {
             ResultSet rs = connection.createStatement().executeQuery("SELECT language FROM choosenlang WHERE uuid='" + playerUUID.toString() + "';");
             if (rs.next()) {
