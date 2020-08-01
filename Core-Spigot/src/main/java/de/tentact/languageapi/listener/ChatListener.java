@@ -5,8 +5,12 @@ package de.tentact.languageapi.listener;
     Uhrzeit: 15:29
 */
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.command.LanguageCommand;
+import de.tentact.languageapi.player.LanguagePlayer;
+import de.tentact.languageapi.util.I18N;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,34 +19,41 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class ChatListener implements Listener {
 
-    private final HashMap<Player, ArrayList<String>> editedMessage = new HashMap<>();
+    private final Cache<LanguagePlayer, ArrayList<String>> editedMessage = CacheBuilder.newBuilder().expireAfterWrite(15, TimeUnit.MINUTES).build();
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        if(LanguageCommand.editingMessage.contains(player)) {
-            if(!event.getMessage().equalsIgnoreCase("finish")) {
-                ArrayList<String> currentArray = editedMessage.get(player);
-                if(currentArray != null) {
-                    editedMessage.remove(player, currentArray);
-                }else {
+        LanguagePlayer languagePlayer = languageAPI.getPlayerManager().getLanguagePlayer(player.getUniqueId());
+        if (languagePlayer == null) {
+            return;
+        }
+        if (LanguageCommand.editingMessage.contains(player)) {
+            if (!event.getMessage().equalsIgnoreCase("finish")) {
+                ArrayList<String> currentArray = editedMessage.getIfPresent(languagePlayer);
+                if (currentArray != null) {
+                    editedMessage.invalidate(languagePlayer);
+                } else {
                     currentArray = new ArrayList<>();
                 }
                 currentArray.add(event.getMessage());
-                editedMessage.put(player, currentArray);
+                editedMessage.put(languagePlayer, currentArray);
                 event.setCancelled(true);
-            }else{
-                if(editedMessage.get(player) == null) {
-                    player.sendMessage(languageAPI.getPrefix()+ languageAPI.getMessage("languageapi-update-same", player.getUniqueId()));
+            } else {
+                if (editedMessage.getIfPresent(languagePlayer) == null) {
+                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_SAME);
                     event.setCancelled(true);
                     return;
                 }
                 StringBuilder result = new StringBuilder();
-                for(String message : editedMessage.get(player)) {
+                for (String message : Objects.requireNonNull(editedMessage.getIfPresent(languagePlayer))) {
                     result.append(message).append(" ");
                 }
                 String transkey = LanguageCommand.givenParameter.get(player).get(0);
@@ -51,11 +62,11 @@ public class ChatListener implements Listener {
                 languageAPI.updateMessage(transkey, language, result.toString());
 
                 event.setCancelled(true);
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', languageAPI.getMessage("languageapi-update-success", player.getUniqueId())
+                languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_SUCCESS
                         .replace("%KEY%", transkey)
                         .replace("%LANG%", language)
-                        .replace("%MSG%", result.toString())));
-                editedMessage.remove(player);
+                        .replace("%MSG%", result.toString()));
+                editedMessage.invalidate(languagePlayer);
             }
         }
     }

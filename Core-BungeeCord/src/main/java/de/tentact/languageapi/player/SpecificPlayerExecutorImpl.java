@@ -1,14 +1,10 @@
 package de.tentact.languageapi.player;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import de.tentact.languageapi.LanguageAPI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class SpecificPlayerExecutorImpl extends PlayerManagerImpl implements SpecificPlayerExecutor {
 
@@ -28,7 +24,7 @@ public class SpecificPlayerExecutorImpl extends PlayerManagerImpl implements Spe
     }
 
     @Override
-    public boolean isPlayersLanguage(String language) {
+    public boolean isPlayersLanguage(@NotNull String language) {
         if (!this.languageAPI.isLanguage(language)) {
             return false;
         }
@@ -36,13 +32,13 @@ public class SpecificPlayerExecutorImpl extends PlayerManagerImpl implements Spe
     }
 
     @Override
-    public void setPlayerLanguage(String newLanguage, boolean orElseDefault) {
+    public void setPlayerLanguage(@NotNull String newLanguage, boolean orElseDefault) {
         this.playerExecutor.setPlayerLanguage(this.playerId, newLanguage, orElseDefault);
 
     }
 
     @Override
-    public void setPlayerLanguage(String newLanguage) {
+    public void setPlayerLanguage(@NotNull String newLanguage) {
         this.playerExecutor.setPlayerLanguage(this.playerId, newLanguage);
     }
 
@@ -52,7 +48,7 @@ public class SpecificPlayerExecutorImpl extends PlayerManagerImpl implements Spe
     }
 
     @Override
-    public void registerPlayer(String language) {
+    public void registerPlayer(@NotNull String language) {
         this.playerExecutor.registerPlayer(this.playerId, language);
     }
 

@@ -78,12 +78,8 @@ public class MySQL {
     }
 
     public boolean exists(String query) {
-        try (Connection connection = this.dataSource.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return true;
-            }
+        try (Connection connection = this.dataSource.getConnection()) {
+            return connection.prepareStatement(query).executeQuery().next();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

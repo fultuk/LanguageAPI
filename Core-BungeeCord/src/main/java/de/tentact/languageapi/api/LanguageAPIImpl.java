@@ -550,7 +550,7 @@ public class LanguageAPIImpl extends LanguageAPI {
     }
 
     @Override
-    public @NotNull SpecificPlayerExecutor getSpecificPlayerExecutor(UUID playerId) {
+    public @NotNull SpecificPlayerExecutor getSpecificPlayerExecutor(@NotNull UUID playerId) {
         return new SpecificPlayerExecutorImpl(playerId);
     }
 

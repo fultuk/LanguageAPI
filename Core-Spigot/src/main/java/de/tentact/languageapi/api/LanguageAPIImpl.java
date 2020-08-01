@@ -54,19 +54,22 @@ public class LanguageAPIImpl extends LanguageAPI {
     @Override
     public void deleteLanguage(String language) {
         if (!this.getDefaultLanguage().equalsIgnoreCase(language) && this.isLanguage(language)) {
-            try (Connection connection = this.getDataSouce().getConnection()) {
-                try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE ?;")) {
-                    preparedStatement.setString(1, language.toLowerCase());
-                    preparedStatement.execute();
+            executorService.execute(()-> {
+                try (Connection connection = this.getDataSouce().getConnection()) {
+                    try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE ?;")) {
+                        preparedStatement.setString(1, language.toLowerCase());
+                        preparedStatement.execute();
+                    }
+                    try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM languages WHERE language=?;")) {
+                        preparedStatement.setString(1, language.toLowerCase());
+                        preparedStatement.execute();
+                    }
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
                 }
-                try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM languages WHERE language=?;")) {
-                    preparedStatement.setString(1, language.toLowerCase());
-                    preparedStatement.execute();
-                }
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-            logInfo("Deleting language:" + language);
+                logInfo("Deleting language:" + language);
+            });
+
         }
     }
 
@@ -550,7 +553,7 @@ public class LanguageAPIImpl extends LanguageAPI {
     }
 
     @Override
-    public @NotNull SpecificPlayerExecutor getSpecificPlayerExecutor(UUID playerId) {
+    public @NotNull SpecificPlayerExecutor getSpecificPlayerExecutor(@NotNull UUID playerId) {
         return new SpecificPlayerExecutorImpl(playerId);
     }
 

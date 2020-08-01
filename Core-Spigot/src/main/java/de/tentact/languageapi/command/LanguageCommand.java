@@ -7,6 +7,7 @@ package de.tentact.languageapi.command;
 
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.LanguageSpigot;
+import de.tentact.languageapi.player.LanguageOfflinePlayer;
 import de.tentact.languageapi.player.LanguagePlayer;
 import de.tentact.languageapi.util.ConfigUtil;
 import de.tentact.languageapi.util.I18N;

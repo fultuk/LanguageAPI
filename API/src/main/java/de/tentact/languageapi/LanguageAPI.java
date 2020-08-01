@@ -378,7 +378,7 @@ public abstract class LanguageAPI {
      * @return returns a {@link SpecificPlayerExecutor} for the given playerId
      */
     @NotNull
-    public abstract SpecificPlayerExecutor getSpecificPlayerExecutor(UUID playerId);
+    public abstract SpecificPlayerExecutor getSpecificPlayerExecutor(@NotNull UUID playerId);
 
 
 

@@ -15,7 +15,7 @@ public class LanguageOfflinePlayerImpl implements LanguageOfflinePlayer {
 
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
-    private final PlayerExecutor playerExecutor = this.languageAPI.getPlayerExecutor();
+    private final PlayerExecutor playerExecutor = languageAPI.getPlayerExecutor();
 
     private final UUID playerID;
 
@@ -24,7 +24,6 @@ public class LanguageOfflinePlayerImpl implements LanguageOfflinePlayer {
     public LanguageOfflinePlayerImpl(@NotNull UUID playerID) {
         this.playerID = playerID;
         this.language = this.playerExecutor.getPlayerLanguage(playerID);
-
     }
 
     @Override
