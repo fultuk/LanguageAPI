@@ -366,7 +366,7 @@ public abstract class LanguageAPI {
     public abstract Translation getTranslation(String translationkey, boolean usePrefix);
 
     /**
-     * Gets a {@link PlayerExecutor} without an specific player
+     * Gets a {@link PlayerExecutor} without a specific player
      * @return returns a {@link PlayerExecutor}
      */
     @NotNull

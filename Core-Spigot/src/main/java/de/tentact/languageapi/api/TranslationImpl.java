@@ -122,4 +122,18 @@ public class TranslationImpl implements Translation {
     public String getTranslationKey() {
         return this.translationkey;
     }
+
+    @Override
+    public Translation createDefaults(String message) {
+        this.languageAPI.addMessageToDefault(this.translationkey, message);
+        return this;
+    }
+
+    @Override
+    public Translation createDefaults(String message, String param) {
+        this.languageAPI.addMessageToDefault(this.translationkey, message, param);
+        return this;
+    }
+
+
 }

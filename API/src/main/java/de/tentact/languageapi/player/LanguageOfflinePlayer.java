@@ -47,6 +47,11 @@ public interface LanguageOfflinePlayer {
     default SpecificPlayerExecutor getSpecificPlayerExecutor() {
         return LanguageAPI.getInstance().getSpecificPlayerExecutor(this.getUniqueId());
     }
+
+    /**
+     *
+     * @return returns a {@link LanguagePlayer} - null if the player is not online
+     */
     @Nullable
     default LanguagePlayer getLanguagePlayer() {
         return this.getSpecificPlayerExecutor().getLanguagePlayer();

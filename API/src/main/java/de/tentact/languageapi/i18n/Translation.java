@@ -47,7 +47,6 @@ public interface Translation {
 
     String getParameter();
 
-
     /**
      * @param usePrefix wether to use the languageapi prefix in the translation or not
      * @return returns a {@link Translation} after setting the prefix
@@ -68,6 +67,10 @@ public interface Translation {
      * @return returns the translationkey which was given
      */
     String getTranslationKey();
+
+    Translation createDefaults(String message);
+
+    Translation createDefaults(String message, String param);
 
 
 }
