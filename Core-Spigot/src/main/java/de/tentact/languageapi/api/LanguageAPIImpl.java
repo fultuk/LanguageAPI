@@ -87,10 +87,11 @@ public class LanguageAPIImpl extends LanguageAPI {
     public void addMessage(final String transkey, final String message, final String language) {
         if (this.isLanguage(language)) {
             try (Connection connection = this.getDataSouce().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO ?(transkey, translation) VALUES (?,?);")) {
+                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO ? (transkey, translation) VALUES (?,?);")) {
                 preparedStatement.setString(1, language.toLowerCase());
                 preparedStatement.setString(2, transkey.toLowerCase());
                 preparedStatement.setString(3, ChatColor.translateAlternateColorCodes('&', message));
+                preparedStatement.execute();
 
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -100,10 +101,14 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @Override
     public void addParameter(final String transkey, final String param) {
+        if(this.isParameter(transkey, param)) {
+            return;
+        }
         try (Connection connection = this.getDataSouce().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Parameter(transkey, param) VALUES (?,?);")) {
             preparedStatement.setString(1, transkey.toLowerCase());
             preparedStatement.setString(2, param);
+            preparedStatement.execute();
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -291,7 +296,7 @@ public class LanguageAPIImpl extends LanguageAPI {
 
         try (Connection connection = this.getDataSouce().getConnection();
              PreparedStatement preparedStatement =
-                     connection.prepareStatement("INSERT INTO MultipleTranslation(multipleKey, transkey) VALUES (?,?)")) {
+                     connection.prepareStatement("INSERT INTO MultipleTranslation(multipleKey, transkeys) VALUES (?,?)")) {
             preparedStatement.setString(1, multipleTranslation);
             preparedStatement.setString(2, stringBuilder.toString());
             preparedStatement.execute();

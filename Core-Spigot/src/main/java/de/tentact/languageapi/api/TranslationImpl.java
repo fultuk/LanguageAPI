@@ -14,6 +14,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -125,12 +127,14 @@ public class TranslationImpl implements Translation {
 
     @Override
     public Translation createDefaults(String message) {
+        Logger.getAnonymousLogger().log(Level.INFO, "Creating defaults key: "+this.translationkey +message);
         this.languageAPI.addMessageToDefault(this.translationkey, message);
         return this;
     }
 
     @Override
     public Translation createDefaults(String message, String param) {
+        Logger.getAnonymousLogger().log(Level.INFO, "Creating defaults key: "+this.translationkey +message + "param:"+param);
         this.languageAPI.addMessageToDefault(this.translationkey, message, param);
         return this;
     }

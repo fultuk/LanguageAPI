@@ -36,8 +36,8 @@ public class ConfigUtil {
 
         mySQLConfiguration.addDefault("mysql.password", "password");
         mySQLConfiguration.addDefault("mysql.port", 3306);
-        mySQLConfiguration.addDefault("languageapi.defaultlang", "de_de");
-        mySQLConfiguration.addDefault("languageapi.notify", true);
+        mySQLConfiguration.addDefault("language.defaultlang", "de_de");
+        mySQLConfiguration.addDefault("language.notify", true);
         
 
 
