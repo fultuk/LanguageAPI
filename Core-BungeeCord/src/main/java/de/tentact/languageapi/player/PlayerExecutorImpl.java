@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.i18n.Translation;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.ConfigUtil;
 import org.jetbrains.annotations.NotNull;
@@ -108,6 +109,16 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
     @Override
     public boolean isRegisteredPlayer(UUID playerUUID) {
         return this.mySQL.exists("SELECT * FROM choosenlang WHERE uuid='" + playerUUID.toString() + "';");
+    }
+
+    @Override
+    public void broadcastMessage(Translation translation) {
+        this.getOnlineLanguagePlayer().forEach(languagePlayer -> languagePlayer.sendMessage(translation));
+    }
+
+    @Override
+    public void kickAll(Translation translation) {
+        this.getOnlineLanguagePlayer().forEach(languagePlayer -> languagePlayer.kickPlayer(translation));
     }
 
     private String validateLanguage(String language) {

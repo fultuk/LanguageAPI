@@ -28,8 +28,4 @@ public class PlayerManagerImpl implements PlayerManager{
         return ProxyServer.getInstance().getPlayers().stream().map(player -> this.getLanguagePlayer(player.getUniqueId())).collect(Collectors.toList());
     }
 
-    @Override
-    public void broadcastMessage(Translation translation) {
-        this.getOnlineLanguagePlayer().forEach(languagePlayer -> languagePlayer.sendMessage(translation));
-    }
 }

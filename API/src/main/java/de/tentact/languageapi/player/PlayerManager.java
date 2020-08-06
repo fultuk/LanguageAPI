@@ -31,11 +31,5 @@ public interface PlayerManager {
     @NotNull
     Collection<LanguagePlayer> getOnlineLanguagePlayer();
 
-    /**
-     *
-     * @param translation
-     */
-    void broadcastMessage(Translation translation);
-
 
 }

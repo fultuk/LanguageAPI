@@ -1,6 +1,7 @@
 package de.tentact.languageapi.player;
 
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.i18n.Translation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -59,4 +60,12 @@ public interface PlayerExecutor extends PlayerManager {
      * @return returns if a player is in the database
      */
      boolean isRegisteredPlayer(UUID playerUUID);
+
+    /**
+     *
+     * @param translation
+     */
+    void broadcastMessage(Translation translation);
+
+    void kickAll(Translation translation);
 }
