@@ -54,19 +54,22 @@ public class LanguageAPIImpl extends LanguageAPI {
     @Override
     public void deleteLanguage(String language) {
         if (!this.getDefaultLanguage().equalsIgnoreCase(language) && this.isLanguage(language)) {
-            try (Connection connection = this.getDataSouce().getConnection()) {
-                try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE ?;")) {
-                    preparedStatement.setString(1, language.toLowerCase());
-                    preparedStatement.execute();
+            executorService.execute(()-> {
+                try (Connection connection = this.getDataSouce().getConnection()) {
+                    try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE ?;")) {
+                        preparedStatement.setString(1, language.toLowerCase());
+                        preparedStatement.execute();
+                    }
+                    try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM languages WHERE language=?;")) {
+                        preparedStatement.setString(1, language.toLowerCase());
+                        preparedStatement.execute();
+                    }
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
                 }
-                try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM languages WHERE language=?;")) {
-                    preparedStatement.setString(1, language.toLowerCase());
-                    preparedStatement.execute();
-                }
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-            logInfo("Deleting language:" + language);
+                logInfo("Deleting language:" + language);
+            });
+
         }
     }
 
@@ -84,10 +87,10 @@ public class LanguageAPIImpl extends LanguageAPI {
     public void addMessage(final String transkey, final String message, final String language) {
         if (this.isLanguage(language)) {
             try (Connection connection = this.getDataSouce().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO ?(transkey, translation) VALUES (?,?);")) {
-                preparedStatement.setString(1, language.toLowerCase());
-                preparedStatement.setString(2, transkey.toLowerCase());
-                preparedStatement.setString(3, ChatColor.translateAlternateColorCodes('&', message));
+                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO "+ language +" (transkey, translation) VALUES (?,?);")) {
+                preparedStatement.setString(1, transkey.toLowerCase());
+                preparedStatement.setString(2, ChatColor.translateAlternateColorCodes('&', message));
+                preparedStatement.execute();
 
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -97,10 +100,14 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @Override
     public void addParameter(final String transkey, final String param) {
+        if(this.hasParameter(transkey)) {
+            return;
+        }
         try (Connection connection = this.getDataSouce().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Parameter(transkey, param) VALUES (?,?);")) {
             preparedStatement.setString(1, transkey.toLowerCase());
             preparedStatement.setString(2, param);
+            preparedStatement.execute();
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -288,7 +295,7 @@ public class LanguageAPIImpl extends LanguageAPI {
 
         try (Connection connection = this.getDataSouce().getConnection();
              PreparedStatement preparedStatement =
-                     connection.prepareStatement("INSERT INTO MultipleTranslation(multipleKey, transkey) VALUES (?,?)")) {
+                     connection.prepareStatement("INSERT INTO MultipleTranslation(multipleKey, transkeys) VALUES (?,?)")) {
             preparedStatement.setString(1, multipleTranslation);
             preparedStatement.setString(2, stringBuilder.toString());
             preparedStatement.execute();

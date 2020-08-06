@@ -15,6 +15,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,10 +58,10 @@ public class ConfigUtil {
             if (!bungeecordmySQLConfigFile.exists()) {
                 bungeecordmySQLConfigFile.createNewFile();
                 bungeecordmySQLConfiguration.set("mysql.host", "hostname");
-                bungeecordmySQLConfiguration.set("mysql.username", "de/tentact/languageapi");
-                bungeecordmySQLConfiguration.set("mysql.database", "de/tentact/languageapi");
+                bungeecordmySQLConfiguration.set("mysql.username", "languageapi");
+                bungeecordmySQLConfiguration.set("mysql.database", "languageapi");
                 bungeecordmySQLConfiguration.set("mysql.password", "password");
-                bungeecordmySQLConfiguration.set("languageapi.defaultlang", "de_de");
+                bungeecordmySQLConfiguration.set("language.defaultlang", "de_de");
             }
             ConfigurationProvider.getProvider(net.md_5.bungee.config.YamlConfiguration.class).save(bungeecordmySQLConfiguration, bungeecordmySQLConfigFile);
 

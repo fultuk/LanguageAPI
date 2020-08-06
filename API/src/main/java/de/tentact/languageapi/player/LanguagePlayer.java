@@ -51,5 +51,11 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
      */
     boolean isOnline();
 
+    /**
+     *
+     * @param translation
+     */
+    void kickPlayer(Translation translation);
+
 
 }

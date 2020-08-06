@@ -7,6 +7,7 @@ import de.tentact.languageapi.i18n.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -65,6 +66,11 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
         return this.getPlayer() != null;
     }
 
+    @Override
+    public void kickPlayer(Translation translation) {
+        this.getPlayer().kickPlayer(translation.getMessage(this.getLanguage()));
+    }
+
     private Player getPlayer() {
         if (this.player != null) {
             return this.player;
@@ -75,4 +81,5 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
         }
         return this.player;
     }
+
 }

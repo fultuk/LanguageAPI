@@ -65,6 +65,11 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
         return this.getProxiedPlayer() != null;
     }
 
+    @Override
+    public void kickPlayer(Translation translation) {
+        this.getProxiedPlayer().disconnect(translation.getMessage(this.getLanguage()));
+    }
+
     private ProxiedPlayer getProxiedPlayer() {
         if (this.proxiedPlayer != null) {
             return this.proxiedPlayer;

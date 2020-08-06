@@ -44,8 +44,8 @@ public class LanguageSpigot extends JavaPlugin {
             this.installProtocolLib();
         } else {
             getLogger().log(Level.INFO, "Found ProtocolLib...");
-            protocolManager = ProtocolLibrary.getProtocolManager();
-            new ProtocolListener(this);
+            //protocolManager = ProtocolLibrary.getProtocolManager();
+            //new ProtocolListener(this);
         }
 
         ConfigUtil.createSpigotMySQLConfig();

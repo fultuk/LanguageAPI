@@ -15,6 +15,8 @@ import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.player.*;
 import de.tentact.languageapi.util.ConfigUtil;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -87,10 +89,9 @@ public class LanguageAPIImpl extends LanguageAPI {
     public void addMessage(final String transkey, final String message, final String language) {
         if (this.isLanguage(language)) {
             try (Connection connection = this.getDataSouce().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO ? (transkey, translation) VALUES (?,?);")) {
-                preparedStatement.setString(1, language.toLowerCase());
-                preparedStatement.setString(2, transkey.toLowerCase());
-                preparedStatement.setString(3, ChatColor.translateAlternateColorCodes('&', message));
+                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO "+language.toLowerCase()+" (transkey, translation) VALUES (?,?);")) {
+                preparedStatement.setString(1, transkey.toLowerCase());
+                preparedStatement.setString(2, ChatColor.translateAlternateColorCodes('&', message));
                 preparedStatement.execute();
 
             } catch (SQLException throwables) {
@@ -101,7 +102,7 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @Override
     public void addParameter(final String transkey, final String param) {
-        if(this.isParameter(transkey, param)) {
+        if(this.hasParameter(transkey)) {
             return;
         }
         try (Connection connection = this.getDataSouce().getConnection();
