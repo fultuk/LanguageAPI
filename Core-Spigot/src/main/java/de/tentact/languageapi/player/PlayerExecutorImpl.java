@@ -70,9 +70,6 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
 
     @Override
     public void setPlayerLanguage(UUID playerUUID, String newLanguage) {
-        if (!this.isRegisteredPlayer(playerUUID)) {
-            throw new UnsupportedOperationException();
-        }
         if (!languageAPI.isLanguage(newLanguage)) {
             throw new IllegalArgumentException("Language " + newLanguage + " was not found!");
         }
@@ -80,6 +77,7 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
              PreparedStatement preparedStatement = connection.prepareStatement("UPDATE choosenlang WHERE uuid=? SET language=?;")) {
             preparedStatement.setString(1, playerUUID.toString());
             preparedStatement.setString(2, newLanguage.toLowerCase());
+            preparedStatement.execute();
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();

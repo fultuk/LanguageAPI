@@ -11,18 +11,17 @@ import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.command.LanguageCommand;
 import de.tentact.languageapi.player.LanguagePlayer;
 import de.tentact.languageapi.util.I18N;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+
+@SuppressWarnings("UnstableApiUsage")
 public class ChatListener implements Listener {
 
     private final Cache<LanguagePlayer, ArrayList<String>> editedMessage = CacheBuilder.newBuilder().expireAfterWrite(15, TimeUnit.MINUTES).build();
