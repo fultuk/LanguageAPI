@@ -6,7 +6,6 @@ package de.tentact.languageapi.configuration;
     Uhrzeit: 15:44
 */
 
-import de.tentact.languageapi.util.I18N;
 import de.tentact.languageapi.util.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
@@ -15,12 +14,16 @@ import org.bukkit.inventory.ItemStack;
 public class LanguageInventory {
 
     private final LanguageInventoryConfiguration languageInventoryConfiguration;
+    private Inventory inventory;
 
     public LanguageInventory(LanguageInventoryConfiguration languageInventoryConfiguration) {
         this.languageInventoryConfiguration = languageInventoryConfiguration;
     }
 
     public Inventory getLanguageInventory() {
+        if(this.inventory != null) {
+            return this.inventory;
+        }
         if (this.languageInventoryConfiguration == null) {
             return null;
         }
@@ -33,14 +36,12 @@ public class LanguageInventory {
         for (int i = 0; i < inventory.getSize(); i++) {
             inventory.setItem(i, fillItem);
         }
-
         for (LanguageItem languageItem : this.languageInventoryConfiguration.getLanguages()) {
-            ItemStack itemStack = ItemBuilder.buildSkull(languageItem.getHeadValue(), languageItem.getDisplayName());
+            ItemStack itemStack = ItemBuilder.buildSkull(languageItem.getHeadValue(), languageItem.getDisplayName(), languageItem.getLore());
             inventory.setItem(languageItem.getInventorySlot(), itemStack);
         }
-
+        this.inventory = inventory;
         return inventory;
-
     }
 
     public LanguageInventoryConfiguration getLanguageInventoryConfiguration() {

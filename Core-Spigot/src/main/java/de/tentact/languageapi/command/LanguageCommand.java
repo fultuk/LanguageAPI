@@ -7,19 +7,15 @@ package de.tentact.languageapi.command;
 
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.LanguageSpigot;
-import de.tentact.languageapi.configuration.LanguageInventoryConfiguration;
-import de.tentact.languageapi.configuration.LanguageItem;
+import de.tentact.languageapi.configuration.LanguageInventory;
 import de.tentact.languageapi.player.LanguagePlayer;
 import de.tentact.languageapi.util.ConfigUtil;
 import de.tentact.languageapi.util.I18N;
-import de.tentact.languageapi.util.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,7 +27,7 @@ public class LanguageCommand implements TabExecutor {
 
     public LanguageAPI languageAPI = LanguageAPI.getInstance();
 
-    private final List<String> tabComplete = Arrays.asList("add", "remove", "update", "create", "delete", "param", "copy", "translations", "reload");
+    private final List<String> tabComplete = Arrays.asList("add", "remove", "update", "create", "delete", "param", "copy", "translations", "reload", "help");
 
     public static ArrayList<Player> editingMessage = new ArrayList<>();
 
@@ -39,18 +35,20 @@ public class LanguageCommand implements TabExecutor {
 
     private final LanguageSpigot languageSpigot;
 
-    private final LanguageInventoryConfiguration languageInventoryConfiguration;
+    private final LanguageInventory languageInventory;
 
     public LanguageCommand(LanguageSpigot languageSpigot) {
         this.languageSpigot = languageSpigot;
-        this.languageInventoryConfiguration = languageSpigot.getConfiguration().getLanguageInventory();
+        this.languageInventory = languageSpigot.getConfiguration().getLanguageInventory();
     }
 
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] args) {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
             LanguagePlayer languagePlayer = languageAPI.getPlayerManager().getLanguagePlayer(player.getUniqueId());
-            assert languagePlayer != null;
+            if(languagePlayer == null) {
+                return false;
+            }
             if (player.hasPermission("system.languageapi")) { //lang add lang key MSG | lang remove lang key | lang update lang key msg | lang createlang lang | lang deletelang lang
                 if (args.length >= 1) { //lang reload
                     switch (args[0].toLowerCase()) {
@@ -295,7 +293,7 @@ public class LanguageCommand implements TabExecutor {
                             break;
                     }
                 } else {
-
+                    player.openInventory(this.languageInventory.getLanguageInventory());
                 }
             } else {
                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_NOPERMS);

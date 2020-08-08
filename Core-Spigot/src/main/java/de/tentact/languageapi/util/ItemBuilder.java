@@ -10,12 +10,9 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +31,6 @@ public class ItemBuilder {
     public ItemBuilder(Material material) {
         this(material, 1);
     }
-
 
     public ItemStack build() {
         return this.itemStack;

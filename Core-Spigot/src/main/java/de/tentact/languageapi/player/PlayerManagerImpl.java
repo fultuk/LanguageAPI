@@ -1,6 +1,5 @@
 package de.tentact.languageapi.player;
 
-import de.tentact.languageapi.i18n.Translation;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

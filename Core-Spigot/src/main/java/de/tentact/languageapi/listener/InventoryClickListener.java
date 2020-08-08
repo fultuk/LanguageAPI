@@ -34,10 +34,10 @@ public class InventoryClickListener implements Listener {
 
     @EventHandler
     public void handleInventoryClick(InventoryClickEvent event) {
-        Inventory inventory = event.getClickedInventory();
+        Inventory inventory = event.getInventory();
         ItemStack currentItem = event.getCurrentItem();
 
-        if(inventory != null && currentItem != null && event.getWhoClicked() instanceof Player) {
+        if(currentItem != null && event.getWhoClicked() instanceof Player) {
             int clickedSlot = event.getSlot();
             if(!this.languageInventory.getLanguageInventory().equals(inventory)) {
                 return;
@@ -52,6 +52,7 @@ public class InventoryClickListener implements Listener {
                         Player player = (Player) event.getWhoClicked();
                         playerExecutor.setPlayerLanguage(player.getUniqueId(), languageItem.getLanguageName());
                         Objects.requireNonNull(playerExecutor.getLanguagePlayer(player.getUniqueId())).sendMessage(I18N.LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE.replace("%LANGUAGE%", languageItem.getLanguageName()));
+                        player.closeInventory();
                     });
         }
     }

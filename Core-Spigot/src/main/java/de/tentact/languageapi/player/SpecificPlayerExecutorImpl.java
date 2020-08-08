@@ -9,11 +9,12 @@ import java.util.UUID;
 public class SpecificPlayerExecutorImpl extends PlayerManagerImpl implements SpecificPlayerExecutor {
 
     private final UUID playerId;
-    private final PlayerExecutor playerExecutor = new PlayerExecutorImpl();
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
+    private final PlayerExecutor playerExecutor;
 
 
     public SpecificPlayerExecutorImpl(UUID playerId) {
+        this.playerExecutor = languageAPI.getPlayerExecutor();
         this.playerId = playerId;
     }
 

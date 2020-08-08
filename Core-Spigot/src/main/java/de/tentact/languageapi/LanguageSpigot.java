@@ -5,9 +5,11 @@ package de.tentact.languageapi;
     Uhrzeit: 17:01
 */
 
+import de.tentact.languageapi.api.LanguageAPIImpl;
 import de.tentact.languageapi.command.LanguageCommand;
 import de.tentact.languageapi.configuration.Configuration;
 import de.tentact.languageapi.listener.ChatListener;
+import de.tentact.languageapi.listener.InventoryClickListener;
 import de.tentact.languageapi.listener.JoinListener;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.ConfigUtil;
@@ -28,17 +30,19 @@ public class LanguageSpigot extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+
+
         getLogger().log(Level.INFO, "Starting LanguageAPI");
 
-
-
         ConfigUtil.createSpigotMySQLConfig();
-        this.configuration = new Configuration();
         ConfigUtil.init();
         ConfigUtil.initLogger(this.getLogger());
+        this.configuration = new Configuration();
 
         this.mySQL = ConfigUtil.getMySQL();
         this.mySQL.connect();
+        LanguageAPI.setInstance(new LanguageAPIImpl());
         this.mySQL.createDefaultTable();
 
         LanguageAPI.getInstance().createLanguage(ConfigUtil.getDefaultLanguage());
@@ -51,6 +55,7 @@ public class LanguageSpigot extends JavaPlugin {
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new JoinListener(), this);
         pm.registerEvents(new ChatListener(), this);
+        pm.registerEvents(new InventoryClickListener(this.configuration.getLanguageInventory()), this);
 
     }
 

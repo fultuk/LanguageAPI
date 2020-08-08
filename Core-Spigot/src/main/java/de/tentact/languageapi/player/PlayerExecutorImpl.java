@@ -20,10 +20,16 @@ import java.util.logging.Level;
 
 public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecutor {
 
-    private final MySQL mySQL = ConfigUtil.getMySQL();
-    private final LanguageAPI languageAPI = LanguageAPI.getInstance();
-    private final HikariDataSource dataSource = mySQL.getDataSource();
+    private final MySQL mySQL;
+    private final LanguageAPI languageAPI;
+    private final HikariDataSource dataSource;
     private final Cache<UUID, String> languageCache = CacheBuilder.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
+
+    public PlayerExecutorImpl(LanguageAPI languageAPI) {
+        this.mySQL = ConfigUtil.getMySQL();
+        this.languageAPI = languageAPI;
+        this.dataSource = mySQL.getDataSource();
+    }
 
     @NotNull
     @Override
@@ -31,7 +37,7 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
         if (!isRegisteredPlayer(playerUUID)) {
             this.registerPlayer(playerUUID);
         }
-        if(languageCache.getIfPresent(playerUUID) != null) {
+        if (languageCache.getIfPresent(playerUUID) != null) {
             return Objects.requireNonNull(languageCache.getIfPresent(playerUUID));
         }
         try (Connection connection = this.mySQL.getDataSource().getConnection()) {
@@ -49,7 +55,7 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
 
     @Override
     public boolean isPlayersLanguage(UUID playerUUID, String language) {
-        if(!this.languageAPI.isLanguage(language)) {
+        if (!this.languageAPI.isLanguage(language)) {
             return false;
         }
         return this.getPlayerLanguage(playerUUID).equalsIgnoreCase(language);
@@ -74,7 +80,7 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
             throw new IllegalArgumentException("Language " + newLanguage + " was not found!");
         }
         try (Connection connection = this.dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE choosenlang WHERE uuid=? SET language=?;")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("REPLACE INTO choosenlang (uuid, language) VALUES (?, ?)")) {
             preparedStatement.setString(1, playerUUID.toString());
             preparedStatement.setString(2, newLanguage.toLowerCase());
             preparedStatement.execute();

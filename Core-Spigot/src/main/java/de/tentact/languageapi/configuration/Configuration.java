@@ -20,6 +20,8 @@ public class Configuration {
     Document document = new DefaultDocument();
     File file = new File("plugins/LanguageAPI", "languages.json");
 
+    private LanguageInventory languageInventory;
+
     public Configuration() {
         if (file.exists()) {
             document = Documents.jsonStorage().read(file);
@@ -31,7 +33,7 @@ public class Configuration {
                                 new LanguageInventoryConfiguration(
                                         true,
                                         "Choose a language:",
-                                        "BLACK_STAINED_GLASS",
+                                        "BLACK_STAINED_GLASS_PANE",
                                         (byte) -1,
                                         Arrays.asList(
                                                 new LanguageItem(
@@ -48,8 +50,12 @@ public class Configuration {
         }
     }
 
-    public LanguageInventoryConfiguration getLanguageInventory() {
-        return this.document.get("config", LanguageInventoryConfiguration.class);
+    public LanguageInventory getLanguageInventory() {
+        if(languageInventory != null) {
+            return this.languageInventory;
+        }
+        this.languageInventory = this.document.get("config", LanguageInventory.class);
+        return this.languageInventory;
     }
 
 

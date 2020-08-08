@@ -3,8 +3,6 @@ main: de.tentact.languageapi.LanguageSpigot
 version: 1.6
 author: 0utplay
 api-version: 1.15
-softdepend:
-  - ProtocolLib
 commands:
   languageapi:
     aliases: [lang, language, langapi]

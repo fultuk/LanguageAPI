@@ -15,8 +15,6 @@ import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.player.*;
 import de.tentact.languageapi.util.ConfigUtil;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -35,7 +33,7 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     private final Cache<String, HashMap<String, String>> translationCache = CacheBuilder.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
     private final PlayerManager playerManager = new PlayerManagerImpl();
-    private final PlayerExecutor playerExecutor = new PlayerExecutorImpl();
+    private final PlayerExecutor playerExecutor = new PlayerExecutorImpl(this);
     private final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactoryBuilder().build());
 
     @Override
@@ -52,7 +50,6 @@ public class LanguageAPIImpl extends LanguageAPI {
             logInfo("Creating new language:" + language);
         }
     }
-
     @Override
     public void deleteLanguage(String language) {
         if (!this.getDefaultLanguage().equalsIgnoreCase(language) && this.isLanguage(language)) {
