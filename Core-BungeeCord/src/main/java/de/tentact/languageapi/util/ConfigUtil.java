@@ -19,7 +19,6 @@ import java.util.logging.Logger;
 public class ConfigUtil {
 
 
-    public static boolean isBungeeCordMode;
 
     private static Configuration bungeecordmySQLConfiguration;
 
@@ -62,7 +61,12 @@ public class ConfigUtil {
     }
     @NotNull
     public static String getDefaultLanguage() {
-        //TODO: REWORK THIS IN ONLY BUNGEECORD
+        if (defaultLanguage == null) {
+            defaultLanguage = bungeecordmySQLConfiguration.getString("language.defaultlang");
+            if (defaultLanguage == null) {
+                return "en_en";
+            }
+        }
         return defaultLanguage;
     }
 
