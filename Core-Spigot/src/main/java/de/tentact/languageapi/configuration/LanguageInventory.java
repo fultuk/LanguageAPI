@@ -32,7 +32,14 @@ public class LanguageInventory {
         }
         Inventory inventory = Bukkit.createInventory(null, this.languageInventoryConfiguration.getInventorySize(), this.languageInventoryConfiguration.getName());
 
-        ItemStack fillItem = new ItemBuilder(this.languageInventoryConfiguration.getFillItemMaterial()).build();
+        ItemStack fillItem;
+        byte subId = this.languageInventoryConfiguration.getSubid();
+        if(subId != -1) {
+             fillItem = new ItemBuilder(this.languageInventoryConfiguration.getFillItemMaterial()).setSubId(subId).build();
+        }else {
+            fillItem = new ItemBuilder(this.languageInventoryConfiguration.getFillItemMaterial()).build();
+        }
+
         for (int i = 0; i < inventory.getSize(); i++) {
             inventory.setItem(i, fillItem);
         }

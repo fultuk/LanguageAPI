@@ -41,7 +41,15 @@ public class Configuration {
                                                         "Deutsch (Deutschland)",
                                                         "de_de",
                                                         1,
-                                                        Collections.singletonList("Klicke um Deutsch auszuwählen."))
+                                                        Collections.singletonList("Klicke um Deutsch auszuwählen.")
+                                                ),
+                                                new LanguageItem(
+                                                        "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTllZGNkZDdiMDYxNzNkN2QyMjFjNzI3NGM4NmNiYTM1NzMwMTcwNzg4YmI2YTFkYjA5Y2M2ODEwNDM1YjkyYyJ9fX0=",
+                                                        "English (UK)",
+                                                        "en_en",
+                                                        0,
+                                                        Collections.singletonList("Click to select english.")
+                                                )
                                         )
                                 ))).json().write(file);
             } catch (IOException e) {
@@ -51,7 +59,7 @@ public class Configuration {
     }
 
     public LanguageInventory getLanguageInventory() {
-        if(languageInventory != null) {
+        if (languageInventory != null) {
             return this.languageInventory;
         }
         this.languageInventory = this.document.get("config", LanguageInventory.class);
