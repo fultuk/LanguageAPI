@@ -64,7 +64,6 @@ public class I18N {
         iLanguageAPI.addMessage("languageapi-delete-success", "Die Sprache %LANG% wurde erfolgreich gelöscht.", language);
         iLanguageAPI.addParameter("languageapi-delete-success", "%LANG%");
         iLanguageAPI.addMessage("languageapi-delete-all-langs", "Es wurde jede Sprache gelöscht.");
-        iLanguageAPI.addParameter("languageapi-delete-all-langs", "");
 
         iLanguageAPI.addMessage("languageapi-copy-success", "%OLDLANG% wurde erfolgreich in %NEWLANG% kopiert.", language);
         iLanguageAPI.addParameter("languageapi-copy-success", "%OLDLANG%, %NEWLANG%");

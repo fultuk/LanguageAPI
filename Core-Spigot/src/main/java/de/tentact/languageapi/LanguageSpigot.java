@@ -26,12 +26,10 @@ public class LanguageSpigot extends JavaPlugin {
 
     private Updater updater;
     private MySQL mySQL;
-    private Configuration configuration;
+    public Configuration configuration;
 
     @Override
     public void onEnable() {
-
-
 
         getLogger().log(Level.INFO, "Starting LanguageAPI");
 
@@ -68,7 +66,4 @@ public class LanguageSpigot extends JavaPlugin {
         return this.updater;
     }
 
-    public Configuration getConfiguration() {
-        return this.configuration;
-    }
 }

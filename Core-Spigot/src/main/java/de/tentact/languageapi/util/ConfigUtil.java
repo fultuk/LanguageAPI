@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 public class ConfigUtil {
 
-    private static YamlConfiguration mySQLConfiguration;
+    private static YamlConfiguration yamlConfiguration;
 
 
     private static MySQL mySQL;
@@ -26,23 +26,23 @@ public class ConfigUtil {
 
     public static void createSpigotMySQLConfig() {
         File mySQLConfigFile = new File("plugins/LanguageAPI", "config.yml");
-        mySQLConfiguration = YamlConfiguration.loadConfiguration(mySQLConfigFile);
+        yamlConfiguration = YamlConfiguration.loadConfiguration(mySQLConfigFile);
 
-        mySQLConfiguration.addDefault("mysql.hostname", "hostname");
-        mySQLConfiguration.addDefault("mysql.database", "de/tentact/languageapi");
-        mySQLConfiguration.addDefault("mysql.username", "de/tentact/languageapi");
+        yamlConfiguration.addDefault("mysql.hostname", "hostname");
+        yamlConfiguration.addDefault("mysql.database", "de/tentact/languageapi");
+        yamlConfiguration.addDefault("mysql.username", "de/tentact/languageapi");
 
-        mySQLConfiguration.addDefault("mysql.password", "password");
-        mySQLConfiguration.addDefault("mysql.port", 3306);
-        mySQLConfiguration.addDefault("language.defaultlang", "de_de");
-        mySQLConfiguration.addDefault("language.notify", true);
+        yamlConfiguration.addDefault("mysql.password", "password");
+        yamlConfiguration.addDefault("mysql.port", 3306);
+        yamlConfiguration.addDefault("language.defaultlang", "de_de");
+        yamlConfiguration.addDefault("language.notify", true);
         
 
 
-        mySQLConfiguration.options().copyDefaults(true);
+        yamlConfiguration.options().copyDefaults(true);
 
         try {
-            mySQLConfiguration.save(mySQLConfigFile);
+            yamlConfiguration.save(mySQLConfigFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -50,17 +50,17 @@ public class ConfigUtil {
     }
 
     public static void init() {
-        mySQL = new MySQL(mySQLConfiguration.getString("mysql.hostname"),
-                mySQLConfiguration.getString("mysql.database"),
-                mySQLConfiguration.getString("mysql.username"),
-                mySQLConfiguration.getString("mysql.password"),
-                mySQLConfiguration.getInt("mysql.port"));
+        mySQL = new MySQL(yamlConfiguration.getString("mysql.hostname"),
+                yamlConfiguration.getString("mysql.database"),
+                yamlConfiguration.getString("mysql.username"),
+                yamlConfiguration.getString("mysql.password"),
+                yamlConfiguration.getInt("mysql.port"));
     }
 
     @NotNull
     public static String getDefaultLanguage() {
         if(defaultLanguage == null) {
-            defaultLanguage = mySQLConfiguration.getString("language.defaultlang");
+            defaultLanguage = yamlConfiguration.getString("language.defaultlang");
             if(defaultLanguage == null) {
                 defaultLanguage = "en_en";
             }
@@ -69,7 +69,7 @@ public class ConfigUtil {
     }
 
     public static boolean getUpdateNotfication() {
-        return mySQLConfiguration.getBoolean("language.notify");
+        return yamlConfiguration.getBoolean("language.notify");
     }
     @NotNull
     public static MySQL getMySQL() {
