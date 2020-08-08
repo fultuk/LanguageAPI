@@ -76,11 +76,27 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
 
     @Override
     public void setPlayerLanguage(UUID playerUUID, String newLanguage) {
-        if (!languageAPI.isLanguage(newLanguage)) {
+        if (!this.languageAPI.isLanguage(newLanguage)) {
             throw new IllegalArgumentException("Language " + newLanguage + " was not found!");
         }
+        if(!this.isRegisteredPlayer(playerUUID)) {
+            try (Connection connection = this.dataSource.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO choosenlang (uuid, language) VALUES (?,?);")) {
+                preparedStatement.setString(1, playerUUID.toString());
+                preparedStatement.setString(2, newLanguage.toLowerCase());
+                preparedStatement.execute();
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            languageCache.put(playerUUID, newLanguage.toLowerCase());
+            return;
+        }
+        if(this.isPlayersLanguage(playerUUID, newLanguage)) {
+            return;
+        }
         try (Connection connection = this.dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("REPLACE INTO choosenlang (uuid, language) VALUES (?, ?)")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE choosenlang SET language=? WHERE uuid=?;")) {
             preparedStatement.setString(1, playerUUID.toString());
             preparedStatement.setString(2, newLanguage.toLowerCase());
             preparedStatement.execute();

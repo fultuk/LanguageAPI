@@ -5,9 +5,7 @@ package de.tentact.languageapi.util;
     Uhrzeit: 17:05
 */
 
-import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.LanguageBungeecord;
-import de.tentact.languageapi.api.LanguageAPIImpl;
 import de.tentact.languageapi.mysql.MySQL;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -15,11 +13,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.CopyOption;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,8 +34,6 @@ public class ConfigUtil {
                 bungeecordmySQLConfiguration.getString("mysql.username"),
                 bungeecordmySQLConfiguration.getString("mysql.password"),
                 bungeecordmySQLConfiguration.getInt("mysql.port"));
-        LanguageAPI.setInstance(new LanguageAPIImpl());
-
     }
 
     public static void createBungeeCordMySQLConfig(LanguageBungeecord languageBungeecord) {

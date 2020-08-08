@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 public class LanguageInventory {
 
     private final LanguageInventoryConfiguration languageInventoryConfiguration;
-    private Inventory inventory;
+    private transient Inventory inventory;
 
     public LanguageInventory(LanguageInventoryConfiguration languageInventoryConfiguration) {
         this.languageInventoryConfiguration = languageInventoryConfiguration;

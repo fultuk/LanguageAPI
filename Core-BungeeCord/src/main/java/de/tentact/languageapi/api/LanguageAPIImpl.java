@@ -33,7 +33,7 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     private final Cache<String, HashMap<String, String>> translationCache = CacheBuilder.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
     private final PlayerManager playerManager = new PlayerManagerImpl();
-    private final PlayerExecutor playerExecutor = new PlayerExecutorImpl();
+    private final PlayerExecutor playerExecutor = new PlayerExecutorImpl(this);
     private final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactoryBuilder().build());
 
     @Override
@@ -212,11 +212,8 @@ public class LanguageAPIImpl extends LanguageAPI {
         if (!this.isLanguage(langfrom.toLowerCase()) || !this.isLanguage(langto.toLowerCase())) {
             throw new IllegalArgumentException("Language " + langfrom + " or " + langto + " was not found!");
         }
-        try (Connection connection = this.getDataSouce().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO ? SELECT * FROM ?;")) {
-            preparedStatement.setString(1, langto.toLowerCase());
-            preparedStatement.setString(2, langfrom.toLowerCase());
-            preparedStatement.execute();
+        try (Connection connection = this.getDataSouce().getConnection()) {
+            connection.createStatement().execute("INSERT INTO " + langto + " SELECT * FROM " + langfrom + ";");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

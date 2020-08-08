@@ -13,7 +13,7 @@ public interface PlayerExecutor extends PlayerManager {
 
     /**
      * @param playerUUID the player uuid to specify the player
-     * @return returns a String with the language of the player in the database
+     * @return returns a String with the language of the player in the database - registers the player if he not exists
      */
     @NotNull
     String getPlayerLanguage(UUID playerUUID);
