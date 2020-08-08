@@ -13,7 +13,6 @@ public class SpecificPlayerExecutorImpl extends PlayerManagerImpl implements Spe
     private final PlayerExecutor playerExecutor;
 
 
-
     public SpecificPlayerExecutorImpl(UUID playerId) {
         this.playerExecutor = new PlayerExecutorImpl(this.languageAPI);
         this.playerId = playerId;

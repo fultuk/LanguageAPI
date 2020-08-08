@@ -40,11 +40,11 @@ public class LanguageAPIImpl extends LanguageAPI {
     public void createLanguage(final String language) {
         if (this.getAvailableLanguages().isEmpty() || !this.isLanguage(language)) {
             this.mySQL.createTable(language.replace(" ", "").toLowerCase());
-            try(Connection connection = this.getDataSouce().getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO languages(language) VALUES (?)")) {
+            try (Connection connection = this.getDataSouce().getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO languages(language) VALUES (?)")) {
                 preparedStatement.setString(1, language.toLowerCase());
                 preparedStatement.execute();
-            }catch (SQLException ex) {
+            } catch (SQLException ex) {
                 ex.printStackTrace();
             }
             logInfo("Creating new language:" + language);
@@ -54,7 +54,7 @@ public class LanguageAPIImpl extends LanguageAPI {
     @Override
     public void deleteLanguage(String language) {
         if (!this.getDefaultLanguage().equalsIgnoreCase(language) && this.isLanguage(language)) {
-            executorService.execute(()-> {
+            executorService.execute(() -> {
                 try (Connection connection = this.getDataSouce().getConnection()) {
                     try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE ?;")) {
                         preparedStatement.setString(1, language.toLowerCase());
@@ -85,22 +85,26 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @Override
     public void addMessage(final String transkey, final String message, final String language) {
-        if (this.isLanguage(language)) {
-            try (Connection connection = this.getDataSouce().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO "+ language +" (transkey, translation) VALUES (?,?);")) {
-                preparedStatement.setString(1, transkey.toLowerCase());
-                preparedStatement.setString(2, ChatColor.translateAlternateColorCodes('&', message));
-                preparedStatement.execute();
+        if (!this.isLanguage(language)) {
+            return;
+        }
+        if(this.isKey(transkey, language)) {
+            return;
+        }
+        try (Connection connection = this.getDataSouce().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO " + language.toLowerCase() + " (transkey, translation) VALUES (?,?);")) {
+            preparedStatement.setString(1, transkey.toLowerCase());
+            preparedStatement.setString(2, ChatColor.translateAlternateColorCodes('&', message));
+            preparedStatement.execute();
 
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
     @Override
     public void addParameter(final String transkey, final String param) {
-        if(this.hasParameter(transkey)) {
+        if (this.hasParameter(transkey)) {
             return;
         }
         try (Connection connection = this.getDataSouce().getConnection();

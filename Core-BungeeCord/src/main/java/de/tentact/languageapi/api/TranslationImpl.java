@@ -13,10 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.UUID;
 
-/**
- *
- */
-
 public class TranslationImpl implements Translation {
 
     private final String translationkey;
@@ -25,25 +21,17 @@ public class TranslationImpl implements Translation {
     private final HashMap<String, String> params = new HashMap<>();
     private String message;
 
-    /**
-     * @param translationkey the translationkey to fetch the translation from
-     */
+
     public TranslationImpl(@NotNull String translationkey) {
         this.translationkey = translationkey;
     }
 
-    /**
-     * @param translationkey the translationkey to fetch the translation from
-     * @param usePrefix      wether to use the prefix of the languageapi or not
-     */
+
     public TranslationImpl(String translationkey, boolean usePrefix) {
         this(translationkey);
         this.setPrefix(usePrefix);
     }
 
-    /**
-     * @return returns a translation of the key in the default language
-     */
     @NotNull
     @Override
     public String getMessage() {
@@ -57,22 +45,13 @@ public class TranslationImpl implements Translation {
     }
 
 
-    /**
-     * @param language the language to get the translation in
-     * @return returns a translation of the key in the given language
-     */
+
     @NotNull
     @Override
     public String getMessage(@NotNull String language) {
         return this.getMessage(language, false);
     }
 
-    /**
-     *
-     * @param language the language to get the translation in
-     * @param orElseDefault whether to use the default language if the given one was not found
-     * @return returns a translation of the key in the given language if found, else uses default language if orElseDefault is <code>true<code/>
-     */
     @NotNull
     @Override
     public String getMessage(@NotNull String language, boolean orElseDefault) {
@@ -82,40 +61,27 @@ public class TranslationImpl implements Translation {
         return message;
     }
 
-    /**
-     * @return returns the parameter for a key
-     */
+
     @Override
     public String getParameter() {
         return this.languageAPI.getParameter(this.translationkey);
     }
 
-    /**
-     * @param usePrefix wether to use the languageapi prefix in the translation or not
-     * @return returns a {@link TranslationImpl}
-     */
+
     @Override
     public TranslationImpl setPrefix(boolean usePrefix) {
         this.usePrefix = usePrefix;
         return this;
     }
 
-    /**
-     * a method to replace parameter in the specific translation for a player - this is reset after {@link TranslationImpl#getMessage()}
-     *
-     * @param old         the old String to replace
-     * @param replacement the replacement for the paramater
-     * @return returns {@link TranslationImpl} after inserting the parameter
-     */
+
     @Override
     public TranslationImpl replace(String old, String replacement) {
         params.put(old, replacement);
         return this;
     }
 
-    /**
-     * @return returns the translationkey which was given
-     */
+
     @Override
     public String getTranslationKey() {
         return this.translationkey;
