@@ -217,7 +217,7 @@ public class LanguageAPIImpl extends LanguageAPI {
             throw new IllegalArgumentException("Language " + langfrom + " or " + langto + " was not found!");
         }
         try (Connection connection = this.getDataSouce().getConnection()) {
-            connection.createStatement().execute("INSERT INTO " + langto + " SELECT * FROM " + langfrom + ";");
+            connection.createStatement().execute("INSERT IGNORE " + langto + " SELECT * FROM " + langfrom + ";");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

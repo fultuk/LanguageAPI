@@ -5,6 +5,7 @@ package de.tentact.languageapi.mysql;
     Uhrzeit: 16:53
 */
 
+import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.util.ConfigUtil;
 
@@ -30,10 +31,15 @@ public class MySQL {
 
     public void connect() {
         if (!isConnected()) {
-            dataSource = new HikariDataSource();
-            dataSource.setJdbcUrl("jdbc:mysql://" + hostname + ":" + port + "/" + database);
-            dataSource.setUsername(this.username);
-            dataSource.setPassword(this.password);
+            HikariConfig config = new HikariConfig();
+
+            config.addDataSourceProperty("characterEncoding","utf8");
+            config.addDataSourceProperty("useUnicode","true");
+            config.setJdbcUrl("jdbc:mysql://" + hostname + ":" + port + "/" + database);
+            config.setPassword(this.password);
+            config.setUsername(this.username);
+
+            dataSource = new HikariDataSource(config);
 
             ConfigUtil.log("Creating connection to database", Level.INFO);
 
@@ -55,10 +61,10 @@ public class MySQL {
         if (!isConnected())
             return;
         try (Connection connection = dataSource.getConnection()) {
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS choosenlang(uuid VARCHAR(64), language VARCHAR(64));");
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(64));");
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(transkey VARCHAR(64), param VARCHAR(2000));");
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS MultipleTranslation(multipleKey VARCHAR(64), transkeys VARCHAR(2000));");
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS choosenlang(uuid VARCHAR(64) UNIQUE, language VARCHAR(64));");
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(64) UNIQUE);");
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(transkey VARCHAR(64) UNIQUE, param VARCHAR(2000));");
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS MultipleTranslation(multipleKey VARCHAR(64) UNIQUE, transkeys VARCHAR(2000));");
             ConfigUtil.log("Creating default tables", Level.INFO);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -69,7 +75,7 @@ public class MySQL {
         if (!isConnected())
             return;
         try (Connection connection = dataSource.getConnection()) {
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS " + tableName + "(transkey VARCHAR(64), translation VARCHAR(2000));");
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS " + tableName + "(transkey VARCHAR(64) UNIQUE, translation VARCHAR(2000));");
             ConfigUtil.log("Creating table: " + tableName, Level.INFO);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
