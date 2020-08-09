@@ -6,7 +6,7 @@
 
     <parent>
         <artifactId>LanguageAPI-parent</artifactId>
-        <version>1.6-SNAPSHOT</version>
+        <version>1.7-SNAPSHOT</version>
         <groupId>de.tentact.languageapi</groupId>
     </parent>
     <artifactId>Core-BungeeCord</artifactId>
