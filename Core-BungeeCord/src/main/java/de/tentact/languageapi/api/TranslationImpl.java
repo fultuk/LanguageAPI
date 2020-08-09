@@ -13,14 +13,18 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.UUID;
 
+/**
+ *
+ */
+
 public class TranslationImpl implements Translation {
 
     private final String translationkey;
+    private Translation prefixTranslation = null;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private boolean usePrefix = false;
     private final HashMap<String, String> params = new HashMap<>();
     private String message;
-
 
     public TranslationImpl(@NotNull String translationkey) {
         this.translationkey = translationkey;
@@ -31,6 +35,7 @@ public class TranslationImpl implements Translation {
         this(translationkey);
         this.setPrefix(usePrefix);
     }
+
 
     @NotNull
     @Override
@@ -45,7 +50,6 @@ public class TranslationImpl implements Translation {
     }
 
 
-
     @NotNull
     @Override
     public String getMessage(@NotNull String language) {
@@ -55,18 +59,20 @@ public class TranslationImpl implements Translation {
     @NotNull
     @Override
     public String getMessage(@NotNull String language, boolean orElseDefault) {
+        String prefix = "";
+        if (this.hasPrefixTranslation()) {
+            prefix = this.prefixTranslation.getMessage(language, orElseDefault);
+        }
         message = this.languageAPI.getMessage(this.translationkey, language, usePrefix);
         params.forEach((key, value) -> message = message.replace(key, value));
         params.clear();
-        return message;
+        return prefix + message;
     }
-
 
     @Override
     public String getParameter() {
         return this.languageAPI.getParameter(this.translationkey);
     }
-
 
     @Override
     public TranslationImpl setPrefix(boolean usePrefix) {
@@ -74,13 +80,17 @@ public class TranslationImpl implements Translation {
         return this;
     }
 
+    @Override
+    public Translation setPrefixTranslation(Translation prefixTranslation) {
+        this.prefixTranslation = prefixTranslation;
+        return this;
+    }
 
     @Override
     public TranslationImpl replace(String old, String replacement) {
         params.put(old, replacement);
         return this;
     }
-
 
     @Override
     public String getTranslationKey() {
@@ -99,5 +109,7 @@ public class TranslationImpl implements Translation {
         return this;
     }
 
-
+    private boolean hasPrefixTranslation() {
+        return this.prefixTranslation != null;
+    }
 }

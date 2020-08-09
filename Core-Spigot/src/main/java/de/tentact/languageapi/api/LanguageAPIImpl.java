@@ -553,6 +553,11 @@ public class LanguageAPIImpl extends LanguageAPI {
     }
 
     @Override
+    public @NotNull Translation getTranslationWithPrefix(Translation prefixTranslation, String translationKey) {
+        return this.getTranslation(translationKey).setPrefixTranslation(prefixTranslation);
+    }
+
+    @Override
     public @NotNull PlayerExecutor getPlayerExecutor() {
         return this.playerExecutor;
     }

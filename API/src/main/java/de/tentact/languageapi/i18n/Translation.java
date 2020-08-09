@@ -48,10 +48,17 @@ public interface Translation {
     String getParameter();
 
     /**
-     * @param usePrefix wether to use the languageapi prefix in the translation or not
+     * @param usePrefix wether to use the languageapi prefix ("languageapi-prefix") in the translation or not
      * @return returns a {@link Translation} after setting the prefix
      */
     Translation setPrefix(boolean usePrefix);
+
+    /**
+     *
+     * @param prefixTranslation the prefix translation to get the prefix from
+     * @return returns a {@link Translation} after setting the prefixTranslation
+     */
+    Translation setPrefixTranslation(Translation prefixTranslation);
 
     /**
      * a method to replace parameter in the specific translation for a player - this is reset after {@link Translation#getMessage()}
