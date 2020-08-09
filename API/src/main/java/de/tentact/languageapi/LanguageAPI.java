@@ -365,6 +365,12 @@ public abstract class LanguageAPI {
     @NotNull
     public abstract Translation getTranslation(String translationkey, boolean usePrefix);
 
+    /**
+     *
+     * @param prefixTranslation the prefixTranslation %PREFIX% will be replaced with
+     * @param translationKey the translationkey to fetch the translation from
+     * @return returns a {@link Translation} with a prefixTranslation set
+     */
     @NotNull
     public abstract Translation getTranslationWithPrefix(Translation prefixTranslation, String translationKey);
 

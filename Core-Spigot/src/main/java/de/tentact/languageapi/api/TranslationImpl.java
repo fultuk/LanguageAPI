@@ -66,7 +66,7 @@ public class TranslationImpl implements Translation {
         message = this.languageAPI.getMessage(this.translationkey, language, usePrefix);
         params.forEach((key, value) -> message = message.replace(key, value));
         params.clear();
-        return prefix + message;
+        return message.replace("%PREFIX%", prefix);
     }
 
     @Override
