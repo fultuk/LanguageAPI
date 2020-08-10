@@ -47,7 +47,6 @@ public class ItemBuilder {
         SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
         skullMeta.setDisplayName(displayName);
 
-
         GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "");
         gameProfile.getProperties().put("textures", new Property("textures", value));
 
@@ -59,9 +58,7 @@ public class ItemBuilder {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
-
         itemStack.setItemMeta(skullMeta);
-
         return itemStack;
     }
 }

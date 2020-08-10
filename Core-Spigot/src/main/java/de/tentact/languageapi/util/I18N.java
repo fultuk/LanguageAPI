@@ -34,7 +34,6 @@ public class I18N {
         iLanguageAPI.addMessage("languageapi-lang-not-found", "Die Sprache %LANG% wurde nicht gefunden.", language);
         iLanguageAPI.addParameter("languageapi-lang-not-found", "%LANG%");
 
-
         iLanguageAPI.addMessage("languageapi-remove-key-in-language", "Die Übersetzung des Translationkeys %KEY% in %LANG% wurde erfolgreich entfernt.", language);
         iLanguageAPI.addParameter("languageapi-remove-key-in-language", "%KEY%, %LANG%");
         iLanguageAPI.addMessage("languageapi-remove-key-in-every-language", "Der Translationkey %KEY% wurde in jeder Sprache entfernt.", language);
@@ -52,7 +51,6 @@ public class I18N {
         iLanguageAPI.addMessage("languageapi-update-instructions", "Nun kannst du die Übersetzung in den Chat eingeben, wenn benötigt auch mehrmals.\nMit ''finish'' wird die Übersetzung gespeichert.", language);
         iLanguageAPI.addMessage("languageapi-update-same", "Es wurde nichts verändert und die Übersetzung wurde abgebrochen.", language);
         iLanguageAPI.addMessage("languageapi-update-help", "Verwende /lang update <Sprache> <Translationkey> <Übersetzung> um eine Übersetzung zu ändern", language);
-
 
         iLanguageAPI.addMessage("languageapi-create-success", "Die Sprache %LANG% wurde erfolgreich erstellt.", language);
         iLanguageAPI.addParameter("languageapi-create-success", "%LANG%");
@@ -84,7 +82,6 @@ public class I18N {
 
         iLanguageAPI.addMessage("languageapi-player-selected-language", "Du hast die Sprache %LANGUAGE% ausgewählt.", language);
         iLanguageAPI.addParameter("languageapi-player-selected-language","%LANGUAGE%");
-
 
         iLanguageAPI.setMultipleTranslation("languageapi-help", Arrays.asList("languageapi-add-help",
                 "languageapi-update-help",
@@ -119,5 +116,4 @@ public class I18N {
     public static TranslationImpl LANGUAGEAPI_HELP = new TranslationImpl("languageapi-help", true);
     public static TranslationImpl LANGUAGEAPI_NOPERMS = new TranslationImpl("languageapi-noperms", true);
     public static TranslationImpl LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE = new TranslationImpl("languageapi-player-selected-language", true);
-
 }

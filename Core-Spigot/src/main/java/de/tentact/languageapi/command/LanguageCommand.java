@@ -78,14 +78,11 @@ public class LanguageCommand implements TabExecutor {
                                         .replace("%LANG%", languages)
                                         .replace("%MSG%", msg.toString()));
                                 return true;
-
-
                             } else {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_KEY_ALREADY_EXISTS
                                         .replace("%KEY%", key)
                                         .replace("%LANG%", languages));
                                 return false;
-
                             }
                         case "update":
                             if(this.checkDoesNotHavePermission(player, args)) {
@@ -129,7 +126,6 @@ public class LanguageCommand implements TabExecutor {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_ALREADY_EXISTS.replace("%LANG%", languages));
                                 return false;
                             }
-
                         case "delete":
                             if(this.checkDoesNotHavePermission(player, args)) {
                                 return false;
@@ -153,7 +149,6 @@ public class LanguageCommand implements TabExecutor {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_NOT_FOUND
                                         .replace("%LANG%", languages));
                                 return false;
-
                             }
                         case "copy":
                             if(this.checkDoesNotHavePermission(player, args)) {
@@ -166,7 +161,6 @@ public class LanguageCommand implements TabExecutor {
                                     this.languageAPI.copyLanguage(langfrom, langto);
                                     languagePlayer.sendMessage(I18N.LANGUAGEAPI_COPY_SUCCESS.replace("%OLDLANG%", langfrom)
                                             .replace("%NEWLANG%", langto));
-
                                     return true;
                                 } else {
                                     languages = langfrom;
@@ -176,12 +170,10 @@ public class LanguageCommand implements TabExecutor {
                                     languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_NOT_FOUND
                                             .replace("%LANG%", languages));
                                     return false;
-
                                 }
                             } else {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_COPY_HELP);
                                 return false;
-
                             }
                         case "param": //languages param key
                             if(this.checkDoesNotHavePermission(player, args)) {
@@ -194,7 +186,6 @@ public class LanguageCommand implements TabExecutor {
                             if (!this.languageAPI.hasParameter(key) || this.languageAPI.getParameter(key).equalsIgnoreCase("")) {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_KEY_HAS_NO_PARAM.replace("%KEY%", key));
                                 return false;
-
                             }
                             languagePlayer.sendMessage(I18N.LANGUAGEAPI_SHOW_SUCCESS.replace("%PARAM%", this.languageAPI.getParameter(key)).replace("%KEY%", key));
                             return true;
@@ -208,7 +199,6 @@ public class LanguageCommand implements TabExecutor {
                                 for (int i = 0; i < allKeys.size(); i++) {
                                     languagePlayer.sendMessage(I18N.LANGUAGEAPI_TRANSLATION_SUCCESS.replace("%KEY%", allKeys.get(i))
                                             .replace("%MSG%", this.languageAPI.getAllTranslations(languages).get(i)));
-
                                 }
                                 return true;
                             } else {
@@ -323,7 +313,6 @@ public class LanguageCommand implements TabExecutor {
             }
         }
         return Collections.emptyList();
-
     }
 
     private List<String> getTabCompletes(String playerInput, List<String> tabComplete) {

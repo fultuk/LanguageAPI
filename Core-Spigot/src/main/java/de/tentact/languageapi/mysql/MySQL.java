@@ -42,7 +42,6 @@ public class MySQL {
             dataSource = new HikariDataSource(config);
 
             ConfigUtil.log("Creating connection to database", Level.INFO);
-
         }
     }
 

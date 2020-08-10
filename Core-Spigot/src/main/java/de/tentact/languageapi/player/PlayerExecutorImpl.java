@@ -71,7 +71,6 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
             return;
         }
         this.setPlayerLanguage(playerUUID, newLanguage);
-
     }
 
     @Override

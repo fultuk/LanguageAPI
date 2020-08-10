@@ -33,7 +33,6 @@ public class JoinListener implements Listener {
         } else {
             player.performCommand("languageapi");
         }
-
         if (!ConfigUtil.getUpdateNotfication()) {
             return;
         }

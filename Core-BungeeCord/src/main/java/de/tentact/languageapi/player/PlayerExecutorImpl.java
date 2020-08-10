@@ -25,7 +25,6 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
     private final HikariDataSource dataSource;
     private final Cache<UUID, String> languageCache = CacheBuilder.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
 
-
     public PlayerExecutorImpl(LanguageAPI languageAPI) {
         this.languageAPI = languageAPI;
         this.mySQL = ConfigUtil.getMySQL();
@@ -72,7 +71,6 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
             return;
         }
         this.setPlayerLanguage(playerUUID, newLanguage);
-
     }
 
     @Override

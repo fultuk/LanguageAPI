@@ -54,7 +54,6 @@ public class LanguageSpigot extends JavaPlugin {
         pm.registerEvents(new JoinListener(), this);
         pm.registerEvents(new ChatListener(), this);
         pm.registerEvents(new InventoryClickListener(this.configuration.getLanguageInventory()), this);
-
     }
 
     @Override

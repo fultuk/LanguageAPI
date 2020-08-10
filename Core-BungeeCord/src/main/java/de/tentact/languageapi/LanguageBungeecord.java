@@ -26,7 +26,6 @@ public class LanguageBungeecord extends Plugin {
         mySQL.createDefaultTable();
         LanguageAPI.getInstance().createLanguage(ConfigUtil.getDefaultLanguage());
         I18N.createDefaultPluginMessages();
-
         new Updater(this);
     }
 

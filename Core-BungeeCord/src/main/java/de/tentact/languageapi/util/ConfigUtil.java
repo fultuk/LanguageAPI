@@ -18,12 +18,8 @@ import java.util.logging.Logger;
 
 public class ConfigUtil {
 
-
-
     private static Configuration bungeecordmySQLConfiguration;
-
     private static MySQL mySQL;
-
     private static Logger logger;
     public static String defaultLanguage;
 
@@ -41,7 +37,6 @@ public class ConfigUtil {
         if (!languageBungeecord.getDataFolder().exists()) {
             languageBungeecord.getDataFolder().mkdir();
         }
-
         try {
             bungeecordmySQLConfiguration = ConfigurationProvider.getProvider(net.md_5.bungee.config.YamlConfiguration.class).load(bungeecordmySQLConfigFile);
 
@@ -54,9 +49,7 @@ public class ConfigUtil {
                 bungeecordmySQLConfiguration.set("language.defaultlang", "de_de");
             }
             ConfigurationProvider.getProvider(net.md_5.bungee.config.YamlConfiguration.class).save(bungeecordmySQLConfiguration, bungeecordmySQLConfigFile);
-
         } catch (IOException ignored) {
-
         }
     }
     @NotNull

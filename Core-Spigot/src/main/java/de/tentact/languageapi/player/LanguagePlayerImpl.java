@@ -7,7 +7,6 @@ import de.tentact.languageapi.i18n.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -17,7 +16,6 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
     private final UUID playerID;
     private Player player;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
-
 
     public LanguagePlayerImpl(UUID playerID) {
         super(playerID);

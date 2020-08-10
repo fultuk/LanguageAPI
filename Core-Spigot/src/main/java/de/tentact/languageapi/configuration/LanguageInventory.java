@@ -32,16 +32,13 @@ public class LanguageInventory {
         }
         Inventory inventory = Bukkit.createInventory(null, this.languageInventoryConfiguration.getInventorySize(), this.languageInventoryConfiguration.getName());
 
-        ItemStack fillItem;
+        ItemBuilder builder = new ItemBuilder(this.languageInventoryConfiguration.getFillItemMaterial());
         byte subId = this.languageInventoryConfiguration.getSubid();
         if(subId != -1) {
-             fillItem = new ItemBuilder(this.languageInventoryConfiguration.getFillItemMaterial()).setSubId(subId).build();
-        }else {
-            fillItem = new ItemBuilder(this.languageInventoryConfiguration.getFillItemMaterial()).build();
+             builder.setSubId(subId);
         }
-
         for (int i = 0; i < inventory.getSize(); i++) {
-            inventory.setItem(i, fillItem);
+            inventory.setItem(i, builder.build());
         }
         for (LanguageItem languageItem : this.languageInventoryConfiguration.getLanguages()) {
             ItemStack itemStack = ItemBuilder.buildSkull(languageItem.getHeadValue(), languageItem.getDisplayName(), languageItem.getLore());

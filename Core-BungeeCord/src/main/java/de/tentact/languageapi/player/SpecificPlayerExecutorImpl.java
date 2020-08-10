@@ -12,7 +12,6 @@ public class SpecificPlayerExecutorImpl extends PlayerManagerImpl implements Spe
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private final PlayerExecutor playerExecutor;
 
-
     public SpecificPlayerExecutorImpl(UUID playerId) {
         this.playerExecutor = new PlayerExecutorImpl(this.languageAPI);
         this.playerId = playerId;
@@ -20,7 +19,6 @@ public class SpecificPlayerExecutorImpl extends PlayerManagerImpl implements Spe
 
     @Override
     public @NotNull String getPlayerLanguage() {
-
         return this.playerExecutor.getPlayerLanguage(this.playerId);
     }
 

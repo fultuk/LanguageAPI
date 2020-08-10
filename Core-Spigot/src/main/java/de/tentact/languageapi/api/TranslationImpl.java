@@ -30,12 +30,10 @@ public class TranslationImpl implements Translation {
         this.translationkey = translationkey;
     }
 
-
     public TranslationImpl(String translationkey, boolean usePrefix) {
         this(translationkey);
         this.setPrefix(usePrefix);
     }
-
 
     @NotNull
     @Override
@@ -48,7 +46,6 @@ public class TranslationImpl implements Translation {
     public String getMessage(@NotNull UUID playerUUID) {
         return this.getMessage(this.languageAPI.getPlayerExecutor().getPlayerLanguage(playerUUID));
     }
-
 
     @NotNull
     @Override

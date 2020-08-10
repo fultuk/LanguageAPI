@@ -17,10 +17,7 @@ import java.util.logging.Logger;
 public class ConfigUtil {
 
     private static YamlConfiguration yamlConfiguration;
-
-
     private static MySQL mySQL;
-
     private static Logger logger;
     public static String defaultLanguage;
 
@@ -36,8 +33,6 @@ public class ConfigUtil {
         yamlConfiguration.addDefault("mysql.port", 3306);
         yamlConfiguration.addDefault("language.defaultlang", "de_de");
         yamlConfiguration.addDefault("language.notify", true);
-        
-
 
         yamlConfiguration.options().copyDefaults(true);
 
@@ -46,7 +41,6 @@ public class ConfigUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public static void init() {
