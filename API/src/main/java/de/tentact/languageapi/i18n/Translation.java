@@ -75,8 +75,20 @@ public interface Translation {
      */
     String getTranslationKey();
 
+    /**
+     *
+     * @param message
+     * @return
+     */
+
     Translation createDefaults(String message);
 
+    /**
+     *
+     * @param message
+     * @param param
+     * @return
+     */
     Translation createDefaults(String message, String param);
 
 
