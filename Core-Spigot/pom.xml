@@ -81,7 +81,7 @@
         <dependency>
             <groupId>de.tentact.languageapi</groupId>
             <artifactId>API</artifactId>
-            <version>1.7-SNAPSHOT</version>
+            <version>1.7-RELEASE</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
