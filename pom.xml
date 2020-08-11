@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>LanguageAPI-parent</artifactId>
-    <version>1.7-SNAPSHOT</version>
+    <version>1.7-RELEASE</version>
     <groupId>de.tentact.languageapi</groupId>
     <name>LanguageAPI-parent</name>
     <packaging>pom</packaging>
