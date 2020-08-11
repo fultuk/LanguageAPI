@@ -2,6 +2,7 @@ package de.tentact.languageapi.player;
 
 import de.tentact.languageapi.LanguageAPI;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -47,4 +48,12 @@ public interface LanguageOfflinePlayer {
         return LanguageAPI.getInstance().getSpecificPlayerExecutor(this.getUniqueId());
     }
 
+    /**
+     *
+     * @return returns a {@link LanguagePlayer} - null if the player is not online
+     */
+    @Nullable
+    default LanguagePlayer getLanguagePlayer() {
+        return this.getSpecificPlayerExecutor().getLanguagePlayer();
+    }
 }

@@ -9,10 +9,11 @@ import java.util.UUID;
 public class SpecificPlayerExecutorImpl extends PlayerManagerImpl implements SpecificPlayerExecutor {
 
     private final UUID playerId;
-    private final PlayerExecutor playerExecutor = new PlayerExecutorImpl();
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
+    private final PlayerExecutor playerExecutor;
 
     public SpecificPlayerExecutorImpl(UUID playerId) {
+        this.playerExecutor = new PlayerExecutorImpl(this.languageAPI);
         this.playerId = playerId;
     }
 
@@ -22,7 +23,7 @@ public class SpecificPlayerExecutorImpl extends PlayerManagerImpl implements Spe
     }
 
     @Override
-    public boolean isPlayersLanguage(String language) {
+    public boolean isPlayersLanguage(@NotNull String language) {
         if (!this.languageAPI.isLanguage(language)) {
             return false;
         }
@@ -30,13 +31,13 @@ public class SpecificPlayerExecutorImpl extends PlayerManagerImpl implements Spe
     }
 
     @Override
-    public void setPlayerLanguage(String newLanguage, boolean orElseDefault) {
+    public void setPlayerLanguage(@NotNull String newLanguage, boolean orElseDefault) {
         this.playerExecutor.setPlayerLanguage(this.playerId, newLanguage, orElseDefault);
 
     }
 
     @Override
-    public void setPlayerLanguage(String newLanguage) {
+    public void setPlayerLanguage(@NotNull String newLanguage) {
         this.playerExecutor.setPlayerLanguage(this.playerId, newLanguage);
     }
 
@@ -46,7 +47,7 @@ public class SpecificPlayerExecutorImpl extends PlayerManagerImpl implements Spe
     }
 
     @Override
-    public void registerPlayer(String language) {
+    public void registerPlayer(@NotNull String language) {
         this.playerExecutor.registerPlayer(this.playerId, language);
     }
 

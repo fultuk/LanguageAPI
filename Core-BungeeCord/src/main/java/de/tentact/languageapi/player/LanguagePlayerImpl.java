@@ -17,7 +17,6 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
     private ProxiedPlayer proxiedPlayer;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
-
     public LanguagePlayerImpl(UUID playerID) {
         super(playerID);
         this.playerID = playerID;
@@ -26,7 +25,6 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
     @Override
     public void sendMessage(@NotNull Translation translation) {
         this.getProxiedPlayer().sendMessage(translation.getMessage(this.getLanguage()));
-
     }
 
     @Override
@@ -57,12 +55,16 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
             throw new IllegalArgumentException(multipleTranslationKey + " was not found");
         }
         this.languageAPI.getMultipleMessages(multipleTranslationKey, language).forEach(Objects.requireNonNull(this.getProxiedPlayer())::sendMessage);
-
     }
 
     @Override
     public boolean isOnline() {
         return this.getProxiedPlayer() != null;
+    }
+
+    @Override
+    public void kickPlayer(Translation translation) {
+        this.getProxiedPlayer().disconnect(translation.getMessage(this.getLanguage()));
     }
 
     private ProxiedPlayer getProxiedPlayer() {

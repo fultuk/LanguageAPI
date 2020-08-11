@@ -9,8 +9,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.util.ConfigUtil;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
@@ -61,7 +59,6 @@ public class MySQL {
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS MultipleTranslation(multipleKey VARCHAR(64), transkeys VARCHAR(2000));");
             ConfigUtil.log("Creating default tables", Level.INFO);
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -78,12 +75,8 @@ public class MySQL {
     }
 
     public boolean exists(String query) {
-        try (Connection connection = this.dataSource.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return true;
-            }
+        try (Connection connection = this.dataSource.getConnection()) {
+            return connection.prepareStatement(query).executeQuery().next();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

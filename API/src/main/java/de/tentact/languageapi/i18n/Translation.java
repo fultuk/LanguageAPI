@@ -7,6 +7,7 @@ import java.util.UUID;
 
 /**
  * This interface can only be accessed via {@link LanguageAPI#getTranslation(String)}
+ * Used to store translationkey and send them directly to a player instead of fetching
  */
 public interface Translation {
 
@@ -46,12 +47,18 @@ public interface Translation {
 
     String getParameter();
 
-
     /**
-     * @param usePrefix wether to use the languageapi prefix in the translation or not
+     * @param usePrefix wether to use the languageapi prefix ("languageapi-prefix") in the translation or not
      * @return returns a {@link Translation} after setting the prefix
      */
     Translation setPrefix(boolean usePrefix);
+
+    /**
+     *
+     * @param prefixTranslation the prefix translation to get the prefix from
+     * @return returns a {@link Translation} after setting the prefixTranslation
+     */
+    Translation setPrefixTranslation(Translation prefixTranslation);
 
     /**
      * a method to replace parameter in the specific translation for a player - this is reset after {@link Translation#getMessage()}
@@ -67,6 +74,22 @@ public interface Translation {
      * @return returns the translationkey which was given
      */
     String getTranslationKey();
+
+    /**
+     *
+     * @param message
+     * @return
+     */
+
+    Translation createDefaults(String message);
+
+    /**
+     *
+     * @param message
+     * @param param
+     * @return
+     */
+    Translation createDefaults(String message, String param);
 
 
 }

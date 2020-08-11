@@ -17,7 +17,6 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
     private Player player;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
-
     public LanguagePlayerImpl(UUID playerID) {
         super(playerID);
         this.playerID = playerID;
@@ -65,6 +64,11 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
         return this.getPlayer() != null;
     }
 
+    @Override
+    public void kickPlayer(Translation translation) {
+        this.getPlayer().kickPlayer(translation.getMessage(this.getLanguage()));
+    }
+
     private Player getPlayer() {
         if (this.player != null) {
             return this.player;
@@ -75,4 +79,5 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
         }
         return this.player;
     }
+
 }

@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.function.BiConsumer;
 
 /**
  *
@@ -21,30 +20,23 @@ import java.util.function.BiConsumer;
 public class TranslationImpl implements Translation {
 
     private final String translationkey;
+    private Translation prefixTranslation = null;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private boolean usePrefix = false;
     private final HashMap<String, String> params = new HashMap<>();
     private String message;
 
-    /**
-     * @param translationkey the translationkey to fetch the translation from
-     */
     public TranslationImpl(@NotNull String translationkey) {
         this.translationkey = translationkey;
     }
 
-    /**
-     * @param translationkey the translationkey to fetch the translation from
-     * @param usePrefix      wether to use the prefix of the languageapi or not
-     */
+
     public TranslationImpl(String translationkey, boolean usePrefix) {
         this(translationkey);
         this.setPrefix(usePrefix);
     }
 
-    /**
-     * @return returns a translation of the key in the default language
-     */
+
     @NotNull
     @Override
     public String getMessage() {
@@ -58,67 +50,66 @@ public class TranslationImpl implements Translation {
     }
 
 
-    /**
-     * @param language the language to get the translation in
-     * @return returns a translation of the key in the given language
-     */
     @NotNull
     @Override
     public String getMessage(@NotNull String language) {
         return this.getMessage(language, false);
     }
 
-    /**
-     *
-     * @param language the language to get the translation in
-     * @param orElseDefault whether to use the default language if the given one was not found
-     * @return returns a translation of the key in the given language if found, else uses default language if orElseDefault is <code>true<code/>
-     */
     @NotNull
     @Override
     public String getMessage(@NotNull String language, boolean orElseDefault) {
+        String prefix = "%PREFIX%";
+        if (this.hasPrefixTranslation()) {
+            prefix = this.prefixTranslation.getMessage(language, orElseDefault);
+        }
         message = this.languageAPI.getMessage(this.translationkey, language, usePrefix);
         params.forEach((key, value) -> message = message.replace(key, value));
         params.clear();
-        return message;
+        return message.replace("%PREFIX%", prefix);
     }
 
-    /**
-     * @return returns the parameter for a key
-     */
     @Override
     public String getParameter() {
         return this.languageAPI.getParameter(this.translationkey);
     }
 
-    /**
-     * @param usePrefix wether to use the languageapi prefix in the translation or not
-     * @return returns a {@link TranslationImpl}
-     */
     @Override
     public TranslationImpl setPrefix(boolean usePrefix) {
         this.usePrefix = usePrefix;
         return this;
     }
 
-    /**
-     * a method to replace parameter in the specific translation for a player - this is reset after {@link TranslationImpl#getMessage()}
-     *
-     * @param old         the old String to replace
-     * @param replacement the replacement for the paramater
-     * @return returns {@link TranslationImpl} after inserting the parameter
-     */
+    @Override
+    public Translation setPrefixTranslation(Translation prefixTranslation) {
+        this.prefixTranslation = prefixTranslation;
+        return this;
+    }
+
     @Override
     public TranslationImpl replace(String old, String replacement) {
         params.put(old, replacement);
         return this;
     }
 
-    /**
-     * @return returns the translationkey which was given
-     */
     @Override
     public String getTranslationKey() {
         return this.translationkey;
+    }
+
+    @Override
+    public Translation createDefaults(String message) {
+        this.languageAPI.addMessageToDefault(this.translationkey, message);
+        return this;
+    }
+
+    @Override
+    public Translation createDefaults(String message, String param) {
+        this.languageAPI.addMessageToDefault(this.translationkey, message, param);
+        return this;
+    }
+
+    private boolean hasPrefixTranslation() {
+        return this.prefixTranslation != null;
     }
 }

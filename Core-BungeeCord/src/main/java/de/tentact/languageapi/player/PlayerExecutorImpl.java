@@ -1,7 +1,10 @@
 package de.tentact.languageapi.player;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.i18n.Translation;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.ConfigUtil;
 import org.jetbrains.annotations.NotNull;
@@ -10,14 +13,23 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecutor {
 
-    private final MySQL mySQL = ConfigUtil.getMySQL();
-    private final LanguageAPI languageAPI = LanguageAPI.getInstance();
-    private final HikariDataSource dataSource = mySQL.getDataSource();
+    private final MySQL mySQL;
+    private final LanguageAPI languageAPI;
+    private final HikariDataSource dataSource;
+    private final Cache<UUID, String> languageCache = CacheBuilder.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
+
+    public PlayerExecutorImpl(LanguageAPI languageAPI) {
+        this.languageAPI = languageAPI;
+        this.mySQL = ConfigUtil.getMySQL();
+        this.dataSource = mySQL.getDataSource();
+    }
 
     @NotNull
     @Override
@@ -25,12 +37,15 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
         if (!isRegisteredPlayer(playerUUID)) {
             this.registerPlayer(playerUUID);
         }
-
+        if(languageCache.getIfPresent(playerUUID) != null) {
+            return Objects.requireNonNull(languageCache.getIfPresent(playerUUID));
+        }
         try (Connection connection = this.mySQL.getDataSource().getConnection()) {
             ResultSet rs = connection.createStatement().executeQuery("SELECT language FROM choosenlang WHERE uuid='" + playerUUID.toString() + "';");
             if (rs.next()) {
-
-                return rs.getString("language").toLowerCase();
+                String language = rs.getString("language").toLowerCase();
+                languageCache.put(playerUUID, language);
+                return language;
             }
         } catch (SQLException throwables) {
             return languageAPI.getDefaultLanguage();
@@ -56,25 +71,39 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
             return;
         }
         this.setPlayerLanguage(playerUUID, newLanguage);
-
     }
 
     @Override
     public void setPlayerLanguage(UUID playerUUID, String newLanguage) {
-        if (!this.isRegisteredPlayer(playerUUID)) {
-            throw new UnsupportedOperationException();
-        }
-        if (!languageAPI.isLanguage(newLanguage)) {
+        if (!this.languageAPI.isLanguage(newLanguage)) {
             throw new IllegalArgumentException("Language " + newLanguage + " was not found!");
         }
+        if(!this.isRegisteredPlayer(playerUUID)) {
+            try (Connection connection = this.dataSource.getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO choosenlang (uuid, language) VALUES (?,?);")) {
+                preparedStatement.setString(1, playerUUID.toString());
+                preparedStatement.setString(2, newLanguage.toLowerCase());
+                preparedStatement.execute();
+
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            languageCache.put(playerUUID, newLanguage.toLowerCase());
+            return;
+        }
+        if(this.isPlayersLanguage(playerUUID, newLanguage)) {
+            return;
+        }
         try (Connection connection = this.dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE choosenlang WHERE uuid=? SET language=?;")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE choosenlang SET language=? WHERE uuid=?;")) {
             preparedStatement.setString(1, playerUUID.toString());
             preparedStatement.setString(2, newLanguage.toLowerCase());
+            preparedStatement.execute();
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+        languageCache.put(playerUUID, newLanguage.toLowerCase());
     }
 
     @Override
@@ -99,6 +128,16 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
     @Override
     public boolean isRegisteredPlayer(UUID playerUUID) {
         return this.mySQL.exists("SELECT * FROM choosenlang WHERE uuid='" + playerUUID.toString() + "';");
+    }
+
+    @Override
+    public void broadcastMessage(Translation translation) {
+        this.getOnlineLanguagePlayer().forEach(languagePlayer -> languagePlayer.sendMessage(translation));
+    }
+
+    @Override
+    public void kickAll(Translation translation) {
+        this.getOnlineLanguagePlayer().forEach(languagePlayer -> languagePlayer.kickPlayer(translation));
     }
 
     private String validateLanguage(String language) {

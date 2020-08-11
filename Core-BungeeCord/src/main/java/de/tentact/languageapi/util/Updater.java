@@ -35,7 +35,6 @@ public class Updater {
                     +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+this.getOnlineVersion(this.pluginName)));
         }
         this.isEnabled = true;
-
     }
 
     private String getOnlineVersion(String pluginName){
