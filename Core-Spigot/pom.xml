@@ -9,6 +9,7 @@
         <groupId>de.tentact.languageapi</groupId>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <packaging>jar</packaging>
     <artifactId>Core-Spigot</artifactId>
     <build>
         <plugins>

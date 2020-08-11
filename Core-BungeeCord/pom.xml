@@ -9,6 +9,7 @@
         <version>1.7-SNAPSHOT</version>
         <groupId>de.tentact.languageapi</groupId>
     </parent>
+    <packaging>jar</packaging>
     <artifactId>Core-BungeeCord</artifactId>
     <build>
         <plugins>

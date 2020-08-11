@@ -9,6 +9,9 @@
     <groupId>de.tentact.languageapi</groupId>
     <name>LanguageAPI-parent</name>
     <packaging>pom</packaging>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
     <modules>
         <module>API</module>
         <module>Core-Spigot</module>
