@@ -53,7 +53,7 @@ Repository:
 		</repository>
 	</repositories>
 ```
-
+Dependency:
 ```
        <dependency>
 	    <groupId>com.github.0utplay.LanguageAPI</groupId>
