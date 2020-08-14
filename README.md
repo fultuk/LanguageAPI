@@ -41,4 +41,22 @@ How to use?
     }
 ```
 
+Get the API
+-
+
+Repository:
+```
+	<repository>
+             <id>jitpack.io</id>
+	     <url>https://jitpack.io</url>
+	</repository>
+```
+Dependency:
+```
+       <dependency>
+	    <groupId>com.github.0utplay.LanguageAPI</groupId>
+	    <artifactId>API</artifactId>
+	    <version>1.7-RELEASE</version>
+	</dependency>
+```
 
