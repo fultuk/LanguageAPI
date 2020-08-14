@@ -34,7 +34,7 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
     void sendMultipleTranslation(@NotNull String multipleTranslationKey);
 
     /**
-     * Sends multiple messages to the player by a single multipleTranslationKey
+     * Sends multiple messages to the player by a single {@link Translation}
      * @param multipleTranslation the multipleTranslation to get the Collection of translationkeys
      */
     void sendMultipleTranslation(@NotNull Translation multipleTranslation);
@@ -52,8 +52,8 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
     boolean isOnline();
 
     /**
-     *
-     * @param translation
+     * Kick a player with a {@link Translation} as reason
+     * @param translation the {@link Translation} to get the translated message from
      */
     void kickPlayer(Translation translation);
 

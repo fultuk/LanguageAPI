@@ -76,18 +76,18 @@ public interface Translation {
     String getTranslationKey();
 
     /**
-     *
-     * @param message
-     * @return
+     * Create the default translation for the {@link Translation}
+     * @param message the default translation
+     * @return the {@link Translation} after setting the default translation
      */
 
     Translation createDefaults(String message);
 
     /**
-     *
-     * @param message
-     * @param param
-     * @return
+     *Create the default translation for the {@link Translation}
+     * @param message the default translation
+     * @param param the parameter of the translation
+     * @return the {@link Translation} after setting the default translation
      */
     Translation createDefaults(String message, String param);
 

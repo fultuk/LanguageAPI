@@ -4,8 +4,6 @@ import de.tentact.languageapi.LanguageAPI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.UUID;
-
 /**
  * This is the {@link PlayerExecutor} but for an specific player
  */
@@ -18,7 +16,6 @@ public interface SpecificPlayerExecutor extends PlayerManager {
     String getPlayerLanguage();
 
     /**
-     *
      * @param language the language to check
      * @return returns if the given language is the players set language
      */
@@ -57,13 +54,15 @@ public interface SpecificPlayerExecutor extends PlayerManager {
 
     /**
      * Gets an {@link LanguagePlayer} - null when the player is not online
+     *
      * @return returns a {@link LanguagePlayer}
      */
     @Nullable
     LanguagePlayer getLanguagePlayer();
 
     /**
-     *Gets an {@link LanguageOfflinePlayer}
+     * Gets an {@link LanguageOfflinePlayer}
+     *
      * @return returns a LanguageOfflinePlayer
      */
     @NotNull
