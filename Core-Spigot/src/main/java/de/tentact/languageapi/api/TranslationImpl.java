@@ -56,14 +56,14 @@ public class TranslationImpl implements Translation {
     @NotNull
     @Override
     public String getMessage(@NotNull String language, boolean orElseDefault) {
-        String prefix = "";
+        String prefix = "%PREFIX%";
         if (this.hasPrefixTranslation()) {
             prefix = this.prefixTranslation.getMessage(language, orElseDefault);
         }
         message = this.languageAPI.getMessage(this.translationkey, language, usePrefix);
         params.forEach((key, value) -> message = message.replace(key, value));
         params.clear();
-        return message.replace("%PREFIX%", prefix);
+        return prefix + message;
     }
 
     @Override
@@ -72,7 +72,7 @@ public class TranslationImpl implements Translation {
     }
 
     @Override
-    public TranslationImpl setPrefix(boolean usePrefix) {
+    public Translation setPrefix(boolean usePrefix) {
         this.usePrefix = usePrefix;
         return this;
     }
@@ -84,7 +84,7 @@ public class TranslationImpl implements Translation {
     }
 
     @Override
-    public TranslationImpl replace(String old, String replacement) {
+    public Translation replace(String old, String replacement) {
         params.put(old, replacement);
         return this;
     }

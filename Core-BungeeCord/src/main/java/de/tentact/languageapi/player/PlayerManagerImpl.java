@@ -1,6 +1,5 @@
 package de.tentact.languageapi.player;
 
-import de.tentact.languageapi.i18n.Translation;
 import net.md_5.bungee.api.ProxyServer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

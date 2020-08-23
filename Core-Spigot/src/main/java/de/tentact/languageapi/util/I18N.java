@@ -14,7 +14,6 @@ public class I18N {
 
     private static final LanguageAPI iLanguageAPI = LanguageAPI.getInstance();
 
-
     public static void createDefaultPluginMessages() {
         createDefaultPluginMessages(iLanguageAPI.getDefaultLanguage());
     }
