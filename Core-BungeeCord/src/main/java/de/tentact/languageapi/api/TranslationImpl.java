@@ -59,7 +59,7 @@ public class TranslationImpl implements Translation {
     @NotNull
     @Override
     public String getMessage(@NotNull String language, boolean orElseDefault) {
-        String prefix = "%PREFIX%";
+        String prefix = "";
         if (this.hasPrefixTranslation()) {
             prefix = this.prefixTranslation.getMessage(language, orElseDefault);
         }
