@@ -13,7 +13,6 @@ import de.tentact.languageapi.listener.InventoryClickListener;
 import de.tentact.languageapi.listener.JoinListener;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.ConfigUtil;
-import de.tentact.languageapi.util.I18N;
 import de.tentact.languageapi.util.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
@@ -44,7 +43,6 @@ public class LanguageSpigot extends JavaPlugin {
         this.mySQL.createDefaultTable();
 
         LanguageAPI.getInstance().createLanguage(ConfigUtil.getDefaultLanguage());
-        I18N.createDefaultPluginMessages();
         this.updater = new Updater(this);
 
         Objects.requireNonNull(this.getCommand("languageapi")).setExecutor(new LanguageCommand(this));

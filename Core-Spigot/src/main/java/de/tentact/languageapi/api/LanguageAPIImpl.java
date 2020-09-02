@@ -111,7 +111,7 @@ public class LanguageAPIImpl extends LanguageAPI {
         try (Connection connection = this.getDataSouce().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Parameter(transkey, param) VALUES (?,?);")) {
             preparedStatement.setString(1, transkey.toLowerCase());
-            preparedStatement.setString(2, param);
+            preparedStatement.setString(2, param.replace(" ", ""));
             preparedStatement.execute();
         } catch (SQLException throwables) {
             throwables.printStackTrace();

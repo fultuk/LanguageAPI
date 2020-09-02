@@ -47,7 +47,7 @@ public class ChatListener implements Listener {
                 event.setCancelled(true);
             } else {
                 if (editedMessage.getIfPresent(languagePlayer) == null) {
-                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_SAME);
+                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_SAME.get());
                     event.setCancelled(true);
                     return;
                 }
@@ -61,7 +61,7 @@ public class ChatListener implements Listener {
                 languageAPI.updateMessage(transkey, language, result.toString());
 
                 event.setCancelled(true);
-                languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_SUCCESS
+                languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_SUCCESS.get()
                         .replace("%KEY%", transkey)
                         .replace("%LANG%", language)
                         .replace("%MSG%", result.toString()));

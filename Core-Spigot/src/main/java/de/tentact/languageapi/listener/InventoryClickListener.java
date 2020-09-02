@@ -51,7 +51,7 @@ public class InventoryClickListener implements Listener {
                     .ifPresent(languageItem -> {
                         Player player = (Player) event.getWhoClicked();
                         playerExecutor.setPlayerLanguage(player.getUniqueId(), languageItem.getLanguageName());
-                        Objects.requireNonNull(playerExecutor.getLanguagePlayer(player.getUniqueId())).sendMessage(I18N.LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE.replace("%LANGUAGE%", languageItem.getLanguageName()));
+                        Objects.requireNonNull(playerExecutor.getLanguagePlayer(player.getUniqueId())).sendMessage(I18N.LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE.get().replace("%LANGUAGE%", languageItem.getLanguageName()));
                         player.closeInventory();
                     });
         }
