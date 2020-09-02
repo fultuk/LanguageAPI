@@ -105,6 +105,9 @@ public class LanguageAPIImpl extends LanguageAPI {
         if (this.hasParameter(transkey)) {
             return;
         }
+        if(param == null || param.isEmpty()) {
+            return;
+        }
         try (Connection connection = this.getDataSouce().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Parameter(transkey, param) VALUES (?,?);")) {
             preparedStatement.setString(1, transkey.toLowerCase());

@@ -56,4 +56,9 @@ public interface LanguageOfflinePlayer {
     default LanguagePlayer getLanguagePlayer() {
         return this.getSpecificPlayerExecutor().getLanguagePlayer();
     }
+
+    /**
+     * @return returns if the player is online
+     */
+    boolean isOnline();
 }

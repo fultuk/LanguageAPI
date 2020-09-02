@@ -132,12 +132,12 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
 
     @Override
     public void broadcastMessage(Translation translation) {
-        this.getOnlineLanguagePlayer().forEach(languagePlayer -> languagePlayer.sendMessage(translation));
+        this.getOnlineLanguagePlayers().forEach(languagePlayer -> languagePlayer.sendMessage(translation));
     }
 
     @Override
     public void kickAll(Translation translation) {
-        this.getOnlineLanguagePlayer().forEach(languagePlayer -> languagePlayer.kickPlayer(translation));
+        this.getOnlineLanguagePlayers().forEach(languagePlayer -> languagePlayer.kickPlayer(translation));
     }
 
     private String validateLanguage(String language) {

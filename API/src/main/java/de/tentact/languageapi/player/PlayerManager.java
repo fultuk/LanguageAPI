@@ -32,7 +32,7 @@ public interface PlayerManager {
      * @return a {@link Collection<LanguagePlayer>} with all online players
      */
     @NotNull
-    Collection<LanguagePlayer> getOnlineLanguagePlayer();
+    Collection<LanguagePlayer> getOnlineLanguagePlayers();
 
 
 }

@@ -49,13 +49,6 @@ public class TranslationImpl implements Translation {
         return this.getMessage(this.languageAPI.getPlayerExecutor().getPlayerLanguage(playerUUID));
     }
 
-
-    @NotNull
-    @Override
-    public String getMessage(@NotNull String language) {
-        return this.getMessage(language, false);
-    }
-
     @NotNull
     @Override
     public String getMessage(@NotNull String language, boolean orElseDefault) {

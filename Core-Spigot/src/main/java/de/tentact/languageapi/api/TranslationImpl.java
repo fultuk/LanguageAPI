@@ -49,12 +49,6 @@ public class TranslationImpl implements Translation {
 
     @NotNull
     @Override
-    public String getMessage(@NotNull String language) {
-        return this.getMessage(language, false);
-    }
-
-    @NotNull
-    @Override
     public String getMessage(@NotNull String language, boolean orElseDefault) {
         String prefix = "";
         if (this.hasPrefixTranslation()) {

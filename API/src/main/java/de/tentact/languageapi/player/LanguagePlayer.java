@@ -47,11 +47,6 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
     void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language);
 
     /**
-     * @return returns if the player is online
-     */
-    boolean isOnline();
-
-    /**
      * Kick a player with a {@link Translation} as reason
      * @param translation the {@link Translation} to get the translated message from
      */

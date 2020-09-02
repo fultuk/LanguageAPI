@@ -31,7 +31,9 @@ public interface Translation {
      * @return returns a translation of the key in the given language
      */
     @NotNull
-    String getMessage(@NotNull String language);
+    default String getMessage(@NotNull String language) {
+        return this.getMessage(language, false);
+    }
 
     /**
      * @param language the language to get the translation in
