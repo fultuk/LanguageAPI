@@ -4,10 +4,10 @@ package de.tentact.languageapi;
     Datum: 25.04.2020
     Uhrzeit: 17:20
 */
+
 import de.tentact.languageapi.api.LanguageAPIImpl;
 import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.util.ConfigUtil;
-import de.tentact.languageapi.util.I18N;
 import de.tentact.languageapi.util.Updater;
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -25,7 +25,6 @@ public class LanguageBungeecord extends Plugin {
         LanguageAPI.setInstance(new LanguageAPIImpl());
         mySQL.createDefaultTable();
         LanguageAPI.getInstance().createLanguage(ConfigUtil.getDefaultLanguage());
-        I18N.createDefaultPluginMessages();
         new Updater(this);
     }
 
