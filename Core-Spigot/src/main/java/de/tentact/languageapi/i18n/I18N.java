@@ -1,4 +1,4 @@
-package de.tentact.languageapi.util;
+package de.tentact.languageapi.i18n;
 /*  Created in the IntelliJ IDEA.
     Created by 0utplay | Aldin Sijamhodzic
     Datum: 03.05.2020
@@ -6,7 +6,6 @@ package de.tentact.languageapi.util;
 */
 
 import de.tentact.languageapi.LanguageAPI;
-import de.tentact.languageapi.i18n.Translation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
