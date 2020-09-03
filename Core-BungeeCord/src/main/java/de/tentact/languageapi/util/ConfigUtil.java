@@ -47,6 +47,7 @@ public class ConfigUtil {
                 bungeecordmySQLConfiguration.set("mysql.database", "languageapi");
                 bungeecordmySQLConfiguration.set("mysql.password", "password");
                 bungeecordmySQLConfiguration.set("language.defaultlang", "de_de");
+                bungeecordmySQLConfiguration.set("language.cache.time", 5);
             }
             ConfigurationProvider.getProvider(net.md_5.bungee.config.YamlConfiguration.class).save(bungeecordmySQLConfiguration, bungeecordmySQLConfigFile);
         } catch (IOException ignored) {
@@ -61,6 +62,10 @@ public class ConfigUtil {
             }
         }
         return defaultLanguage;
+    }
+
+    public static int getCacheTime() {
+        return bungeecordmySQLConfiguration.getInt("language.cache.time");
     }
 
     public static boolean getUpdateNotfication() {

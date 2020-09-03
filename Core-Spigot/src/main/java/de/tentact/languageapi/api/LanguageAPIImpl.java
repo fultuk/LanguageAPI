@@ -31,7 +31,7 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     private final MySQL mySQL = ConfigUtil.getMySQL();
 
-    private final Cache<String, HashMap<String, String>> translationCache = CacheBuilder.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
+    private final Cache<String, HashMap<String, String>> translationCache = CacheBuilder.newBuilder().expireAfterWrite(ConfigUtil.getCacheTime(), TimeUnit.MINUTES).build();
     private final PlayerManager playerManager = new PlayerManagerImpl();
     private final PlayerExecutor playerExecutor = new PlayerExecutorImpl(this);
     private final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactoryBuilder().build());

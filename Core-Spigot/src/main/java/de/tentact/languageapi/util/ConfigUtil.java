@@ -32,6 +32,7 @@ public class ConfigUtil {
         yamlConfiguration.addDefault("mysql.password", "password");
         yamlConfiguration.addDefault("mysql.port", 3306);
         yamlConfiguration.addDefault("language.defaultlang", "de_de");
+        yamlConfiguration.addDefault("language.cache.time", 5);
         yamlConfiguration.addDefault("language.notify", true);
 
         yamlConfiguration.options().copyDefaults(true);
@@ -65,6 +66,11 @@ public class ConfigUtil {
     public static boolean getUpdateNotfication() {
         return yamlConfiguration.getBoolean("language.notify");
     }
+
+    public static int getCacheTime() {
+        return yamlConfiguration.getInt("language.cache.time");
+    }
+
     @NotNull
     public static MySQL getMySQL() {
         return mySQL;
