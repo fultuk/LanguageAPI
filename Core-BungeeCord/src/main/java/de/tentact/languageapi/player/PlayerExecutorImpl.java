@@ -4,9 +4,9 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.configuration.LanguageConfig;
+import de.tentact.languageapi.configuration.MySQL;
 import de.tentact.languageapi.i18n.Translation;
-import de.tentact.languageapi.mysql.MySQL;
-import de.tentact.languageapi.util.ConfigUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -23,11 +23,13 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
     private final MySQL mySQL;
     private final LanguageAPI languageAPI;
     private final HikariDataSource dataSource;
+    private final LanguageConfig languageConfig;
     private final Cache<UUID, String> languageCache = CacheBuilder.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
 
-    public PlayerExecutorImpl(LanguageAPI languageAPI) {
+    public PlayerExecutorImpl(LanguageAPI languageAPI, LanguageConfig languageConfig) {
         this.languageAPI = languageAPI;
-        this.mySQL = ConfigUtil.getMySQL();
+        this.mySQL = languageConfig.getMySQL();
+        this.languageConfig = languageConfig;
         this.dataSource = mySQL.getDataSource();
     }
 
@@ -148,6 +150,6 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
     }
 
     private void logInfo(String message) {
-        ConfigUtil.log(message, Level.INFO);
+        this.languageConfig.getLogger().log(Level.INFO, message);
     }
 }

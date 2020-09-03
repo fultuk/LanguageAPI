@@ -22,10 +22,12 @@ public class Updater {
     private final String fullLocalVersion;
     private final String pluginName;
     private final boolean isEnabled;
+    private final Plugin plugin;
 
 
     public Updater(Plugin plugin) {
-        ConfigUtil.log("Checking for updates...", Level.INFO);
+        this.plugin = plugin;
+        plugin.getLogger().log(Level.INFO, "Checking for updates...");
         this.pluginName = plugin.getDescription().getName();
         this.localVersion = Integer.parseInt(plugin.getDescription().getVersion().replace(".", ""));
         this.fullLocalVersion = plugin.getDescription().getVersion();
@@ -40,9 +42,9 @@ public class Updater {
     private String getOnlineVersion(String pluginName){
         Scanner scanner = null;
         try {
-            ConfigUtil.log("Creating connection to webserver", Level.INFO);
+            this.plugin.getLogger().log(Level.INFO, "Creating connection to webserver");
             scanner = new Scanner(new URL("https://tentact.de/plugins?"+pluginName.toLowerCase()).openStream());
-            ConfigUtil.log("Fetched online version", Level.INFO);
+            this.plugin.getLogger().log(Level.INFO, "Fetched online version");
         } catch (IOException e) {
             e.printStackTrace();
         }

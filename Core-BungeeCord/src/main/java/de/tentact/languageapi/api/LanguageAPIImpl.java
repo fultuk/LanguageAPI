@@ -10,10 +10,10 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.configuration.LanguageConfig;
+import de.tentact.languageapi.configuration.MySQL;
 import de.tentact.languageapi.i18n.Translation;
-import de.tentact.languageapi.mysql.MySQL;
 import de.tentact.languageapi.player.*;
-import de.tentact.languageapi.util.ConfigUtil;
 import net.md_5.bungee.api.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,12 +29,21 @@ import java.util.logging.Level;
 
 public class LanguageAPIImpl extends LanguageAPI {
 
-    private final MySQL mySQL = ConfigUtil.getMySQL();
 
-    private final Cache<String, HashMap<String, String>> translationCache = CacheBuilder.newBuilder().expireAfterWrite(ConfigUtil.getCacheTime(), TimeUnit.MINUTES).build();
+    private final MySQL mySQL;
+    private final LanguageConfig languageConfig;
+
+    private final Cache<String, HashMap<String, String>> translationCache;
     private final PlayerManager playerManager = new PlayerManagerImpl();
-    private final PlayerExecutor playerExecutor = new PlayerExecutorImpl(this);
+    private final PlayerExecutor playerExecutor;
     private final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactoryBuilder().build());
+
+    public LanguageAPIImpl(LanguageConfig languageConfig) {
+        this.languageConfig = languageConfig;
+        this.playerExecutor = new PlayerExecutorImpl(this, languageConfig);
+        this.mySQL = languageConfig.getMySQL();
+        this.translationCache = CacheBuilder.newBuilder().expireAfterWrite(languageConfig.getLanguageSetting().getCachedTime(), TimeUnit.MINUTES).build();
+    }
 
     @Override
     public void createLanguage(final String language) {
@@ -105,7 +114,7 @@ public class LanguageAPIImpl extends LanguageAPI {
         if (this.hasParameter(transkey)) {
             return;
         }
-        if(param == null || param.isEmpty()) {
+        if (param == null || param.isEmpty()) {
             return;
         }
         try (Connection connection = this.getDataSouce().getConnection();
@@ -500,7 +509,7 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @Override
     public @NotNull String getDefaultLanguage() {
-        return ConfigUtil.getDefaultLanguage().toLowerCase();
+        return this.languageConfig.getLanguageSetting().getDefaultLanguage();
     }
 
     @Override
@@ -540,7 +549,7 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @Override
     public @NotNull SpecificPlayerExecutor getSpecificPlayerExecutor(@NotNull UUID playerId) {
-        return new SpecificPlayerExecutorImpl(playerId);
+        return new SpecificPlayerExecutorImpl(languageConfig, playerId);
     }
 
     private HikariDataSource getDataSouce() {
@@ -548,7 +557,7 @@ public class LanguageAPIImpl extends LanguageAPI {
     }
 
     private void logInfo(String message) {
-        ConfigUtil.log(message, Level.INFO);
+        this.languageConfig.getLogger().log(Level.INFO, message);
     }
 
 

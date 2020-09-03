@@ -14,21 +14,26 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.logging.Logger;
 
 public class Configuration {
 
-    Document document = new DefaultDocument();
-    File file = new File("plugins/LanguageAPI", "languages.json");
+    Document inventoryDocument = new DefaultDocument();
+    File inventoryFile = new File("plugins/LanguageAPI", "languages.json");
+
+    Document settingsDocument = new DefaultDocument();
+    File settingsFile = new File("plugins/LanguageAPI", "config.json");
 
     private LanguageInventory languageInventory;
+    private LanguageConfig languageConfig;
 
-    public Configuration() {
-        if (file.exists()) {
-            document = Documents.jsonStorage().read(file);
+    public Configuration(Logger logger) {
+        if (inventoryFile.exists()) {
+            inventoryDocument = Documents.jsonStorage().read(inventoryFile);
         } else {
             try {
-                file.createNewFile();
-                document.append("config",
+                inventoryFile.createNewFile();
+                inventoryDocument.append("config",
                         new LanguageInventory(
                                 new LanguageInventoryConfiguration(
                                         true,
@@ -51,7 +56,34 @@ public class Configuration {
                                                         Collections.singletonList("Click to select english.")
                                                 )
                                         )
-                                ))).json().write(file);
+                                ))).json().write(inventoryFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (settingsFile.exists()) {
+            settingsDocument = Documents.jsonStorage().read(settingsFile);
+        } else {
+            try {
+                settingsFile.createNewFile();
+                settingsDocument.append("config",
+                        new LanguageConfig(
+                                new MySQL(
+                                        logger,
+                                        "hostname",
+                                        "languagapi",
+                                        "languagapi",
+                                        "password",
+                                        3306
+                                ),
+                                new LanguageSetting(
+                                        "de_de",
+                                        5,
+                                        true
+                                ),
+                                logger
+                        )
+                ).json().write(inventoryFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -59,12 +91,20 @@ public class Configuration {
     }
 
     public LanguageInventory getLanguageInventory() {
-        if (languageInventory != null) {
+        if (this.languageInventory != null) {
             return this.languageInventory;
         }
-        this.languageInventory = this.document.get("config", LanguageInventory.class);
+        this.languageInventory = this.inventoryDocument.get("config", LanguageInventory.class);
         return this.languageInventory;
     }
 
+    public LanguageConfig getLanguageConfig() {
+        if (this.languageConfig != null) {
+            return this.languageConfig;
+        }
+        this.languageConfig = this.settingsDocument.get("config", LanguageConfig.class);
+        return this.languageConfig;
+    }
 
 }
+
