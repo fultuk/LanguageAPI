@@ -50,7 +50,7 @@ public class LanguageAPIImpl extends LanguageAPI {
     public void createLanguage(final String language) {
         if (this.getAvailableLanguages().isEmpty() || !this.isLanguage(language)) {
             this.mySQL.createTable(language.replace(" ", "").toLowerCase());
-            try (Connection connection = this.getDataSouce().getConnection();
+            try (Connection connection = this.getDataSource().getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO languages(language) VALUES (?)")) {
                 preparedStatement.setString(1, language.toLowerCase());
                 preparedStatement.execute();
@@ -65,7 +65,7 @@ public class LanguageAPIImpl extends LanguageAPI {
     public void deleteLanguage(String language) {
         if (!this.getDefaultLanguage().equalsIgnoreCase(language) && this.isLanguage(language)) {
             executorService.execute(() -> {
-                try (Connection connection = this.getDataSouce().getConnection()) {
+                try (Connection connection = this.getDataSource().getConnection()) {
                     try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE ?;")) {
                         preparedStatement.setString(1, language.toLowerCase());
                         preparedStatement.execute();
@@ -101,7 +101,7 @@ public class LanguageAPIImpl extends LanguageAPI {
             return;
         }
         executorService.execute(() -> {
-            try (Connection connection = this.getDataSouce().getConnection();
+            try (Connection connection = this.getDataSource().getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO " + language.toLowerCase() + " (transkey, translation) VALUES (?,?);")) {
                 preparedStatement.setString(1, transkey.toLowerCase());
                 preparedStatement.setString(2, ChatColor.translateAlternateColorCodes('&', message));
@@ -122,7 +122,7 @@ public class LanguageAPIImpl extends LanguageAPI {
             return;
         }
         executorService.execute(() -> {
-            try (Connection connection = this.getDataSouce().getConnection();
+            try (Connection connection = this.getDataSource().getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Parameter(transkey, param) VALUES (?,?);")) {
                 preparedStatement.setString(1, transkey.toLowerCase());
                 preparedStatement.setString(2, param);
@@ -142,7 +142,7 @@ public class LanguageAPIImpl extends LanguageAPI {
         if (!this.getParameter(transkey).contains(param)) {
             return;
         }
-        try (Connection connection = this.getDataSouce().getConnection();
+        try (Connection connection = this.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Parameter SET param=? WHERE transkey=?;")) {
             preparedStatement.setString(1, this.getParameter(transkey).replace(param, ""));
             preparedStatement.setString(2, transkey);
@@ -157,7 +157,7 @@ public class LanguageAPIImpl extends LanguageAPI {
         if (!this.hasParameter(transkey)) {
             return;
         }
-        try (Connection connection = this.getDataSouce().getConnection();
+        try (Connection connection = this.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Parameter WHERE transkey=?;")) {
             preparedStatement.setString(1, transkey);
             preparedStatement.execute();
@@ -224,7 +224,7 @@ public class LanguageAPIImpl extends LanguageAPI {
         if (!this.isLanguage(langfrom.toLowerCase()) || !this.isLanguage(langto.toLowerCase())) {
             throw new IllegalArgumentException("Language " + langfrom + " or " + langto + " was not found!");
         }
-        try (Connection connection = this.getDataSouce().getConnection()) {
+        try (Connection connection = this.getDataSource().getConnection()) {
             connection.createStatement().execute("INSERT IGNORE " + langto + " SELECT * FROM " + langfrom + ";");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -274,7 +274,7 @@ public class LanguageAPIImpl extends LanguageAPI {
         if (!this.isKey(transkey, language)) {
             throw new IllegalArgumentException("Translationkey " + transkey + " was not found!");
         }
-        try (Connection connection = this.getDataSouce().getConnection();
+        try (Connection connection = this.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("UPDATE ? SET translation= ? WHERE transkey=?;")) {
             preparedStatement.setString(1, language.toLowerCase());
             preparedStatement.setString(2, ChatColor.translateAlternateColorCodes('&', message));
@@ -294,7 +294,7 @@ public class LanguageAPIImpl extends LanguageAPI {
         for (String translationKey : translationKeys) {
             stringBuilder.append(translationKey.toLowerCase()).append(",");
         }
-        try (Connection connection = this.getDataSouce().getConnection();
+        try (Connection connection = this.getDataSource().getConnection();
              PreparedStatement preparedStatement =
                      connection.prepareStatement("INSERT INTO MultipleTranslation(multipleKey, transkeys) VALUES (?,?)")) {
             preparedStatement.setString(1, multipleTranslation);
@@ -311,7 +311,7 @@ public class LanguageAPIImpl extends LanguageAPI {
         if (!isMultipleTranslation(multipleTranslation)) {
             throw new IllegalArgumentException(multipleTranslation + " was not found");
         }
-        try (Connection connection = this.getDataSouce().getConnection();
+        try (Connection connection = this.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM MultipleTranslation WHERE multipleKey=?;")) {
             preparedStatement.setString(1, multipleTranslation);
             preparedStatement.execute();
@@ -355,7 +355,7 @@ public class LanguageAPIImpl extends LanguageAPI {
         if (!this.isKey(transkey, language)) {
             throw new IllegalArgumentException("Translationkey " + transkey + " was not found!");
         }
-        try (Connection connection = this.getDataSouce().getConnection();
+        try (Connection connection = this.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM ? WHERE transkey=?;")) {
             preparedStatement.setString(1, language.toLowerCase());
             preparedStatement.setString(2, transkey.toLowerCase());
@@ -560,7 +560,7 @@ public class LanguageAPIImpl extends LanguageAPI {
         return new SpecificPlayerExecutorImpl(languageConfig, playerId);
     }
 
-    private HikariDataSource getDataSouce() {
+    private HikariDataSource getDataSource() {
         return this.mySQL.getDataSource();
     }
 
