@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>LanguageAPI-parent</artifactId>
-    <version>1.7-RELEASE</version>
+    <version>1.8-SNAPSHOT</version>
     <groupId>de.tentact.languageapi</groupId>
     <name>LanguageAPI-parent</name>
     <packaging>pom</packaging>
@@ -16,6 +16,7 @@
         <module>API</module>
         <module>Core-Spigot</module>
         <module>Core-BungeeCord</module>
+        <module>Examples</module>
     </modules>
     <build>
         <plugins>

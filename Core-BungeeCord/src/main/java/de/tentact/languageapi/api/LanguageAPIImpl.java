@@ -372,17 +372,6 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @NotNull
     @Override
-    public String getMessage(String transkey, UUID playerUUID, boolean usePrefix) {
-        return this.getMessage(transkey, this.playerExecutor.getPlayerLanguage(playerUUID), usePrefix);
-    }
-
-    @Override
-    public @NotNull String getMessage(String translationkey, String language, boolean usePrefix) {
-        return usePrefix ? this.getPrefix(language) + this.getMessage(translationkey, language) : this.getMessage(translationkey, language);
-    }
-
-    @NotNull
-    @Override
     public String getMessage(String transkey, UUID playerUUID) {
         return this.getMessage(transkey, this.playerExecutor.getPlayerLanguage(playerUUID));
     }
@@ -399,19 +388,9 @@ public class LanguageAPIImpl extends LanguageAPI {
         return this.getMultipleMessages(transkey, this.playerExecutor.getPlayerLanguage(playerUUID));
     }
 
-    @Override
-    public @NotNull ArrayList<String> getMultipleMessages(String transkey, String language) {
-        return this.getMultipleMessages(transkey, language, false);
-    }
-
-    @Override
-    public @NotNull ArrayList<String> getMultipleMessages(String transkey, UUID playerUUID, boolean usePrefix) {
-        return this.getMultipleMessages(transkey, this.playerExecutor.getPlayerLanguage(playerUUID), usePrefix);
-    }
-
     @NotNull
     @Override
-    public ArrayList<String> getMultipleMessages(String transkey, String language, boolean usePrefix) {
+    public ArrayList<String> getMultipleMessages(String transkey, String language) {
         ArrayList<String> resolvedMessages = new ArrayList<>();
         String[] translationKeys = new String[]{};
         try (Connection connection = this.mySQL.getDataSource().getConnection();
@@ -424,7 +403,7 @@ public class LanguageAPIImpl extends LanguageAPI {
             throwables.printStackTrace();
         }
         for (String translationKey : translationKeys) {
-            resolvedMessages.add(this.getMessage(translationKey, language, usePrefix));
+            resolvedMessages.add(this.getMessage(translationKey, language));
         }
         return resolvedMessages;
     }

@@ -237,42 +237,6 @@ public abstract class LanguageAPI {
     @NotNull
     public abstract ArrayList<String> getMultipleMessages(String transkey, String language);
 
-    /**
-     * @param transkey  the translationkey which holds the other keys
-     * @param language  the language to get the translation in
-     * @param usePrefix specify if the prefix should be returned with the translation
-     * @return returns a {@link ArrayList<String>} with the translated messages
-     */
-    @NotNull
-    public abstract ArrayList<String> getMultipleMessages(String transkey, String language, boolean usePrefix);
-
-    /**
-     * @param transkey   the translationkey which holds the other keys
-     * @param playerUUID the player uuid to get the language from
-     * @param usePrefix  specify if the prefix should be returned with the translation
-     * @return returns a {@link ArrayList<String>} with the translated messages
-     */
-    @NotNull
-    public abstract ArrayList<String> getMultipleMessages(String transkey, UUID playerUUID, boolean usePrefix);
-
-    /**
-     * @param translationkey the translationkey to get the translation from
-     * @param playerUUID     the player uuid to get the language from
-     * @param usePrefix      specify if the prefix should be returned with the translation
-     * @return returns the translation for a given player
-     */
-    @NotNull
-    public abstract String getMessage(String translationkey, UUID playerUUID, boolean usePrefix);
-
-    /**
-     * @param translationkey the translationkey to get the translation from
-     * @param language       the language of the translation
-     * @param usePrefix      specify if the prefix should be returned with the translation
-     * @return returns the translation for a given language
-     */
-
-    @NotNull
-    public abstract String getMessage(String translationkey, String language, boolean usePrefix);
 
     /**
      * @param translationkey the translationkey to get the translation from

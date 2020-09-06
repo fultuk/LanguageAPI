@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>LanguageAPI-parent</artifactId>
-        <version>1.7-RELEASE</version>
+        <version>1.8-SNAPSHOT</version>
         <groupId>de.tentact.languageapi</groupId>
     </parent>
     <packaging>jar</packaging>
@@ -59,7 +59,7 @@
         <dependency>
             <groupId>de.tentact.languageapi</groupId>
             <artifactId>API</artifactId>
-            <version>1.7-RELEASE</version>
+            <version>1.8-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
