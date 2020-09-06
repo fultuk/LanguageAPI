@@ -20,12 +20,6 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
      * @param transkey the translationkey to get the translation from
      */
     void sendMessageByKey(@NotNull String transkey);
-    /**
-     * Sends a message to the player by a translationkey
-     * @param transkey the translationkey to get the translation from
-     * @param usePrefix whether to use the default languageapi prefix
-     */
-    void sendMessageByKey(@NotNull String transkey, boolean usePrefix);
 
     /**
      * Sends multiple messages to the player by a single multipleTranslationKey

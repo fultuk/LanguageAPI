@@ -50,12 +50,6 @@ public interface Translation {
     String getParameter();
 
     /**
-     * @param usePrefix wether to use the languageapi prefix ("languageapi-prefix") in the translation or not
-     * @return returns a {@link Translation} after setting the prefix
-     */
-    Translation setPrefix(boolean usePrefix);
-
-    /**
      *
      * @param prefixTranslation the prefix translation to get the prefix from
      * @return returns a {@link Translation} after setting the prefixTranslation
@@ -92,6 +86,5 @@ public interface Translation {
      * @return the {@link Translation} after setting the default translation
      */
     Translation createDefaults(String message, String param);
-
 
 }

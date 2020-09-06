@@ -2,7 +2,6 @@ package de.tentact.languageapi.player;
 
 
 import de.tentact.languageapi.LanguageAPI;
-import de.tentact.languageapi.api.TranslationImpl;
 import de.tentact.languageapi.i18n.Translation;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -29,13 +28,7 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
 
     @Override
     public void sendMessageByKey(@NotNull String transkey) {
-        this.sendMessageByKey(transkey, false);
-
-    }
-
-    @Override
-    public void sendMessageByKey(@NotNull String transkey, boolean usePrefix) {
-        this.sendMessage(new TranslationImpl(transkey).setPrefix(usePrefix));
+        this.sendMessage(this.languageAPI.getTranslation(transkey));
     }
 
 

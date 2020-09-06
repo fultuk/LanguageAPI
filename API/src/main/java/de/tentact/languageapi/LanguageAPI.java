@@ -357,15 +357,6 @@ public abstract class LanguageAPI {
     public abstract Translation getTranslation(String translationkey);
 
     /**
-     * Gets a {@link Translation} by its key - with the option to use the prefix
-     * @param translationkey the translationkey to fetch the translation from
-     * @param usePrefix whether use the prefix ("languageapi-prefix") in the translation
-     * @return returns an {@link Translation} with usePrefix set
-     */
-    @NotNull
-    public abstract Translation getTranslation(String translationkey, boolean usePrefix);
-
-    /**
      *
      * @param prefixTranslation the prefixTranslation %PREFIX% will be replaced with
      * @param translationKey the translationkey to fetch the translation from
@@ -388,6 +379,12 @@ public abstract class LanguageAPI {
      */
     @NotNull
     public abstract SpecificPlayerExecutor getSpecificPlayerExecutor(@NotNull UUID playerId);
+
+    /**
+     * Updates an {@link Translation} in the HashMap
+     * @param translation the translation to update
+     */
+    public abstract void updateTranslation(Translation translation);
 
 
 

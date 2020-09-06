@@ -22,17 +22,11 @@ public class TranslationImpl implements Translation {
     private final String translationkey;
     private Translation prefixTranslation = null;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
-    private boolean usePrefix = false;
     private final HashMap<String, String> params = new HashMap<>();
     private String message;
 
     public TranslationImpl(@NotNull String translationkey) {
         this.translationkey = translationkey;
-    }
-
-    public TranslationImpl(String translationkey, boolean usePrefix) {
-        this(translationkey);
-        this.setPrefix(usePrefix);
     }
 
     @NotNull
@@ -54,7 +48,7 @@ public class TranslationImpl implements Translation {
         if (this.hasPrefixTranslation()) {
             prefix = this.prefixTranslation.getMessage(language, orElseDefault);
         }
-        message = this.languageAPI.getMessage(this.translationkey, language, usePrefix);
+        message = this.languageAPI.getMessage(this.translationkey, language);
         params.forEach((key, value) -> message = message.replace(key, value));
         params.clear();
         return prefix + message;
@@ -63,12 +57,6 @@ public class TranslationImpl implements Translation {
     @Override
     public String getParameter() {
         return this.languageAPI.getParameter(this.translationkey);
-    }
-
-    @Override
-    public Translation setPrefix(boolean usePrefix) {
-        this.usePrefix = usePrefix;
-        return this;
     }
 
     @Override
@@ -98,6 +86,10 @@ public class TranslationImpl implements Translation {
     public Translation createDefaults(String message, String param) {
         this.languageAPI.addMessageToDefault(this.translationkey, message, param);
         return this;
+    }
+
+    private void updateTranslation() {
+        this.languageAPI.updateTranslation(this);
     }
 
     private boolean hasPrefixTranslation() {

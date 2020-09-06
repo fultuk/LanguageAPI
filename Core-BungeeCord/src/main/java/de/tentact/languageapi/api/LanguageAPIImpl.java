@@ -34,6 +34,7 @@ public class LanguageAPIImpl extends LanguageAPI {
     private final LanguageConfig languageConfig;
 
     private final Cache<String, HashMap<String, String>> translationCache;
+    private final HashMap<String, Translation> translationMap = new HashMap<>();
     private final PlayerManager playerManager = new PlayerManagerImpl();
     private final PlayerExecutor playerExecutor;
     private final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactoryBuilder().build());
@@ -99,14 +100,17 @@ public class LanguageAPIImpl extends LanguageAPI {
         if (this.isKey(transkey, language)) {
             return;
         }
-        try (Connection connection = this.getDataSouce().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO " + language.toLowerCase() + " (transkey, translation) VALUES (?,?);")) {
-            preparedStatement.setString(1, transkey.toLowerCase());
-            preparedStatement.setString(2, ChatColor.translateAlternateColorCodes('&', message));
-            preparedStatement.execute();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        executorService.execute(() -> {
+            try (Connection connection = this.getDataSouce().getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO " + language.toLowerCase() + " (transkey, translation) VALUES (?,?);")) {
+                preparedStatement.setString(1, transkey.toLowerCase());
+                preparedStatement.setString(2, ChatColor.translateAlternateColorCodes('&', message));
+                preparedStatement.execute();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        });
+
     }
 
     @Override
@@ -117,14 +121,17 @@ public class LanguageAPIImpl extends LanguageAPI {
         if (param == null || param.isEmpty()) {
             return;
         }
-        try (Connection connection = this.getDataSouce().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Parameter(transkey, param) VALUES (?,?);")) {
-            preparedStatement.setString(1, transkey.toLowerCase());
-            preparedStatement.setString(2, param);
-            preparedStatement.execute();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        executorService.execute(() -> {
+            try (Connection connection = this.getDataSouce().getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Parameter(transkey, param) VALUES (?,?);")) {
+                preparedStatement.setString(1, transkey.toLowerCase());
+                preparedStatement.setString(2, param);
+                preparedStatement.execute();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            } 
+        });
+
     }
 
     @Override
@@ -429,7 +436,8 @@ public class LanguageAPIImpl extends LanguageAPI {
             throw new IllegalArgumentException(lang + " was not found");
         }
         if (!this.isKey(transkey, lang)) {
-            throw new IllegalArgumentException(transkey + " not found for language " + lang);
+            this.languageConfig.getLogger().log(Level.WARNING, "Translationkey '" + transkey + "' not found in language '" + lang + "'");
+            return transkey;
         }
         if (this.translationCache.getIfPresent(transkey) != null && Objects.requireNonNull(this.translationCache.getIfPresent(transkey)).containsKey(lang)) {
             return Objects.requireNonNull(this.translationCache.getIfPresent(transkey)).get(lang);
@@ -529,12 +537,12 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @Override
     public @NotNull Translation getTranslation(String translationkey) {
-        return new TranslationImpl(translationkey);
-    }
-
-    @Override
-    public @NotNull Translation getTranslation(String translationkey, boolean usePrefix) {
-        return new TranslationImpl(translationkey, usePrefix);
+        if(this.translationMap.containsKey(translationkey)) {
+            return this.translationMap.get(translationkey);
+        }
+        Translation translation = new TranslationImpl(translationkey);
+        this.translationMap.put(translationkey, translation);
+        return translation;
     }
 
     @Override
@@ -558,6 +566,11 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     private void logInfo(String message) {
         this.languageConfig.getLogger().log(Level.INFO, message);
+    }
+
+    @Override
+    public void updateTranslation(Translation translation) {
+        this.translationMap.put(translation.getTranslationKey(), translation);
     }
 
 

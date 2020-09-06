@@ -33,6 +33,7 @@ public class LanguageAPIImpl extends LanguageAPI {
     private final LanguageConfig languageConfig;
 
     private final Cache<String, HashMap<String, String>> translationCache;
+    private final HashMap<String, Translation> translationMap = new HashMap<>();
     private final PlayerManager playerManager = new PlayerManagerImpl();
     private final PlayerExecutor playerExecutor;
     private final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactoryBuilder().build());
@@ -428,7 +429,9 @@ public class LanguageAPIImpl extends LanguageAPI {
             throw new IllegalArgumentException(lang + " was not found");
         }
         if (!this.isKey(transkey, lang)) {
-            throw new IllegalArgumentException(transkey + " not found for language " + lang);
+            this.languageConfig.getLogger().log(Level.WARNING, "Translationkey '"+transkey+"' not found in language '"+lang+"'");
+            this.languageConfig.getLogger().log(Level.WARNING, "As result you will get the translationkey as translation");
+            return transkey;
         }
         if (this.translationCache.getIfPresent(transkey) != null && Objects.requireNonNull(this.translationCache.getIfPresent(transkey)).containsKey(lang)) {
             return Objects.requireNonNull(this.translationCache.getIfPresent(transkey)).get(lang);
@@ -528,12 +531,12 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @Override
     public @NotNull Translation getTranslation(String translationkey) {
-        return new TranslationImpl(translationkey);
-    }
-
-    @Override
-    public @NotNull Translation getTranslation(String translationkey, boolean usePrefix) {
-        return new TranslationImpl(translationkey, usePrefix);
+        if(this.translationMap.containsKey(translationkey)) {
+            return this.translationMap.get(translationkey);
+        }
+        Translation translation = new TranslationImpl(translationkey);
+        this.translationMap.put(translationkey, translation);
+        return translation;
     }
 
     @Override
@@ -549,6 +552,11 @@ public class LanguageAPIImpl extends LanguageAPI {
     @Override
     public @NotNull SpecificPlayerExecutor getSpecificPlayerExecutor(@NotNull UUID playerId) {
         return new SpecificPlayerExecutorImpl(playerId);
+    }
+
+    @Override
+    public void updateTranslation(Translation translation) {
+        this.translationMap.put(translation.getTranslationKey(), translation);
     }
 
     private HikariDataSource getDataSouce() {
