@@ -13,10 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.UUID;
 
-/**
- *
- */
-
 public class TranslationImpl implements Translation {
 
     private final String translationkey;
@@ -62,6 +58,7 @@ public class TranslationImpl implements Translation {
     @Override
     public Translation setPrefixTranslation(Translation prefixTranslation) {
         this.prefixTranslation = prefixTranslation;
+        this.updateTranslation();
         return this;
     }
 

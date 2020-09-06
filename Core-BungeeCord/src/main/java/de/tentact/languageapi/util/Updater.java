@@ -17,26 +17,18 @@ import java.util.logging.Level;
 
 public class Updater {
 
-    private final int onlineVersion;
-    private final int localVersion;
-    private final String fullLocalVersion;
-    private final String pluginName;
-    private final boolean isEnabled;
     private final Plugin plugin;
-
 
     public Updater(Plugin plugin) {
         this.plugin = plugin;
         plugin.getLogger().log(Level.INFO, "Checking for updates...");
-        this.pluginName = plugin.getDescription().getName();
-        this.localVersion = Integer.parseInt(plugin.getDescription().getVersion().replace(".", ""));
-        this.fullLocalVersion = plugin.getDescription().getVersion();
-        this.onlineVersion = Integer.parseInt(this.getOnlineVersion(this.pluginName).replace(".", ""));
-        if(this.onlineVersion > this.localVersion) {
+        String pluginName = plugin.getDescription().getName();
+        int localVersion = Integer.parseInt(plugin.getDescription().getVersion().replace(".", ""));
+        int onlineVersion = Integer.parseInt(this.getOnlineVersion(pluginName).replace(".", ""));
+        if(onlineVersion > localVersion) {
             ProxyServer.getInstance().broadcast(TextComponent.fromLegacyText(LanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
-                    +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+this.getOnlineVersion(this.pluginName)));
+                    +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+this.getOnlineVersion(pluginName)));
         }
-        this.isEnabled = true;
     }
 
     private String getOnlineVersion(String pluginName){
@@ -55,18 +47,5 @@ public class Updater {
             return scanner.nextLine();
         }
         return "0.0";
-    }
-    public String getOnlineVersion() {
-        return this.getOnlineVersion(pluginName);
-    }
-    public boolean hasUpdate() {
-        return this.onlineVersion > this.localVersion;
-    }
-    public String getLocalVersion() {
-        return this.fullLocalVersion;
-    }
-
-    public boolean isEnabled() {
-        return this.isEnabled;
     }
 }
