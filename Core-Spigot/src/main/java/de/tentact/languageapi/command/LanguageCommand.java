@@ -263,8 +263,6 @@ public class LanguageCommand implements TabExecutor {
                                 return false;
                             }
                             this.languageSpigot.configuration = new Configuration(this.languageSpigot.getLogger());
-                            //ConfigUtil.createSpigotMySQLConfig();
-                            //ConfigUtil.defaultLanguage = null;
                             Bukkit.getScheduler().runTaskLater(languageSpigot, () -> {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_RELOAD_SUCCESS.get());
                                 this.languageSpigot.getLogger().log(Level.INFO, "Reloading config");

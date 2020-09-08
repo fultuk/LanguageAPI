@@ -7,6 +7,7 @@ package de.tentact.languageapi;
 */
 
 import de.tentact.languageapi.i18n.Translation;
+import de.tentact.languageapi.player.LanguageOfflinePlayer;
 import de.tentact.languageapi.player.LanguagePlayer;
 import de.tentact.languageapi.player.PlayerExecutor;
 
@@ -31,8 +32,16 @@ public class ExampleLanguageAPI {
 
         /*
          * Get a LanguagePlayer by the uuid
+         * LanguagePlayer is null if the player is offline!
          */
         LanguagePlayer languagePlayer = this.playerExecutor.getLanguagePlayer(UUID.randomUUID());
+
+        /*
+         * Get a LanguageOfflinePlayer by the uuid
+         *
+         */
+
+        LanguageOfflinePlayer languageOfflinePlayer = this.playerExecutor.getLanguageOfflinePlayer(UUID.randomUUID());
 
         /*
          * Get a Translation by its key

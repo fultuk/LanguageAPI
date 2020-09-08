@@ -1,6 +1,7 @@
 package de.tentact.languageapi;
 
 
+import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.i18n.Translation;
 import de.tentact.languageapi.player.PlayerExecutor;
 import de.tentact.languageapi.player.PlayerManager;
@@ -67,34 +68,34 @@ public abstract class LanguageAPI {
      * @param param    the parameters that are used in the translation (ex. %KEY%) - seperate them by ',' (ex. %PARAM1%,%PARAM2%)
      *                 adds an translation to the given language with a proper translation and parameters
      */
-    public abstract void addMessage(final String transkey, final String message, final String language, String param);
+    public abstract boolean addMessage(final String transkey, final String message, final String language, String param);
 
     /**
      * @param transkey the translationkey to find the translation
      * @param message  the translation to that translationkey
      * @param language the language of the translation
      */
-    public abstract void addMessage(final String transkey, final String message, final String language);
+    public abstract boolean addMessage(final String transkey, final String message, final String language);
 
     /**
      * @param transkey the translationkey to the translation (the translation is the key)
      * @param language the language to the translationkey
      *                 adds a translation without an proper translation, it just uses the translationkey as translation
      */
-    public abstract void addMessage(final String transkey, final String language);
+    public abstract boolean addMessage(final String transkey, final String language);
 
     /**
      * @param transkey the translationkey to the translation
      *                 adds a translation without an proper translation to the default language, it just uses the translationkey as translation
      */
-    public abstract void addMessage(final String transkey);
+    public abstract boolean addMessage(final String transkey);
 
     /**
      * @param transkey    translationkey to the translation
      * @param translation the translation to the translationkey
      *                    adds a translation to the default language
      */
-    public abstract void addMessageToDefault(final String transkey, final String translation);
+    public abstract boolean addMessageToDefault(final String transkey, final String translation);
 
     /**
      * @param transkey    translationkey to the translation
@@ -102,7 +103,7 @@ public abstract class LanguageAPI {
      * @param param       the parameters to the translation
      *                    adds a translation to the default language with the parameters
      */
-    public abstract void addMessageToDefault(final String transkey, final String translation, final String param);
+    public abstract boolean addMessageToDefault(final String transkey, final String translation, final String param);
 
     /**
      * @param multipleTranslation the translationkey to the set of translations
@@ -350,6 +351,5 @@ public abstract class LanguageAPI {
      */
     public abstract void updateTranslation(Translation translation);
 
-
-
+    public abstract FileHandler getFileHandler();
 }

@@ -12,6 +12,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.configuration.LanguageConfig;
 import de.tentact.languageapi.configuration.MySQL;
+import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.i18n.Translation;
 import de.tentact.languageapi.player.*;
 import net.md_5.bungee.api.ChatColor;
@@ -33,6 +34,7 @@ public class LanguageAPIImpl extends LanguageAPI {
     private final LanguageConfig languageConfig;
 
     private final Cache<String, HashMap<String, String>> translationCache;
+    private final FileHandler fileHandler = new FileHandlerImpl(this);
     private final HashMap<String, Translation> translationMap = new HashMap<>();
     private final PlayerManager playerManager = new PlayerManagerImpl();
     private final PlayerExecutor playerExecutor;
@@ -83,37 +85,38 @@ public class LanguageAPIImpl extends LanguageAPI {
 
 
     @Override
-    public void addMessage(final String transkey, final String message, final String language, String param) {
+    public boolean addMessage(final String transkey, final String message, final String language, String param) {
         if (!this.isLanguage(language)) {
             throw new IllegalArgumentException("Language " + language + " was not found!");
         }
-        this.addMessage(transkey, message, language);
         this.addParameter(transkey, param);
+        return this.addMessage(transkey, message, language);
+
     }
 
     @Override
-    public void addMessage(final String transkey, final String message, final String language) {
+    public boolean addMessage(final String transkey, final String message, final String language) {
         if (!this.isLanguage(language)) {
-            return;
+            return false;
         }
         if (this.isKey(transkey, language)) {
-            return;
+            return false;
         }
-        try (Connection connection = this.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO " + language.toLowerCase() + " (transkey, translation) VALUES (?,?);")) {
-            preparedStatement.setString(1, transkey.toLowerCase());
-            preparedStatement.setString(2, ChatColor.translateAlternateColorCodes('&', message));
-            preparedStatement.execute();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        this.executorService.execute(() -> {
+            try (Connection connection = this.getDataSource().getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO " + language.toLowerCase() + " (transkey, translation) VALUES (?,?);")) {
+                preparedStatement.setString(1, transkey.toLowerCase());
+                preparedStatement.setString(2, ChatColor.translateAlternateColorCodes('&', message));
+                preparedStatement.execute();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        });
+        return true;
     }
 
     @Override
     public void addParameter(final String transkey, final String param) {
-        if (this.hasParameter(transkey)) {
-            return;
-        }
         if(param == null || param.isEmpty()) {
             return;
         }
@@ -161,39 +164,25 @@ public class LanguageAPIImpl extends LanguageAPI {
     }
 
     @Override
-    public void addMessage(final String transkey, final String language) {
-        if (!this.isLanguage(language)) {
-            return;
-        }
-        if (this.isKey(transkey, language)) {
-            return;
-        }
-        this.addMessage(transkey, transkey, language);
+    public boolean addMessage(final String transkey, final String language) {
+        return this.addMessage(transkey, transkey, language);
     }
 
     @Override
-    public void addMessage(final String transkey) {
-        if (this.isKey(transkey, this.getDefaultLanguage().toLowerCase())) {
-            return;
-        }
-        this.addMessage(transkey, transkey, this.getDefaultLanguage());
+    public boolean addMessage(final String transkey) {
+        return this.addMessage(transkey, transkey, this.getDefaultLanguage());
     }
 
     @Override
-    public void addMessageToDefault(final String transkey, final String translation) {
-        if (this.isKey(transkey, this.getDefaultLanguage().toLowerCase())) {
-            return;
-        }
-        this.addMessage(transkey, translation, this.getDefaultLanguage());
+    public boolean addMessageToDefault(final String transkey, final String translation) {
+       return this.addMessage(transkey, translation, this.getDefaultLanguage());
     }
 
     @Override
-    public void addMessageToDefault(final String transkey, final String translation, final String param) {
-        if (this.isKey(transkey, this.getDefaultLanguage().toLowerCase())) {
-            return;
-        }
-        this.addMessageToDefault(transkey, translation);
+    public boolean addMessageToDefault(final String transkey, final String translation, final String param) {
         this.addParameter(transkey, param);
+        return this.addMessageToDefault(transkey, translation);
+
     }
 
     @Override
@@ -536,6 +525,11 @@ public class LanguageAPIImpl extends LanguageAPI {
     @Override
     public void updateTranslation(Translation translation) {
         this.translationMap.put(translation.getTranslationKey(), translation);
+    }
+
+    @Override
+    public FileHandler getFileHandler() {
+        return this.fileHandler;
     }
 
     private HikariDataSource getDataSource() {
