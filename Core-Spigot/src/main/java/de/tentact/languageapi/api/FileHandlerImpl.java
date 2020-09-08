@@ -22,15 +22,15 @@ public class FileHandlerImpl implements FileHandler {
     }
 
     @Override
-    public void loadFile(File file, boolean doOverwrite) {
+    public boolean loadFile(File file, boolean doOverwrite) {
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(file);
         Set<String> keys = yamlConfiguration.getKeys(false);
         String languageName = yamlConfiguration.getString("language");
         if(languageName == null || languageName.isEmpty()) {
-            return;
+            return false;
         }
         if(!this.languageAPI.isLanguage(languageName)) {
-            return;
+            return false;
         }
         keys.remove("language");
         keys.forEach(key -> {
@@ -38,13 +38,15 @@ public class FileHandlerImpl implements FileHandler {
                 this.languageAPI.updateMessage(key, yamlConfiguration.getString(key), languageName);
             }
         });
-
+        return true;
     }
 
     @Override
-    public void loadFiles(File[] files, boolean doOverwrite) {
+    public boolean loadFiles(File[] files, boolean doOverwrite) {
+        boolean passed = false;
         for (File file : files) {
-            this.loadFile(file, doOverwrite);
+            passed = this.loadFile(file, doOverwrite);
         }
+        return passed;
     }
 }

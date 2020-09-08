@@ -24,10 +24,15 @@ public class Configuration {
     Document settingsDocument = new DefaultDocument();
     File settingsFile = new File("plugins/LanguageAPI", "config.json");
 
+    File importDir = new File("plugins/LanguageAPI/import");
+
     private LanguageInventory languageInventory;
     private LanguageConfig languageConfig;
 
     public Configuration(Logger logger) {
+        if(!importDir.exists()) {
+            importDir.mkdirs();
+        }
         if (inventoryFile.exists()) {
             inventoryDocument = Documents.jsonStorage().read(inventoryFile);
         } else {

@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -27,7 +28,8 @@ public class LanguageCommand implements TabExecutor {
 
     public LanguageAPI languageAPI = LanguageAPI.getInstance();
 
-    private final List<String> tabComplete = Arrays.asList("add", "remove", "update", "create", "delete", "param", "copy", "translations", "reload", "help");
+    private final List<String> tabComplete = Arrays.asList("add", "remove", "update", "create", "delete",
+            "param", "copy", "translations", "reload", "import", "help");
 
     public static ArrayList<Player> editingMessage = new ArrayList<>();
 
@@ -258,6 +260,29 @@ public class LanguageCommand implements TabExecutor {
                                 }
                             }
                             break;
+                        case "import": //lang import FILE BOOL
+                            if (this.checkDoesNotHavePermission(player, args)) {
+                                return false;
+                            }
+                            if(args.length < 3) {
+                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_HELP.get());
+                                return false;
+                            }
+                            if (!this.isBoolean(args[2])) {
+                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_HELP.get());
+                                return false;
+                            }
+                            File file = new File("plugins/LanguageAPI/import", args[1]);
+                            if(!file.exists()) {
+                                //SEND
+                                return false;
+                            }
+                            boolean passed = this.languageAPI.getFileHandler().loadFile(file, Boolean.parseBoolean(args[2]));
+                            if(!passed) {
+                                //ERROR
+                                return false;
+                            }
+                            break;
                         case "reload":
                             if (this.checkDoesNotHavePermission(player, args)) {
                                 return false;
@@ -268,7 +293,6 @@ public class LanguageCommand implements TabExecutor {
                                 this.languageSpigot.getLogger().log(Level.INFO, "Reloading config");
                             }, 50L);
                             break;
-
                         case "help":
                             if (this.checkDoesNotHavePermission(player, args)) {
                                 return false;
@@ -316,6 +340,10 @@ public class LanguageCommand implements TabExecutor {
         StringUtil.copyPartialMatches(playerInput, tabComplete, possibleCompletes);
         Collections.sort(possibleCompletes);
         return possibleCompletes;
+    }
+
+    private boolean isBoolean(String input) {
+        return input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false");
     }
 
     private boolean checkDoesNotHavePermission(Player player, String[] args) {

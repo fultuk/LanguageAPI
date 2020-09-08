@@ -44,12 +44,16 @@ public enum I18N {
     LANGUAGEAPI_SHOW_SUCCESS("languageapi-show-success", "Es wurden folgende Parameter zu %KEY% gefunden: \nParameter: %PARAM%", "%PARAM%, %KEY%"),
     LANGUAGEAPI_TRANSLATION_SUCCESS("languageapi-translation-success", "&6%KEY%&7 - %MSG%", "%KEY%, %MSG%"),
     LANGUAGEAPI_RELOAD_SUCCESS("languageapi-reload-success", "Die Configuration wurde neugeladen."),
+    LANGUAGEAPI_IMPORT_SUCCESS("languageapi-import-success", "Die Datei %FILE% wurde erfolgreich importiert.", "%FILE%"),
+    LANGUAGEAPI_IMPORT_HELP("languageapi-import-help", "Verwende /lang import <File> <doOverwrite> um eine Datei zu importieren. \n" +
+            "Diese muss in /plugins/LanguageAPI/import/ liegen."),
     LANGUAGEAPI_NOPERMS("languageapi-noperms", "Du hast keine Rechte dazu."),
     LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE("languageapi-player-selected-language", "Du hast die Sprache %LANGUAGE% ausgewählt.", "%LANGUAGE%"),
     LANGUAGEAPI_HELP("languageapi-help", Arrays.asList("languageapi-add-help",
             "languageapi-update-help",
             "languageapi-copy-help",
-            "languageapi-create-help"));
+            "languageapi-create-help",
+            "languageapi-import-help"));
 
 
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();

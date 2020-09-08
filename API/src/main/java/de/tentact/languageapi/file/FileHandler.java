@@ -10,17 +10,17 @@ import java.io.File;
 */
 public interface FileHandler {
 
-    default void loadFile(File file) {
-        this.loadFile(file, false);
+    default boolean loadFile(File file) {
+        return this.loadFile(file, false);
     }
 
-    default void loadFiles(File[] files) {
-        this.loadFiles(files, false);
+    default boolean loadFiles(File[] files) {
+       return this.loadFiles(files, false);
     }
 
-    void loadFile(File file, boolean doOverwrite);
+    boolean loadFile(File file, boolean doOverwrite);
 
-    void loadFiles(File[] files, boolean doOverwrite);
+    boolean loadFiles(File[] files, boolean doOverwrite);
 
 
 }
