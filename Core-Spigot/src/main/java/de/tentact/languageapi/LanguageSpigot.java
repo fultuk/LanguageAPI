@@ -26,7 +26,6 @@ public class LanguageSpigot extends JavaPlugin {
     private Updater updater;
     private MySQL mySQL;
     public Configuration configuration;
-    private LanguageConfig languageConfig;
 
     @Override
     public void onEnable() {
@@ -34,14 +33,14 @@ public class LanguageSpigot extends JavaPlugin {
         getLogger().log(Level.INFO, "Starting LanguageAPI");
 
         this.configuration = new Configuration(this.getLogger());
-        this.languageConfig = this.configuration.getLanguageConfig();
+        LanguageConfig languageConfig = this.configuration.getLanguageConfig();
 
-        this.mySQL = this.languageConfig.getMySQL();
+        this.mySQL = languageConfig.getMySQL();
         this.mySQL.connect();
-        LanguageAPI.setInstance(new LanguageAPIImpl(this.languageConfig));
+        LanguageAPI.setInstance(new LanguageAPIImpl(languageConfig));
         this.mySQL.createDefaultTable();
 
-        LanguageAPI.getInstance().createLanguage(this.languageConfig.getLanguageSetting().getDefaultLanguage());
+        LanguageAPI.getInstance().createLanguage(languageConfig.getLanguageSetting().getDefaultLanguage());
         this.updater = new Updater(this);
 
         Objects.requireNonNull(this.getCommand("languageapi")).setExecutor(new LanguageCommand(this));

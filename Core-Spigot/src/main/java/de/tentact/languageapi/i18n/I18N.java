@@ -47,6 +47,9 @@ public enum I18N {
     LANGUAGEAPI_IMPORT_SUCCESS("languageapi-import-success", "Die Datei %FILE% wurde erfolgreich importiert.", "%FILE%"),
     LANGUAGEAPI_IMPORT_HELP("languageapi-import-help", "Verwende /lang import <File> <doOverwrite> um eine Datei zu importieren. \n" +
             "Diese muss in /plugins/LanguageAPI/import/ liegen."),
+    LANGUAGEAPI_IMPORT_ERROR("languageapi-import-error", "Beim Importieren der Datei ist ein Fehler aufgetreten. \n" +
+            "Die Datei muss 'language: LANGUAGEANAME' enthalten."),
+    LANGUAGEAPI_IMPORT_FILE_NOT_FOUND("languageapi-import-file-not-found", "Die Datei %FILE% wurde in /plugins/LanguageAPI/import nicht gefunden.", "%FILE%"),
     LANGUAGEAPI_NOPERMS("languageapi-noperms", "Du hast keine Rechte dazu."),
     LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE("languageapi-player-selected-language", "Du hast die Sprache %LANGUAGE% ausgewählt.", "%LANGUAGE%"),
     LANGUAGEAPI_HELP("languageapi-help", Arrays.asList("languageapi-add-help",

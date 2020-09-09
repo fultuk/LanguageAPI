@@ -274,12 +274,12 @@ public class LanguageCommand implements TabExecutor {
                             }
                             File file = new File("plugins/LanguageAPI/import", args[1]);
                             if(!file.exists()) {
-                                //SEND
+                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_FILE_NOT_FOUND.get());
                                 return false;
                             }
                             boolean passed = this.languageAPI.getFileHandler().loadFile(file, Boolean.parseBoolean(args[2]));
                             if(!passed) {
-                                //ERROR
+                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_ERROR.get());
                                 return false;
                             }
                             break;
@@ -290,7 +290,7 @@ public class LanguageCommand implements TabExecutor {
                             this.languageSpigot.configuration = new Configuration(this.languageSpigot.getLogger());
                             Bukkit.getScheduler().runTaskLater(languageSpigot, () -> {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_RELOAD_SUCCESS.get());
-                                this.languageSpigot.getLogger().log(Level.INFO, "Reloading config");
+                                this.languageSpigot.getLogger().log(Level.INFO, "Reloading config.json...");
                             }, 50L);
                             break;
                         case "help":

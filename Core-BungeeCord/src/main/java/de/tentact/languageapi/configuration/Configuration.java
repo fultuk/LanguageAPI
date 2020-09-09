@@ -25,6 +25,7 @@ public class Configuration {
             document = Documents.jsonStorage().read(configFile);
             return;
         }
+
         configFile.getParentFile().mkdirs();
         languageBungeecord.logInfo("No config.json found...");
         languageBungeecord.logInfo("Creating new config.json");

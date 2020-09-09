@@ -351,5 +351,9 @@ public abstract class LanguageAPI {
      */
     public abstract void updateTranslation(Translation translation);
 
+    /**
+     * Get the {@link FileHandler}
+     * @return returns the {@link FileHandler}
+     */
     public abstract FileHandler getFileHandler();
 }
