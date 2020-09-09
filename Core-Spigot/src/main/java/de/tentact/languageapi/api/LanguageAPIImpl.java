@@ -249,7 +249,7 @@ public class LanguageAPIImpl extends LanguageAPI {
     }
 
     @Override
-    public void updateMessage(String transkey, String language, String message) {
+    public void updateMessage(String transkey, String message, String language) {
         if (!this.isLanguage(language)) {
             throw new IllegalArgumentException("Language " + language + " was not found!");
         }
