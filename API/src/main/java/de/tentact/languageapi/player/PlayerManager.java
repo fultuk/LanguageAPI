@@ -20,7 +20,7 @@ public interface PlayerManager {
     LanguagePlayer getLanguagePlayer(UUID playerId);
 
     /**
-     *Gets an {@link LanguageOfflinePlayer}
+     * Gets an {@link LanguageOfflinePlayer}
      * @param playerId the uniqueId to fetch the player from
      * @return returns a LanguageOfflinePlayer
      */

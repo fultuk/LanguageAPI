@@ -6,11 +6,13 @@ package de.tentact.languageapi;
     Uhrzeit: 09:48
 */
 
+import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.i18n.Translation;
 import de.tentact.languageapi.player.LanguageOfflinePlayer;
 import de.tentact.languageapi.player.LanguagePlayer;
 import de.tentact.languageapi.player.PlayerExecutor;
 
+import java.io.File;
 import java.util.UUID;
 
 public class ExampleLanguageAPI {
@@ -77,6 +79,22 @@ public class ExampleLanguageAPI {
          */
         String messageByUUID = this.languageAPI.getMessage("translation-key", UUID.randomUUID());
 
+    }
+
+    /**
+     * Use this if you want to load a translation file (ingame command /lang import <File> <Overwrite>)
+     */
+    public void load() {
+
+        FileHandler fileHandler = this.languageAPI.getFileHandler();
+
+        // This loads one file and overwrites existing translations
+        File fileToLoad = new File("pathToFile", "fileName");
+        boolean passed = fileHandler.loadFile(fileToLoad, true);
+
+        //This loads multiple files and overwrites existing translations
+        File[] filesToLoad = new File[0];
+        boolean allFilesPassed = fileHandler.loadFiles(filesToLoad, true);
     }
 
 }

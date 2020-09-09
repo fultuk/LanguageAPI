@@ -36,7 +36,7 @@ public interface Translation {
     }
 
     /**
-     * @param language the language to get the translation in
+     * @param language      the language to get the translation in
      * @param orElseDefault whether to use the default language if the given one was not found
      * @return returns a translation of the key in the given language if found, else uses default language if orElseDefault is <code>true<code/>
      */
@@ -50,7 +50,6 @@ public interface Translation {
     String getParameter();
 
     /**
-     *
      * @param prefixTranslation the prefix translation to get the prefix from
      * @return returns a {@link Translation} after setting the prefixTranslation
      */
@@ -65,7 +64,6 @@ public interface Translation {
      */
     Translation replace(String old, String replacement);
 
-
     /**
      * @return returns the translationkey which was given
      */
@@ -73,6 +71,7 @@ public interface Translation {
 
     /**
      * Create the default translation for the {@link Translation}
+     *
      * @param message the default translation
      * @return the {@link Translation} after setting the default translation
      */
@@ -80,9 +79,10 @@ public interface Translation {
     Translation createDefaults(String message);
 
     /**
-     *Create the default translation for the {@link Translation}
+     * Create the default translation for the {@link Translation}
+     *
      * @param message the default translation
-     * @param param the parameter of the translation
+     * @param param   the parameter of the translation
      * @return the {@link Translation} after setting the default translation
      */
     Translation createDefaults(String message, String param);

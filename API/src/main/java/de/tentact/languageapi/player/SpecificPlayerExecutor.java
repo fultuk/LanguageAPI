@@ -42,7 +42,7 @@ public interface SpecificPlayerExecutor extends PlayerManager {
 
     /**
      * @param language the language that the player has on creation
-     *                 creates the player in the database
+     * creates the player in the database
      */
 
     void registerPlayer(@NotNull String language);
