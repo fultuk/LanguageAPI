@@ -23,27 +23,26 @@ public class Configuration {
         if (configFile.exists()) {
             languageBungeecord.logInfo("Found config.json. Reading config.json...");
             document = Documents.jsonStorage().read(configFile);
-            return;
+        }else {
+            configFile.getParentFile().mkdirs();
+            languageBungeecord.logInfo("No config.json found...");
+            languageBungeecord.logInfo("Creating new config.json");
+            document.append("config", new LanguageConfig(
+                    new MySQL(
+                            "hostname",
+                            "languageapi",
+                            "languageapi",
+                            "password",
+                            3306
+                    ),
+                    new LanguageSetting(
+                            "de_de",
+                            5
+                    )
+            )).json().write(configFile);
         }
-
-        configFile.getParentFile().mkdirs();
-        languageBungeecord.logInfo("No config.json found...");
-        languageBungeecord.logInfo("Creating new config.json");
-        document.append("config", new LanguageConfig(
-                new MySQL(
-                        languageBungeecord.getLogger(),
-                        "hostname",
-                        "languageapi",
-                        "languageapi",
-                        "password",
-                        3306
-                ),
-                new LanguageSetting(
-                        "de_de",
-                        5
-                ),
-                languageBungeecord.getLogger()
-        )).json().write(configFile);
+        this.getLanguageConfig().setLogger(languageBungeecord.getLogger());
+        this.getLanguageConfig().getMySQL().setLogger(languageBungeecord.getLogger());
     }
 
     public LanguageConfig getLanguageConfig() {

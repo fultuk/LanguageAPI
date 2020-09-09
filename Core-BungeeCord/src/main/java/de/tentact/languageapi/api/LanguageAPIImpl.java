@@ -122,7 +122,7 @@ public class LanguageAPIImpl extends LanguageAPI {
             return;
         }
         try (Connection connection = this.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Parameter(transkey, param) VALUES (?,?);")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("REPLACE INTO Parameter(transkey, param) VALUES (?,?);")) {
             preparedStatement.setString(1, transkey.toLowerCase());
             preparedStatement.setString(2, param.replace(" ", ""));
             preparedStatement.execute();
@@ -250,7 +250,7 @@ public class LanguageAPIImpl extends LanguageAPI {
     }
 
     @Override
-    public void updateMessage(String transkey, String language, String message) {
+    public void updateMessage(String transkey, String message, String language) {
         if (!this.isLanguage(language)) {
             throw new IllegalArgumentException("Language " + language + " was not found!");
         }
@@ -258,7 +258,7 @@ public class LanguageAPIImpl extends LanguageAPI {
             throw new IllegalArgumentException("Translationkey " + transkey + " was not found!");
         }
         try (Connection connection = this.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE ? SET translation= ? WHERE transkey=?;")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE '"+language+"' SET translation=? WHERE transkey=?;")) {
             preparedStatement.setString(1, language.toLowerCase());
             preparedStatement.setString(2, ChatColor.translateAlternateColorCodes('&', message));
             preparedStatement.execute();

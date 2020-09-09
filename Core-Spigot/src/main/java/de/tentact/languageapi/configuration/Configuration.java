@@ -30,7 +30,7 @@ public class Configuration {
     private LanguageConfig languageConfig;
 
     public Configuration(Logger logger) {
-        if(!importDir.exists()) {
+        if (!importDir.exists()) {
             importDir.mkdirs();
         }
         if (inventoryFile.exists()) {
@@ -74,7 +74,6 @@ public class Configuration {
                 settingsDocument.append("config",
                         new LanguageConfig(
                                 new MySQL(
-                                        logger,
                                         "hostname",
                                         "languagapi",
                                         "languagapi",
@@ -85,14 +84,15 @@ public class Configuration {
                                         "de_de",
                                         5,
                                         true
-                                ),
-                                logger
+                                )
                         )
-                ).json().write(inventoryFile);
+                ).json().write(settingsFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        this.getLanguageConfig().setLogger(logger);
+        this.getLanguageConfig().getMySQL().setLogger(logger);
     }
 
     public LanguageInventory getLanguageInventory() {

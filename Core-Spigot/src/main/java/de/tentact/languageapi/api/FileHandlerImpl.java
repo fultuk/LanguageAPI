@@ -26,15 +26,15 @@ public class FileHandlerImpl implements FileHandler {
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(file);
         Set<String> keys = yamlConfiguration.getKeys(false);
         String languageName = yamlConfiguration.getString("language");
-        if(languageName == null || languageName.isEmpty()) {
+        if (languageName == null || languageName.isEmpty()) {
             return false;
         }
-        if(!this.languageAPI.isLanguage(languageName)) {
+        if (!this.languageAPI.isLanguage(languageName)) {
             return false;
         }
         keys.remove("language");
         keys.forEach(key -> {
-            if(!this.languageAPI.addMessage(key, yamlConfiguration.getString(key), languageName) && doOverwrite) {
+            if (!this.languageAPI.addMessage(key, yamlConfiguration.getString(key), languageName) && doOverwrite) {
                 this.languageAPI.updateMessage(key, yamlConfiguration.getString(key), languageName);
             }
         });

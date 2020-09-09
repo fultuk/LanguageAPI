@@ -16,11 +16,10 @@ public class MySQL {
 
     private final String hostname, database, username, password;
     private final int port;
-    private HikariDataSource dataSource;
-    private Logger logger;
+    private transient HikariDataSource dataSource;
+    private transient Logger logger;
 
-    public MySQL(Logger logger,String hostname, String database, String username, String password, int port) {
-        this.logger = logger;
+    public MySQL(String hostname, String database, String username, String password, int port) {
         this.hostname = hostname;
         this.database = database;
         this.username = username;
@@ -55,10 +54,10 @@ public class MySQL {
         if (!isConnected())
             return;
         try (Connection connection = dataSource.getConnection()) {
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS choosenlang(uuid VARCHAR(64), language VARCHAR(64));");
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(64));");
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(transkey VARCHAR(64), param VARCHAR(2000));");
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS MultipleTranslation(multipleKey VARCHAR(64), transkeys VARCHAR(2000));");
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS choosenlang(uuid VARCHAR(64) UNIQUE, language VARCHAR(64));");
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(64) UNIQUE);");
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(transkey VARCHAR(64) UNIQUE, param VARCHAR(2000));");
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS MultipleTranslation(multipleKey VARCHAR(64) UNIQUE , transkeys VARCHAR(2000));");
             this.logger.log(Level.INFO,"Creating default tables");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -69,7 +68,7 @@ public class MySQL {
         if (!isConnected())
             return;
         try (Connection connection = dataSource.getConnection()) {
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS " + tableName + "(transkey VARCHAR(64), translation VARCHAR(2000));");
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS " + tableName + "(transkey VARCHAR(64) UNIQUE, translation VARCHAR(2000));");
             this.logger.log(Level.INFO,"Creating table: " + tableName);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -87,5 +86,9 @@ public class MySQL {
 
     public HikariDataSource getDataSource() {
         return this.dataSource;
+    }
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
     }
 }

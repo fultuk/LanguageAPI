@@ -58,7 +58,7 @@ public class ChatListener implements Listener {
                 String transkey = LanguageCommand.givenParameter.get(player).get(0);
                 String language = LanguageCommand.givenParameter.get(player).get(1);
                 LanguageCommand.editingMessage.remove(player);
-                languageAPI.updateMessage(transkey, language, result.toString());
+                languageAPI.updateMessage(transkey, result.toString(), language);
 
                 event.setCancelled(true);
                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_SUCCESS.get()

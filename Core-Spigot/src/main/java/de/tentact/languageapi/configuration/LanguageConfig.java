@@ -12,12 +12,11 @@ public class LanguageConfig {
 
     private final MySQL mySQL;
     private final LanguageSetting languageSetting;
-    private final Logger logger;
+    private transient Logger logger;
 
-    public LanguageConfig(MySQL mySQL, LanguageSetting languageSetting, Logger logger) {
+    public LanguageConfig(MySQL mySQL, LanguageSetting languageSetting) {
         this.mySQL = mySQL;
         this.languageSetting = languageSetting;
-        this.logger = logger;
     }
 
     public MySQL getMySQL() {
@@ -30,5 +29,9 @@ public class LanguageConfig {
 
     public Logger getLogger() {
         return this.logger;
+    }
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
     }
 }
