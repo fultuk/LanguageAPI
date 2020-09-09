@@ -274,7 +274,7 @@ public class LanguageCommand implements TabExecutor {
                             }
                             File file = new File("plugins/LanguageAPI/import", args[1]);
                             if(!file.exists()) {
-                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_FILE_NOT_FOUND.get());
+                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_FILE_NOT_FOUND.get().replace("%FILE%", args[1]));
                                 return false;
                             }
                             boolean passed = this.languageAPI.getFileHandler().loadFile(file, Boolean.parseBoolean(args[2]));
@@ -282,6 +282,7 @@ public class LanguageCommand implements TabExecutor {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_ERROR.get());
                                 return false;
                             }
+                            languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_SUCCESS.get().replace("%FILE%", args[1]));
                             break;
                         case "reload":
                             if (this.checkDoesNotHavePermission(player, args)) {

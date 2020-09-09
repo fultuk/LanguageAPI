@@ -257,9 +257,9 @@ public class LanguageAPIImpl extends LanguageAPI {
             throw new IllegalArgumentException("Translationkey " + transkey + " was not found!");
         }
         try (Connection connection = this.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE '"+language+"' SET translation=? WHERE transkey=?;")) {
-            preparedStatement.setString(1, language.toLowerCase());
-            preparedStatement.setString(2, ChatColor.translateAlternateColorCodes('&', message));
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE "+language+" SET translation=? WHERE transkey=?;")) {
+            preparedStatement.setString(1, ChatColor.translateAlternateColorCodes('&', message));
+            preparedStatement.setString(2, transkey.toLowerCase());
             preparedStatement.execute();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
