@@ -38,7 +38,7 @@ public class LanguageAPIImpl extends LanguageAPI {
     private final HashMap<String, Translation> translationMap = new HashMap<>();
     private final PlayerManager playerManager = new PlayerManagerImpl();
     private final PlayerExecutor playerExecutor;
-    private final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactoryBuilder().build());
+    private final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("LanguageAPI-Thread-%d").build());
 
     public LanguageAPIImpl(LanguageConfig languageConfig) {
         this.languageConfig = languageConfig;
@@ -58,7 +58,7 @@ public class LanguageAPIImpl extends LanguageAPI {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-            logInfo("Creating new language:" + language);
+            this.logInfo("Creating new language:" + language);
         }
     }
 
@@ -78,7 +78,7 @@ public class LanguageAPIImpl extends LanguageAPI {
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
-                logInfo("Deleting language:" + language);
+                this.logInfo("Deleting language:" + language);
             });
         }
     }
@@ -117,7 +117,7 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @Override
     public void addParameter(final String transkey, final String param) {
-        if(param == null || param.isEmpty()) {
+        if (param == null || param.isEmpty()) {
             return;
         }
         try (Connection connection = this.getDataSource().getConnection();
@@ -175,7 +175,7 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @Override
     public boolean addMessageToDefault(final String transkey, final String translation) {
-       return this.addMessage(transkey, translation, this.getDefaultLanguage());
+        return this.addMessage(transkey, translation, this.getDefaultLanguage());
     }
 
     @Override
@@ -257,7 +257,7 @@ public class LanguageAPIImpl extends LanguageAPI {
             throw new IllegalArgumentException("Translationkey " + transkey + " was not found!");
         }
         try (Connection connection = this.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE "+language+" SET translation=? WHERE transkey=?;")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE " + language + " SET translation=? WHERE transkey=?;")) {
             preparedStatement.setString(1, ChatColor.translateAlternateColorCodes('&', message));
             preparedStatement.setString(2, transkey.toLowerCase());
             preparedStatement.execute();
@@ -397,7 +397,7 @@ public class LanguageAPIImpl extends LanguageAPI {
             throw new IllegalArgumentException(lang + " was not found");
         }
         if (!this.isKey(transkey, lang)) {
-            this.languageConfig.getLogger().log(Level.WARNING, "Translationkey '"+transkey+"' not found in language '"+lang+"'");
+            this.languageConfig.getLogger().log(Level.WARNING, "Translationkey '" + transkey + "' not found in language '" + lang + "'");
             this.languageConfig.getLogger().log(Level.WARNING, "As result you will get the translationkey as translation");
             return transkey;
         }
@@ -499,7 +499,7 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @Override
     public @NotNull Translation getTranslation(String translationkey) {
-        if(this.translationMap.containsKey(translationkey)) {
+        if (this.translationMap.containsKey(translationkey)) {
             return this.translationMap.get(translationkey);
         }
         Translation translation = new TranslationImpl(translationkey);

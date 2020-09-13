@@ -87,4 +87,8 @@ public interface Translation {
      */
     Translation createDefaults(String message, String param);
 
+    Translation addTranslation(String language, String message);
+
+    Translation addTranslation(String language, String message, String param);
+
 }

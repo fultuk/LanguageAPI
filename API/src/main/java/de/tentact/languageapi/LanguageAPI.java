@@ -98,10 +98,12 @@ public abstract class LanguageAPI {
     public abstract boolean addMessageToDefault(final String transkey, final String translation);
 
     /**
+     * Adds a translation to the default language with the parameters
      * @param transkey    translationkey to the translation
      * @param translation the translation to the translationkey
      * @param param       the parameters to the translation
-     *                    adds a translation to the default language with the parameters
+     *
+     * @return if the translation was added
      */
     public abstract boolean addMessageToDefault(final String transkey, final String translation, final String param);
 

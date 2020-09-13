@@ -89,6 +89,17 @@ public class TranslationImpl implements Translation {
         return this;
     }
 
+    @Override
+    public Translation addTranslation(String language, String message) {
+        return this.addTranslation(language, message, null);
+    }
+
+    @Override
+    public Translation addTranslation(String language, String message, String param) {
+        this.languageAPI.addMessage(this.translationkey, message, language, param);
+        return this;
+    }
+
     private void updateTranslation() {
         this.languageAPI.updateTranslation(this);
     }
