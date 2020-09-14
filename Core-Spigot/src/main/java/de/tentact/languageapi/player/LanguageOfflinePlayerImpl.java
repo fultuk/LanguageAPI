@@ -49,4 +49,9 @@ public class LanguageOfflinePlayerImpl implements LanguageOfflinePlayer {
         return this.playerID;
     }
 
+    @Override
+    public boolean isOnline() {
+        return this.playerExecutor.getLanguagePlayer(this.playerID) != null;
+    }
+
 }

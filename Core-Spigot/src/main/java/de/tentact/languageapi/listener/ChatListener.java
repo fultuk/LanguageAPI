@@ -9,8 +9,8 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.command.LanguageCommand;
+import de.tentact.languageapi.i18n.I18N;
 import de.tentact.languageapi.player.LanguagePlayer;
-import de.tentact.languageapi.util.I18N;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -47,7 +47,7 @@ public class ChatListener implements Listener {
                 event.setCancelled(true);
             } else {
                 if (editedMessage.getIfPresent(languagePlayer) == null) {
-                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_SAME);
+                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_SAME.get());
                     event.setCancelled(true);
                     return;
                 }
@@ -58,10 +58,10 @@ public class ChatListener implements Listener {
                 String transkey = LanguageCommand.givenParameter.get(player).get(0);
                 String language = LanguageCommand.givenParameter.get(player).get(1);
                 LanguageCommand.editingMessage.remove(player);
-                languageAPI.updateMessage(transkey, language, result.toString());
+                languageAPI.updateMessage(transkey, result.toString(), language);
 
                 event.setCancelled(true);
-                languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_SUCCESS
+                languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_SUCCESS.get()
                         .replace("%KEY%", transkey)
                         .replace("%LANG%", language)
                         .replace("%MSG%", result.toString()));

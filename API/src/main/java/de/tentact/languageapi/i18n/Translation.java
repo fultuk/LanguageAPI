@@ -31,10 +31,12 @@ public interface Translation {
      * @return returns a translation of the key in the given language
      */
     @NotNull
-    String getMessage(@NotNull String language);
+    default String getMessage(@NotNull String language) {
+        return this.getMessage(language, false);
+    }
 
     /**
-     * @param language the language to get the translation in
+     * @param language      the language to get the translation in
      * @param orElseDefault whether to use the default language if the given one was not found
      * @return returns a translation of the key in the given language if found, else uses default language if orElseDefault is <code>true<code/>
      */
@@ -48,13 +50,6 @@ public interface Translation {
     String getParameter();
 
     /**
-     * @param usePrefix wether to use the languageapi prefix ("languageapi-prefix") in the translation or not
-     * @return returns a {@link Translation} after setting the prefix
-     */
-    Translation setPrefix(boolean usePrefix);
-
-    /**
-     *
      * @param prefixTranslation the prefix translation to get the prefix from
      * @return returns a {@link Translation} after setting the prefixTranslation
      */
@@ -69,27 +64,31 @@ public interface Translation {
      */
     Translation replace(String old, String replacement);
 
-
     /**
      * @return returns the translationkey which was given
      */
     String getTranslationKey();
 
     /**
+     * Create the default translation for the {@link Translation}
      *
-     * @param message
-     * @return
+     * @param message the default translation
+     * @return the {@link Translation} after setting the default translation
      */
 
     Translation createDefaults(String message);
 
     /**
+     * Create the default translation for the {@link Translation}
      *
-     * @param message
-     * @param param
-     * @return
+     * @param message the default translation
+     * @param param   the parameter of the translation
+     * @return the {@link Translation} after setting the default translation
      */
     Translation createDefaults(String message, String param);
 
+    Translation addTranslation(String language, String message);
+
+    Translation addTranslation(String language, String message, String param);
 
 }

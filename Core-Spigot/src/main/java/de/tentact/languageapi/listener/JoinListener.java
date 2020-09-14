@@ -8,7 +8,6 @@ package de.tentact.languageapi.listener;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.LanguageSpigot;
 import de.tentact.languageapi.player.SpecificPlayerExecutor;
-import de.tentact.languageapi.util.ConfigUtil;
 import de.tentact.languageapi.util.Updater;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,9 +17,14 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class JoinListener implements Listener {
 
 
-    LanguageSpigot languageSpigot = LanguageSpigot.getPlugin(LanguageSpigot.class);
-    private final Updater updater = languageSpigot.getUpdater();
+    private final LanguageSpigot languageSpigot;
+    private final Updater updater;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
+
+    public JoinListener(LanguageSpigot languageSpigot) {
+        this.languageSpigot = languageSpigot;
+        this.updater = this.languageSpigot.getUpdater();
+    }
 
     @EventHandler
     public void handlePlayerJoin(PlayerJoinEvent event) {
@@ -33,7 +37,7 @@ public class JoinListener implements Listener {
         } else {
             player.performCommand("languageapi");
         }
-        if (!ConfigUtil.getUpdateNotfication()) {
+        if (!this.languageSpigot.configuration.getLanguageConfig().getLanguageSetting().isNotify()) {
             return;
         }
         if (!updater.isEnabled()) {

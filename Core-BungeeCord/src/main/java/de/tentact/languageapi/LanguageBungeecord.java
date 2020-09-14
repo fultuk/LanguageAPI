@@ -4,33 +4,40 @@ package de.tentact.languageapi;
     Datum: 25.04.2020
     Uhrzeit: 17:20
 */
+
 import de.tentact.languageapi.api.LanguageAPIImpl;
-import de.tentact.languageapi.mysql.MySQL;
-import de.tentact.languageapi.util.ConfigUtil;
-import de.tentact.languageapi.util.I18N;
+import de.tentact.languageapi.configuration.Configuration;
+import de.tentact.languageapi.configuration.LanguageConfig;
+import de.tentact.languageapi.configuration.MySQL;
 import de.tentact.languageapi.util.Updater;
 import net.md_5.bungee.api.plugin.Plugin;
 
+import java.util.logging.Level;
+
 public class LanguageBungeecord extends Plugin {
 
-    private static MySQL mySQL;
+    private MySQL mySQL;
+    private Configuration configuration;
+    private LanguageConfig languageConfig;
 
     @Override
     public void onEnable() {
-        ConfigUtil.createBungeeCordMySQLConfig(this);
-        ConfigUtil.initBungeecord();
-        ConfigUtil.initLogger(this.getLogger());
-        mySQL = ConfigUtil.getMySQL();
+        this.configuration = new Configuration(this);
+        this.languageConfig = this.configuration.getLanguageConfig();
+        mySQL = this.configuration.getLanguageConfig().getMySQL();
         mySQL.connect();
-        LanguageAPI.setInstance(new LanguageAPIImpl());
+        LanguageAPI.setInstance(new LanguageAPIImpl(this.languageConfig));
         mySQL.createDefaultTable();
-        LanguageAPI.getInstance().createLanguage(ConfigUtil.getDefaultLanguage());
-        I18N.createDefaultPluginMessages();
+        LanguageAPI.getInstance().createLanguage(this.languageConfig.getLanguageSetting().getDefaultLanguage());
         new Updater(this);
     }
 
     @Override
     public void onDisable() {
         mySQL.closeConnection();
+    }
+
+    public void logInfo(String info) {
+        this.getLogger().log(Level.INFO, info);
     }
 }

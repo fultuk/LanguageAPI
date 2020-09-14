@@ -1,25 +1,23 @@
-package de.tentact.languageapi.mysql;
+package de.tentact.languageapi.configuration;
 /*  Created in the IntelliJ IDEA.
     Created by 0utplay | Aldin Sijamhodzic
     Datum: 25.04.2020
     Uhrzeit: 16:53
 */
 
-import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import de.tentact.languageapi.util.ConfigUtil;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MySQL {
 
     private final String hostname, database, username, password;
     private final int port;
-    private HikariDataSource dataSource;
+    private transient HikariDataSource dataSource;
+    private transient Logger logger;
 
     public MySQL(String hostname, String database, String username, String password, int port) {
         this.hostname = hostname;
@@ -31,17 +29,13 @@ public class MySQL {
 
     public void connect() {
         if (!isConnected()) {
-            HikariConfig config = new HikariConfig();
+            dataSource = new HikariDataSource();
+            dataSource.setJdbcUrl("jdbc:mysql://" + hostname + ":" + port + "/" + database);
+            dataSource.setUsername(this.username);
+            dataSource.setPassword(this.password);
+            this.logger.log(Level.INFO,"Creating connection to database");
 
-            config.addDataSourceProperty("characterEncoding","utf8");
-            config.addDataSourceProperty("useUnicode","true");
-            config.setJdbcUrl("jdbc:mysql://" + hostname + ":" + port + "/" + database);
-            config.setPassword(this.password);
-            config.setUsername(this.username);
 
-            dataSource = new HikariDataSource(config);
-
-            ConfigUtil.log("Creating connection to database", Level.INFO);
         }
     }
 
@@ -64,7 +58,7 @@ public class MySQL {
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(64) UNIQUE);");
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(transkey VARCHAR(64) UNIQUE, param VARCHAR(2000));");
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS MultipleTranslation(multipleKey VARCHAR(64) UNIQUE, transkeys VARCHAR(2000));");
-            ConfigUtil.log("Creating default tables", Level.INFO);
+            this.logger.log(Level.INFO,"Creating default tables");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -75,20 +69,15 @@ public class MySQL {
             return;
         try (Connection connection = dataSource.getConnection()) {
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS " + tableName + "(transkey VARCHAR(64) UNIQUE, translation VARCHAR(2000));");
-            ConfigUtil.log("Creating table: " + tableName, Level.INFO);
+            this.logger.log(Level.INFO,"Creating table: " + tableName);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
 
-
     public boolean exists(String query) {
-        try (Connection connection = this.dataSource.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return true;
-            }
+        try (Connection connection = this.dataSource.getConnection()) {
+            return connection.prepareStatement(query).executeQuery().next();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -97,5 +86,9 @@ public class MySQL {
 
     public HikariDataSource getDataSource() {
         return this.dataSource;
+    }
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
     }
 }

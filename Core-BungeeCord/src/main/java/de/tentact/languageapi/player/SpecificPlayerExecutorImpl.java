@@ -1,6 +1,7 @@
 package de.tentact.languageapi.player;
 
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.configuration.LanguageConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,8 +13,8 @@ public class SpecificPlayerExecutorImpl extends PlayerManagerImpl implements Spe
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private final PlayerExecutor playerExecutor;
 
-    public SpecificPlayerExecutorImpl(UUID playerId) {
-        this.playerExecutor = new PlayerExecutorImpl(this.languageAPI);
+    public SpecificPlayerExecutorImpl(LanguageConfig languageConfig, UUID playerId) {
+        this.playerExecutor = new PlayerExecutorImpl(this.languageAPI, languageConfig);
         this.playerId = playerId;
     }
 

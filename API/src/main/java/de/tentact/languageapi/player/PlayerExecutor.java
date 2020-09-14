@@ -19,10 +19,10 @@ public interface PlayerExecutor extends PlayerManager {
     String getPlayerLanguage(UUID playerUUID);
 
     /**
-     *
-     * @param playerUUID
-     * @param language
-     * @return
+     * Checks if the given language equals the set language of the player
+     * @param playerUUID the player uuid
+     * @param language the language to check against
+     * @return if the language is the same
      */
     boolean isPlayersLanguage(UUID playerUUID, String language);
 
@@ -62,10 +62,15 @@ public interface PlayerExecutor extends PlayerManager {
      boolean isRegisteredPlayer(UUID playerUUID);
 
     /**
-     *
-     * @param translation
+     * Broadcast a message
+     * @param translation the {@link Translation} to get the translated message from
      */
     void broadcastMessage(Translation translation);
+
+    /**
+     * Kick every player with a {@link Translation} as reason
+     * @param translation the {@link Translation} to get the translated message from
+     */
 
     void kickAll(Translation translation);
 }

@@ -49,11 +49,16 @@ public interface LanguageOfflinePlayer {
     }
 
     /**
-     *
+     * Get a {@link LanguagePlayer}
      * @return returns a {@link LanguagePlayer} - null if the player is not online
      */
     @Nullable
     default LanguagePlayer getLanguagePlayer() {
         return this.getSpecificPlayerExecutor().getLanguagePlayer();
     }
+
+    /**
+     * @return returns if the player is online
+     */
+    boolean isOnline();
 }

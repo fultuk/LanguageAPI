@@ -9,8 +9,8 @@ package de.tentact.languageapi.listener;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.configuration.LanguageInventory;
 import de.tentact.languageapi.configuration.LanguageInventoryConfiguration;
+import de.tentact.languageapi.i18n.I18N;
 import de.tentact.languageapi.player.PlayerExecutor;
-import de.tentact.languageapi.util.I18N;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -51,7 +51,7 @@ public class InventoryClickListener implements Listener {
                     .ifPresent(languageItem -> {
                         Player player = (Player) event.getWhoClicked();
                         playerExecutor.setPlayerLanguage(player.getUniqueId(), languageItem.getLanguageName());
-                        Objects.requireNonNull(playerExecutor.getLanguagePlayer(player.getUniqueId())).sendMessage(I18N.LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE.replace("%LANGUAGE%", languageItem.getLanguageName()));
+                        Objects.requireNonNull(playerExecutor.getLanguagePlayer(player.getUniqueId())).sendMessage(I18N.LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE.get().replace("%LANGUAGE%", languageItem.getLanguageName()));
                         player.closeInventory();
                     });
         }

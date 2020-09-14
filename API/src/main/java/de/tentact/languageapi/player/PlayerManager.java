@@ -1,6 +1,5 @@
 package de.tentact.languageapi.player;
 
-import de.tentact.languageapi.i18n.Translation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,15 +20,19 @@ public interface PlayerManager {
     LanguagePlayer getLanguagePlayer(UUID playerId);
 
     /**
-     *Gets an {@link LanguageOfflinePlayer}
+     * Gets an {@link LanguageOfflinePlayer}
      * @param playerId the uniqueId to fetch the player from
      * @return returns a LanguageOfflinePlayer
      */
     @NotNull
     LanguageOfflinePlayer getLanguageOfflinePlayer(UUID playerId);
 
+    /**
+     * Get all online players
+     * @return a {@link Collection<LanguagePlayer>} with all online players
+     */
     @NotNull
-    Collection<LanguagePlayer> getOnlineLanguagePlayer();
+    Collection<LanguagePlayer> getOnlineLanguagePlayers();
 
 
 }

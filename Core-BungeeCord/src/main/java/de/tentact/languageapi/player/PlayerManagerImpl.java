@@ -1,6 +1,5 @@
 package de.tentact.languageapi.player;
 
-import de.tentact.languageapi.i18n.Translation;
 import net.md_5.bungee.api.ProxyServer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +23,7 @@ public class PlayerManagerImpl implements PlayerManager{
     }
 
     @Override
-    public @NotNull Collection<LanguagePlayer> getOnlineLanguagePlayer() {
+    public @NotNull Collection<LanguagePlayer> getOnlineLanguagePlayers() {
         return ProxyServer.getInstance().getPlayers().stream().map(player -> this.getLanguagePlayer(player.getUniqueId())).collect(Collectors.toList());
     }
 

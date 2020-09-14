@@ -20,12 +20,6 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
      * @param transkey the translationkey to get the translation from
      */
     void sendMessageByKey(@NotNull String transkey);
-    /**
-     * Sends a message to the player by a translationkey
-     * @param transkey the translationkey to get the translation from
-     * @param usePrefix whether to use the default languageapi prefix
-     */
-    void sendMessageByKey(@NotNull String transkey, boolean usePrefix);
 
     /**
      * Sends multiple messages to the player by a single multipleTranslationKey
@@ -34,7 +28,7 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
     void sendMultipleTranslation(@NotNull String multipleTranslationKey);
 
     /**
-     * Sends multiple messages to the player by a single multipleTranslationKey
+     * Sends multiple messages to the player by a single {@link Translation}
      * @param multipleTranslation the multipleTranslation to get the Collection of translationkeys
      */
     void sendMultipleTranslation(@NotNull Translation multipleTranslation);
@@ -47,13 +41,8 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
     void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language);
 
     /**
-     * @return returns if the player is online
-     */
-    boolean isOnline();
-
-    /**
-     *
-     * @param translation
+     * Kick a player with a {@link Translation} as reason
+     * @param translation the {@link Translation} to get the translated message from
      */
     void kickPlayer(Translation translation);
 

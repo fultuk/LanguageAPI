@@ -8,12 +8,11 @@ package de.tentact.languageapi;
 import de.tentact.languageapi.api.LanguageAPIImpl;
 import de.tentact.languageapi.command.LanguageCommand;
 import de.tentact.languageapi.configuration.Configuration;
+import de.tentact.languageapi.configuration.LanguageConfig;
+import de.tentact.languageapi.configuration.MySQL;
 import de.tentact.languageapi.listener.ChatListener;
 import de.tentact.languageapi.listener.InventoryClickListener;
 import de.tentact.languageapi.listener.JoinListener;
-import de.tentact.languageapi.mysql.MySQL;
-import de.tentact.languageapi.util.ConfigUtil;
-import de.tentact.languageapi.util.I18N;
 import de.tentact.languageapi.util.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
@@ -33,25 +32,22 @@ public class LanguageSpigot extends JavaPlugin {
 
         getLogger().log(Level.INFO, "Starting LanguageAPI");
 
-        ConfigUtil.createSpigotMySQLConfig();
-        ConfigUtil.init();
-        ConfigUtil.initLogger(this.getLogger());
-        this.configuration = new Configuration();
+        this.configuration = new Configuration(this.getLogger());
+        LanguageConfig languageConfig = this.configuration.getLanguageConfig();
 
-        this.mySQL = ConfigUtil.getMySQL();
+        this.mySQL = languageConfig.getMySQL();
         this.mySQL.connect();
-        LanguageAPI.setInstance(new LanguageAPIImpl());
+        LanguageAPI.setInstance(new LanguageAPIImpl(languageConfig));
         this.mySQL.createDefaultTable();
 
-        LanguageAPI.getInstance().createLanguage(ConfigUtil.getDefaultLanguage());
-        I18N.createDefaultPluginMessages();
+        LanguageAPI.getInstance().createLanguage(languageConfig.getLanguageSetting().getDefaultLanguage());
         this.updater = new Updater(this);
 
         Objects.requireNonNull(this.getCommand("languageapi")).setExecutor(new LanguageCommand(this));
         Objects.requireNonNull(this.getCommand("languageapi")).setTabCompleter(new LanguageCommand(this));
 
         PluginManager pm = Bukkit.getPluginManager();
-        pm.registerEvents(new JoinListener(), this);
+        pm.registerEvents(new JoinListener(this), this);
         pm.registerEvents(new ChatListener(), this);
         pm.registerEvents(new InventoryClickListener(this.configuration.getLanguageInventory()), this);
     }
