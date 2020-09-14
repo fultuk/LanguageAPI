@@ -50,11 +50,17 @@ public class ExampleLanguageAPI {
          */
         Translation translation = this.languageAPI.getTranslation("translation-key");
 
+
         /*
          * Send a message to a LanguagePlayer by a Translation
          */
 
-        languagePlayer.sendMessage(translation);
+        /*
+         * A LanguagePlayer is null, if the player is not online.
+         */
+        if (languagePlayer != null) {
+            languagePlayer.sendMessage(translation);
+        }
 
         /*
          * Replace parameter in a translation
