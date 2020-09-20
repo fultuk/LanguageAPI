@@ -29,8 +29,8 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
 
 
     @Override
-    public void sendMessageByKey(@NotNull String transkey) {
-        this.sendMessage(this.languageAPI.getTranslation(transkey));
+    public void sendMessageByKey(@NotNull String translationKey) {
+        this.sendMessage(this.languageAPI.getTranslation(translationKey));
     }
 
     @Override

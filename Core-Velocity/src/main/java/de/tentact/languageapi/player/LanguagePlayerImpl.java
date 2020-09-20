@@ -1,29 +1,36 @@
 package de.tentact.languageapi.player;
 
 
+import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ProxyServer;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.i18n.Translation;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements LanguagePlayer {
 
     private final UUID playerID;
-    private ProxiedPlayer proxiedPlayer;
+    private Player player;
+    private final ProxyServer proxyServer;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
-    public LanguagePlayerImpl(UUID playerID) {
+    public LanguagePlayerImpl(ProxyServer proxyServer, UUID playerID) {
         super(playerID);
+        this.proxyServer = proxyServer;
         this.playerID = playerID;
     }
 
     @Override
     public void sendMessage(@NotNull Translation translation) {
-        this.getProxiedPlayer().sendMessage(translation.getMessage(this.getLanguage()));
+        if(this.getPlayer() != null) {
+            this.getPlayer().sendMessage(LegacyComponentSerializer.legacy().deserialize(translation.getMessage(this.getLanguage())));
+        }
+
     }
 
     @Override
@@ -47,22 +54,28 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
         if (!this.languageAPI.isMultipleTranslation(multipleTranslationKey)) {
             throw new IllegalArgumentException(multipleTranslationKey + " was not found");
         }
-        this.languageAPI.getMultipleMessages(multipleTranslationKey, language).forEach(Objects.requireNonNull(this.getProxiedPlayer())::sendMessage);
+        Player player = this.getPlayer();
+        if(player == null) {
+            return;
+        }
+        this.languageAPI.getMultipleMessages(multipleTranslationKey, language).forEach(message -> player.sendMessage(LegacyComponentSerializer.legacy().deserialize(message)));
     }
 
     @Override
     public void kickPlayer(Translation translation) {
-        this.getProxiedPlayer().disconnect(translation.getMessage(this.getLanguage()));
+        if(this.getPlayer() == null) {
+            return;
+        }
+        this.getPlayer().disconnect(LegacyComponentSerializer.legacy().deserialize(translation.getMessage(this.getLanguage())));
     }
 
-    private ProxiedPlayer getProxiedPlayer() {
-        if (this.proxiedPlayer != null) {
-            return this.proxiedPlayer;
+    @Nullable
+    private Player getPlayer() {
+        if (this.player != null) {
+            return this.player;
         }
-        this.proxiedPlayer = ProxyServer.getInstance().getPlayer(this.playerID);
-        if (this.proxiedPlayer == null) {
-            throw new NullPointerException();
-        }
-        return this.proxiedPlayer;
+        Optional<Player> playerOptional = this.proxyServer.getPlayer(this.playerID);
+        playerOptional.ifPresent(value -> this.player = value);
+        return this.player;
     }
 }

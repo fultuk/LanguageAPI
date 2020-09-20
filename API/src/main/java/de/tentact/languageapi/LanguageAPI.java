@@ -99,13 +99,13 @@ public abstract class LanguageAPI {
 
     /**
      * Adds a translation to the default language with the parameters
-     * @param transkey    translationkey to the translation
+     * @param translationKey    translationkey to the translation
      * @param translation the translation to the translationkey
      * @param param       the parameters to the translation
      *
      * @return if the translation was added
      */
-    public abstract boolean addMessageToDefault(final String transkey, final String translation, final String param);
+    public abstract boolean addMessageToDefault(final String translationKey, final String translation, final String param);
 
     /**
      * @param multipleTranslation the translationkey to the set of translations
@@ -116,22 +116,22 @@ public abstract class LanguageAPI {
     public abstract void addTranslationKeyToMultipleTranslation(final String multipleTranslation, final String translationKey);
 
     /**
-     * @param transkey the translationkey to find the parameters
+     * @param translationKey the translationkey to find the parameters
      * @param param    the parameters to the translationkey (ex. %KEY%)
      */
-    public abstract void addParameter(final String transkey, final String param);
+    public abstract void addParameter(final String translationKey, final String param);
 
     /**
-     * @param transkey the translationkey to find the parameters
+     * @param translationKey the translationkey to find the parameters
      * @param param    the parameters to the translationkey (ex. %KEY%)
      */
-    public abstract void deleteParameter(final String transkey, final String param);
+    public abstract void deleteParameter(final String translationKey, final String param);
 
     /**
-     * @param transkey the translationkey to find the parameters
+     * @param translationKey the translationkey to find the parameters
      *                 deletes all parameter to a translationkey
      */
-    public abstract void deleteAllParameter(final String transkey);
+    public abstract void deleteAllParameter(final String translationKey);
 
 
     /**
@@ -296,17 +296,17 @@ public abstract class LanguageAPI {
     public abstract String getDefaultLanguage();
 
     /**
-     * @return returns the prefix of the api (languageapi-prefix) in the default language {@link LanguageAPI#getPrefix(String)}
+     * @return returns the prefix of the api (languageapi-prefix) in the default language {@link LanguageAPI#getLanguageAPIPrefix(String)}
      */
     @NotNull
-    public abstract String getPrefix();
+    public abstract String getLanguageAPIPrefix();
 
     /**
      * @param language the language of the prefix
      * @return returns the prefix to the language
      */
     @NotNull
-    public abstract String getPrefix(String language);
+    public abstract String getLanguageAPIPrefix(String language);
 
     /**
      * Gets an {@link PlayerManager} to get {@link de.tentact.languageapi.player.LanguagePlayer} & {@link de.tentact.languageapi.player.LanguageOfflinePlayer}

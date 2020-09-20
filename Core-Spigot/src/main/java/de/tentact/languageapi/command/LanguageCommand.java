@@ -264,7 +264,7 @@ public class LanguageCommand implements TabExecutor {
                             if (this.checkDoesNotHavePermission(player, args)) {
                                 return false;
                             }
-                            if(args.length < 3) {
+                            if (args.length < 3) {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_HELP.get());
                                 return false;
                             }
@@ -273,12 +273,12 @@ public class LanguageCommand implements TabExecutor {
                                 return false;
                             }
                             File file = new File("plugins/LanguageAPI/import", args[1]);
-                            if(!file.exists()) {
+                            if (!file.exists()) {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_FILE_NOT_FOUND.get().replace("%FILE%", args[1]));
                                 return false;
                             }
                             boolean passed = this.languageAPI.getFileHandler().loadFile(file, Boolean.parseBoolean(args[2]));
-                            if(!passed) {
+                            if (!passed) {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_ERROR.get());
                                 return false;
                             }
@@ -288,11 +288,11 @@ public class LanguageCommand implements TabExecutor {
                             if (this.checkDoesNotHavePermission(player, args)) {
                                 return false;
                             }
+
+                            this.languageSpigot.getLogger().log(Level.INFO, "Reloading config.json...");
                             this.languageSpigot.configuration = new Configuration(this.languageSpigot.getLogger());
-                            Bukkit.getScheduler().runTaskLater(languageSpigot, () -> {
-                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_RELOAD_SUCCESS.get());
-                                this.languageSpigot.getLogger().log(Level.INFO, "Reloading config.json...");
-                            }, 50L);
+                            languagePlayer.sendMessage(I18N.LANGUAGEAPI_RELOAD_SUCCESS.get());
+
                             break;
                         case "help":
                             if (this.checkDoesNotHavePermission(player, args)) {

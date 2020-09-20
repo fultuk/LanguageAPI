@@ -8,14 +8,17 @@ package de.tentact.languageapi.api;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.velocitypowered.api.proxy.ProxyServer;
 import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.LanguageVelocity;
 import de.tentact.languageapi.configuration.LanguageConfig;
 import de.tentact.languageapi.configuration.MySQL;
 import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.i18n.Translation;
 import de.tentact.languageapi.player.*;
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -30,19 +33,22 @@ import java.util.logging.Level;
 
 public class LanguageAPIImpl extends LanguageAPI {
 
+
     private final MySQL mySQL;
     private final LanguageConfig languageConfig;
+    private final ProxyServer proxyServer;
 
     private final Cache<String, HashMap<String, String>> translationCache;
-    private final FileHandler fileHandler = new FileHandlerImpl(this);
     private final HashMap<String, Translation> translationMap = new HashMap<>();
-    private final PlayerManager playerManager = new PlayerManagerImpl();
+    private final PlayerManager playerManager;
     private final PlayerExecutor playerExecutor;
-    private final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("LanguageAPI-Thread-%d").build());
+    private final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactoryBuilder().build());
 
-    public LanguageAPIImpl(LanguageConfig languageConfig) {
-        this.languageConfig = languageConfig;
-        this.playerExecutor = new PlayerExecutorImpl(this, languageConfig);
+    public LanguageAPIImpl(LanguageVelocity languageVelocity) {
+        this.languageConfig = languageVelocity.getLanguageConfig();
+        this.proxyServer = languageVelocity.getProxyServer();
+        this.playerManager = new PlayerManagerImpl(this.proxyServer);
+        this.playerExecutor = new PlayerExecutorImpl(this, languageConfig, languageVelocity.getProxyServer());
         this.mySQL = languageConfig.getMySQL();
         this.translationCache = CacheBuilder.newBuilder().expireAfterWrite(languageConfig.getLanguageSetting().getCachedTime(), TimeUnit.MINUTES).build();
     }
@@ -58,8 +64,7 @@ public class LanguageAPIImpl extends LanguageAPI {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-            this.addMessage("languageapi-prefix", language, "");
-            this.logInfo("Creating new language:" + language);
+            logInfo("Creating new language:" + language);
         }
     }
 
@@ -79,7 +84,7 @@ public class LanguageAPIImpl extends LanguageAPI {
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
-                this.logInfo("Deleting language:" + language);
+                logInfo("Deleting language:" + language);
             });
         }
     }
@@ -107,11 +112,12 @@ public class LanguageAPIImpl extends LanguageAPI {
             try (Connection connection = this.getDataSource().getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO " + language.toLowerCase() + " (transkey, translation) VALUES (?,?);")) {
                 preparedStatement.setString(1, transkey.toLowerCase());
-                preparedStatement.setString(2, ChatColor.translateAlternateColorCodes('&', message));
+                preparedStatement.setString(2, this.translateAlternateColorCodes(message));
                 preparedStatement.execute();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
+
         });
         return true;
     }
@@ -259,7 +265,7 @@ public class LanguageAPIImpl extends LanguageAPI {
         }
         try (Connection connection = this.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("UPDATE " + language + " SET translation=? WHERE transkey=?;")) {
-            preparedStatement.setString(1, ChatColor.translateAlternateColorCodes('&', message));
+            preparedStatement.setString(1, this.translateAlternateColorCodes(message));
             preparedStatement.setString(2, transkey.toLowerCase());
             preparedStatement.execute();
         } catch (SQLException throwables) {
@@ -399,7 +405,6 @@ public class LanguageAPIImpl extends LanguageAPI {
         }
         if (!this.isKey(transkey, lang)) {
             this.languageConfig.getLogger().log(Level.WARNING, "Translationkey '" + transkey + "' not found in language '" + lang + "'");
-            this.languageConfig.getLogger().log(Level.WARNING, "As result you will get the translationkey as translation");
             return transkey;
         }
         if (this.translationCache.getIfPresent(transkey) != null && Objects.requireNonNull(this.translationCache.getIfPresent(transkey)).containsKey(lang)) {
@@ -408,7 +413,7 @@ public class LanguageAPIImpl extends LanguageAPI {
         try (Connection connection = this.mySQL.getDataSource().getConnection();
              ResultSet rs = connection.createStatement().executeQuery("SELECT translation FROM " + lang.toLowerCase() + " WHERE transkey='" + transkey.toLowerCase() + "';")) {
             if (rs.next()) {
-                String translation = ChatColor.translateAlternateColorCodes('&', rs.getString("translation"));
+                String translation = this.translateAlternateColorCodes(rs.getString("translation"));
 
                 HashMap<String, String> cacheMap = new HashMap<>();
                 cacheMap.put(lang, translation);
@@ -480,7 +485,7 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @Override
     public @NotNull String getDefaultLanguage() {
-        return this.languageConfig.getLanguageSetting().getDefaultLanguage().toLowerCase();
+        return this.languageConfig.getLanguageSetting().getDefaultLanguage();
     }
 
     @Override
@@ -520,17 +525,7 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @Override
     public @NotNull SpecificPlayerExecutor getSpecificPlayerExecutor(@NotNull UUID playerId) {
-        return new SpecificPlayerExecutorImpl(playerId);
-    }
-
-    @Override
-    public void updateTranslation(Translation translation) {
-        this.translationMap.put(translation.getTranslationKey(), translation);
-    }
-
-    @Override
-    public FileHandler getFileHandler() {
-        return this.fileHandler;
+        return new SpecificPlayerExecutorImpl(languageConfig, this.proxyServer, playerId);
     }
 
     private HikariDataSource getDataSource() {
@@ -541,5 +536,19 @@ public class LanguageAPIImpl extends LanguageAPI {
         this.languageConfig.getLogger().log(Level.INFO, message);
     }
 
+    @Override
+    public void updateTranslation(Translation translation) {
+        this.translationMap.put(translation.getTranslationKey(), translation);
+    }
+
+    @Override
+    public FileHandler getFileHandler() {
+        throw new UnsupportedOperationException("This feature is not implemented for BungeeCord.");
+    }
+
+    private String translateAlternateColorCodes(String input) {
+        TextComponent textComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(input);
+        return LegacyComponentSerializer.legacySection().serialize(textComponent);
+    }
 
 }

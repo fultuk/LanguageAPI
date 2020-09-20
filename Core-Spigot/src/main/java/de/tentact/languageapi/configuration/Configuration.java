@@ -12,6 +12,7 @@ import com.github.derrop.documents.Documents;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.logging.Logger;
@@ -37,7 +38,8 @@ public class Configuration {
             inventoryDocument = Documents.jsonStorage().read(inventoryFile);
         } else {
             try {
-                inventoryFile.createNewFile();
+                Files.createDirectories(inventoryFile.getParentFile().toPath());
+                Files.createFile(inventoryFile.toPath());
                 inventoryDocument.append("config",
                         new LanguageInventory(
                                 new LanguageInventoryConfiguration(
@@ -70,7 +72,8 @@ public class Configuration {
             settingsDocument = Documents.jsonStorage().read(settingsFile);
         } else {
             try {
-                settingsFile.createNewFile();
+                Files.createDirectories(settingsFile.getParentFile().toPath());
+                Files.createFile(settingsFile.toPath());
                 settingsDocument.append("config",
                         new LanguageConfig(
                                 new MySQL(

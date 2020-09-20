@@ -6,9 +6,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
 /**
- * You can get this interface by {@link PlayerManager#getLanguagePlayer(UUID)} or {@link PlayerExecutor#getLanguagePlayer(UUID)}
+ * You can get this by {@link PlayerManager#getLanguagePlayer(UUID)} or {@link PlayerExecutor#getLanguagePlayer(UUID)}
  */
 public interface LanguagePlayer extends LanguageOfflinePlayer {
+
     /**
      * Sends a message to the player by a {@link Translation}
      * @param translation the {@link Translation} to get the translated message from
@@ -17,9 +18,9 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
 
     /**
      * Sends a message to the player by a translationkey
-     * @param transkey the translationkey to get the translation from
+     * @param translationKey the translationkey to get the translation from
      */
-    void sendMessageByKey(@NotNull String transkey);
+    void sendMessageByKey(@NotNull String translationKey);
 
     /**
      * Sends multiple messages to the player by a single multipleTranslationKey

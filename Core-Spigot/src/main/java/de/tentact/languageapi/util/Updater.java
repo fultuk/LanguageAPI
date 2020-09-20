@@ -34,7 +34,7 @@ public class Updater {
 
         this.onlineVersion = Integer.parseInt(online);
         if (this.onlineVersion > this.localVersion) {
-            Bukkit.broadcastMessage(LanguageAPI.getInstance().getPrefix() + "Es ist ein neues Update verfügbar. Aktuelle Version: §6"
+            Bukkit.broadcastMessage(LanguageAPI.getInstance().getLanguageAPIPrefix() + "Es ist ein neues Update verfügbar. Aktuelle Version: §6"
                     + plugin.getDescription().getVersion() + "§7, neuste Version: §c" + this.getOnlineVersion(this.pluginName));
         }
         this.isEnabled = true;

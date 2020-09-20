@@ -5,39 +5,58 @@ package de.tentact.languageapi;
     Uhrzeit: 17:20
 */
 
+import com.google.inject.Inject;
+import com.velocitypowered.api.plugin.Plugin;
+import com.velocitypowered.api.proxy.ProxyServer;
 import de.tentact.languageapi.api.LanguageAPIImpl;
 import de.tentact.languageapi.configuration.Configuration;
 import de.tentact.languageapi.configuration.LanguageConfig;
 import de.tentact.languageapi.configuration.MySQL;
 import de.tentact.languageapi.util.Updater;
-import net.md_5.bungee.api.plugin.Plugin;
 
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class LanguageBungeecord extends Plugin {
+@Plugin(id="LanguageAPI", name = "LanguageAPI", version = "1.9", authors = {"0utplay"})
+public class LanguageVelocity {
 
     private MySQL mySQL;
-    private Configuration configuration;
+    private final Configuration configuration;
     private LanguageConfig languageConfig;
+    private final Logger logger;
+    private final ProxyServer proxyServer;
 
-    @Override
-    public void onEnable() {
+    @Inject
+    public LanguageVelocity(ProxyServer proxyServer, Logger logger) {
+        this.logger = logger;
+        this.proxyServer = proxyServer;
         this.configuration = new Configuration(this.getLogger());
         this.languageConfig = this.configuration.getLanguageConfig();
+
         mySQL = this.configuration.getLanguageConfig().getMySQL();
         mySQL.connect();
-        LanguageAPI.setInstance(new LanguageAPIImpl(this.languageConfig));
+        LanguageAPI.setInstance(new LanguageAPIImpl(this));
+
         mySQL.createDefaultTable();
+
         LanguageAPI.getInstance().createLanguage(this.languageConfig.getLanguageSetting().getDefaultLanguage());
-        new Updater(this);
+
+        new Updater(this.proxyServer, this.logger);
     }
 
-    @Override
-    public void onDisable() {
-        mySQL.closeConnection();
+    public Logger getLogger() {
+        return this.logger;
+    }
+
+    public ProxyServer getProxyServer() {
+        return this.proxyServer;
     }
 
     public void logInfo(String info) {
         this.getLogger().log(Level.INFO, info);
+    }
+
+    public LanguageConfig getLanguageConfig() {
+        return this.languageConfig;
     }
 }

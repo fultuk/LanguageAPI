@@ -26,7 +26,7 @@ public class Updater {
         int localVersion = Integer.parseInt(plugin.getDescription().getVersion().replace(".", ""));
         int onlineVersion = Integer.parseInt(this.getOnlineVersion(pluginName).replace(".", ""));
         if(onlineVersion > localVersion) {
-            ProxyServer.getInstance().broadcast(TextComponent.fromLegacyText(LanguageAPI.getInstance().getPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
+            ProxyServer.getInstance().broadcast(TextComponent.fromLegacyText(LanguageAPI.getInstance().getLanguageAPIPrefix()+"Es ist ein neues Update verfügbar. Aktuelle Version: §6"
                     +plugin.getDescription().getVersion()+"§7, neuste Version: §c"+this.getOnlineVersion(pluginName)));
         }
     }

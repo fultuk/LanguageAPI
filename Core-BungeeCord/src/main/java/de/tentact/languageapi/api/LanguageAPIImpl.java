@@ -117,13 +117,13 @@ public class LanguageAPIImpl extends LanguageAPI {
     }
 
     @Override
-    public void addParameter(final String transkey, final String param) {
+    public void addParameter(final String translationKey, final String param) {
         if(param == null || param.isEmpty()) {
             return;
         }
         try (Connection connection = this.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("REPLACE INTO Parameter(transkey, param) VALUES (?,?);")) {
-            preparedStatement.setString(1, transkey.toLowerCase());
+            preparedStatement.setString(1, translationKey.toLowerCase());
             preparedStatement.setString(2, param.replace(" ", ""));
             preparedStatement.execute();
         } catch (SQLException throwables) {
@@ -132,17 +132,17 @@ public class LanguageAPIImpl extends LanguageAPI {
     }
 
     @Override
-    public void deleteParameter(final String transkey, final String param) {
-        if (!this.hasParameter(transkey)) {
+    public void deleteParameter(final String translationKey, final String param) {
+        if (!this.hasParameter(translationKey)) {
             return;
         }
-        if (!this.getParameter(transkey).contains(param)) {
+        if (!this.getParameter(translationKey).contains(param)) {
             return;
         }
         try (Connection connection = this.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Parameter SET param=? WHERE transkey=?;")) {
-            preparedStatement.setString(1, this.getParameter(transkey).replace(param, ""));
-            preparedStatement.setString(2, transkey);
+            preparedStatement.setString(1, this.getParameter(translationKey).replace(param, ""));
+            preparedStatement.setString(2, translationKey);
             preparedStatement.execute();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -150,13 +150,13 @@ public class LanguageAPIImpl extends LanguageAPI {
     }
 
     @Override
-    public void deleteAllParameter(final String transkey) {
-        if (!this.hasParameter(transkey)) {
+    public void deleteAllParameter(final String translationKey) {
+        if (!this.hasParameter(translationKey)) {
             return;
         }
         try (Connection connection = this.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Parameter WHERE transkey=?;")) {
-            preparedStatement.setString(1, transkey);
+            preparedStatement.setString(1, translationKey);
             preparedStatement.execute();
 
         } catch (SQLException throwables) {
@@ -180,9 +180,9 @@ public class LanguageAPIImpl extends LanguageAPI {
     }
 
     @Override
-    public boolean addMessageToDefault(final String transkey, final String translation, final String param) {
-        this.addParameter(transkey, param);
-        return this.addMessageToDefault(transkey, translation);
+    public boolean addMessageToDefault(final String translationKey, final String translation, final String param) {
+        this.addParameter(translationKey, param);
+        return this.addMessageToDefault(translationKey, translation);
 
     }
 
@@ -483,12 +483,12 @@ public class LanguageAPIImpl extends LanguageAPI {
     }
 
     @Override
-    public @NotNull String getPrefix() {
+    public @NotNull String getLanguageAPIPrefix() {
         return this.getMessage("languageapi-prefix", this.getDefaultLanguage());
     }
 
     @Override
-    public @NotNull String getPrefix(String language) {
+    public @NotNull String getLanguageAPIPrefix(String language) {
         return this.getMessage("languageapi-prefix", language);
     }
 
