@@ -17,7 +17,7 @@ import de.tentact.languageapi.util.Updater;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Plugin(id="LanguageAPI", name = "LanguageAPI", version = "1.9", authors = {"0utplay"})
+@Plugin(id="languageapi", name = "LanguageAPI", version = "1.9", authors = {"0utplay"})
 public class LanguageVelocity {
 
     private MySQL mySQL;

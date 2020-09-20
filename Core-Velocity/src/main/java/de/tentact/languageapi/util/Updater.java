@@ -24,7 +24,7 @@ public class Updater {
 
     public Updater(ProxyServer proxyServer, Logger logger) {
         this.logger = logger;
-        Optional<PluginContainer> optionalPluginContainer = proxyServer.getPluginManager().getPlugin("LanguageAPI");
+        Optional<PluginContainer> optionalPluginContainer = proxyServer.getPluginManager().getPlugin("languageapi");
         if (optionalPluginContainer.isPresent()) {
             PluginDescription description = optionalPluginContainer.get().getDescription();
             this.logger.log(Level.INFO, "Checking for updates...");
