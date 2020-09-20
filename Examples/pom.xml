@@ -5,7 +5,7 @@
     <parent>
         <artifactId>LanguageAPI-parent</artifactId>
         <groupId>de.tentact.languageapi</groupId>
-        <version>1.8-RELEASE</version>
+        <version>1.9-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,7 +15,7 @@
         <dependency>
             <groupId>de.tentact.languageapi</groupId>
             <artifactId>API</artifactId>
-            <version>1.8-RELEASE</version>
+            <version>1.9-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
