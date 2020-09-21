@@ -25,15 +25,14 @@ import java.util.logging.Level;
 
 public class LanguageCommand implements TabExecutor {
 
-
     public LanguageAPI languageAPI = LanguageAPI.getInstance();
 
     private final List<String> tabComplete = Arrays.asList("add", "remove", "update", "create", "delete",
             "param", "copy", "translations", "reload", "import", "help");
 
-    public static ArrayList<Player> editingMessage = new ArrayList<>();
+    public ArrayList<Player> editingMessage = new ArrayList<>();
 
-    public static HashMap<Player, List<String>> givenParameter = new HashMap<>();
+    public HashMap<Player, List<String>> givenParameter = new HashMap<>();
 
     private final LanguageSpigot languageSpigot;
 

@@ -8,9 +8,11 @@ package de.tentact.languageapi.listener;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.LanguageSpigot;
 import de.tentact.languageapi.command.LanguageCommand;
 import de.tentact.languageapi.i18n.I18N;
 import de.tentact.languageapi.player.LanguagePlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,6 +28,12 @@ public class ChatListener implements Listener {
 
     private final Cache<LanguagePlayer, ArrayList<String>> editedMessage = CacheBuilder.newBuilder().expireAfterWrite(15, TimeUnit.MINUTES).build();
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
+    private final LanguageCommand languageCommand;
+
+    public ChatListener(LanguageSpigot languageSpigot, LanguageCommand languageCommand) {
+        this.languageCommand = languageCommand;
+        Bukkit.getPluginManager().registerEvents(this, languageSpigot);
+    }
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
@@ -34,7 +42,7 @@ public class ChatListener implements Listener {
         if (languagePlayer == null) {
             return;
         }
-        if (LanguageCommand.editingMessage.contains(player)) {
+        if (this.languageCommand.editingMessage.contains(player)) {
             if (!event.getMessage().equalsIgnoreCase("finish")) {
                 ArrayList<String> currentArray = editedMessage.getIfPresent(languagePlayer);
                 if (currentArray != null) {
@@ -55,9 +63,9 @@ public class ChatListener implements Listener {
                 for (String message : Objects.requireNonNull(editedMessage.getIfPresent(languagePlayer))) {
                     result.append(message).append(" ");
                 }
-                String transkey = LanguageCommand.givenParameter.get(player).get(0);
-                String language = LanguageCommand.givenParameter.get(player).get(1);
-                LanguageCommand.editingMessage.remove(player);
+                String transkey = this.languageCommand.givenParameter.get(player).get(0);
+                String language = this.languageCommand.givenParameter.get(player).get(1);
+                this.languageCommand.editingMessage.remove(player);
                 languageAPI.updateMessage(transkey, result.toString(), language);
 
                 event.setCancelled(true);

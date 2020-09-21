@@ -37,7 +37,13 @@ public interface FileHandler {
      * @param doOverwrite whether to overwrite old translations
      * @return returns if all files were imported correctly
      */
-    boolean loadFiles(File[] files, boolean doOverwrite);
+    default boolean loadFiles(File[] files, boolean doOverwrite) {
+        boolean passed = false;
+        for (File file : files) {
+            passed = this.loadFile(file, doOverwrite);
+        }
+        return passed;
+    }
 
 
 }

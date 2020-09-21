@@ -86,7 +86,6 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
                 preparedStatement.setString(1, playerUUID.toString());
                 preparedStatement.setString(2, newLanguage.toLowerCase());
                 preparedStatement.execute();
-
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
@@ -101,7 +100,6 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
             preparedStatement.setString(1, playerUUID.toString());
             preparedStatement.setString(2, newLanguage.toLowerCase());
             preparedStatement.execute();
-
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

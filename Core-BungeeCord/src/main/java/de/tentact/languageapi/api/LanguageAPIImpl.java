@@ -58,7 +58,8 @@ public class LanguageAPIImpl extends LanguageAPI {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-            logInfo("Creating new language:" + language);
+            this.addMessage("languageapi-prefix", "&eLanguageAPI x &7", language);
+            this.logInfo("Creating new language:" + language);
         }
     }
 

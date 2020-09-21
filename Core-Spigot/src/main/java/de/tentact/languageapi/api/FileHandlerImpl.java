@@ -40,13 +40,4 @@ public class FileHandlerImpl implements FileHandler {
         });
         return true;
     }
-
-    @Override
-    public boolean loadFiles(File[] files, boolean doOverwrite) {
-        boolean passed = false;
-        for (File file : files) {
-            passed = this.loadFile(file, doOverwrite);
-        }
-        return passed;
-    }
 }

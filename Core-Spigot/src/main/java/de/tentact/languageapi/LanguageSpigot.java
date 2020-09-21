@@ -14,8 +14,6 @@ import de.tentact.languageapi.listener.ChatListener;
 import de.tentact.languageapi.listener.InventoryClickListener;
 import de.tentact.languageapi.listener.JoinListener;
 import de.tentact.languageapi.util.Updater;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
@@ -43,13 +41,13 @@ public class LanguageSpigot extends JavaPlugin {
         LanguageAPI.getInstance().createLanguage(languageConfig.getLanguageSetting().getDefaultLanguage());
         this.updater = new Updater(this);
 
-        Objects.requireNonNull(this.getCommand("languageapi")).setExecutor(new LanguageCommand(this));
+        LanguageCommand languageCommand = new LanguageCommand(this);
+        Objects.requireNonNull(this.getCommand("languageapi")).setExecutor(languageCommand);
         Objects.requireNonNull(this.getCommand("languageapi")).setTabCompleter(new LanguageCommand(this));
 
-        PluginManager pm = Bukkit.getPluginManager();
-        pm.registerEvents(new JoinListener(this), this);
-        pm.registerEvents(new ChatListener(), this);
-        pm.registerEvents(new InventoryClickListener(this.configuration.getLanguageInventory()), this);
+        new JoinListener(this);
+        new ChatListener(this, languageCommand);
+        new InventoryClickListener(this, this.configuration.getLanguageInventory());
     }
 
     @Override

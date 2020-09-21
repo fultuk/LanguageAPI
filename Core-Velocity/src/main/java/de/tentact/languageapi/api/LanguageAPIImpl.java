@@ -64,7 +64,8 @@ public class LanguageAPIImpl extends LanguageAPI {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-            logInfo("Creating new language:" + language);
+            this.addMessage("languageapi-prefix", "&eLanguageAPI x &7", language);
+            this.logInfo("Creating new language:" + language);
         }
     }
 
@@ -84,7 +85,7 @@ public class LanguageAPIImpl extends LanguageAPI {
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
-                logInfo("Deleting language:" + language);
+                this.logInfo("Deleting language:" + language);
             });
         }
     }

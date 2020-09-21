@@ -7,10 +7,12 @@ package de.tentact.languageapi.listener;
 */
 
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.LanguageSpigot;
 import de.tentact.languageapi.configuration.LanguageInventory;
 import de.tentact.languageapi.configuration.LanguageInventoryConfiguration;
 import de.tentact.languageapi.i18n.I18N;
 import de.tentact.languageapi.player.PlayerExecutor;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,9 +29,10 @@ public class InventoryClickListener implements Listener {
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private final PlayerExecutor playerExecutor = languageAPI.getPlayerExecutor();
 
-    public InventoryClickListener(LanguageInventory languageInventory) {
+    public InventoryClickListener(LanguageSpigot languageSpigot, LanguageInventory languageInventory) {
         this.languageInventory = languageInventory;
         this.languageInventoryConfiguration = languageInventory.getLanguageInventoryConfiguration();
+        Bukkit.getPluginManager().registerEvents(this, languageSpigot);
     }
 
     @EventHandler
