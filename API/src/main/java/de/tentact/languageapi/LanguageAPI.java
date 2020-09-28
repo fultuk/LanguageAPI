@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /*  Created in the IntelliJ IDEA.
@@ -271,7 +272,7 @@ public abstract class LanguageAPI {
      * @return returns all created languages
      */
     @NotNull
-    public abstract ArrayList<String> getAvailableLanguages();
+    public abstract List<String> getAvailableLanguages();
 
     /**
      * @param language the loanguage to get the keys from
@@ -279,7 +280,7 @@ public abstract class LanguageAPI {
      * @throws IllegalArgumentException if the language was not found
      */
     @NotNull
-    public abstract ArrayList<String> getAllTranslationKeys(String language);
+    public abstract List<String> getAllTranslationKeys(String language);
 
     /**
      * @param language the language to get the translations from
@@ -287,7 +288,10 @@ public abstract class LanguageAPI {
      * @throws IllegalArgumentException if the language was not found
      */
     @NotNull
-    public abstract ArrayList<String> getAllTranslations(String language);
+    public abstract List<String> getAllTranslations(String language);
+
+    @NotNull
+    public abstract Map<String, String> getKeysAndTranslations(String language);
 
     /**
      * @return returns the default language from the config

@@ -50,13 +50,17 @@ public enum I18N {
     LANGUAGEAPI_IMPORT_ERROR("languageapi-import-error", "Beim Importieren der Datei ist ein Fehler aufgetreten. \n" +
             "Die Datei muss 'language: LANGUAGEANAME' enthalten."),
     LANGUAGEAPI_IMPORT_FILE_NOT_FOUND("languageapi-import-file-not-found", "Die Datei %FILE% wurde in /plugins/LanguageAPI/import nicht gefunden.", "%FILE%"),
+    LANGUAGEAPI_EXPORT_SUCCESS("languageapi-export-succes", "Die Datei %FILE% wurde erfolgreich nach /plugins/LanguageAPI/export/%FILE% exportiert", "%FILE%"),
+    LANGUAGEAPI_EXPORT_HELP("languageapi-export-help", "Verwende /lang export <Sprache>"),
+    LANGUAGEAPI_EXPORT_ERROR("languageapi-export-error", "Beim Exportieren der Sprache %LANGUAGE% ist ein Fehler aufgetreten.", "%LANGUAGE%"),
     LANGUAGEAPI_NOPERMS("languageapi-noperms", "Du hast keine Rechte dazu."),
     LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE("languageapi-player-selected-language", "Du hast die Sprache %LANGUAGE% ausgewählt.", "%LANGUAGE%"),
     LANGUAGEAPI_HELP("languageapi-help", Arrays.asList("languageapi-add-help",
             "languageapi-update-help",
             "languageapi-copy-help",
             "languageapi-create-help",
-            "languageapi-import-help"));
+            "languageapi-import-help",
+            "languageapi-export-help"));
 
 
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();

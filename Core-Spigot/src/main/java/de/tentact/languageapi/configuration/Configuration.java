@@ -26,6 +26,7 @@ public class Configuration {
     File settingsFile = new File("plugins/LanguageAPI", "config.json");
 
     File importDir = new File("plugins/LanguageAPI/import");
+    File exportDir = new File("plugins/LanguageAPI/export");
 
     private LanguageInventory languageInventory;
     private LanguageConfig languageConfig;
@@ -33,6 +34,9 @@ public class Configuration {
     public Configuration(Logger logger) {
         if (!importDir.exists()) {
             importDir.mkdirs();
+        }
+        if(!exportDir.exists()) {
+            exportDir.mkdirs();
         }
         if (inventoryFile.exists()) {
             inventoryDocument = Documents.jsonStorage().read(inventoryFile);

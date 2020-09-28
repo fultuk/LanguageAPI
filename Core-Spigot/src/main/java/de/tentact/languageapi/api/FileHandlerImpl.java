@@ -11,6 +11,7 @@ import de.tentact.languageapi.file.FileHandler;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 
 public class FileHandlerImpl implements FileHandler {
@@ -38,6 +39,25 @@ public class FileHandlerImpl implements FileHandler {
                 this.languageAPI.updateMessage(key, yamlConfiguration.getString(key), languageName);
             }
         });
+        return true;
+    }
+
+    @Override
+    public boolean exportFile(String language) {
+        if(!this.languageAPI.isLanguage(language)) {
+            return false;
+        }
+        File exportFile = new File("plugins/LanguageAPI/export", language+".yml");
+        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(exportFile);
+
+        configuration.set("language", language.toLowerCase());
+        this.languageAPI.getKeysAndTranslations(language).forEach(configuration::set);
+
+        try {
+            configuration.save(exportFile);
+        } catch (IOException e) {
+            return false;
+        }
         return true;
     }
 }

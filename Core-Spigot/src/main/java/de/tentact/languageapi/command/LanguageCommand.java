@@ -28,7 +28,7 @@ public class LanguageCommand implements TabExecutor {
     public LanguageAPI languageAPI = LanguageAPI.getInstance();
 
     private final List<String> tabComplete = Arrays.asList("add", "remove", "update", "create", "delete",
-            "param", "copy", "translations", "reload", "import", "help");
+            "param", "copy", "translations", "reload", "import", "export", "help");
 
     public ArrayList<Player> editingMessage = new ArrayList<>();
 
@@ -195,7 +195,7 @@ public class LanguageCommand implements TabExecutor {
                             }
                             languages = args[1].toLowerCase();
                             if (this.languageAPI.getAvailableLanguages().contains(languages)) {
-                                ArrayList<String> allKeys = this.languageAPI.getAllTranslationKeys(languages);
+                                List<String> allKeys = this.languageAPI.getAllTranslationKeys(languages);
                                 for (int i = 0; i < allKeys.size(); i++) {
                                     languagePlayer.sendMessage(I18N.LANGUAGEAPI_TRANSLATION_SUCCESS.get().replace("%KEY%", allKeys.get(i))
                                             .replace("%MSG%", this.languageAPI.getAllTranslations(languages).get(i)));
@@ -282,6 +282,25 @@ public class LanguageCommand implements TabExecutor {
                                 return false;
                             }
                             languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_SUCCESS.get().replace("%FILE%", args[1]));
+                            break;
+                        case "export":
+                            if (this.checkDoesNotHavePermission(player, args)) {
+                                return false;
+                            }
+                            if (args.length < 2) {
+                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_EXPORT_HELP.get());
+                                return false;
+                            }
+                            if(!this.languageAPI.isLanguage(args[1])) {
+                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_NOT_FOUND.get());
+                                return false;
+                            }
+                            passed = this.languageAPI.getFileHandler().exportFile(args[1]);
+                            if (!passed) {
+                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_EXPORT_ERROR.get().replace("%LANGUAGE%", args[1]));
+                                return false;
+                            }
+                            languagePlayer.sendMessage(I18N.LANGUAGEAPI_EXPORT_SUCCESS.get().replace("%FILE%", args[1].toLowerCase()+".yml"));
                             break;
                         case "reload":
                             if (this.checkDoesNotHavePermission(player, args)) {

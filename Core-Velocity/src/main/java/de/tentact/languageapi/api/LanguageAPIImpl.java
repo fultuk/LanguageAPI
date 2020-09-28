@@ -485,6 +485,16 @@ public class LanguageAPIImpl extends LanguageAPI {
     }
 
     @Override
+    public @NotNull Map<String, String> getKeysAndTranslations(String language) {
+        if(!this.isLanguage(language)) {
+            throw new IllegalArgumentException(language + " was not found");
+        }
+        Map<String, String> keysAndTranslations = new HashMap<>();
+        this.getAllTranslationKeys(language).forEach(key -> keysAndTranslations.put(key, this.getMessage(key, language)));
+        return keysAndTranslations;
+    }
+
+    @Override
     public @NotNull String getDefaultLanguage() {
         return this.languageConfig.getLanguageSetting().getDefaultLanguage();
     }

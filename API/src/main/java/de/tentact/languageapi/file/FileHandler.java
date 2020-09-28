@@ -45,5 +45,6 @@ public interface FileHandler {
         return passed;
     }
 
+    boolean exportFile(String language);
 
 }

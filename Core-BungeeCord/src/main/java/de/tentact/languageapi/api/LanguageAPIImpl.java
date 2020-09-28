@@ -466,8 +466,8 @@ public class LanguageAPIImpl extends LanguageAPI {
     }
 
     @Override
-    public @NotNull ArrayList<String> getAllTranslationKeys(String language) {
-        ArrayList<String> keys = new ArrayList<>();
+    public @NotNull List<String> getAllTranslationKeys(String language) {
+        List<String> keys = new ArrayList<>();
         if (this.isLanguage(language)) {
             try (Connection connection = this.mySQL.getDataSource().getConnection();
                  ResultSet rs = connection.createStatement().executeQuery("SELECT transkey FROM " + language)) {
@@ -483,8 +483,8 @@ public class LanguageAPIImpl extends LanguageAPI {
     }
 
     @Override
-    public @NotNull ArrayList<String> getAllTranslations(String language) {
-        ArrayList<String> messages = new ArrayList<>();
+    public @NotNull List<String> getAllTranslations(String language) {
+        List<String> messages = new ArrayList<>();
         if (this.isLanguage(language)) {
             try (Connection connection = this.mySQL.getDataSource().getConnection();
                  ResultSet rs = connection.createStatement().executeQuery("SELECT translation FROM " + language)) {
@@ -500,6 +500,16 @@ public class LanguageAPIImpl extends LanguageAPI {
     }
 
     @Override
+    public @NotNull Map<String, String> getKeysAndTranslations(String language) {
+        if (!this.isLanguage(language)) {
+            throw new IllegalArgumentException(language + " was not found");
+        }
+        Map<String, String> keysAndTranslations = new HashMap<>();
+        this.getAllTranslationKeys(language).forEach(key -> keysAndTranslations.put(key, this.getMessage(key, language)));
+        return keysAndTranslations;
+    }
+
+        @Override
     public @NotNull String getDefaultLanguage() {
         return this.languageConfig.getLanguageSetting().getDefaultLanguage().toLowerCase();
     }
