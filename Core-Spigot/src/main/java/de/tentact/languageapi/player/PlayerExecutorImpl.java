@@ -120,7 +120,7 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
         } else {
             if (!languageAPI.isLanguage(this.getPlayerLanguage(playerUUID))) {
                 this.setPlayerLanguage(playerUUID, languageAPI.getDefaultLanguage());
-                logInfo("Updating players selected language");
+                this.logInfo("Updating players selected language");
             }
         }
     }

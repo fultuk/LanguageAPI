@@ -33,11 +33,9 @@ import java.util.logging.Level;
 
 public class LanguageAPIImpl extends LanguageAPI {
 
-
     private final MySQL mySQL;
     private final LanguageConfig languageConfig;
     private final ProxyServer proxyServer;
-
     private final Cache<String, HashMap<String, String>> translationCache;
     private final HashMap<String, Translation> translationMap = new HashMap<>();
     private final PlayerManager playerManager;
@@ -555,6 +553,11 @@ public class LanguageAPIImpl extends LanguageAPI {
     @Override
     public FileHandler getFileHandler() {
         throw new UnsupportedOperationException("This feature is not implemented for BungeeCord.");
+    }
+
+    @Override
+    public void executeAsync(Runnable command) {
+        this.executorService.execute(command);
     }
 
     private String translateAlternateColorCodes(String input) {

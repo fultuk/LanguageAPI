@@ -24,7 +24,6 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
     @Override
     public void sendMessage(@NotNull Translation translation) {
         this.getPlayer().sendMessage(translation.getMessage(this.getLanguage()));
-
     }
 
 
@@ -49,7 +48,6 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
             throw new IllegalArgumentException(multipleTranslationKey + " was not found");
         }
         this.languageAPI.getMultipleMessages(multipleTranslationKey, language).forEach(Objects.requireNonNull(this.getPlayer())::sendMessage);
-
     }
 
     @Override

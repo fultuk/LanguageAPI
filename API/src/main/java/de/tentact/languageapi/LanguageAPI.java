@@ -361,4 +361,6 @@ public abstract class LanguageAPI {
      * @return returns the {@link FileHandler}
      */
     public abstract FileHandler getFileHandler();
+
+    public abstract void executeAsync(Runnable command);
 }

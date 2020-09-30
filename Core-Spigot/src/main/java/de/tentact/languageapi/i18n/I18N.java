@@ -51,6 +51,7 @@ public enum I18N {
             "Die Datei muss 'language: LANGUAGEANAME' enthalten."),
     LANGUAGEAPI_IMPORT_FILE_NOT_FOUND("languageapi-import-file-not-found", "Die Datei %FILE% wurde in /plugins/LanguageAPI/import nicht gefunden.", "%FILE%"),
     LANGUAGEAPI_EXPORT_SUCCESS("languageapi-export-succes", "Die Datei %FILE% wurde erfolgreich nach /plugins/LanguageAPI/export/%FILE% exportiert", "%FILE%"),
+    LANGUAGEAPI_EXPORT_ALL_SUCCESS("languageapi-export-all-success", "Es wurden alle Sprachen erfolgreich exportiert."),
     LANGUAGEAPI_EXPORT_HELP("languageapi-export-help", "Verwende /lang export <Sprache>"),
     LANGUAGEAPI_EXPORT_ERROR("languageapi-export-error", "Beim Exportieren der Sprache %LANGUAGE% ist ein Fehler aufgetreten.", "%LANGUAGE%"),
     LANGUAGEAPI_NOPERMS("languageapi-noperms", "Du hast keine Rechte dazu."),
@@ -62,7 +63,6 @@ public enum I18N {
             "languageapi-import-help",
             "languageapi-export-help"));
 
-
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private final String key;
 
@@ -72,11 +72,7 @@ public enum I18N {
 
     I18N(String key, String defaultTranslation, String parameter) {
         this.key = key;
-        if (parameter == null || parameter.isEmpty()) {
-            this.languageAPI.addMessageToDefault(key, defaultTranslation);
-        } else {
-            this.languageAPI.addMessageToDefault(key, defaultTranslation, parameter);
-        }
+        this.languageAPI.addMessageToDefault(key, defaultTranslation, parameter);
     }
 
     I18N(String key, List<String> keys) {

@@ -291,17 +291,27 @@ public class LanguageCommand implements TabExecutor {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_EXPORT_HELP.get());
                                 return false;
                             }
-                            if(!this.languageAPI.isLanguage(args[1])) {
+                            if (!this.languageAPI.isLanguage(args[1]) && !args[1].equalsIgnoreCase("@a")) {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_NOT_FOUND.get());
                                 return false;
                             }
-                            passed = this.languageAPI.getFileHandler().exportFile(args[1]);
-                            if (!passed) {
-                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_EXPORT_ERROR.get().replace("%LANGUAGE%", args[1]));
-                                return false;
+                            if (args[1].equalsIgnoreCase("@a")) {
+                                passed = this.languageAPI.getFileHandler().exportAll();
+                                if(!passed) {
+                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_EXPORT_ERROR.get().replace("%LANGUAGE%", "@a"));
+                                    return false;
+                                }
+                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_EXPORT_ALL_SUCCESS.get());
+                            } else {
+                                passed = this.languageAPI.getFileHandler().exportLanguageToFile(args[1]);
+                                if (!passed) {
+                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_EXPORT_ERROR.get().replace("%LANGUAGE%", args[1]));
+                                    return false;
+                                }
+                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_EXPORT_SUCCESS.get().replace("%FILE%", args[1].toLowerCase() + ".yml"));
                             }
-                            languagePlayer.sendMessage(I18N.LANGUAGEAPI_EXPORT_SUCCESS.get().replace("%FILE%", args[1].toLowerCase()+".yml"));
                             break;
+
                         case "reload":
                             if (this.checkDoesNotHavePermission(player, args)) {
                                 return false;

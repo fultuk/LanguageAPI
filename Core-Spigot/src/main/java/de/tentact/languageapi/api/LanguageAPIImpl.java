@@ -532,12 +532,12 @@ public class LanguageAPIImpl extends LanguageAPI {
     }
 
     @Override
-    public @NotNull Translation getTranslation(String translationkey) {
-        if (this.translationMap.containsKey(translationkey)) {
-            return this.translationMap.get(translationkey);
+    public @NotNull Translation getTranslation(String translationKey) {
+        if (this.translationMap.containsKey(translationKey)) {
+            return this.translationMap.get(translationKey);
         }
-        Translation translation = new TranslationImpl(translationkey);
-        this.translationMap.put(translationkey, translation);
+        Translation translation = new TranslationImpl(translationKey);
+        this.translationMap.put(translationKey, translation);
         return translation;
     }
 
@@ -564,6 +564,11 @@ public class LanguageAPIImpl extends LanguageAPI {
     @Override
     public FileHandler getFileHandler() {
         return this.fileHandler;
+    }
+
+    @Override
+    public void executeAsync(Runnable command) {
+        this.executorService.execute(command);
     }
 
     private HikariDataSource getDataSource() {

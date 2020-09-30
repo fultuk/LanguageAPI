@@ -43,7 +43,16 @@ public class FileHandlerImpl implements FileHandler {
     }
 
     @Override
-    public boolean exportFile(String language) {
+    public boolean exportAll() {
+        boolean passed = false;
+        for(String language : this.languageAPI.getAvailableLanguages()) {
+            passed = this.exportLanguageToFile(language);
+        }
+        return passed;
+    }
+
+    @Override
+    public boolean exportLanguageToFile(String language) {
         if(!this.languageAPI.isLanguage(language)) {
             return false;
         }

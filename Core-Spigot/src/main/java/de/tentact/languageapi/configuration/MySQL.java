@@ -33,9 +33,8 @@ public class MySQL {
             dataSource.setJdbcUrl("jdbc:mysql://" + hostname + ":" + port + "/" + database);
             dataSource.setUsername(this.username);
             dataSource.setPassword(this.password);
+
             this.logger.log(Level.INFO,"Creating connection to database");
-
-
         }
     }
 

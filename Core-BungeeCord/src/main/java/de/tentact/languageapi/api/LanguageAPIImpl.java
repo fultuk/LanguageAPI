@@ -564,6 +564,11 @@ public class LanguageAPIImpl extends LanguageAPI {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public void executeAsync(Runnable command) {
+        this.executorService.execute(command);
+    }
+
     private HikariDataSource getDataSource() {
         return this.mySQL.getDataSource();
     }

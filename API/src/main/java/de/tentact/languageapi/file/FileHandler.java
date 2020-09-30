@@ -15,6 +15,7 @@ import java.io.File;
  */
 public interface FileHandler {
 
+
     default boolean loadFile(File file) {
         return this.loadFile(file, false);
     }
@@ -45,6 +46,8 @@ public interface FileHandler {
         return passed;
     }
 
-    boolean exportFile(String language);
+    boolean exportAll();
+
+    boolean exportLanguageToFile(String language);
 
 }

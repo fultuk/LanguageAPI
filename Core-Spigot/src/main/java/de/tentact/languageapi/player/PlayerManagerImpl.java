@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class PlayerManagerImpl implements PlayerManager{
+public class PlayerManagerImpl implements PlayerManager {
     @Override
     public @Nullable LanguagePlayer getLanguagePlayer(UUID playerId) {
         if(Bukkit.getPlayer(playerId) == null) {
@@ -24,7 +24,7 @@ public class PlayerManagerImpl implements PlayerManager{
 
     @Override
     public @NotNull Collection<LanguagePlayer> getOnlineLanguagePlayers() {
+        Bukkit.getPlayer()
         return Bukkit.getOnlinePlayers().stream().map(player -> this.getLanguagePlayer(player.getUniqueId())).collect(Collectors.toList());
     }
-
 }

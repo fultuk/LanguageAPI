@@ -27,9 +27,9 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
     private final Cache<UUID, String> languageCache = CacheBuilder.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
 
     public PlayerExecutorImpl(LanguageAPI languageAPI, LanguageConfig languageConfig) {
-        this.languageAPI = languageAPI;
-        this.mySQL = languageConfig.getMySQL();
         this.languageConfig = languageConfig;
+        this.mySQL = languageConfig.getMySQL();
+        this.languageAPI = languageAPI;
         this.dataSource = mySQL.getDataSource();
     }
 
@@ -39,7 +39,7 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
         if (!isRegisteredPlayer(playerUUID)) {
             this.registerPlayer(playerUUID);
         }
-        if(languageCache.getIfPresent(playerUUID) != null) {
+        if (languageCache.getIfPresent(playerUUID) != null) {
             return Objects.requireNonNull(languageCache.getIfPresent(playerUUID));
         }
         try (Connection connection = this.mySQL.getDataSource().getConnection()) {
@@ -57,7 +57,7 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
 
     @Override
     public boolean isPlayersLanguage(UUID playerUUID, String language) {
-        if(!this.languageAPI.isLanguage(language)) {
+        if (!this.languageAPI.isLanguage(language)) {
             return false;
         }
         return this.getPlayerLanguage(playerUUID).equalsIgnoreCase(language);
@@ -86,7 +86,6 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
                 preparedStatement.setString(1, playerUUID.toString());
                 preparedStatement.setString(2, newLanguage.toLowerCase());
                 preparedStatement.execute();
-
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
@@ -101,7 +100,6 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
             preparedStatement.setString(1, playerUUID.toString());
             preparedStatement.setString(2, newLanguage.toLowerCase());
             preparedStatement.execute();
-
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

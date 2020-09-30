@@ -28,7 +28,7 @@ public class LanguageSpigot extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        getLogger().log(Level.INFO, "Starting LanguageAPI");
+        this.getLogger().log(Level.INFO, "Starting LanguageAPI");
 
         this.configuration = new Configuration(this.getLogger());
         LanguageConfig languageConfig = this.configuration.getLanguageConfig();
