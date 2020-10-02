@@ -453,8 +453,8 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @NotNull
     @Override
-    public ArrayList<String> getAvailableLanguages() {
-        ArrayList<String> languages = new ArrayList<>();
+    public List<String> getAvailableLanguages() {
+        List<String> languages = new ArrayList<>();
         try (Connection connection = this.mySQL.getDataSource().getConnection();
              ResultSet rs = connection.createStatement().executeQuery("SELECT language FROM languages");) {
             while (rs.next()) {
@@ -467,8 +467,8 @@ public class LanguageAPIImpl extends LanguageAPI {
     }
 
     @Override
-    public @NotNull ArrayList<String> getAllTranslationKeys(String language) {
-        ArrayList<String> keys = new ArrayList<>();
+    public @NotNull List<String> getAllTranslationKeys(String language) {
+        List<String> keys = new ArrayList<>();
         if (this.isLanguage(language)) {
             try (Connection connection = this.mySQL.getDataSource().getConnection();
                  ResultSet rs = connection.createStatement().executeQuery("SELECT transkey FROM " + language)) {

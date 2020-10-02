@@ -452,8 +452,8 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @NotNull
     @Override
-    public ArrayList<String> getAvailableLanguages() {
-        ArrayList<String> languages = new ArrayList<>();
+    public List<String> getAvailableLanguages() {
+        List<String> languages = new ArrayList<>();
         try (Connection connection = this.mySQL.getDataSource().getConnection();
              ResultSet rs = connection.createStatement().executeQuery("SELECT language FROM languages");) {
             while (rs.next()) {

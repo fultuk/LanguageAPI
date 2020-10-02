@@ -19,7 +19,6 @@ public class SpecificPlayerExecutorImpl extends PlayerManagerImpl implements Spe
 
     @Override
     public @NotNull String getPlayerLanguage() {
-
         return this.playerExecutor.getPlayerLanguage(this.playerId);
     }
 

@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements LanguagePlayer {
@@ -23,7 +22,11 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
 
     @Override
     public void sendMessage(@NotNull Translation translation) {
-        this.getPlayer().sendMessage(translation.getMessage(this.getLanguage()));
+        Player player = this.getPlayer();
+        if(player == null) {
+            return;
+        }
+        player.sendMessage(translation.getMessage(this.getLanguage()));
     }
 
 
@@ -47,12 +50,20 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
         if (!this.languageAPI.isMultipleTranslation(multipleTranslationKey)) {
             throw new IllegalArgumentException(multipleTranslationKey + " was not found");
         }
-        this.languageAPI.getMultipleMessages(multipleTranslationKey, language).forEach(Objects.requireNonNull(this.getPlayer())::sendMessage);
+        Player player = this.getPlayer();
+        if(player == null) {
+            return;
+        }
+        this.languageAPI.getMultipleMessages(multipleTranslationKey, language).forEach(player::sendMessage);
     }
 
     @Override
     public void kickPlayer(Translation translation) {
-        this.getPlayer().kickPlayer(translation.getMessage(this.getLanguage()));
+        Player player = this.getPlayer();
+        if(player == null) {
+            return;
+        }
+        player.kickPlayer(translation.getMessage(this.getLanguage()));
     }
 
     private Player getPlayer() {
@@ -60,9 +71,6 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
             return this.player;
         }
         this.player = Bukkit.getPlayer(this.playerID);
-        if (this.player == null) {
-            throw new NullPointerException();
-        }
         return this.player;
     }
 

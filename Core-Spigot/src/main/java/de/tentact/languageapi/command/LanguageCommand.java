@@ -140,9 +140,8 @@ public class LanguageCommand implements TabExecutor {
 
                                 return true;
                             } else if (languages.equalsIgnoreCase("*")) {
-                                for (String langs : this.languageAPI.getAvailableLanguages()) {
-                                    this.languageAPI.deleteLanguage(langs);
-                                }
+                                this.languageAPI.getAvailableLanguages().forEach(language -> this.languageAPI.deleteLanguage(language));
+
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_DELETE_ALL_LANGS.get());
                                 return true;
                             } else {
