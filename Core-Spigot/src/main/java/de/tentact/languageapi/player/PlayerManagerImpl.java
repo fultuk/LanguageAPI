@@ -24,7 +24,6 @@ public class PlayerManagerImpl implements PlayerManager {
 
     @Override
     public @NotNull Collection<LanguagePlayer> getOnlineLanguagePlayers() {
-        Bukkit.getPlayer()
         return Bukkit.getOnlinePlayers().stream().map(player -> this.getLanguagePlayer(player.getUniqueId())).collect(Collectors.toList());
     }
 }
