@@ -552,7 +552,7 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @Override
     public FileHandler getFileHandler() {
-        throw new UnsupportedOperationException("This feature is not implemented for BungeeCord.");
+        throw new UnsupportedOperationException("This feature is not implemented for Velocity.");
     }
 
     @Override

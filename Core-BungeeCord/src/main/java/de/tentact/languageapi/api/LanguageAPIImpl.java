@@ -38,6 +38,7 @@ public class LanguageAPIImpl extends LanguageAPI {
     private final PlayerManager playerManager = new PlayerManagerImpl();
     private final PlayerExecutor playerExecutor;
     private final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("LanguageAPI-Thread-%d").build());
+    private final FileHandler fileHandler = new FileHandlerImpl(this);
 
     public LanguageAPIImpl(LanguageConfig languageConfig) {
         this.languageConfig = languageConfig;
@@ -509,7 +510,7 @@ public class LanguageAPIImpl extends LanguageAPI {
         return keysAndTranslations;
     }
 
-        @Override
+    @Override
     public @NotNull String getDefaultLanguage() {
         return this.languageConfig.getLanguageSetting().getDefaultLanguage().toLowerCase();
     }
@@ -561,7 +562,7 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @Override
     public FileHandler getFileHandler() {
-        throw new UnsupportedOperationException();
+        return this.fileHandler;
     }
 
     @Override

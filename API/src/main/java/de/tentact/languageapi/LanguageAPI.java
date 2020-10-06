@@ -60,8 +60,6 @@ public abstract class LanguageAPI {
      */
     public abstract void deleteLanguage(String language);
 
-
-
     /**
      * @param transkey the translationkey to find the translation
      * @param message  the translation to that translationkey

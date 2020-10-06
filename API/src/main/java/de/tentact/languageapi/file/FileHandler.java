@@ -11,21 +11,33 @@ import java.io.File;
 
 /**
  * This is used to import files and insert the values into the database
- * This feature is currently only available for spigot.
+ * This feature is currently only available for Spigot and Bungeecord.
+ *
+ * WARNING: This feature is implemented, but not tested for Bungeecord.
  */
+
 public interface FileHandler {
 
-
+    /**
+     * Loads a file and inserts the content to the database
+     * @param file the file that should be read
+     * @return returns if it imported correctly
+     */
     default boolean loadFile(File file) {
         return this.loadFile(file, false);
     }
 
+    /**
+     * Loads files and inserts the content to the database
+     * @param files the files that should be read
+     * @return returns if all files were imported correctly
+     */
     default boolean loadFiles(File[] files) {
        return this.loadFiles(files, false);
     }
 
     /**
-     *
+     * Loads a file and inserts the content to the database
      * @param file the file that should be read
      * @param doOverwrite whether to overwrite old translations
      * @return returns if it imported correctly
@@ -33,7 +45,7 @@ public interface FileHandler {
     boolean loadFile(File file, boolean doOverwrite);
 
     /**
-     *
+     * Loads files and inserts the content to the database
      * @param files the files that should be read
      * @param doOverwrite whether to overwrite old translations
      * @return returns if all files were imported correctly
@@ -46,8 +58,17 @@ public interface FileHandler {
         return passed;
     }
 
+    /**
+     * Export all languages to files
+     * @return whether all languages were exported or not
+     */
     boolean exportAll();
 
+    /**
+     * Exports all translationKeys and translations into a file
+     * @param language the language to export
+     * @return whether the language was exported or not
+     */
     boolean exportLanguageToFile(String language);
 
 }
