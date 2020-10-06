@@ -2,7 +2,6 @@ package de.tentact.languageapi.player;
 
 import com.velocitypowered.api.proxy.ProxyServer;
 import de.tentact.languageapi.LanguageAPI;
-import de.tentact.languageapi.configuration.LanguageConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,9 +13,9 @@ public class SpecificPlayerExecutorImpl extends PlayerManagerImpl implements Spe
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private final PlayerExecutor playerExecutor;
 
-    public SpecificPlayerExecutorImpl(LanguageConfig languageConfig, ProxyServer proxyServer, UUID playerId) {
+    public SpecificPlayerExecutorImpl(ProxyServer proxyServer, UUID playerId) {
         super(proxyServer);
-        this.playerExecutor = new PlayerExecutorImpl(this.languageAPI, languageConfig, proxyServer);
+        this.playerExecutor = this.languageAPI.getPlayerExecutor();
         this.playerId = playerId;
     }
 

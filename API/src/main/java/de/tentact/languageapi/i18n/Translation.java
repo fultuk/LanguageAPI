@@ -11,7 +11,6 @@ import java.util.UUID;
  */
 public interface Translation {
 
-
     /**
      * @return returns a translation of the key in the default language
      */

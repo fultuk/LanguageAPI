@@ -199,7 +199,7 @@ public class LanguageAPIImpl extends LanguageAPI {
     public void addTranslationKeyToMultipleTranslation(final String multipleTranslation, final String transkey) {
         String[] translationKeys = new String[]{};
         try (Connection connection = this.mySQL.getDataSource().getConnection();
-             ResultSet resultSet = connection.createStatement().executeQuery("SELECT transkeys FROM MultipleTranslation WHERE multipleKey='" + multipleTranslation.toLowerCase() + "'");) {
+             ResultSet resultSet = connection.createStatement().executeQuery("SELECT transkeys FROM MultipleTranslation WHERE multipleKey='" + multipleTranslation.toLowerCase() + "'")) {
             if (resultSet.next()) {
                 translationKeys = resultSet.getString("transkeys").split(",");
             }
@@ -399,7 +399,7 @@ public class LanguageAPIImpl extends LanguageAPI {
         ArrayList<String> resolvedMessages = new ArrayList<>();
         String[] translationKeys = new String[]{};
         try (Connection connection = this.mySQL.getDataSource().getConnection();
-             ResultSet resultSet = connection.createStatement().executeQuery("SELECT transkeys FROM MultipleTranslation WHERE multipleKey='" + transkey.toLowerCase() + "'");) {
+             ResultSet resultSet = connection.createStatement().executeQuery("SELECT transkeys FROM MultipleTranslation WHERE multipleKey='" + transkey.toLowerCase() + "'")) {
             if (resultSet.next()) {
                 String mysqlString = resultSet.getString("transkeys");
                 translationKeys = mysqlString.split(",");
@@ -456,7 +456,7 @@ public class LanguageAPIImpl extends LanguageAPI {
     public List<String> getAvailableLanguages() {
         List<String> languages = new ArrayList<>();
         try (Connection connection = this.mySQL.getDataSource().getConnection();
-             ResultSet rs = connection.createStatement().executeQuery("SELECT language FROM languages");) {
+             ResultSet rs = connection.createStatement().executeQuery("SELECT language FROM languages")) {
             while (rs.next()) {
                 languages.add(rs.getString("language").toLowerCase());
             }

@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface PlayerManager {
 
     /**
-     * Gets an {@link LanguagePlayer} - null when the player is not online
+     * Gets an {@link LanguagePlayer} - null if the player is offline
      * @param playerId the uniqueId to fetch the player from
      * @return returns a {@link LanguagePlayer}
      */

@@ -50,7 +50,7 @@ public interface LanguageOfflinePlayer {
 
     /**
      * Get a {@link LanguagePlayer}
-     * @return returns a {@link LanguagePlayer} - null if the player is not online
+     * @return returns a {@link LanguagePlayer} - null if the player is offline
      */
     @Nullable
     default LanguagePlayer getLanguagePlayer() {
