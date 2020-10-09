@@ -90,27 +90,27 @@ public class LanguageAPIImpl extends LanguageAPI {
 
 
     @Override
-    public boolean addMessage(final String transkey, final String message, final String language, String param) {
+    public boolean addMessage(final String translationKey, final String message, final String language, String param) {
         if (!this.isLanguage(language)) {
             throw new IllegalArgumentException("Language " + language + " was not found!");
         }
-        this.addParameter(transkey, param);
-        return this.addMessage(transkey, message, language);
+        this.addParameter(translationKey, param);
+        return this.addMessage(translationKey, message, language);
 
     }
 
     @Override
-    public boolean addMessage(final String transkey, final String message, final String language) {
+    public boolean addMessage(final String translationKey, final String message, final String language) {
         if (!this.isLanguage(language)) {
             return false;
         }
-        if (this.isKey(transkey, language)) {
+        if (this.isKey(translationKey, language)) {
             return false;
         }
         this.executorService.execute(() -> {
             try (Connection connection = this.getDataSource().getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO " + language.toLowerCase() + " (transkey, translation) VALUES (?,?);")) {
-                preparedStatement.setString(1, transkey.toLowerCase());
+                preparedStatement.setString(1, translationKey.toLowerCase());
                 preparedStatement.setString(2, this.translateAlternateColorCodes(message));
                 preparedStatement.execute();
             } catch (SQLException throwables) {
@@ -170,13 +170,13 @@ public class LanguageAPIImpl extends LanguageAPI {
     }
 
     @Override
-    public boolean addMessage(final String transkey, final String language) {
-        return this.addMessage(transkey, transkey, language);
+    public boolean addMessage(final String translationKey, final String language) {
+        return this.addMessage(translationKey, translationKey, language);
     }
 
     @Override
-    public boolean addMessage(final String transkey) {
-        return this.addMessage(transkey, transkey, this.getDefaultLanguage());
+    public boolean addMessage(final String translationKey) {
+        return this.addMessage(translationKey, translationKey, this.getDefaultLanguage());
     }
 
     @Override

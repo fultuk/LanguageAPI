@@ -61,33 +61,33 @@ public abstract class LanguageAPI {
     public abstract void deleteLanguage(String language);
 
     /**
-     * @param transkey the translationkey to find the translation
+     * @param translationKey the translationkey to find the translation
      * @param message  the translation to that translationkey
      * @param language the language of the translation
      * @param param    the parameters that are used in the translation (ex. %KEY%) - seperate them by ',' (ex. %PARAM1%,%PARAM2%)
      *                 adds an translation to the given language with a proper translation and parameters
      */
-    public abstract boolean addMessage(final String transkey, final String message, final String language, String param);
+    public abstract boolean addMessage(final String translationKey, final String message, final String language, String param);
 
     /**
-     * @param transkey the translationkey to find the translation
+     * @param translationKey the translationkey to find the translation
      * @param message  the translation to that translationkey
      * @param language the language of the translation
      */
-    public abstract boolean addMessage(final String transkey, final String message, final String language);
+    public abstract boolean addMessage(final String translationKey, final String message, final String language);
 
     /**
-     * @param transkey the translationkey to the translation (the translation is the key)
+     * @param translationKey the translationkey to the translation (the translation is the key)
      * @param language the language to the translationkey
      *                 adds a translation without an proper translation, it just uses the translationkey as translation
      */
-    public abstract boolean addMessage(final String transkey, final String language);
+    public abstract boolean addMessage(final String translationKey, final String language);
 
     /**
-     * @param transkey the translationkey to the translation
+     * @param translationKey the translationkey to the translation
      *                 adds a translation without an proper translation to the default language, it just uses the translationkey as translation
      */
-    public abstract boolean addMessage(final String transkey);
+    public abstract boolean addMessage(final String translationKey);
 
     /**
      * @param transkey    translationkey to the translation

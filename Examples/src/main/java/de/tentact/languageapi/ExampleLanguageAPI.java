@@ -103,4 +103,15 @@ public class ExampleLanguageAPI {
         boolean allFilesPassed = fileHandler.loadFiles(filesToLoad, true);
     }
 
+    /**
+     * Use this if you want to export a language to a file (ingame command /lang export <Language>)
+     */
+    public void export() {
+        FileHandler fileHandler = this.languageAPI.getFileHandler();
+
+        boolean passed = fileHandler.exportLanguageToFile("languageName");
+
+        boolean allFilesPassed = fileHandler.exportAll();
+    }
+
 }

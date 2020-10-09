@@ -1,4 +1,5 @@
 package de.tentact.languageapi.command;
+
 /*  Created in the IntelliJ IDEA.
     Created by 0utplay | Aldin Sijamhodzic
     Datum: 25.04.2020
@@ -26,17 +27,13 @@ import java.util.logging.Level;
 public class LanguageCommand implements TabExecutor {
 
     public LanguageAPI languageAPI = LanguageAPI.getInstance();
-
     private final List<String> tabComplete = Arrays.asList("add", "remove", "update", "create", "delete",
-            "param", "copy", "translations", "reload", "import", "export", "help");
-
+            "param", "copy", "translations", "reload", "import", "export", "help", "info");
     public ArrayList<Player> editingMessage = new ArrayList<>();
-
     public HashMap<Player, List<String>> givenParameter = new HashMap<>();
-
     private final LanguageSpigot languageSpigot;
-
     private final LanguageInventory languageInventory;
+    private final String version = LanguageAPI.class.getPackage().getImplementationVersion();
 
     public LanguageCommand(LanguageSpigot languageSpigot) {
         this.languageSpigot = languageSpigot;
@@ -327,6 +324,8 @@ public class LanguageCommand implements TabExecutor {
                             }
                             languagePlayer.sendMultipleTranslation(I18N.LANGUAGEAPI_HELP.get());
                             break;
+                        case "info":
+                            languagePlayer.sendMessage(I18N.LANGUAGEAPI_INFO.get().replace("%VERSION%", version));
                         default:
                             languagePlayer.sendMultipleTranslation(I18N.LANGUAGEAPI_HELP.get());
                             break;

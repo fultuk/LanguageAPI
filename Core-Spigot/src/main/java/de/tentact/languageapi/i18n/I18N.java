@@ -56,12 +56,14 @@ public enum I18N {
     LANGUAGEAPI_EXPORT_ERROR("languageapi-export-error", "Beim Exportieren der Sprache %LANGUAGE% ist ein Fehler aufgetreten.", "%LANGUAGE%"),
     LANGUAGEAPI_NOPERMS("languageapi-noperms", "Du hast keine Rechte dazu."),
     LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE("languageapi-player-selected-language", "Du hast die Sprache %LANGUAGE% ausgewählt.", "%LANGUAGE%"),
+    LANGUAGEAPI_INFO("languageapi-info", "Du benutzt folgende Version der LanguageAPI: %VERSION%", "%VERSION%"),
     LANGUAGEAPI_HELP("languageapi-help", Arrays.asList("languageapi-add-help",
             "languageapi-update-help",
             "languageapi-copy-help",
             "languageapi-create-help",
             "languageapi-import-help",
-            "languageapi-export-help"));
+            "languageapi-export-help"
+    ));
 
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private final String key;

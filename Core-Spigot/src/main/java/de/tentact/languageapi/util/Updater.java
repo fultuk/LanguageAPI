@@ -48,6 +48,7 @@ public class Updater {
             scanner = new Scanner(new URL("https://tentact.de/plugins?" + pluginName.toLowerCase()).openStream());
             this.plugin.getLogger().log(Level.INFO, "Creating connection to webserver");
         } catch (IOException e) {
+            System.err.print("While creating connection to the webserver an error occurred");
             e.printStackTrace();
         }
         if (scanner == null) {
