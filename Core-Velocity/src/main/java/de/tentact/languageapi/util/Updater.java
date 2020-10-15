@@ -29,21 +29,11 @@ public class Updater {
             PluginDescription description = optionalPluginContainer.get().getDescription();
             this.logger.log(Level.INFO, "Checking for updates...");
 
-
             String pluginName = description.getName().get();
             int localVersion = Integer.parseInt(description.getVersion().get().replace(".", ""));
             int onlineVersion = Integer.parseInt(this.getOnlineVersion(pluginName).replace(".", ""));
-
             if (onlineVersion > localVersion) {
-                proxyServer.getConsoleCommandSource().sendMessage(
-                        LegacyComponentSerializer
-                                .legacy()
-                                .deserialize(
-                                        LanguageAPI.getInstance().getLanguageAPIPrefix()
-                                                + "Es ist ein neues Update verfügbar. Aktuelle Version: §6"
-                                                + description.getVersion().get()
-                                                + "§7, neuste Version: §c"
-                                                + this.getOnlineVersion(pluginName)));
+                this.logger.log(Level.INFO, "There is a new version available. Current version: " + description.getVersion() + ", newest version: " + onlineVersion);
             }
         }
 

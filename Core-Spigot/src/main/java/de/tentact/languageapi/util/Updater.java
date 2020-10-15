@@ -30,12 +30,11 @@ public class Updater {
         this.localVersion = Integer.parseInt(plugin.getDescription().getVersion().replace(".", ""));
         this.fullLocalVersion = plugin.getDescription().getVersion();
 
-        String online = this.getOnlineVersion(this.pluginName).replace(".", "");
+        String onlineVersion = this.getOnlineVersion(this.pluginName);
 
-        this.onlineVersion = Integer.parseInt(online);
+        this.onlineVersion = Integer.parseInt(onlineVersion.replace(".", ""));
         if (this.onlineVersion > this.localVersion) {
-            Bukkit.broadcastMessage(LanguageAPI.getInstance().getLanguageAPIPrefix() + "Es ist ein neues Update verfügbar. Aktuelle Version: §6"
-                    + plugin.getDescription().getVersion() + "§7, neuste Version: §c" + this.getOnlineVersion(this.pluginName));
+            this.plugin.getLogger().log(Level.INFO, "There is a new version available. Current version: " + plugin.getDescription().getVersion() + ", newest version: " + onlineVersion);
         }
         this.isEnabled = true;
     }
@@ -44,11 +43,11 @@ public class Updater {
     private String getOnlineVersion(String pluginName) {
         Scanner scanner = null;
         try {
-            this.plugin.getLogger().log(Level.INFO, "Creating connection to webserver");
+            this.plugin.getLogger().log(Level.INFO, "Creating connection to webserver.");
             scanner = new Scanner(new URL("https://tentact.de/plugins?" + pluginName.toLowerCase()).openStream());
-            this.plugin.getLogger().log(Level.INFO, "Creating connection to webserver");
+            this.plugin.getLogger().log(Level.INFO, "Fetched online version.");
         } catch (IOException e) {
-            System.err.print("While creating connection to the webserver an error occurred");
+            this.plugin.getLogger().log(Level.WARNING, "While creating connection to the webserver an error occurred.");
             e.printStackTrace();
         }
         if (scanner == null) {
