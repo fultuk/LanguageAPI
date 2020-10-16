@@ -29,9 +29,9 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
 
     public PlayerExecutorImpl(LanguageAPI languageAPI, LanguageConfig languageConfig, ProxyServer proxyServer) {
         super(proxyServer);
-        this.languageAPI = languageAPI;
-        this.mySQL = languageConfig.getMySQL();
         this.languageConfig = languageConfig;
+        this.mySQL = languageConfig.getMySQL();
+        this.languageAPI = languageAPI;
         this.dataSource = mySQL.getDataSource();
     }
 
@@ -41,11 +41,11 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
         if (!isRegisteredPlayer(playerUUID)) {
             this.registerPlayer(playerUUID);
         }
-        if(languageCache.getIfPresent(playerUUID) != null) {
+        if (languageCache.getIfPresent(playerUUID) != null) {
             return Objects.requireNonNull(languageCache.getIfPresent(playerUUID));
         }
         try (Connection connection = this.mySQL.getDataSource().getConnection()) {
-            ResultSet rs = connection.createStatement().executeQuery("SELECT language FROM choosenlang WHERE uuid='" + playerUUID.toString() + "';");
+            ResultSet rs = connection.createStatement().executeQuery("SELECT language FROM playerlanguage WHERE uuid='" + playerUUID.toString() + "';");
             if (rs.next()) {
                 String language = rs.getString("language").toLowerCase();
                 languageCache.put(playerUUID, language);
@@ -59,7 +59,7 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
 
     @Override
     public boolean isPlayersLanguage(UUID playerUUID, String language) {
-        if(!this.languageAPI.isLanguage(language)) {
+        if (!this.languageAPI.isLanguage(language)) {
             return false;
         }
         return this.getPlayerLanguage(playerUUID).equalsIgnoreCase(language);
@@ -84,11 +84,10 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
         }
         if(!this.isRegisteredPlayer(playerUUID)) {
             try (Connection connection = this.dataSource.getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO choosenlang (uuid, language) VALUES (?,?);")) {
+                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO playerlanguage (uuid, language) VALUES (?,?);")) {
                 preparedStatement.setString(1, playerUUID.toString());
                 preparedStatement.setString(2, newLanguage.toLowerCase());
                 preparedStatement.execute();
-
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
@@ -99,11 +98,10 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
             return;
         }
         try (Connection connection = this.dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE choosenlang SET language=? WHERE uuid=?;")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE playerlanguage SET language=? WHERE uuid=?;")) {
             preparedStatement.setString(1, playerUUID.toString());
             preparedStatement.setString(2, newLanguage.toLowerCase());
             preparedStatement.execute();
-
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -124,14 +122,14 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
         } else {
             if (!languageAPI.isLanguage(this.getPlayerLanguage(playerUUID))) {
                 this.setPlayerLanguage(playerUUID, languageAPI.getDefaultLanguage());
-                logInfo("Updating players selected language");
+                this.logInfo("Updating players selected language");
             }
         }
     }
 
     @Override
     public boolean isRegisteredPlayer(UUID playerUUID) {
-        return this.mySQL.exists("SELECT * FROM choosenlang WHERE uuid='" + playerUUID.toString() + "';");
+        return this.mySQL.exists("SELECT * FROM playerlanguage WHERE uuid='" + playerUUID.toString() + "';");
     }
 
     @Override

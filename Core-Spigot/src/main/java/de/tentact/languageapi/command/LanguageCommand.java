@@ -6,6 +6,7 @@ package de.tentact.languageapi.command;
     Uhrzeit: 18:58
 */
 
+import com.google.common.collect.ImmutableList;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.LanguageSpigot;
 import de.tentact.languageapi.configuration.Configuration;
@@ -33,11 +34,12 @@ public class LanguageCommand implements TabExecutor {
     public HashMap<Player, List<String>> givenParameter = new HashMap<>();
     private final LanguageSpigot languageSpigot;
     private final LanguageInventory languageInventory;
-    private final String version = LanguageAPI.class.getPackage().getImplementationVersion();
+    private final String version;
 
     public LanguageCommand(LanguageSpigot languageSpigot) {
         this.languageSpigot = languageSpigot;
         this.languageInventory = languageSpigot.configuration.getLanguageInventory();
+        this.version = languageSpigot.getVersion();
     }
 
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] args) {

@@ -516,7 +516,7 @@ public class LanguageAPIImpl extends LanguageAPI {
 
     @Override
     public @NotNull String getLanguageAPIPrefix() {
-        return this.getMessage("languageapi-prefix", this.getDefaultLanguage());
+        return this.getLanguageAPIPrefix(this.getDefaultLanguage());
     }
 
     @Override
@@ -535,7 +535,7 @@ public class LanguageAPIImpl extends LanguageAPI {
             return this.translationMap.get(translationkey);
         }
         Translation translation = new TranslationImpl(translationkey);
-        this.translationMap.put(translationkey, translation);
+        this.updateTranslation(translation);
         return translation;
     }
 

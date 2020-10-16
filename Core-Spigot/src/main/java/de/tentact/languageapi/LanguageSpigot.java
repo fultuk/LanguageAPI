@@ -14,6 +14,7 @@ import de.tentact.languageapi.listener.ChatListener;
 import de.tentact.languageapi.listener.InventoryClickListener;
 import de.tentact.languageapi.listener.JoinListener;
 import de.tentact.languageapi.util.Updater;
+import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
@@ -55,8 +56,11 @@ public class LanguageSpigot extends JavaPlugin {
         mySQL.closeConnection();
     }
 
+    public String getVersion() {
+        return "1.9-SNAPSHOT-21201510";
+    }
+
     public Updater getUpdater() {
         return this.updater;
     }
-
 }

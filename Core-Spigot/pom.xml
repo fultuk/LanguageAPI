@@ -51,17 +51,6 @@
                    </relocations>
                </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <implementation-version>${git.commit.id}</implementation-version>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
     <repositories>
@@ -88,11 +77,6 @@
             <artifactId>documents</artifactId>
             <version>1.1-RELEASE</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>pl.project13.maven</groupId>
-            <artifactId>git-commit-id-plugin</artifactId>
-            <version>4.0.2</version>
         </dependency>
         <dependency>
             <groupId>de.tentact.languageapi</groupId>

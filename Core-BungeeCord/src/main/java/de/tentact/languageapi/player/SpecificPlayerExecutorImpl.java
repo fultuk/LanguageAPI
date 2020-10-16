@@ -27,7 +27,7 @@ public class SpecificPlayerExecutorImpl extends PlayerManagerImpl implements Spe
         if (!this.languageAPI.isLanguage(language)) {
             return false;
         }
-        return this.playerExecutor.getPlayerLanguage(this.playerId).equalsIgnoreCase(language);
+        return this.getPlayerLanguage().equalsIgnoreCase(language);
     }
 
     @Override
