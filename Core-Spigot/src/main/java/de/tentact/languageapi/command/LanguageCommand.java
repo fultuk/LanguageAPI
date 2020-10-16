@@ -6,10 +6,9 @@ package de.tentact.languageapi.command;
     Uhrzeit: 18:58
 */
 
-import com.google.common.collect.ImmutableList;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.LanguageSpigot;
-import de.tentact.languageapi.configuration.Configuration;
+import de.tentact.languageapi.configuration.SpigotConfiguration;
 import de.tentact.languageapi.configuration.LanguageInventory;
 import de.tentact.languageapi.i18n.I18N;
 import de.tentact.languageapi.player.LanguagePlayer;
@@ -38,7 +37,7 @@ public class LanguageCommand implements TabExecutor {
 
     public LanguageCommand(LanguageSpigot languageSpigot) {
         this.languageSpigot = languageSpigot;
-        this.languageInventory = languageSpigot.configuration.getLanguageInventory();
+        this.languageInventory = languageSpigot.spigotConfiguration.getLanguageInventory();
         this.version = languageSpigot.getVersion();
     }
 
@@ -316,7 +315,7 @@ public class LanguageCommand implements TabExecutor {
                             }
 
                             this.languageSpigot.getLogger().log(Level.INFO, "Reloading config.json...");
-                            this.languageSpigot.configuration = new Configuration(this.languageSpigot.getLogger());
+                            this.languageSpigot.spigotConfiguration = new SpigotConfiguration(this.languageSpigot.getLogger());
                             languagePlayer.sendMessage(I18N.LANGUAGEAPI_RELOAD_SUCCESS.get());
 
                             break;

@@ -14,11 +14,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
-public class FileHandlerImpl implements FileHandler {
+public class SpigotFileHandler implements FileHandler {
 
     private final LanguageAPI languageAPI;
 
-    public FileHandlerImpl(LanguageAPI languageAPI) {
+    public SpigotFileHandler(LanguageAPI languageAPI) {
         this.languageAPI = languageAPI;
     }
 

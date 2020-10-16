@@ -18,7 +18,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecutor {
+public class DefaultPlayerExecutor extends DefaultPlayerManager implements PlayerExecutor {
 
     private final MySQL mySQL;
     private final LanguageAPI languageAPI;
@@ -26,7 +26,7 @@ public class PlayerExecutorImpl extends PlayerManagerImpl implements PlayerExecu
     private final LanguageConfig languageConfig;
     private final Cache<UUID, String> languageCache = CacheBuilder.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
 
-    public PlayerExecutorImpl(LanguageAPI languageAPI, LanguageConfig languageConfig) {
+    public DefaultPlayerExecutor(LanguageAPI languageAPI, LanguageConfig languageConfig) {
         this.languageConfig = languageConfig;
         this.mySQL = languageConfig.getMySQL();
         this.languageAPI = languageAPI;

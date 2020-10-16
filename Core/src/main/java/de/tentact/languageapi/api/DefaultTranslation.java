@@ -2,8 +2,8 @@ package de.tentact.languageapi.api;
 /*  Created in the IntelliJ IDEA.
     Copyright(c) 2020
     Created by 0utplay | Aldin Sijamhodzic
-    Datum: 07.07.2020
-    Uhrzeit: 15:47
+    Datum: 16.10.2020
+    Uhrzeit: 12:12
 */
 
 import de.tentact.languageapi.LanguageAPI;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class TranslationImpl implements Translation {
+public class DefaultTranslation implements Translation {
 
     private final String translationkey;
     private Translation prefixTranslation = null;
@@ -21,7 +21,7 @@ public class TranslationImpl implements Translation {
     private final HashMap<String, String> params = new HashMap<>();
     private String message;
 
-    public TranslationImpl(@NotNull String translationkey) {
+    public DefaultTranslation(@NotNull String translationkey) {
         this.translationkey = translationkey;
     }
 

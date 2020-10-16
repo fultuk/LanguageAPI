@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public class LanguageOfflinePlayerImpl implements LanguageOfflinePlayer {
+public class DefaultLanguageOfflinePlayer implements LanguageOfflinePlayer {
 
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
@@ -21,7 +21,7 @@ public class LanguageOfflinePlayerImpl implements LanguageOfflinePlayer {
 
     private final String language;
 
-    public LanguageOfflinePlayerImpl(@NotNull UUID playerID) {
+    public DefaultLanguageOfflinePlayer(@NotNull UUID playerID) {
         this.playerID = playerID;
         this.language = this.playerExecutor.getPlayerLanguage(playerID);
     }

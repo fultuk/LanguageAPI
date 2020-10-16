@@ -18,6 +18,7 @@
         <module>Core-BungeeCord</module>
         <module>Examples</module>
         <module>Core-Velocity</module>
+        <module>Core</module>
     </modules>
     <build>
         <plugins>

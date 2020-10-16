@@ -8,18 +8,14 @@ import java.util.Collection;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class PlayerManagerImpl implements PlayerManager {
+public class SpigotPlayerManager extends DefaultPlayerManager {
+
     @Override
     public @Nullable LanguagePlayer getLanguagePlayer(UUID playerId) {
         if(Bukkit.getPlayer(playerId) == null) {
             return null;
         }
-        return new LanguagePlayerImpl(playerId);
-    }
-
-    @Override
-    public @NotNull LanguageOfflinePlayer getLanguageOfflinePlayer(UUID playerId) {
-        return new LanguageOfflinePlayerImpl(playerId);
+        return new DefaultLanguagePlayer(playerId);
     }
 
     @Override

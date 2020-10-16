@@ -9,13 +9,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements LanguagePlayer {
+public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implements LanguagePlayer {
 
     private final UUID playerID;
     private Player player;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
-    public LanguagePlayerImpl(UUID playerID) {
+    public DefaultLanguagePlayer(UUID playerID) {
         super(playerID);
         this.playerID = playerID;
     }

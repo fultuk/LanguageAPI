@@ -6,13 +6,14 @@ package de.tentact.languageapi.configuration;
     Uhrzeit: 09:02
 */
 
-public class LanguageSetting {
+public class SpigotLanguageSetting extends LanguageSetting {
 
     private final String defaultLanguage;
     private final int cachedTime;
     private final boolean isNotify;
 
-    public LanguageSetting(String defaultLanguage, int cacheTime, boolean notify) {
+    public SpigotLanguageSetting(String defaultLanguage, int cacheTime, boolean notify) {
+        super(defaultLanguage, cacheTime);
         this.defaultLanguage = defaultLanguage;
         this.cachedTime = cacheTime;
         this.isNotify = notify;

@@ -38,7 +38,7 @@ public class JoinListener implements Listener {
         } else {
             player.performCommand("languageapi");
         }
-        if (!this.languageSpigot.configuration.getLanguageConfig().getLanguageSetting().isNotify()) {
+        if (!this.languageSpigot.spigotConfiguration.getLanguageConfig().getLanguageSetting().isNotify()) {
             return;
         }
         if (!updater.isEnabled()) {

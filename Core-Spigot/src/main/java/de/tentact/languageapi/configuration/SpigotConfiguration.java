@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.logging.Logger;
 
-public class Configuration {
+public class SpigotConfiguration {
 
     Document inventoryDocument = new DefaultDocument();
     File inventoryFile = new File("plugins/LanguageAPI", "languages.json");
@@ -29,13 +29,13 @@ public class Configuration {
     File exportDir = new File("plugins/LanguageAPI/export");
 
     private LanguageInventory languageInventory;
-    private LanguageConfig languageConfig;
+    private SpigotLanguageConfig languageConfig;
 
-    public Configuration(Logger logger) {
+    public SpigotConfiguration(Logger logger) {
         if (!importDir.exists()) {
             importDir.mkdirs();
         }
-        if(!exportDir.exists()) {
+        if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
         if (inventoryFile.exists()) {
@@ -87,7 +87,7 @@ public class Configuration {
                                         "password",
                                         3306
                                 ),
-                                new LanguageSetting(
+                                new SpigotLanguageSetting(
                                         "de_de",
                                         5,
                                         true
@@ -110,11 +110,11 @@ public class Configuration {
         return this.languageInventory;
     }
 
-    public LanguageConfig getLanguageConfig() {
+    public SpigotLanguageConfig getLanguageConfig() {
         if (this.languageConfig != null) {
             return this.languageConfig;
         }
-        this.languageConfig = this.settingsDocument.get("config", LanguageConfig.class);
+        this.languageConfig = this.settingsDocument.get("config", SpigotLanguageConfig.class);
         return this.languageConfig;
     }
 

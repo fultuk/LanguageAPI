@@ -28,35 +28,34 @@ public class MySQL {
     }
 
     public void connect() {
-        if (isNotConnected()) {
+        if (!isConnected()) {
             dataSource = new HikariDataSource();
             dataSource.setJdbcUrl("jdbc:mysql://" + hostname + ":" + port + "/" + database);
             dataSource.setUsername(this.username);
             dataSource.setPassword(this.password);
-
             this.logger.log(Level.INFO,"Creating connection to database");
         }
     }
 
-    public boolean isNotConnected() {
-        return dataSource == null;
+    public boolean isConnected() {
+        return dataSource != null;
     }
 
     public void closeConnection() {
-        if (isNotConnected()) {
+        if (!isConnected()) {
             return;
         }
         dataSource.close();
     }
 
     public void createDefaultTable() {
-        if (isNotConnected())
+        if (!isConnected())
             return;
         try (Connection connection = dataSource.getConnection()) {
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS playerlanguage(uuid VARCHAR(64) UNIQUE, language VARCHAR(64));");
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS choosenlang(uuid VARCHAR(64) UNIQUE, language VARCHAR(64));");
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(64) UNIQUE);");
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(transkey VARCHAR(64) UNIQUE, param VARCHAR(2000));");
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS MultipleTranslation(multipleKey VARCHAR(64) UNIQUE, transkeys VARCHAR(2000));");
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS MultipleTranslation(multipleKey VARCHAR(64) UNIQUE , transkeys VARCHAR(2000));");
             this.logger.log(Level.INFO,"Creating default tables");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -64,7 +63,7 @@ public class MySQL {
     }
 
     public void createTable(String tableName) {
-        if (isNotConnected())
+        if (!isConnected())
             return;
         try (Connection connection = dataSource.getConnection()) {
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS " + tableName + "(transkey VARCHAR(64) UNIQUE, translation VARCHAR(2000));");
