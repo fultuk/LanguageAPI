@@ -24,7 +24,6 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 
-@SuppressWarnings("UnstableApiUsage")
 public class ChatListener implements Listener {
 
     private final Cache<LanguagePlayer, List<String>> editedMessage = CacheBuilder.newBuilder().expireAfterWrite(15, TimeUnit.MINUTES).build();
@@ -64,14 +63,14 @@ public class ChatListener implements Listener {
                 for (String message : Objects.requireNonNull(editedMessage.getIfPresent(languagePlayer))) {
                     result.append(message).append(" ");
                 }
-                String transkey = this.languageCommand.givenParameter.get(player).get(0);
+                String transKey = this.languageCommand.givenParameter.get(player).get(0);
                 String language = this.languageCommand.givenParameter.get(player).get(1);
                 this.languageCommand.editingMessage.remove(player);
-                languageAPI.updateMessage(transkey, result.toString(), language);
+                languageAPI.updateMessage(transKey, result.toString(), language);
 
                 event.setCancelled(true);
                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_SUCCESS.get()
-                        .replace("%KEY%", transkey)
+                        .replace("%KEY%", transKey)
                         .replace("%LANG%", language)
                         .replace("%MSG%", result.toString()));
                 editedMessage.invalidate(languagePlayer);

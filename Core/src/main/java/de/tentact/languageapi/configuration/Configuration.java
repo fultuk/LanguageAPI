@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 public class Configuration {
 
     Document settingsDocument = new DefaultDocument();
-    File settingsFile = new File("plugins/LanguageAPI", "config.json");
+    final File settingsFile = new File("plugins/LanguageAPI", "config.json");
     private LanguageConfig languageConfig;
 
     public Configuration(Logger logger) {

@@ -9,7 +9,6 @@ package de.tentact.languageapi.configuration;
 import com.github.derrop.documents.DefaultDocument;
 import com.github.derrop.documents.Document;
 import com.github.derrop.documents.Documents;
-import org.apache.commons.codec.language.bm.Lang;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,13 +20,13 @@ import java.util.logging.Logger;
 public class SpigotConfiguration {
 
     Document inventoryDocument = new DefaultDocument();
-    File inventoryFile = new File("plugins/LanguageAPI", "languages.json");
+    final File inventoryFile = new File("plugins/LanguageAPI", "languages.json");
 
     Document settingsDocument = new DefaultDocument();
-    File settingsFile = new File("plugins/LanguageAPI", "config.json");
+    final File settingsFile = new File("plugins/LanguageAPI", "config.json");
 
-    File importDir = new File("plugins/LanguageAPI/import");
-    File exportDir = new File("plugins/LanguageAPI/export");
+    final File importDir = new File("plugins/LanguageAPI/import");
+    final File exportDir = new File("plugins/LanguageAPI/export");
 
     private LanguageInventory languageInventory;
     private LanguageConfig languageConfig;

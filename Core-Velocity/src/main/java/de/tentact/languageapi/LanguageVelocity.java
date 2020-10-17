@@ -20,12 +20,10 @@ import java.util.logging.Logger;
 public class LanguageVelocity {
 
     private final Logger logger;
-    private final ProxyServer proxyServer;
 
     @Inject
     public LanguageVelocity(ProxyServer proxyServer, Logger logger) {
         this.logger = logger;
-        this.proxyServer = proxyServer;
         Configuration configuration = new Configuration(this.getLogger());
         LanguageConfig languageConfig = configuration.getLanguageConfig();
 
@@ -37,7 +35,7 @@ public class LanguageVelocity {
 
         LanguageAPI.getInstance().createLanguage(languageConfig.getLanguageSetting().getDefaultLanguage());
 
-        new Updater(this.proxyServer, this.logger);
+        new Updater(proxyServer, this.logger);
     }
 
     public Logger getLogger() {

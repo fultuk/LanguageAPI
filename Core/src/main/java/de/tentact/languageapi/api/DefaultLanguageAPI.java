@@ -183,8 +183,8 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     }
 
     @Override
-    public boolean addMessageToDefault(final String transkey, final String translation) {
-        return this.addMessage(transkey, translation, this.getDefaultLanguage());
+    public boolean addMessageToDefault(final String translationKey, final String translation) {
+        return this.addMessage(translationKey, translation, this.getDefaultLanguage());
     }
 
     @Override
