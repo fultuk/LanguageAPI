@@ -19,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -26,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("UnstableApiUsage")
 public class ChatListener implements Listener {
 
-    private final Cache<LanguagePlayer, ArrayList<String>> editedMessage = CacheBuilder.newBuilder().expireAfterWrite(15, TimeUnit.MINUTES).build();
+    private final Cache<LanguagePlayer, List<String>> editedMessage = CacheBuilder.newBuilder().expireAfterWrite(15, TimeUnit.MINUTES).build();
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private final LanguageCommand languageCommand;
 
@@ -44,7 +45,7 @@ public class ChatListener implements Listener {
         }
         if (this.languageCommand.editingMessage.contains(player)) {
             if (!event.getMessage().equalsIgnoreCase("finish")) {
-                ArrayList<String> currentArray = editedMessage.getIfPresent(languagePlayer);
+                List<String> currentArray = editedMessage.getIfPresent(languagePlayer);
                 if (currentArray != null) {
                     editedMessage.invalidate(languagePlayer);
                 } else {

@@ -63,6 +63,11 @@ public class TranslationImpl implements Translation {
     }
 
     @Override
+    public Translation getPrefixTranslation() {
+        return null;
+    }
+
+    @Override
     public Translation replace(String old, String replacement) {
         params.put(old, replacement);
         return this;

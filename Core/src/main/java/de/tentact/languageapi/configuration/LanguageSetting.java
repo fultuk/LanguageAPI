@@ -10,10 +10,12 @@ public class LanguageSetting {
 
     private final String defaultLanguage;
     private final int cachedTime;
+    private final boolean isNotify;
 
-    public LanguageSetting(String defaultLanguage, int cacheTime) {
+    public LanguageSetting(String defaultLanguage, int cacheTime, boolean isNotify) {
         this.defaultLanguage = defaultLanguage;
         this.cachedTime = cacheTime;
+        this.isNotify = isNotify;
     }
 
     public String getDefaultLanguage() {
@@ -22,5 +24,9 @@ public class LanguageSetting {
 
     public int getCachedTime() {
         return this.cachedTime;
+    }
+
+    public boolean isNotify() {
+        return this.isNotify;
     }
 }

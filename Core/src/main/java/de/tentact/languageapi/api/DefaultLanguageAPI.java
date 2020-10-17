@@ -282,7 +282,10 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public void setMultipleTranslation(String multipleTranslation, List<String> translationKeys, boolean overwrite) {
-        if (isMultipleTranslation(multipleTranslation) && overwrite) {
+        if (isMultipleTranslation(multipleTranslation)) {
+            if (!overwrite) {
+                return;
+            }
             this.removeMultipleTranslation(multipleTranslation);
         }
         StringBuilder stringBuilder = new StringBuilder();
@@ -326,7 +329,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         if (!isMultipleTranslation(multipleTranslation)) {
             throw new IllegalArgumentException(multipleTranslation + " was not found");
         }
-        ArrayList<String> translationKeysAsArrayList = null;
+        List<String> translationKeysAsArrayList = null;
         try (Connection connection = this.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT transkeys FROM MultipleTranslation WHERE multipleKey=?")) {
             preparedStatement.setString(1, multipleTranslation.toLowerCase());
@@ -382,7 +385,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @NotNull
     @Override
-    public ArrayList<String> getMultipleMessages(String transkey) {
+    public List<String> getMultipleMessages(String transkey) {
         return this.getMultipleMessages(transkey, this.getDefaultLanguage());
     }
 
@@ -394,9 +397,18 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @NotNull
     @Override
-    public ArrayList<String> getMultipleMessages(String transkey, String language) {
-        ArrayList<String> resolvedMessages = new ArrayList<>();
+    public List<String> getMultipleMessages(String transkey, String language) {
+        return this.getMultipleMessages(transkey, language, "");
+    }
+
+    @Override
+    public @NotNull List<String> getMultipleMessages(String transkey, String language, String prefixKey) {
+        List<String> resolvedMessages = new ArrayList<>();
         String[] translationKeys = new String[]{};
+        String prefix = "";
+        if (prefixKey != null && !prefixKey.isEmpty()) {
+            prefix = this.getMessage(prefixKey, language);
+        }
         try (Connection connection = this.getDataSource().getConnection();
              ResultSet resultSet = connection.createStatement().executeQuery("SELECT transkeys FROM MultipleTranslation WHERE multipleKey='" + transkey.toLowerCase() + "'")) {
             if (resultSet.next()) {
@@ -407,7 +419,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
             throwables.printStackTrace();
         }
         for (String translationKey : translationKeys) {
-            resolvedMessages.add(this.getMessage(translationKey, language));
+            resolvedMessages.add(prefix + this.getMessage(translationKey, language));
         }
         return resolvedMessages;
     }

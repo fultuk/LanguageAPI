@@ -6,12 +6,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.UUID;
 
-public class DefaultPlayerManager implements PlayerManager {
+public abstract class DefaultPlayerManager implements PlayerManager {
 
     @Override
-    public @Nullable LanguagePlayer getLanguagePlayer(UUID playerId) {
-        throw new UnsupportedOperationException();
-    }
+    public abstract @Nullable LanguagePlayer getLanguagePlayer(UUID playerId);
 
     @Override
     public @NotNull LanguageOfflinePlayer getLanguageOfflinePlayer(UUID playerId) {
@@ -19,7 +17,5 @@ public class DefaultPlayerManager implements PlayerManager {
     }
 
     @Override
-    public @NotNull Collection<LanguagePlayer> getOnlineLanguagePlayers() {
-        throw new UnsupportedOperationException();
-    }
+    public abstract @NotNull Collection<LanguagePlayer> getOnlineLanguagePlayers();
 }

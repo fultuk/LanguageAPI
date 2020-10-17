@@ -8,8 +8,8 @@ package de.tentact.languageapi.command;
 
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.LanguageSpigot;
-import de.tentact.languageapi.configuration.SpigotConfiguration;
 import de.tentact.languageapi.configuration.LanguageInventory;
+import de.tentact.languageapi.configuration.SpigotConfiguration;
 import de.tentact.languageapi.i18n.I18N;
 import de.tentact.languageapi.player.LanguagePlayer;
 import org.bukkit.Bukkit;
@@ -313,11 +313,9 @@ public class LanguageCommand implements TabExecutor {
                             if (this.checkDoesNotHavePermission(player, args)) {
                                 return false;
                             }
-
                             this.languageSpigot.getLogger().log(Level.INFO, "Reloading config.json...");
                             this.languageSpigot.spigotConfiguration = new SpigotConfiguration(this.languageSpigot.getLogger());
                             languagePlayer.sendMessage(I18N.LANGUAGEAPI_RELOAD_SUCCESS.get());
-
                             break;
                         case "help":
                             if (this.checkDoesNotHavePermission(player, args)) {
@@ -327,6 +325,7 @@ public class LanguageCommand implements TabExecutor {
                             break;
                         case "info":
                             languagePlayer.sendMessage(I18N.LANGUAGEAPI_INFO.get().replace("%VERSION%", version));
+                            break;
                         default:
                             languagePlayer.sendMultipleTranslation(I18N.LANGUAGEAPI_HELP.get());
                             break;

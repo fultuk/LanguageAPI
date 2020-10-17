@@ -9,6 +9,7 @@ package de.tentact.languageapi.api;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.i18n.Translation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -60,6 +61,11 @@ public class DefaultTranslation implements Translation {
         this.prefixTranslation = prefixTranslation;
         this.updateTranslation();
         return this;
+    }
+
+    @Override
+    public @Nullable Translation getPrefixTranslation() {
+        return this.prefixTranslation;
     }
 
     @Override

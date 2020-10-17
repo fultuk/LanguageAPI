@@ -54,6 +54,8 @@ public interface Translation {
      */
     Translation setPrefixTranslation(Translation prefixTranslation);
 
+    Translation getPrefixTranslation();
+
     /**
      * a method to replace parameter in the specific translation for a player - this is reset after {@link Translation#getMessage()}
      *

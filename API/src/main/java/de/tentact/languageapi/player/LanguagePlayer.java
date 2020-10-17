@@ -24,22 +24,50 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
 
     /**
      * Sends multiple messages to the player by a single multipleTranslationKey
+     *
      * @param multipleTranslationKey the multipleTranslationKey to get the Collection of translationkeys
      */
-    void sendMultipleTranslation(@NotNull String multipleTranslationKey);
+    default void sendMultipleTranslation(@NotNull String multipleTranslationKey) {
+        this.sendMultipleTranslation(multipleTranslationKey, this.getLanguage());
+    }
+
+    /**
+     * Sends multiple messages to the player by a single multipleTranslationKey
+     * @param multipleTranslationKey the multipleTranslationKey to get the Collection of translationkeys
+     */
+    default void sendMultipleTranslationWithPrefix(@NotNull String multipleTranslationKey, String prefixKey) {
+        this.sendMultipleTranslation(multipleTranslationKey, this.getLanguage(), prefixKey);
+    }
 
     /**
      * Sends multiple messages to the player by a single {@link Translation}
      * @param multipleTranslation the multipleTranslation to get the Collection of translationkeys
      */
-    void sendMultipleTranslation(@NotNull Translation multipleTranslation);
+    default void sendMultipleTranslation(@NotNull Translation multipleTranslation) {
+        if (multipleTranslation.getPrefixTranslation() != null) {
+            this.sendMultipleTranslationWithPrefix(multipleTranslation.getTranslationKey(), multipleTranslation.getPrefixTranslation().getTranslationKey());
+        } else {
+            this.sendMultipleTranslation(multipleTranslation.getTranslationKey());
+        }
+    }
+
+
 
     /**
      * Sends multiple messages to the player by a single multipleTranslationKey
      * @param multipleTranslationKey the multipleTranslationKey to get the Collection of translationkeys
      * @param language the language to get the translation in
      */
-    void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language);
+    default void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language) {
+        this.sendMultipleTranslation(multipleTranslationKey, language, null);
+    }
+
+    /**
+     * Sends multiple messages to the player by a single multipleTranslationKey
+     * @param multipleTranslationKey the multipleTranslationKey to get the Collection of translationkeys
+     * @param language the language to get the translation in
+     */
+    void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language, String prefixKey);
 
     /**
      * Kick a player with a {@link Translation} as reason

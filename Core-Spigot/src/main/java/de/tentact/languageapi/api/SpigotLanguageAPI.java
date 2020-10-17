@@ -16,14 +16,14 @@ import java.util.UUID;
 public class SpigotLanguageAPI extends DefaultLanguageAPI {
 
     private final PlayerManager playerManager;
-    private final PlayerExecutor playerExecutor;
     private final FileHandler fileHandler;
+    private final PlayerExecutor playerExecutor;
 
     public SpigotLanguageAPI(LanguageConfig languageConfig) {
         super(languageConfig);
         this.playerManager = new SpigotPlayerManager();
-        this.playerExecutor = new DefaultPlayerExecutor(this, languageConfig);
         this.fileHandler = new SpigotFileHandler(this);
+        this.playerExecutor = new SpigotPlayerExecutor(this, languageConfig);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class SpigotLanguageAPI extends DefaultLanguageAPI {
 
     @Override
     public @NotNull SpecificPlayerExecutor getSpecificPlayerExecutor(@NotNull UUID playerId) {
-        return new DefaultSpecificPlayerExecutor(playerId);
+        return new SpigotSpecificPlayerExecutor(playerId);
     }
 
     @Override

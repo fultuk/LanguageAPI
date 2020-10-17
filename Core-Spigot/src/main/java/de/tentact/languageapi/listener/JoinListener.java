@@ -41,9 +41,6 @@ public class JoinListener implements Listener {
         if (!this.languageSpigot.spigotConfiguration.getLanguageConfig().getLanguageSetting().isNotify()) {
             return;
         }
-        if (!updater.isEnabled()) {
-            return;
-        }
         if (!updater.hasUpdate()) {
             return;
         }

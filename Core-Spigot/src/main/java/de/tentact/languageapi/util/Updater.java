@@ -5,8 +5,6 @@ package de.tentact.languageapi.util;
     Uhrzeit: 16:53
 */
 
-import de.tentact.languageapi.LanguageAPI;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import java.io.IOException;
@@ -20,7 +18,6 @@ public class Updater {
     private final int localVersion;
     private final String fullLocalVersion;
     private final String pluginName;
-    private final boolean isEnabled;
     private final Plugin plugin;
 
     public Updater(Plugin plugin) {
@@ -36,7 +33,6 @@ public class Updater {
         if (this.onlineVersion > this.localVersion) {
             this.plugin.getLogger().log(Level.INFO, "There is a new version available. Current version: " + plugin.getDescription().getVersion() + ", newest version: " + onlineVersion);
         }
-        this.isEnabled = true;
     }
 
 
@@ -69,9 +65,5 @@ public class Updater {
 
     public String getLocalVersion() {
         return this.fullLocalVersion;
-    }
-
-    public boolean isEnabled() {
-        return this.isEnabled;
     }
 }

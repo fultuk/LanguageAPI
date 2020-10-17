@@ -7,9 +7,9 @@ package de.tentact.languageapi;
 
 import de.tentact.languageapi.api.SpigotLanguageAPI;
 import de.tentact.languageapi.command.LanguageCommand;
+import de.tentact.languageapi.configuration.LanguageConfig;
 import de.tentact.languageapi.configuration.MySQL;
 import de.tentact.languageapi.configuration.SpigotConfiguration;
-import de.tentact.languageapi.configuration.SpigotLanguageConfig;
 import de.tentact.languageapi.listener.ChatListener;
 import de.tentact.languageapi.listener.InventoryClickListener;
 import de.tentact.languageapi.listener.JoinListener;
@@ -31,7 +31,7 @@ public class LanguageSpigot extends JavaPlugin {
         this.getLogger().log(Level.INFO, "Starting LanguageAPI");
 
         this.spigotConfiguration = new SpigotConfiguration(this.getLogger());
-        SpigotLanguageConfig languageConfig = this.spigotConfiguration.getLanguageConfig();
+        LanguageConfig languageConfig = this.spigotConfiguration.getLanguageConfig();
 
         this.mySQL = languageConfig.getMySQL();
         this.mySQL.connect();
@@ -56,7 +56,7 @@ public class LanguageSpigot extends JavaPlugin {
     }
 
     public String getVersion() {
-        return "1.9-SNAPSHOT-21201510";
+        return "1.9-SNAPSHOT-1559-1710";
     }
 
     public Updater getUpdater() {

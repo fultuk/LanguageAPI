@@ -9,9 +9,9 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.zaxxer.hikari.HikariDataSource;
-import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.configuration.LanguageConfig;
 import de.tentact.languageapi.configuration.MySQL;
+import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.i18n.Translation;
 import de.tentact.languageapi.player.*;
@@ -410,6 +410,11 @@ public class LanguageAPIImpl extends LanguageAPI {
             resolvedMessages.add(this.getMessage(translationKey, language));
         }
         return resolvedMessages;
+    }
+
+    @Override
+    public @NotNull List<String> getMultipleMessages(String transkey, String language, String prefixKey) {
+        return null;
     }
 
     @NotNull

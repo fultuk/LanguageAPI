@@ -14,7 +14,6 @@ import de.tentact.languageapi.configuration.LanguageConfig;
 import de.tentact.languageapi.configuration.MySQL;
 import de.tentact.languageapi.util.Updater;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Plugin(id="languageapi", name = "LanguageAPI", version = "1.9", authors = {"0utplay"})

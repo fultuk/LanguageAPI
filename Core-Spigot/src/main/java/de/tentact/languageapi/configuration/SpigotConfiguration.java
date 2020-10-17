@@ -9,6 +9,7 @@ package de.tentact.languageapi.configuration;
 import com.github.derrop.documents.DefaultDocument;
 import com.github.derrop.documents.Document;
 import com.github.derrop.documents.Documents;
+import org.apache.commons.codec.language.bm.Lang;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class SpigotConfiguration {
     File exportDir = new File("plugins/LanguageAPI/export");
 
     private LanguageInventory languageInventory;
-    private SpigotLanguageConfig languageConfig;
+    private LanguageConfig languageConfig;
 
     public SpigotConfiguration(Logger logger) {
         if (!importDir.exists()) {
@@ -81,13 +82,13 @@ public class SpigotConfiguration {
                 settingsDocument.append("config",
                         new LanguageConfig(
                                 new MySQL(
-                                        "hostname",
+                                        "localhost",
                                         "languagapi",
                                         "languagapi",
                                         "password",
                                         3306
                                 ),
-                                new SpigotLanguageSetting(
+                                new LanguageSetting(
                                         "de_de",
                                         5,
                                         true
@@ -110,11 +111,11 @@ public class SpigotConfiguration {
         return this.languageInventory;
     }
 
-    public SpigotLanguageConfig getLanguageConfig() {
+    public LanguageConfig getLanguageConfig() {
         if (this.languageConfig != null) {
             return this.languageConfig;
         }
-        this.languageConfig = this.settingsDocument.get("config", SpigotLanguageConfig.class);
+        this.languageConfig = this.settingsDocument.get("config", LanguageConfig.class);
         return this.languageConfig;
     }
 

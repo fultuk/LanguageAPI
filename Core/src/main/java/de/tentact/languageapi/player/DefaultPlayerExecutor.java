@@ -18,7 +18,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-public class DefaultPlayerExecutor extends DefaultPlayerManager implements PlayerExecutor {
+public abstract class DefaultPlayerExecutor extends DefaultPlayerManager implements PlayerExecutor {
 
     private final MySQL mySQL;
     private final LanguageAPI languageAPI;

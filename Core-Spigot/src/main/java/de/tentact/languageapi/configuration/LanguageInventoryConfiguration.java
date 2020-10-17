@@ -15,15 +15,15 @@ public class LanguageInventoryConfiguration {
 
     private final String name;
     private final String fillItemMaterial;
-    private final byte subid;
+    private final byte subId;
     private final Collection<LanguageItem> languages;
     private final boolean useInventory;
 
-    public LanguageInventoryConfiguration(boolean useInventory, String name, String fillItemMaterial, byte subid, Collection<LanguageItem> languages) {
+    public LanguageInventoryConfiguration(boolean useInventory, String name, String fillItemMaterial, byte subId, Collection<LanguageItem> languages) {
         this.useInventory = useInventory;
         this.name = name;
         this.fillItemMaterial = fillItemMaterial;
-        this.subid = subid;
+        this.subId = subId;
         this.languages = languages;
     }
 
@@ -39,8 +39,8 @@ public class LanguageInventoryConfiguration {
         return Material.getMaterial(this.fillItemMaterial);
     }
 
-    public byte getSubid() {
-        return this.subid;
+    public byte getSubId() {
+        return this.subId;
     }
 
     public Collection<LanguageItem> getLanguages() {

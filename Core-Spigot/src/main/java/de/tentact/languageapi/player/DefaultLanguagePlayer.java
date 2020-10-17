@@ -23,7 +23,7 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
     @Override
     public void sendMessage(@NotNull Translation translation) {
         Player player = this.getPlayer();
-        if(player == null) {
+        if (player == null) {
             return;
         }
         player.sendMessage(translation.getMessage(this.getLanguage()));
@@ -36,31 +36,22 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
     }
 
     @Override
-    public void sendMultipleTranslation(@NotNull String multipleTranslationKey) {
-        this.sendMultipleTranslation(multipleTranslationKey, this.getLanguage());
-    }
-
-    @Override
-    public void sendMultipleTranslation(@NotNull Translation multipleTranslation) {
-        this.sendMultipleTranslation(multipleTranslation.getTranslationKey());
-    }
-
-    @Override
-    public void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language) {
+    public void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language, String prefixKey) {
         if (!this.languageAPI.isMultipleTranslation(multipleTranslationKey)) {
             throw new IllegalArgumentException(multipleTranslationKey + " was not found");
         }
         Player player = this.getPlayer();
-        if(player == null) {
+        if (player == null) {
             return;
         }
-        this.languageAPI.getMultipleMessages(multipleTranslationKey, language).forEach(player::sendMessage);
+        this.languageAPI.getMultipleMessages(multipleTranslationKey, language, prefixKey).forEach(player::sendMessage);
     }
+
 
     @Override
     public void kickPlayer(Translation translation) {
         Player player = this.getPlayer();
-        if(player == null) {
+        if (player == null) {
             return;
         }
         player.kickPlayer(translation.getMessage(this.getLanguage()));

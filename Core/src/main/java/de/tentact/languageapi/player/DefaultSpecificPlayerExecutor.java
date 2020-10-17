@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class DefaultSpecificPlayerExecutor extends DefaultPlayerManager implements SpecificPlayerExecutor {
+public abstract class DefaultSpecificPlayerExecutor extends DefaultPlayerManager implements SpecificPlayerExecutor {
 
     private final UUID playerId;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();

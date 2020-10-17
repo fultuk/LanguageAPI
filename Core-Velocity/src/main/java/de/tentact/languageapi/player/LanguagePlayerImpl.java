@@ -62,6 +62,11 @@ public class LanguagePlayerImpl extends LanguageOfflinePlayerImpl implements Lan
     }
 
     @Override
+    public void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language, String prefixKey) {
+
+    }
+
+    @Override
     public void kickPlayer(Translation translation) {
         if(this.getPlayer() == null) {
             return;

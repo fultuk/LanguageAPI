@@ -38,7 +38,8 @@ public class Configuration {
                                 ),
                                 new LanguageSetting(
                                         "de_de",
-                                        5
+                                        5,
+                                        true
                                 )
                         )
                 ).json().write(settingsFile);
