@@ -16,10 +16,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-public class FileHandlerImpl implements FileHandler {
+public class BungeeFileHandler implements FileHandler {
     private final LanguageAPI languageAPI;
 
-    public FileHandlerImpl(LanguageAPI languageAPI) {
+    public BungeeFileHandler(LanguageAPI languageAPI) {
         this.languageAPI = languageAPI;
     }
 
