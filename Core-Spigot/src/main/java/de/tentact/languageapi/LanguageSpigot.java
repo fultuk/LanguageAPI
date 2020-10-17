@@ -5,16 +5,15 @@ package de.tentact.languageapi;
     Uhrzeit: 17:01
 */
 
-import de.tentact.languageapi.api.LanguageAPIImpl;
+import de.tentact.languageapi.api.SpigotLanguageAPI;
 import de.tentact.languageapi.command.LanguageCommand;
-import de.tentact.languageapi.configuration.Configuration;
 import de.tentact.languageapi.configuration.LanguageConfig;
 import de.tentact.languageapi.configuration.MySQL;
+import de.tentact.languageapi.configuration.SpigotConfiguration;
 import de.tentact.languageapi.listener.ChatListener;
 import de.tentact.languageapi.listener.InventoryClickListener;
 import de.tentact.languageapi.listener.JoinListener;
 import de.tentact.languageapi.util.Updater;
-import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
@@ -24,19 +23,19 @@ public class LanguageSpigot extends JavaPlugin {
 
     private Updater updater;
     private MySQL mySQL;
-    public Configuration configuration;
+    public SpigotConfiguration spigotConfiguration;
 
     @Override
     public void onEnable() {
 
         this.getLogger().log(Level.INFO, "Starting LanguageAPI");
 
-        this.configuration = new Configuration(this.getLogger());
-        LanguageConfig languageConfig = this.configuration.getLanguageConfig();
+        this.spigotConfiguration = new SpigotConfiguration(this.getLogger());
+        LanguageConfig languageConfig = this.spigotConfiguration.getLanguageConfig();
 
         this.mySQL = languageConfig.getMySQL();
         this.mySQL.connect();
-        LanguageAPI.setInstance(new LanguageAPIImpl(languageConfig));
+        LanguageAPI.setInstance(new SpigotLanguageAPI(languageConfig));
         this.mySQL.createDefaultTable();
 
         LanguageAPI.getInstance().createLanguage(languageConfig.getLanguageSetting().getDefaultLanguage());
@@ -48,7 +47,7 @@ public class LanguageSpigot extends JavaPlugin {
 
         new JoinListener(this);
         new ChatListener(this, languageCommand);
-        new InventoryClickListener(this, this.configuration.getLanguageInventory());
+        new InventoryClickListener(this, this.spigotConfiguration.getLanguageInventory());
     }
 
     @Override
@@ -57,7 +56,7 @@ public class LanguageSpigot extends JavaPlugin {
     }
 
     public String getVersion() {
-        return "1.9-SNAPSHOT-21201510";
+        return "1.9-SNAPSHOT-1559-1710";
     }
 
     public Updater getUpdater() {

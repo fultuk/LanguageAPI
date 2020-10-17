@@ -8,8 +8,6 @@ package de.tentact.languageapi.util;
 import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.PluginDescription;
 import com.velocitypowered.api.proxy.ProxyServer;
-import de.tentact.languageapi.LanguageAPI;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.io.IOException;
 import java.net.URL;

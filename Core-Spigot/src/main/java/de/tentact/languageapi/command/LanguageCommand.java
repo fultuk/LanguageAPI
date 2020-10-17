@@ -6,11 +6,10 @@ package de.tentact.languageapi.command;
     Uhrzeit: 18:58
 */
 
-import com.google.common.collect.ImmutableList;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.LanguageSpigot;
-import de.tentact.languageapi.configuration.Configuration;
 import de.tentact.languageapi.configuration.LanguageInventory;
+import de.tentact.languageapi.configuration.SpigotConfiguration;
 import de.tentact.languageapi.i18n.I18N;
 import de.tentact.languageapi.player.LanguagePlayer;
 import org.bukkit.Bukkit;
@@ -27,18 +26,18 @@ import java.util.logging.Level;
 
 public class LanguageCommand implements TabExecutor {
 
-    public LanguageAPI languageAPI = LanguageAPI.getInstance();
+    public final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private final List<String> tabComplete = Arrays.asList("add", "remove", "update", "create", "delete",
             "param", "copy", "translations", "reload", "import", "export", "help", "info");
-    public ArrayList<Player> editingMessage = new ArrayList<>();
-    public HashMap<Player, List<String>> givenParameter = new HashMap<>();
+    public final ArrayList<Player> editingMessage = new ArrayList<>();
+    public final HashMap<Player, List<String>> givenParameter = new HashMap<>();
     private final LanguageSpigot languageSpigot;
     private final LanguageInventory languageInventory;
     private final String version;
 
     public LanguageCommand(LanguageSpigot languageSpigot) {
         this.languageSpigot = languageSpigot;
-        this.languageInventory = languageSpigot.configuration.getLanguageInventory();
+        this.languageInventory = languageSpigot.spigotConfiguration.getLanguageInventory();
         this.version = languageSpigot.getVersion();
     }
 
@@ -314,11 +313,9 @@ public class LanguageCommand implements TabExecutor {
                             if (this.checkDoesNotHavePermission(player, args)) {
                                 return false;
                             }
-
                             this.languageSpigot.getLogger().log(Level.INFO, "Reloading config.json...");
-                            this.languageSpigot.configuration = new Configuration(this.languageSpigot.getLogger());
+                            this.languageSpigot.spigotConfiguration = new SpigotConfiguration(this.languageSpigot.getLogger());
                             languagePlayer.sendMessage(I18N.LANGUAGEAPI_RELOAD_SUCCESS.get());
-
                             break;
                         case "help":
                             if (this.checkDoesNotHavePermission(player, args)) {
@@ -328,6 +325,7 @@ public class LanguageCommand implements TabExecutor {
                             break;
                         case "info":
                             languagePlayer.sendMessage(I18N.LANGUAGEAPI_INFO.get().replace("%VERSION%", version));
+                            break;
                         default:
                             languagePlayer.sendMultipleTranslation(I18N.LANGUAGEAPI_HELP.get());
                             break;

@@ -33,7 +33,7 @@ public class LanguageInventory {
         Inventory inventory = Bukkit.createInventory(null, this.languageInventoryConfiguration.getInventorySize(), this.languageInventoryConfiguration.getName());
 
         ItemBuilder builder = new ItemBuilder(this.languageInventoryConfiguration.getFillItemMaterial());
-        byte subId = this.languageInventoryConfiguration.getSubid();
+        byte subId = this.languageInventoryConfiguration.getSubId();
         if(subId != -1) {
              builder.setSubId(subId);
         }

@@ -3,12 +3,9 @@ package de.tentact.languageapi;
 
 import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.i18n.Translation;
-import de.tentact.languageapi.player.PlayerExecutor;
-import de.tentact.languageapi.player.PlayerManager;
-import de.tentact.languageapi.player.SpecificPlayerExecutor;
+import de.tentact.languageapi.player.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -218,26 +215,34 @@ public abstract class LanguageAPI {
 
     /**
      * @param transkey the translationkey which holds the other keys
-     * @return returns a {@link ArrayList<String>} with the translated messages in the default language
+     * @return returns a {@link List<String>} with the translated messages in the default language
      */
     @NotNull
-    public abstract ArrayList<String> getMultipleMessages(String transkey);
+    public abstract List<String> getMultipleMessages(String transkey);
 
     /**
      * @param transkey   the translationkey which holds the other keys
      * @param playerUUID the player UUID is needed to select the language
-     * @return returns a {@link ArrayList<String>} with the translated messages
+     * @return returns a {@link List<String>} with the translated messages
      */
     @NotNull
-    public abstract ArrayList<String> getMultipleMessages(String transkey, UUID playerUUID);
+    public abstract List<String> getMultipleMessages(String transkey, UUID playerUUID);
 
     /**
      * @param transkey the translationkey which holds the other keys
      * @param language the language to get the translation in
-     * @return returns a {@link ArrayList<String>} with the translated messages
+     * @return returns a {@link List<String>} with the translated messages
      */
     @NotNull
-    public abstract ArrayList<String> getMultipleMessages(String transkey, String language);
+    public abstract List<String> getMultipleMessages(String transkey, String language);
+
+    /**
+     * @param transkey the translationkey which holds the other keys
+     * @param language the language to get the translation in
+     * @return returns a {@link List<String>} with the translated messages
+     */
+    @NotNull
+    public abstract List<String> getMultipleMessages(String transkey, String language, String prefixKey);
 
 
     /**
@@ -311,7 +316,7 @@ public abstract class LanguageAPI {
     public abstract String getLanguageAPIPrefix(String language);
 
     /**
-     * Gets an {@link PlayerManager} to get {@link de.tentact.languageapi.player.LanguagePlayer} & {@link de.tentact.languageapi.player.LanguageOfflinePlayer}
+     * Gets an {@link PlayerManager} to get {@link LanguagePlayer} & {@link LanguageOfflinePlayer}
      * @return returns a {@link PlayerManager}
      */
     @NotNull

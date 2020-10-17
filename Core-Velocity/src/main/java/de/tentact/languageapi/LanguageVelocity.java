@@ -8,49 +8,37 @@ package de.tentact.languageapi;
 import com.google.inject.Inject;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
-import de.tentact.languageapi.api.LanguageAPIImpl;
+import de.tentact.languageapi.api.VelocityLanguageAPI;
 import de.tentact.languageapi.configuration.Configuration;
 import de.tentact.languageapi.configuration.LanguageConfig;
 import de.tentact.languageapi.configuration.MySQL;
 import de.tentact.languageapi.util.Updater;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Plugin(id="languageapi", name = "LanguageAPI", version = "1.9", authors = {"0utplay"})
+@Plugin(id = "languageapi", name = "LanguageAPI", version = "1.9", authors = {"0utplay"})
 public class LanguageVelocity {
 
-    private final LanguageConfig languageConfig;
     private final Logger logger;
-    private final ProxyServer proxyServer;
 
     @Inject
     public LanguageVelocity(ProxyServer proxyServer, Logger logger) {
         this.logger = logger;
-        this.proxyServer = proxyServer;
         Configuration configuration = new Configuration(this.getLogger());
-        this.languageConfig = configuration.getLanguageConfig();
+        LanguageConfig languageConfig = configuration.getLanguageConfig();
 
         MySQL mySQL = configuration.getLanguageConfig().getMySQL();
         mySQL.connect();
-        LanguageAPI.setInstance(new LanguageAPIImpl(this));
+        LanguageAPI.setInstance(new VelocityLanguageAPI(proxyServer, languageConfig));
 
         mySQL.createDefaultTable();
 
-        LanguageAPI.getInstance().createLanguage(this.languageConfig.getLanguageSetting().getDefaultLanguage());
+        LanguageAPI.getInstance().createLanguage(languageConfig.getLanguageSetting().getDefaultLanguage());
 
-        new Updater(this.proxyServer, this.logger);
+        new Updater(proxyServer, this.logger);
     }
 
     public Logger getLogger() {
         return this.logger;
-    }
-
-    public ProxyServer getProxyServer() {
-        return this.proxyServer;
-    }
-
-    public LanguageConfig getLanguageConfig() {
-        return this.languageConfig;
     }
 }
