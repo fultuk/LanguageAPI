@@ -32,9 +32,8 @@ public class ItemBuilder {
         this(material, 1);
     }
 
-    public ItemBuilder setSubId(byte subId) {
+    public void setSubId(byte subId) {
         this.itemStack.setDurability(subId);
-        return this;
     }
 
     public ItemStack build() {

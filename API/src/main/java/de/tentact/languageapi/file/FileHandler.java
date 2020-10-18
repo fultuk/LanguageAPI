@@ -1,5 +1,7 @@
 package de.tentact.languageapi.file;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 
 /*  Created in the IntelliJ IDEA.
@@ -23,7 +25,7 @@ public interface FileHandler {
      * @param file the file that should be read
      * @return returns if it imported correctly
      */
-    default boolean loadFile(File file) {
+    default boolean loadFile(@NotNull File file) {
         return this.loadFile(file, false);
     }
 
@@ -32,7 +34,7 @@ public interface FileHandler {
      * @param files the files that should be read
      * @return returns if all files were imported correctly
      */
-    default boolean loadFiles(File[] files) {
+    default boolean loadFiles(@NotNull File[] files) {
        return this.loadFiles(files, false);
     }
 
@@ -42,7 +44,7 @@ public interface FileHandler {
      * @param doOverwrite whether to overwrite old translations
      * @return returns if it imported correctly
      */
-    boolean loadFile(File file, boolean doOverwrite);
+    boolean loadFile(@NotNull File file, boolean doOverwrite);
 
     /**
      * Loads files and inserts the content to the database
@@ -50,7 +52,7 @@ public interface FileHandler {
      * @param doOverwrite whether to overwrite old translations
      * @return returns if all files were imported correctly
      */
-    default boolean loadFiles(File[] files, boolean doOverwrite) {
+    default boolean loadFiles(@NotNull File[] files, boolean doOverwrite) {
         boolean passed = false;
         for (File file : files) {
             passed = this.loadFile(file, doOverwrite);
@@ -60,15 +62,17 @@ public interface FileHandler {
 
     /**
      * Export all languages to files
+     * @since 1.9
      * @return whether all languages were exported or not
      */
     boolean exportAll();
 
     /**
      * Exports all translationKeys and translations into a file
+     * @since 1.9
      * @param language the language to export
      * @return whether the language was exported or not
      */
-    boolean exportLanguageToFile(String language);
+    boolean exportLanguageToFile(@NotNull String language);
 
 }

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
 /**
- * An interface to set and get properties of an player by it's uniqueId
+ * An interface to set and get properties of an player by its uniqueId
  */
 public interface PlayerExecutor extends PlayerManager {
 
@@ -48,9 +48,9 @@ public interface PlayerExecutor extends PlayerManager {
      void registerPlayer(UUID playerUUID);
 
     /**
+     * creates the player in the database
      * @param playerUUID player uuid the player is created with
      * @param language   the language that the player has on creation
-     *                   creates the player in the database
      */
 
      void registerPlayer(UUID playerUUID, String language);

@@ -51,8 +51,6 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
         }
     }
 
-
-
     /**
      * Sends multiple messages to the player by a single multipleTranslationKey
      * @param multipleTranslationKey the multipleTranslationKey to get the Collection of translationkeys

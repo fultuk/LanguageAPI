@@ -2,6 +2,7 @@ package de.tentact.languageapi.i18n;
 
 import de.tentact.languageapi.LanguageAPI;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -45,15 +46,21 @@ public interface Translation {
     /**
      * @return returns all parameters for the key in the {@link Translation#getTranslationKey()}
      */
-
+    @Nullable
     String getParameter();
 
     /**
      * @param prefixTranslation the prefix translation to get the prefix from
      * @return returns a {@link Translation} after setting the prefixTranslation
      */
+    @NotNull
     Translation setPrefixTranslation(Translation prefixTranslation);
 
+    /**
+     * Get the prefixTranslation which was set with {@link Translation#setPrefixTranslation(Translation)}
+     * @return returns the prefixTranslation, null if the translation was never set
+     */
+    @Nullable
     Translation getPrefixTranslation();
 
     /**
@@ -63,11 +70,13 @@ public interface Translation {
      * @param replacement the replacement for the paramater
      * @return returns {@link Translation} after replacing the parameter
      */
+    @NotNull
     Translation replace(String old, String replacement);
 
     /**
      * @return returns the translationkey which was given
      */
+    @NotNull
     String getTranslationKey();
 
     /**

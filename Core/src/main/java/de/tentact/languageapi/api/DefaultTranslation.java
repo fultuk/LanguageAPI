@@ -22,8 +22,8 @@ public class DefaultTranslation implements Translation {
     private final HashMap<String, String> params = new HashMap<>();
     private String message;
 
-    public DefaultTranslation(@NotNull String translationkey) {
-        this.translationkey = translationkey;
+    public DefaultTranslation(@NotNull String translationKey) {
+        this.translationkey = translationKey;
     }
 
     @NotNull
@@ -57,7 +57,7 @@ public class DefaultTranslation implements Translation {
     }
 
     @Override
-    public Translation setPrefixTranslation(Translation prefixTranslation) {
+    public @NotNull Translation setPrefixTranslation(Translation prefixTranslation) {
         this.prefixTranslation = prefixTranslation;
         this.updateTranslation();
         return this;
@@ -69,13 +69,13 @@ public class DefaultTranslation implements Translation {
     }
 
     @Override
-    public Translation replace(String old, String replacement) {
+    public @NotNull Translation replace(String old, String replacement) {
         params.put(old, replacement);
         return this;
     }
 
     @Override
-    public String getTranslationKey() {
+    public @NotNull String getTranslationKey() {
         return this.translationkey;
     }
 

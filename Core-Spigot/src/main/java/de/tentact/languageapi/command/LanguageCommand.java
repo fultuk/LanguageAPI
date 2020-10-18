@@ -138,7 +138,7 @@ public class LanguageCommand implements TabExecutor {
 
                                 return true;
                             } else if (languages.equalsIgnoreCase("*")) {
-                                this.languageAPI.getAvailableLanguages().forEach(language -> this.languageAPI.deleteLanguage(language));
+                                this.languageAPI.getAvailableLanguages().forEach(this.languageAPI::deleteLanguage);
 
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_DELETE_ALL_LANGS.get());
                                 return true;
@@ -180,7 +180,7 @@ public class LanguageCommand implements TabExecutor {
                                 return false;
                             }
                             key = args[1].toLowerCase();
-                            if (!this.languageAPI.hasParameter(key) || this.languageAPI.getParameter(key).equalsIgnoreCase("")) {
+                            if (!this.languageAPI.hasParameter(key) || "".equalsIgnoreCase(this.languageAPI.getParameter(key))) {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_KEY_HAS_NO_PARAM.get().replace("%KEY%", key));
                                 return false;
                             }
@@ -294,7 +294,7 @@ public class LanguageCommand implements TabExecutor {
                             }
                             if (args[1].equalsIgnoreCase("@a")) {
                                 passed = this.languageAPI.getFileHandler().exportAll();
-                                if(!passed) {
+                                if (!passed) {
                                     languagePlayer.sendMessage(I18N.LANGUAGEAPI_EXPORT_ERROR.get().replace("%LANGUAGE%", "@a"));
                                     return false;
                                 }

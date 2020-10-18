@@ -5,6 +5,7 @@ import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.i18n.Translation;
 import de.tentact.languageapi.player.*;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -145,9 +146,9 @@ public abstract class LanguageAPI {
 
     /**
      * @param translationKey the translationkey to get the parameters for
-     * @return returns all the parameters to the translationkey
-     * @throws IllegalArgumentException if the translationkey was not found
+     * @return returns all the parameters to the translationKey, null if the key does not have any parameters
      */
+    @Nullable
     public abstract String getParameter(String translationKey);
 
     /**
@@ -202,8 +203,6 @@ public abstract class LanguageAPI {
      * @param language       the language to the translationkey
      */
     public abstract void deleteMessage(String translationkey, String language);
-
-
 
     /**
      * @param translationkey the translationkey to check if it is one
@@ -266,7 +265,7 @@ public abstract class LanguageAPI {
 
     /**
      * @param language the language to check if it is a language
-     * @return returns if it is a language
+     * @return returns if the given language is a valid language
      */
 
     public abstract boolean isLanguage(String language);
@@ -293,6 +292,11 @@ public abstract class LanguageAPI {
     @NotNull
     public abstract List<String> getAllTranslations(String language);
 
+    /**
+     *
+     * @param language the language to get the keys and translations from
+     * @return returns a {@link Map} with every key and its translation in the given language
+     */
     @NotNull
     public abstract Map<String, String> getKeysAndTranslations(String language);
 
@@ -324,11 +328,11 @@ public abstract class LanguageAPI {
 
     /**
      * Gets a {@link Translation} by its key
-     * @param translationkey the translationkey to fetch the translation from
+     * @param translationKey the translationKey to fetch the translation from
      * @return returns an {@link Translation}
      */
     @NotNull
-    public abstract Translation getTranslation(String translationkey);
+    public abstract Translation getTranslation(@NotNull String translationKey);
 
     /**
      *
@@ -362,6 +366,7 @@ public abstract class LanguageAPI {
 
     /**
      * @return returns the {@link FileHandler}
+     * @throws UnsupportedOperationException if this is called on a Velocity Server
      */
     public abstract FileHandler getFileHandler();
 

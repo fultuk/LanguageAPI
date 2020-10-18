@@ -18,6 +18,7 @@ import de.tentact.languageapi.player.PlayerExecutor;
 import de.tentact.languageapi.player.PlayerManager;
 import de.tentact.languageapi.player.SpecificPlayerExecutor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -227,9 +228,9 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     }
 
     @Override
-    public String getParameter(String translationKey) {
+    public @Nullable String getParameter(String translationKey) {
         if (!this.hasParameter(translationKey)) {
-            throw new IllegalArgumentException(translationKey + " has no parameter");
+            return null;
         }
         try (Connection connection = this.getDataSource().getConnection()) {
             ResultSet rs = connection.createStatement().executeQuery("SELECT param FROM Parameter WHERE transkey='" + translationKey.toLowerCase() + "';");
@@ -244,6 +245,9 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public boolean isParameter(String translationKey, String param) {
+        if(!this.hasParameter(translationKey)) {
+            return false;
+        }
         return this.getParameter(translationKey).contains(param);
     }
 
@@ -540,11 +544,11 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     public abstract @NotNull PlayerManager getPlayerManager();
 
     @Override
-    public @NotNull Translation getTranslation(String translationkey) {
-        if (this.translationMap.containsKey(translationkey)) {
-            return this.translationMap.get(translationkey);
+    public @NotNull Translation getTranslation(@NotNull String translationKey) {
+        if (this.translationMap.containsKey(translationKey)) {
+            return this.translationMap.get(translationKey);
         }
-        Translation translation = new DefaultTranslation(translationkey);
+        Translation translation = new DefaultTranslation(translationKey);
         this.updateTranslation(translation);
         return translation;
     }
@@ -564,6 +568,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     public void updateTranslation(Translation translation) {
         this.translationMap.put(translation.getTranslationKey(), translation);
     }
+
 
     @Override
     public abstract FileHandler getFileHandler();

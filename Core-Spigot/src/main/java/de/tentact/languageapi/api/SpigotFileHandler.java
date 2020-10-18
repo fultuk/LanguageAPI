@@ -9,6 +9,7 @@ package de.tentact.languageapi.api;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.file.FileHandler;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +24,7 @@ public class SpigotFileHandler implements FileHandler {
     }
 
     @Override
-    public boolean loadFile(File file, boolean doOverwrite) {
+    public boolean loadFile(@NotNull File file, boolean doOverwrite) {
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(file);
         Set<String> keys = yamlConfiguration.getKeys(false);
         String languageName = yamlConfiguration.getString("language");
@@ -52,7 +53,7 @@ public class SpigotFileHandler implements FileHandler {
     }
 
     @Override
-    public boolean exportLanguageToFile(String language) {
+    public boolean exportLanguageToFile(@NotNull String language) {
         if(!this.languageAPI.isLanguage(language)) {
             return false;
         }

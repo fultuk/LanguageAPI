@@ -11,6 +11,7 @@ import de.tentact.languageapi.file.FileHandler;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +25,7 @@ public class BungeeFileHandler implements FileHandler {
     }
 
     @Override
-    public boolean loadFile(File file, boolean doOverwrite) {
+    public boolean loadFile(@NotNull File file, boolean doOverwrite) {
         try {
             Configuration configuration = YamlConfiguration.getProvider(YamlConfiguration.class).load(file);
             Collection<String> keys = configuration.getKeys();
@@ -58,7 +59,7 @@ public class BungeeFileHandler implements FileHandler {
     }
 
     @Override
-    public boolean exportLanguageToFile(String language) {
+    public boolean exportLanguageToFile(@NotNull String language) {
         if (!this.languageAPI.isLanguage(language)) {
             return false;
         }

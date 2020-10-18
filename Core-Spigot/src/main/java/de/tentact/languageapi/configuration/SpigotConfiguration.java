@@ -32,11 +32,15 @@ public class SpigotConfiguration {
     private LanguageConfig languageConfig;
 
     public SpigotConfiguration(Logger logger) {
-        if (!importDir.exists()) {
-            importDir.mkdirs();
-        }
-        if (!exportDir.exists()) {
-            exportDir.mkdirs();
+        try {
+            if (!importDir.exists()) {
+                Files.createDirectories(importDir.getParentFile().toPath());
+            }
+            if (!exportDir.exists()) {
+                Files.createDirectories(exportDir.getParentFile().toPath());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         if (inventoryFile.exists()) {
             inventoryDocument = Documents.jsonStorage().read(inventoryFile);
