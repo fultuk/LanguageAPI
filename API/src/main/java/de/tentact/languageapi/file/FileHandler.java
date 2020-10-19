@@ -13,9 +13,7 @@ import java.io.File;
 
 /**
  * This is used to import files and insert the values into the database
- * This feature is currently only available for Spigot and Bungeecord.
- *
- * WARNING: This feature is implemented, but not tested for Bungeecord.
+ * The BungeeCord & Spigot FileHandler will produce a YAML-File, the Velocity one will produce a JSON-File
  */
 
 public interface FileHandler {

@@ -366,7 +366,7 @@ public abstract class LanguageAPI {
 
     /**
      * @return returns the {@link FileHandler}
-     * @throws UnsupportedOperationException if this is called on a Velocity Server
+
      */
     public abstract FileHandler getFileHandler();
 

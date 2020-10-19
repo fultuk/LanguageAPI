@@ -51,9 +51,11 @@ public class BungeeFileHandler implements FileHandler {
 
     @Override
     public boolean exportAll() {
-        boolean passed = false;
-        for (String language : this.languageAPI.getAvailableLanguages()) {
-            passed = this.exportLanguageToFile(language);
+        boolean passed = true;
+        for(String language : this.languageAPI.getAvailableLanguages()) {
+            if(!this.exportLanguageToFile(language)) {
+                passed = false;
+            }
         }
         return passed;
     }

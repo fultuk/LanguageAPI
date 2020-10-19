@@ -16,14 +16,14 @@ import java.util.UUID;
 
 public class DefaultTranslation implements Translation {
 
-    private final String translationkey;
+    private final String translationKey;
     private Translation prefixTranslation = null;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private final HashMap<String, String> params = new HashMap<>();
     private String message;
 
     public DefaultTranslation(@NotNull String translationKey) {
-        this.translationkey = translationKey;
+        this.translationKey = translationKey;
     }
 
     @NotNull
@@ -45,7 +45,7 @@ public class DefaultTranslation implements Translation {
         if (this.hasPrefixTranslation()) {
             prefix = this.prefixTranslation.getMessage(language, orElseDefault);
         }
-        message = this.languageAPI.getMessage(this.translationkey, language);
+        message = this.languageAPI.getMessage(this.translationKey, language);
         params.forEach((key, value) -> message = message.replace(key, value));
         params.clear();
         return prefix + message;
@@ -53,7 +53,7 @@ public class DefaultTranslation implements Translation {
 
     @Override
     public String getParameter() {
-        return this.languageAPI.getParameter(this.translationkey);
+        return this.languageAPI.getParameter(this.translationKey);
     }
 
     @Override
@@ -76,18 +76,18 @@ public class DefaultTranslation implements Translation {
 
     @Override
     public @NotNull String getTranslationKey() {
-        return this.translationkey;
+        return this.translationKey;
     }
 
     @Override
     public Translation createDefaults(String message) {
-        this.languageAPI.addMessageToDefault(this.translationkey, message);
+        this.languageAPI.addMessageToDefault(this.translationKey, message);
         return this;
     }
 
     @Override
     public Translation createDefaults(String message, String param) {
-        this.languageAPI.addMessageToDefault(this.translationkey, message, param);
+        this.languageAPI.addMessageToDefault(this.translationKey, message, param);
         return this;
     }
 
@@ -98,7 +98,7 @@ public class DefaultTranslation implements Translation {
 
     @Override
     public Translation addTranslation(String language, String message, String param) {
-        this.languageAPI.addMessage(this.translationkey, message, language, param);
+        this.languageAPI.addMessage(this.translationKey, message, language, param);
         return this;
     }
 
