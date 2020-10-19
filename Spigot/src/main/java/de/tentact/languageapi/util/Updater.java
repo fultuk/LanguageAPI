@@ -33,6 +33,9 @@ public class Updater {
         if (this.onlineVersion > this.localVersion) {
             this.plugin.getLogger().log(Level.INFO, "There is a new version available. Current version: " + plugin.getDescription().getVersion() + ", newest version: " + onlineVersion);
         }
+        if(this.localVersion > this.onlineVersion) {
+            this.plugin.getLogger().log(Level.WARNING, "You are using a snapshot version of the LanguageAPI, this version is not as stable as the release.");
+        }
     }
 
 
