@@ -9,7 +9,7 @@
         <groupId>de.tentact.languageapi</groupId>
     </parent>
     <packaging>jar</packaging>
-    <artifactId>Core-BungeeCord</artifactId>
+    <artifactId>BungeeCord</artifactId>
     <build>
         <plugins>
             <plugin>

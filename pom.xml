@@ -14,10 +14,10 @@
     </properties>
     <modules>
         <module>API</module>
-        <module>Core-Spigot</module>
-        <module>Core-BungeeCord</module>
+        <module>Spigot</module>
+        <module>BungeeCord</module>
         <module>Examples</module>
-        <module>Core-Velocity</module>
+        <module>Velocity</module>
         <module>Core</module>
     </modules>
     <build>
