@@ -38,13 +38,13 @@ public class JoinListener implements Listener {
         } else {
             player.performCommand("languageapi");
         }
+        if (!player.hasPermission("languageapi.notify")) {
+            return;
+        }
         if (!this.languageSpigot.spigotConfiguration.getLanguageConfig().getLanguageSetting().isNotify()) {
             return;
         }
         if (!updater.hasUpdate()) {
-            return;
-        }
-        if (!player.hasPermission("languageapi.notify")) {
             return;
         }
         player.sendMessage(LanguageAPI.getInstance().getLanguageAPIPrefix() + "Es ist ein neues Update verfügbar. Aktuelle Version: §6" + updater.getLocalVersion()

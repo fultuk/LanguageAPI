@@ -264,16 +264,12 @@ public class LanguageCommand implements TabExecutor {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_HELP.get());
                                 return false;
                             }
-                            if (!this.isBoolean(args[2])) {
-                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_HELP.get());
-                                return false;
-                            }
                             File file = new File("plugins/LanguageAPI/import", args[1]);
                             if (!file.exists()) {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_FILE_NOT_FOUND.get().replace("%FILE%", args[1]));
                                 return false;
                             }
-                            boolean passed = this.languageAPI.getFileHandler().loadFile(file, Boolean.parseBoolean(args[2]));
+                            boolean passed = this.languageAPI.getFileHandler().loadFile(file, this.parseBoolean(args[2]));
                             if (!passed) {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_ERROR.get());
                                 return false;
@@ -288,14 +284,14 @@ public class LanguageCommand implements TabExecutor {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_EXPORT_HELP.get());
                                 return false;
                             }
-                            if (!this.languageAPI.isLanguage(args[1]) && !args[1].equalsIgnoreCase("@a")) {
+                            if (!this.languageAPI.isLanguage(args[1]) && !args[1].equalsIgnoreCase("@a") && !args[1].equalsIgnoreCase("all")) {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_NOT_FOUND.get());
                                 return false;
                             }
-                            if (args[1].equalsIgnoreCase("@a")) {
+                            if (args[1].equalsIgnoreCase("@a") || args[1].equalsIgnoreCase("all")) {
                                 passed = this.languageAPI.getFileHandler().exportAll();
                                 if (!passed) {
-                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_EXPORT_ERROR.get().replace("%LANGUAGE%", "@a"));
+                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_EXPORT_ERROR.get().replace("%LANGUAGE%", args[1]));
                                     return false;
                                 }
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_EXPORT_ALL_SUCCESS.get());
@@ -369,8 +365,8 @@ public class LanguageCommand implements TabExecutor {
         return possibleCompletes;
     }
 
-    private boolean isBoolean(String input) {
-        return input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false");
+    private boolean parseBoolean(String input) {
+        return input.equalsIgnoreCase("yes") || input.equalsIgnoreCase("true") || input.equalsIgnoreCase("ja");
     }
 
     private boolean checkDoesNotHavePermission(Player player, String[] args) {

@@ -17,21 +17,18 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.logging.Logger;
 
-public class SpigotConfiguration {
+public class SpigotConfiguration extends Configuration{
 
     Document inventoryDocument = new DefaultDocument();
     final File inventoryFile = new File("plugins/LanguageAPI", "languages.json");
-
-    Document settingsDocument = new DefaultDocument();
-    final File settingsFile = new File("plugins/LanguageAPI", "config.json");
 
     final File importDir = new File("plugins/LanguageAPI/import");
     final File exportDir = new File("plugins/LanguageAPI/export");
 
     private LanguageInventory languageInventory;
-    private LanguageConfig languageConfig;
 
     public SpigotConfiguration(Logger logger) {
+        super(logger);
         try {
             if (!importDir.exists()) {
                 Files.createDirectories(importDir.getParentFile().toPath());
@@ -76,34 +73,6 @@ public class SpigotConfiguration {
                 e.printStackTrace();
             }
         }
-        if (settingsFile.exists()) {
-            settingsDocument = Documents.jsonStorage().read(settingsFile);
-        } else {
-            try {
-                Files.createDirectories(settingsFile.getParentFile().toPath());
-                Files.createFile(settingsFile.toPath());
-                settingsDocument.append("config",
-                        new LanguageConfig(
-                                new MySQL(
-                                        "localhost",
-                                        "languagapi",
-                                        "languagapi",
-                                        "password",
-                                        3306
-                                ),
-                                new LanguageSetting(
-                                        "de_de",
-                                        5,
-                                        true
-                                )
-                        )
-                ).json().write(settingsFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        this.getLanguageConfig().setLogger(logger);
-        this.getLanguageConfig().getMySQL().setLogger(logger);
     }
 
     public LanguageInventory getLanguageInventory() {
@@ -112,14 +81,6 @@ public class SpigotConfiguration {
         }
         this.languageInventory = this.inventoryDocument.get("config", LanguageInventory.class);
         return this.languageInventory;
-    }
-
-    public LanguageConfig getLanguageConfig() {
-        if (this.languageConfig != null) {
-            return this.languageConfig;
-        }
-        this.languageConfig = this.settingsDocument.get("config", LanguageConfig.class);
-        return this.languageConfig;
     }
 
 }

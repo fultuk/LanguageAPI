@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>LanguageAPI-parent</artifactId>
+    <artifactId>LanguageAPI</artifactId>
     <version>1.9-SNAPSHOT</version>
     <groupId>de.tentact.languageapi</groupId>
-    <name>LanguageAPI-parent</name>
+    <name>LanguageAPI</name>
     <packaging>pom</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

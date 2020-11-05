@@ -9,22 +9,26 @@ package de.tentact.languageapi.api;
 import com.github.derrop.documents.DefaultDocument;
 import com.github.derrop.documents.Document;
 import com.github.derrop.documents.Documents;
+import com.google.gson.reflect.TypeToken;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.file.FileHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
 public class VelocityFileHandler implements FileHandler {
 
     LanguageAPI languageAPI = LanguageAPI.getInstance();
+    private static final Type translationType = new TypeToken<HashMap<String, String>>(){}.getType();
 
     @Override
     public boolean loadFile(@NotNull File file, boolean doOverwrite) {
         Document document = Documents.jsonStorage().read(file);
-        Map<String, String> map = document.get("languageapi", HashMap.class);
+        Map<String, String> map = document.get("languageapi", translationType);
+
         String language = map.get("language");
         map.remove("language");
         if (language == null || language.isEmpty()) {

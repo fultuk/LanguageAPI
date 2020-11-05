@@ -18,10 +18,10 @@ public class VelocityPlayerManager extends DefaultPlayerManager {
 
     @Override
     public @Nullable LanguagePlayer getLanguagePlayer(UUID playerId) {
-        if (!proxyServer.getPlayer(playerId).isPresent()) {
+        if (!this.proxyServer.getPlayer(playerId).isPresent()) {
             return null;
         }
-        return new DefaultLanguagePlayer(proxyServer, playerId);
+        return new DefaultLanguagePlayer(this.proxyServer, playerId);
     }
 
     @Override

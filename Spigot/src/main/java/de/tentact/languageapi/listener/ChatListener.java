@@ -21,12 +21,13 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 
 public class ChatListener implements Listener {
 
-    private final Cache<LanguagePlayer, List<String>> editedMessage = CacheBuilder.newBuilder().expireAfterWrite(15, TimeUnit.MINUTES).build();
+    private final Cache<UUID, List<String>> editedMessage = CacheBuilder.newBuilder().expireAfterWrite(15, TimeUnit.MINUTES).build();
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private final LanguageCommand languageCommand;
 
@@ -44,23 +45,23 @@ public class ChatListener implements Listener {
         }
         if (this.languageCommand.editingMessage.contains(player)) {
             if (!event.getMessage().equalsIgnoreCase("finish")) {
-                List<String> currentArray = editedMessage.getIfPresent(languagePlayer);
+                List<String> currentArray = editedMessage.getIfPresent(languagePlayer.getUniqueId());
                 if (currentArray != null) {
-                    editedMessage.invalidate(languagePlayer);
+                    editedMessage.invalidate(languagePlayer.getUniqueId());
                 } else {
                     currentArray = new ArrayList<>();
                 }
                 currentArray.add(event.getMessage());
-                editedMessage.put(languagePlayer, currentArray);
+                editedMessage.put(languagePlayer.getUniqueId(), currentArray);
                 event.setCancelled(true);
             } else {
-                if (editedMessage.getIfPresent(languagePlayer) == null) {
+                if (editedMessage.getIfPresent(languagePlayer.getUniqueId()) == null) {
                     languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_SAME.get());
                     event.setCancelled(true);
                     return;
                 }
                 StringBuilder result = new StringBuilder();
-                for (String message : Objects.requireNonNull(editedMessage.getIfPresent(languagePlayer))) {
+                for (String message : Objects.requireNonNull(editedMessage.getIfPresent(languagePlayer.getUniqueId()))) {
                     result.append(message).append(" ");
                 }
                 String transKey = this.languageCommand.givenParameter.get(player).get(0);
@@ -73,7 +74,7 @@ public class ChatListener implements Listener {
                         .replace("%KEY%", transKey)
                         .replace("%LANG%", language)
                         .replace("%MSG%", result.toString()));
-                editedMessage.invalidate(languagePlayer);
+                editedMessage.invalidate(languagePlayer.getUniqueId());
             }
         }
     }
