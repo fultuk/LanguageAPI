@@ -31,7 +31,7 @@ Dependency:
        <dependency>
 	    <groupId>com.github.0utplay.LanguageAPI</groupId>
 	    <artifactId>API</artifactId>
-	    <version>1.7-RELEASE</version>
+	    <version>1.8-RELEASE</version>
 	</dependency>
 ```
 
