@@ -53,7 +53,7 @@ public interface SpecificPlayerExecutor extends PlayerManager {
     boolean isRegisteredPlayer();
 
     /**
-     * Gets an {@link LanguagePlayer} - null when the player is not online
+     * Gets an {@link LanguagePlayer} - null if the player is not online
      *
      * @return returns a {@link LanguagePlayer}
      */

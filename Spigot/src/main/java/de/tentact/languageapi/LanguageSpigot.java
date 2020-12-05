@@ -48,6 +48,7 @@ public class LanguageSpigot extends JavaPlugin {
         new JoinListener(this);
         new ChatListener(this, languageCommand);
         new InventoryClickListener(this, this.spigotConfiguration.getLanguageInventory());
+
     }
 
     @Override
@@ -56,7 +57,7 @@ public class LanguageSpigot extends JavaPlugin {
     }
 
     public String getVersion() {
-        return "1.9-SNAPSHOT-1157-1910";
+        return "1.9-SNAPSHOT-1024-0512";
     }
 
     public Updater getUpdater() {
