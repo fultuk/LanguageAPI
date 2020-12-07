@@ -49,4 +49,23 @@
             </plugin>
         </plugins>
     </build>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>tentact-snapshot</id>
+            <name>Release Repository</name>
+            <url>https://archiva.tentact.de/repository/tentact-release/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <distributionManagement>
+        <repository>
+            <id>tentact-snapshot</id>
+            <url>https://archiva.tentact.de/repository/tentact-snapshot/</url>
+        </repository>
+    </distributionManagement>
+
 </project>
