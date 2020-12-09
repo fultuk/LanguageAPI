@@ -29,10 +29,10 @@ public class MySQL {
 
     public void connect() {
         if (isNotConnected()) {
-            dataSource = new HikariDataSource();
-            dataSource.setJdbcUrl("jdbc:mysql://" + hostname + ":" + port + "/" + database);
-            dataSource.setUsername(this.username);
-            dataSource.setPassword(this.password);
+            this.dataSource = new HikariDataSource();
+            this.dataSource.setJdbcUrl("jdbc:mysql://" + hostname + ":" + port + "/" + database);
+            this.dataSource.setUsername(this.username);
+            this.dataSource.setPassword(this.password);
             this.logger.log(Level.INFO,"Creating connection to database");
         }
     }
@@ -45,13 +45,13 @@ public class MySQL {
         if (isNotConnected()) {
             return;
         }
-        dataSource.close();
+        this.dataSource.close();
     }
 
     public void createDefaultTable() {
         if (isNotConnected())
             return;
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = this.dataSource.getConnection()) {
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS playerlanguage(uuid VARCHAR(64) UNIQUE, language VARCHAR(64));");
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(64) UNIQUE);");
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(transkey VARCHAR(64) UNIQUE, param VARCHAR(2000));");
@@ -65,7 +65,7 @@ public class MySQL {
     public void createTable(String tableName) {
         if (isNotConnected())
             return;
-        try (Connection connection = dataSource.getConnection()) {
+        try (Connection connection = this.dataSource.getConnection()) {
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS " + tableName + "(transkey VARCHAR(64) UNIQUE, translation VARCHAR(2000));");
             this.logger.log(Level.INFO,"Creating table: " + tableName);
         } catch (SQLException throwables) {

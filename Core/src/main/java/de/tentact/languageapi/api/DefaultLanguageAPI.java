@@ -36,7 +36,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     private final LanguageConfig languageConfig;
 
     private final Cache<String, HashMap<String, String>> translationCache;
-    private final HashMap<String, Translation> translationMap = new HashMap<>();
+    private final Map<String, Translation> translationMap;
     private final PlayerExecutor playerExecutor;
     private final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("LanguageAPI-Thread-%d").build());
 
@@ -45,6 +45,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         this.playerExecutor = this.getPlayerExecutor();
         this.mySQL = languageConfig.getMySQL();
         this.translationCache = CacheBuilder.newBuilder().expireAfterWrite(languageConfig.getLanguageSetting().getCachedTime(), TimeUnit.MINUTES).build();
+        this.translationMap = new HashMap<>();
     }
 
     @Override

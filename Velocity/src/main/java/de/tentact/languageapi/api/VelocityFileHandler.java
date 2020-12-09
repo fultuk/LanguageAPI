@@ -21,8 +21,8 @@ import java.util.Map;
 
 public class VelocityFileHandler implements FileHandler {
 
-    LanguageAPI languageAPI = LanguageAPI.getInstance();
-    private static final Type translationType = new TypeToken<HashMap<String, String>>(){}.getType();
+    private final LanguageAPI languageAPI = LanguageAPI.getInstance();
+    private static final Type translationType = new TypeToken<Map<String, String>>(){}.getType();
 
     @Override
     public boolean loadFile(@NotNull File file, boolean doOverwrite) {

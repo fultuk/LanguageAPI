@@ -13,9 +13,7 @@ import java.util.UUID;
 
 public class DefaultLanguageOfflinePlayer implements LanguageOfflinePlayer {
 
-    private final LanguageAPI languageAPI = LanguageAPI.getInstance();
-
-    private final PlayerExecutor playerExecutor = languageAPI.getPlayerExecutor();
+    private final PlayerExecutor playerExecutor;
 
     private final UUID playerID;
 
@@ -23,6 +21,7 @@ public class DefaultLanguageOfflinePlayer implements LanguageOfflinePlayer {
 
     public DefaultLanguageOfflinePlayer(@NotNull UUID playerID) {
         this.playerID = playerID;
+        this.playerExecutor = LanguageAPI.getInstance().getPlayerExecutor();
         this.language = this.playerExecutor.getPlayerLanguage(playerID);
     }
 
@@ -33,7 +32,7 @@ public class DefaultLanguageOfflinePlayer implements LanguageOfflinePlayer {
 
     @Override
     public void setLanguage(@NotNull String language, boolean orElseDefault) {
-        if (!this.languageAPI.isLanguage(language) && !orElseDefault) {
+        if (!LanguageAPI.getInstance().isLanguage(language) && !orElseDefault) {
             throw new IllegalArgumentException(language + " was not found");
         }
         this.playerExecutor.setPlayerLanguage(this.playerID, language, orElseDefault);

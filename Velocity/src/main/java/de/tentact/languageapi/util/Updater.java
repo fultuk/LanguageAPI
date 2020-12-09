@@ -5,13 +5,11 @@ package de.tentact.languageapi.util;
     Uhrzeit: 16:53
 */
 
-import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.PluginDescription;
 import com.velocitypowered.api.proxy.ProxyServer;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Optional;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,18 +20,18 @@ public class Updater {
 
     public Updater(ProxyServer proxyServer, Logger logger) {
         this.logger = logger;
-        Optional<PluginContainer> optionalPluginContainer = proxyServer.getPluginManager().getPlugin("languageapi");
-        if (optionalPluginContainer.isPresent()) {
-            PluginDescription description = optionalPluginContainer.get().getDescription();
-            this.logger.log(Level.INFO, "Checking for updates...");
+        proxyServer.getPluginManager().getPlugin("languageapi").ifPresent(pluginContainer -> {
+            PluginDescription description = pluginContainer.getDescription();
+            description.getVersion().ifPresent(version -> description.getName().ifPresent(name -> {
+                this.logger.log(Level.INFO, "Checking for updates...");
+                int localVersion = Integer.parseInt(version.replace(".", ""));
+                int onlineVersion = Integer.parseInt(this.getOnlineVersion(name).replace(".", ""));
+                if (onlineVersion > localVersion) {
+                    this.logger.log(Level.INFO, "There is a new version available. Current version: " + version + ", newest version: " + onlineVersion);
+                }
+            }));
+        });
 
-            String pluginName = description.getName().get();
-            int localVersion = Integer.parseInt(description.getVersion().get().replace(".", ""));
-            int onlineVersion = Integer.parseInt(this.getOnlineVersion(pluginName).replace(".", ""));
-            if (onlineVersion > localVersion) {
-                this.logger.log(Level.INFO, "There is a new version available. Current version: " + description.getVersion() + ", newest version: " + onlineVersion);
-            }
-        }
 
     }
 

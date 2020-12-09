@@ -127,7 +127,15 @@ public abstract class DefaultPlayerExecutor extends DefaultPlayerManager impleme
 
     @Override
     public boolean isRegisteredPlayer(UUID playerUUID) {
-        return this.mySQL.exists("SELECT * FROM playerlanguage WHERE uuid='" + playerUUID.toString() + "';");
+        try (Connection connection = this.dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM playerlanguage WHERE uuid=?;")) {
+            preparedStatement.setString(1, playerUUID.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
     }
 
     @Override

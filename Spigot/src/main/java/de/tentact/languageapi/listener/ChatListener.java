@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ChatListener implements Listener {
 
-    private final Cache<UUID, List<String>> editedMessage = CacheBuilder.newBuilder().expireAfterWrite(15, TimeUnit.MINUTES).build();
+    private final Cache<UUID, List<String>> editedMessage = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build();
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private final LanguageCommand languageCommand;
 
@@ -37,7 +37,7 @@ public class ChatListener implements Listener {
     }
 
     @EventHandler
-    public void onChat(AsyncPlayerChatEvent event) {
+    public void handlePlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         LanguagePlayer languagePlayer = languageAPI.getPlayerManager().getLanguagePlayer(player.getUniqueId());
         if (languagePlayer == null) {

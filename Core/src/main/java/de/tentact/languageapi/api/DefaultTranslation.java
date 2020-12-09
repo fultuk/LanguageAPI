@@ -59,7 +59,7 @@ public class DefaultTranslation implements Translation {
     @Override
     public @NotNull Translation setPrefixTranslation(Translation prefixTranslation) {
         this.prefixTranslation = prefixTranslation;
-        this.updateTranslation();
+        this.languageAPI.updateTranslation(this);
         return this;
     }
 
@@ -100,10 +100,6 @@ public class DefaultTranslation implements Translation {
     public Translation addTranslation(String language, String message, String param) {
         this.languageAPI.addMessage(this.translationKey, message, language, param);
         return this;
-    }
-
-    private void updateTranslation() {
-        this.languageAPI.updateTranslation(this);
     }
 
     private boolean hasPrefixTranslation() {
