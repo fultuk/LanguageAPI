@@ -73,15 +73,6 @@ public class MySQL {
         }
     }
 
-    public boolean exists(String query) {
-        try (Connection connection = this.dataSource.getConnection()) {
-            return connection.prepareStatement(query).executeQuery().next();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return false;
-    }
-
     public HikariDataSource getDataSource() {
         return this.dataSource;
     }

@@ -198,10 +198,13 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     public void addTranslationKeyToMultipleTranslation(final String multipleTranslation, final String transkey) {
         String[] translationKeys = new String[]{};
         try (Connection connection = this.getDataSource().getConnection();
-             ResultSet resultSet = connection.createStatement().executeQuery("SELECT transkeys FROM MultipleTranslation WHERE multipleKey='" + multipleTranslation.toLowerCase() + "'")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT transkeys FROM MultipleTranslation WHERE multipleKey=?;")) {
+            preparedStatement.setString(1, multipleTranslation.toLowerCase());
+            ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 translationKeys = resultSet.getString("transkeys").split(",");
             }
+            resultSet.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -224,7 +227,15 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public boolean hasParameter(String translationKey) {
-        return this.mySQL.exists("SELECT param FROM Parameter WHERE transkey='" + translationKey + "';");
+        try (Connection connection = this.getDataSource().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Parameter WHERE transkey=?;")) {
+            preparedStatement.setString(1, translationKey);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
     }
 
     @Override
@@ -232,11 +243,14 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         if (!this.hasParameter(translationKey)) {
             return null;
         }
-        try (Connection connection = this.getDataSource().getConnection()) {
-            ResultSet rs = connection.createStatement().executeQuery("SELECT param FROM Parameter WHERE transkey='" + translationKey.toLowerCase() + "';");
-            if (rs.next()) {
-                return rs.getString("param");
+        try (Connection connection = this.getDataSource().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT param FROM Parameter WHERE transkey=?;")) {
+            preparedStatement.setString(1, translationKey.toLowerCase());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getString("param");
             }
+            resultSet.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -245,7 +259,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public boolean isParameter(String translationKey, String param) {
-        if(!this.hasParameter(translationKey)) {
+        if (!this.hasParameter(translationKey)) {
             return false;
         }
         return this.getParameter(translationKey).contains(param);
@@ -354,7 +368,15 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public boolean isMultipleTranslation(final String multipleTranslation) {
-        return this.mySQL.exists("SELECT * FROM MultipleTranslation WHERE multipleKey='" + multipleTranslation.toLowerCase() + "';");
+        try (Connection connection = this.getDataSource().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM MultipleTranslation WHERE multipleKey=?;")) {
+            preparedStatement.setString(1, multipleTranslation.toLowerCase());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
     }
 
     @Override
@@ -377,7 +399,15 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public boolean isKey(String transkey, String lang) {
-        return this.mySQL.exists("SELECT * FROM " + lang.toLowerCase() + " WHERE transkey='" + transkey.toLowerCase() + "';");
+        try (Connection connection = this.getDataSource().getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + lang.toLowerCase() + " WHERE transkey=?;")) {
+            preparedStatement.setString(1, transkey.toLowerCase());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
     }
 
     @NotNull
@@ -414,11 +444,14 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
             prefix = this.getMessage(prefixKey, language);
         }
         try (Connection connection = this.getDataSource().getConnection();
-             ResultSet resultSet = connection.createStatement().executeQuery("SELECT transkeys FROM MultipleTranslation WHERE multipleKey='" + transkey.toLowerCase() + "'")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT transkeys FROM MultipleTranslation WHERE multipleKey=?;")) {
+            preparedStatement.setString(1, transkey.toLowerCase());
+            ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 String mysqlString = resultSet.getString("transkeys");
                 translationKeys = mysqlString.split(",");
             }
+            resultSet.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -443,9 +476,9 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
             return Objects.requireNonNull(this.translationCache.getIfPresent(transkey)).get(lang);
         }
         try (Connection connection = this.getDataSource().getConnection();
-             ResultSet rs = connection.createStatement().executeQuery("SELECT translation FROM " + lang.toLowerCase() + " WHERE transkey='" + transkey.toLowerCase() + "';")) {
-            if (rs.next()) {
-                String translation = this.replaceColor(rs.getString("translation"));
+             ResultSet resultSet = connection.createStatement().executeQuery("SELECT translation FROM " + lang.toLowerCase() + " WHERE transkey='" + transkey.toLowerCase() + "';")) {
+            if (resultSet.next()) {
+                String translation = this.replaceColor(resultSet.getString("translation"));
 
                 HashMap<String, String> cacheMap = new HashMap<>();
                 cacheMap.put(lang, translation);
@@ -486,9 +519,9 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         List<String> keys = new ArrayList<>();
         if (this.isLanguage(language)) {
             try (Connection connection = this.getDataSource().getConnection();
-                 ResultSet rs = connection.createStatement().executeQuery("SELECT transkey FROM " + language)) {
-                while (rs.next()) {
-                    keys.add(rs.getString("transkey"));
+                 ResultSet resultSet = connection.createStatement().executeQuery("SELECT transkey FROM " + language)) {
+                while (resultSet.next()) {
+                    keys.add(resultSet.getString("transkey"));
                 }
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -503,9 +536,9 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         List<String> messages = new ArrayList<>();
         if (this.isLanguage(language)) {
             try (Connection connection = this.getDataSource().getConnection();
-                 ResultSet rs = connection.createStatement().executeQuery("SELECT translation FROM " + language)) {
-                while (rs.next()) {
-                    messages.add(rs.getString("translation"));
+                 ResultSet resultSet = connection.createStatement().executeQuery("SELECT translation FROM " + language)) {
+                while (resultSet.next()) {
+                    messages.add(resultSet.getString("translation"));
                 }
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
