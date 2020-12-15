@@ -43,11 +43,9 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-
 public class ChatListener implements Listener {
 
     private final Cache<UUID, List<String>> editedMessage = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build();
-    private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private final LanguageCommand languageCommand;
 
     public ChatListener(LanguageSpigot languageSpigot, LanguageCommand languageCommand) {
@@ -58,7 +56,7 @@ public class ChatListener implements Listener {
     @EventHandler
     public void handlePlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        LanguagePlayer languagePlayer = languageAPI.getPlayerManager().getLanguagePlayer(player.getUniqueId());
+        LanguagePlayer languagePlayer = LanguageAPI.getInstance().getPlayerManager().getLanguagePlayer(player.getUniqueId());
         if (languagePlayer == null) {
             return;
         }
@@ -86,7 +84,7 @@ public class ChatListener implements Listener {
                 String transKey = this.languageCommand.givenParameter.get(player).get(0);
                 String language = this.languageCommand.givenParameter.get(player).get(1);
                 this.languageCommand.editingMessage.remove(player);
-                languageAPI.updateMessage(transKey, result.toString(), language);
+                LanguageAPI.getInstance().updateMessage(transKey, result.toString(), language);
 
                 event.setCancelled(true);
                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_SUCCESS.get()

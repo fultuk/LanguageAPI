@@ -29,6 +29,7 @@ import de.tentact.languageapi.LanguageSpigot;
 import de.tentact.languageapi.configuration.LanguageInventory;
 import de.tentact.languageapi.configuration.LanguageInventoryConfiguration;
 import de.tentact.languageapi.i18n.I18N;
+import de.tentact.languageapi.player.LanguagePlayer;
 import de.tentact.languageapi.player.PlayerExecutor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -38,14 +39,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Objects;
-
 public class InventoryClickListener implements Listener {
 
     private final LanguageInventory languageInventory;
     private final LanguageInventoryConfiguration languageInventoryConfiguration;
-    private final LanguageAPI languageAPI = LanguageAPI.getInstance();
-    private final PlayerExecutor playerExecutor = languageAPI.getPlayerExecutor();
+    private final PlayerExecutor playerExecutor = LanguageAPI.getInstance().getPlayerExecutor();
 
     public InventoryClickListener(LanguageSpigot languageSpigot, LanguageInventory languageInventory) {
         this.languageInventory = languageInventory;
@@ -67,12 +65,16 @@ public class InventoryClickListener implements Listener {
             this.languageInventoryConfiguration.getLanguages()
                     .stream()
                     .filter(languageItem -> languageItem.getInventorySlot() == clickedSlot)
-                    .filter(languageItem -> languageAPI.isLanguage(languageItem.getLanguageName().toLowerCase()))
+                    .filter(languageItem -> LanguageAPI.getInstance().isLanguage(languageItem.getLanguageName().toLowerCase()))
                     .findFirst()
                     .ifPresent(languageItem -> {
                         Player player = (Player) event.getWhoClicked();
                         playerExecutor.setPlayerLanguage(player.getUniqueId(), languageItem.getLanguageName());
-                        Objects.requireNonNull(playerExecutor.getLanguagePlayer(player.getUniqueId())).sendMessage(I18N.LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE.get().replace("%LANGUAGE%", languageItem.getLanguageName()));
+                        LanguagePlayer languagePlayer = playerExecutor.getLanguagePlayer(player.getUniqueId());
+                        //Even if it should never be null here
+                        if (languagePlayer != null) {
+                            languagePlayer.sendMessage(I18N.LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE.get().replace("%LANGUAGE%", languageItem.getLanguageName()));
+                        }
                         player.closeInventory();
                     });
         }

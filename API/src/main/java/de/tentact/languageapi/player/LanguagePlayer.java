@@ -31,6 +31,7 @@ import java.util.UUID;
 
 /**
  * You can get this by {@link PlayerManager#getLanguagePlayer(UUID)} or {@link PlayerExecutor#getLanguagePlayer(UUID)}
+ * @since 1.8
  */
 public interface LanguagePlayer extends LanguageOfflinePlayer {
 

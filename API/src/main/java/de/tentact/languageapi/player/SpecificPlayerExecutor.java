@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * This is the {@link PlayerExecutor} but for an specific player
+ * @since 1.8
  */
 public interface SpecificPlayerExecutor extends PlayerManager {
 

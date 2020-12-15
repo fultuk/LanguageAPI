@@ -143,6 +143,28 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         if (param == null || param.isEmpty()) {
             return;
         }
+        if (this.isParameter(translationKey, param)) {
+            return;
+        }
+        String currentParameter = this.getParameter(translationKey);
+        if (currentParameter == null) {
+            this.setParameter(translationKey, param);
+        } else {
+            String joinedParameter = currentParameter.replace(" ", "");
+            if (joinedParameter.endsWith(",")) {
+                joinedParameter += param;
+            } else {
+                joinedParameter += "," + param;
+            }
+            this.setParameter(translationKey, joinedParameter);
+        }
+    }
+
+    @Override
+    public void setParameter(String translationKey, String param) {
+        if (param == null || param.isEmpty()) {
+            return;
+        }
         this.executorService.execute(() -> {
             try (Connection connection = this.getDataSource().getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("REPLACE INTO Parameter(transkey, param) VALUES (?,?);")) {
@@ -153,7 +175,6 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
                 throwables.printStackTrace();
             }
         });
-
     }
 
     @Override
@@ -420,7 +441,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     @Override
     public boolean isKey(String transkey, String lang) {
         try (Connection connection = this.getDataSource().getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + lang.toLowerCase() + " WHERE transkey=?;")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + lang.toLowerCase() + " WHERE transkey=?;")) {
             preparedStatement.setString(1, transkey.toLowerCase());
             ResultSet resultSet = preparedStatement.executeQuery();
             return resultSet.next();

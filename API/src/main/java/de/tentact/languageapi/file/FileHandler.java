@@ -39,6 +39,7 @@ public interface FileHandler {
      * Loads a file and inserts the content to the database
      * @param file the file that should be read
      * @return returns if it imported correctly
+     * @since 1.8
      */
     default boolean loadFile(@NotNull File file) {
         return this.loadFile(file, false);
@@ -48,6 +49,7 @@ public interface FileHandler {
      * Loads files and inserts the content to the database
      * @param files the files that should be read
      * @return returns if all files were imported correctly
+     * @since 1.8
      */
     default boolean loadFiles(@NotNull File[] files) {
        return this.loadFiles(files, false);
@@ -58,6 +60,7 @@ public interface FileHandler {
      * @param file the file that should be read
      * @param doOverwrite whether to overwrite old translations
      * @return returns if it imported correctly
+     * @since 1.8
      */
     boolean loadFile(@NotNull File file, boolean doOverwrite);
 
@@ -66,6 +69,7 @@ public interface FileHandler {
      * @param files the files that should be read
      * @param doOverwrite whether to overwrite old translations
      * @return returns if all files were imported correctly
+     * @since 1.8
      */
     default boolean loadFiles(@NotNull File[] files, boolean doOverwrite) {
         boolean passed = false;

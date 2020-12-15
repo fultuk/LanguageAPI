@@ -121,8 +121,21 @@ public interface Translation {
      */
     Translation createDefaults(String message, String param);
 
+    /**
+     * Adds a translation to the {@link Translation#getTranslationKey()} in the given language
+     * @param language the language of the translation
+     * @param message the translated message
+     * @return the current {@link Translation}
+     */
     Translation addTranslation(String language, String message);
 
+    /**
+     * Adds a translation to the {@link Translation#getTranslationKey()} in the given language with parameters
+     * @param language the language of the translation
+     * @param message the translated message
+     * @param param the parameters to the token
+     * @return the current {@link Translation}
+     */
     Translation addTranslation(String language, String message, String param);
 
 }

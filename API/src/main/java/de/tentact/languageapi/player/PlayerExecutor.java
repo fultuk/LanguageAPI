@@ -32,6 +32,7 @@ import java.util.UUID;
 
 /**
  * An interface to set and get properties of an player by its uniqueId
+ * @since 1.8
  */
 public interface PlayerExecutor extends PlayerManager {
 

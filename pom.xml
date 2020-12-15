@@ -49,7 +49,6 @@
             </plugin>
         </plugins>
     </build>
-
     <pluginRepositories>
         <pluginRepository>
             <id>tentact-snapshot</id>
@@ -67,5 +66,4 @@
             <url>https://archiva.tentact.de/repository/tentact-snapshot/</url>
         </repository>
     </distributionManagement>
-
 </project>

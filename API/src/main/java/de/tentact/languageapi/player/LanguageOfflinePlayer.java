@@ -32,6 +32,7 @@ import java.util.UUID;
 
 /**
  * You can get this interface by {@link PlayerManager#getLanguageOfflinePlayer(UUID)} or {@link PlayerExecutor#getLanguageOfflinePlayer(UUID)}
+ * @since 1.8
  */
 public interface LanguageOfflinePlayer {
 
