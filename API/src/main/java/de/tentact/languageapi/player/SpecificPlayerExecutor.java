@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
  * This is the {@link PlayerExecutor} but for an specific player
  * @since 1.8
  */
-public interface SpecificPlayerExecutor extends PlayerManager {
+public interface SpecificPlayerExecutor {
 
     /**
      * @return returns a String with the language of the player in the database
@@ -44,7 +44,6 @@ public interface SpecificPlayerExecutor extends PlayerManager {
      * @param language the language to check
      * @return returns if the given language is the players set language
      */
-
     boolean isPlayersLanguage(@NotNull String language);
 
     /**

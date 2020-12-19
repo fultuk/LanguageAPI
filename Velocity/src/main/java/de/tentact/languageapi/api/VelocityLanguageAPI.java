@@ -27,29 +27,23 @@ package de.tentact.languageapi.api;
 import com.velocitypowered.api.proxy.ProxyServer;
 import de.tentact.languageapi.configuration.LanguageConfig;
 import de.tentact.languageapi.file.FileHandler;
-import de.tentact.languageapi.player.*;
+import de.tentact.languageapi.player.DefaultSpecificPlayerExecutor;
+import de.tentact.languageapi.player.PlayerExecutor;
+import de.tentact.languageapi.player.SpecificPlayerExecutor;
+import de.tentact.languageapi.player.VelocityPlayerExecutor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
 public class VelocityLanguageAPI extends DefaultLanguageAPI {
 
-    private final ProxyServer proxyServer;
-    private final PlayerManager playerManager;
     private final PlayerExecutor playerExecutor;
     private final FileHandler fileHandler;
 
     public VelocityLanguageAPI(ProxyServer proxyServer, LanguageConfig languageConfig) {
         super(languageConfig);
-        this.proxyServer = proxyServer;
-        this.playerManager = new VelocityPlayerManager(proxyServer);
         this.playerExecutor = new VelocityPlayerExecutor(proxyServer, this, languageConfig);
         this.fileHandler = new VelocityFileHandler();
-    }
-
-    @Override
-    public @NotNull PlayerManager getPlayerManager() {
-        return this.playerManager;
     }
 
     @Override
@@ -59,7 +53,7 @@ public class VelocityLanguageAPI extends DefaultLanguageAPI {
 
     @Override
     public @NotNull SpecificPlayerExecutor getSpecificPlayerExecutor(@NotNull UUID playerId) {
-        return new VelocitySpecificPlayerExecutor(this.proxyServer, playerId);
+        return new DefaultSpecificPlayerExecutor(playerId);
     }
 
     @Override

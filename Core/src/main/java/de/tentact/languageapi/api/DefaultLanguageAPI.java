@@ -33,8 +33,8 @@ import de.tentact.languageapi.configuration.LanguageConfig;
 import de.tentact.languageapi.configuration.MySQL;
 import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.i18n.Translation;
+import de.tentact.languageapi.player.DefaultSpecificPlayerExecutor;
 import de.tentact.languageapi.player.PlayerExecutor;
-import de.tentact.languageapi.player.PlayerManager;
 import de.tentact.languageapi.player.SpecificPlayerExecutor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -616,9 +616,6 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     }
 
     @Override
-    public abstract @NotNull PlayerManager getPlayerManager();
-
-    @Override
     public @NotNull Translation getTranslation(@NotNull String translationKey) {
         if (this.translationMap.containsKey(translationKey)) {
             return this.translationMap.get(translationKey);
@@ -637,7 +634,9 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     public abstract @NotNull PlayerExecutor getPlayerExecutor();
 
     @Override
-    public abstract @NotNull SpecificPlayerExecutor getSpecificPlayerExecutor(@NotNull UUID playerId);
+    public @NotNull SpecificPlayerExecutor getSpecificPlayerExecutor(@NotNull UUID playerId) {
+        return new DefaultSpecificPlayerExecutor(playerId);
+    }
 
     @Override
     public void updateTranslation(Translation translation) {

@@ -56,7 +56,7 @@ public class ChatListener implements Listener {
     @EventHandler
     public void handlePlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        LanguagePlayer languagePlayer = LanguageAPI.getInstance().getPlayerManager().getLanguagePlayer(player.getUniqueId());
+        LanguagePlayer languagePlayer = LanguageAPI.getInstance().getPlayerExecutor().getLanguagePlayer(player.getUniqueId());
         if (languagePlayer == null) {
             return;
         }

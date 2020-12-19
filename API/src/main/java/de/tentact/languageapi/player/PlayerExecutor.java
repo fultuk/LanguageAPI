@@ -27,14 +27,16 @@ package de.tentact.languageapi.player;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.i18n.Translation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.UUID;
 
 /**
  * An interface to set and get properties of an player by its uniqueId
  * @since 1.8
  */
-public interface PlayerExecutor extends PlayerManager {
+public interface PlayerExecutor {
 
     /**
      * @param playerUUID the player uuid to specify the player
@@ -96,6 +98,28 @@ public interface PlayerExecutor extends PlayerManager {
      * Kick every player with a {@link Translation} as reason
      * @param translation the {@link Translation} to get the translated message from
      */
-
     void kickAll(Translation translation);
+
+    /**
+     * Gets an {@link LanguagePlayer} - null if the player is offline
+     * @param playerId the uniqueId to fetch the player from
+     * @return returns a {@link LanguagePlayer}
+     */
+    @Nullable
+    LanguagePlayer getLanguagePlayer(UUID playerId);
+
+    /**
+     * Gets an {@link LanguageOfflinePlayer}
+     * @param playerId the uniqueId to fetch the player from
+     * @return returns a LanguageOfflinePlayer
+     */
+    @NotNull
+    LanguageOfflinePlayer getLanguageOfflinePlayer(UUID playerId);
+
+    /**
+     * Get all online players
+     * @return a {@link Collection<LanguagePlayer>} with all online players
+     */
+    @NotNull
+    Collection<LanguagePlayer> getOnlineLanguagePlayers();
 }

@@ -26,7 +26,8 @@ package de.tentact.languageapi;
 
 import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.i18n.Translation;
-import de.tentact.languageapi.player.*;
+import de.tentact.languageapi.player.PlayerExecutor;
+import de.tentact.languageapi.player.SpecificPlayerExecutor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -381,14 +382,6 @@ public abstract class LanguageAPI {
      */
     @NotNull
     public abstract String getLanguageAPIPrefix(String language);
-
-    /**
-     * Gets an {@link PlayerManager} to get {@link LanguagePlayer} & {@link LanguageOfflinePlayer}
-     * @return returns a {@link PlayerManager}
-     * @since 1.8
-     */
-    @NotNull
-    public abstract PlayerManager getPlayerManager();
 
     /**
      * Gets a {@link Translation} by its key

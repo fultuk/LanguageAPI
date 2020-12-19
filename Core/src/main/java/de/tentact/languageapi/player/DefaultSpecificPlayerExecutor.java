@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public abstract class DefaultSpecificPlayerExecutor extends DefaultPlayerManager implements SpecificPlayerExecutor {
+public class DefaultSpecificPlayerExecutor implements SpecificPlayerExecutor {
 
     private final UUID playerId;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();

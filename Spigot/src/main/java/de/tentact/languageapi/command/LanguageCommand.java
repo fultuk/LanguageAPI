@@ -62,7 +62,7 @@ public class LanguageCommand implements TabExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] args) {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
-            LanguagePlayer languagePlayer = this.languageAPI.getPlayerManager().getLanguagePlayer(player.getUniqueId());
+            LanguagePlayer languagePlayer = this.languageAPI.getPlayerExecutor().getLanguagePlayer(player.getUniqueId());
             if (languagePlayer == null) {
                 return false;
             }

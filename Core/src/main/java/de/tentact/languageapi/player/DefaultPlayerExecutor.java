@@ -42,7 +42,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-public abstract class DefaultPlayerExecutor extends DefaultPlayerManager implements PlayerExecutor {
+public abstract class DefaultPlayerExecutor implements PlayerExecutor {
 
     private final MySQL mySQL;
     private final LanguageAPI languageAPI;
@@ -170,6 +170,11 @@ public abstract class DefaultPlayerExecutor extends DefaultPlayerManager impleme
     @Override
     public void kickAll(Translation translation) {
         this.getOnlineLanguagePlayers().forEach(languagePlayer -> languagePlayer.kickPlayer(translation));
+    }
+
+    @Override
+    public @NotNull LanguageOfflinePlayer getLanguageOfflinePlayer(UUID playerId) {
+        return new DefaultLanguageOfflinePlayer(playerId);
     }
 
     private String validateLanguage(String language) {

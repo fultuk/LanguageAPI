@@ -26,37 +26,24 @@ package de.tentact.languageapi.api;
 
 import de.tentact.languageapi.configuration.LanguageConfig;
 import de.tentact.languageapi.file.FileHandler;
-import de.tentact.languageapi.player.*;
+import de.tentact.languageapi.player.BungeePlayerExecutor;
+import de.tentact.languageapi.player.PlayerExecutor;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.UUID;
 
 public class BungeeCordLanguageAPI extends DefaultLanguageAPI {
 
-    private final PlayerManager playerManager;
     private final FileHandler fileHandler;
     private final PlayerExecutor playerExecutor;
 
     public BungeeCordLanguageAPI(LanguageConfig languageConfig) {
         super(languageConfig);
-        this.playerManager = new BungeePlayerManager();
         this.fileHandler = new BungeeFileHandler(this);
         this.playerExecutor = new BungeePlayerExecutor(this, languageConfig);
     }
 
     @Override
-    public @NotNull PlayerManager getPlayerManager() {
-        return this.playerManager;
-    }
-
-    @Override
     public @NotNull PlayerExecutor getPlayerExecutor() {
         return this.playerExecutor;
-    }
-
-    @Override
-    public @NotNull SpecificPlayerExecutor getSpecificPlayerExecutor(@NotNull UUID playerId) {
-        return new BungeeSpecificPlayerExecutor(playerId);
     }
 
     @Override

@@ -35,6 +35,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class SpigotPlayerExecutor extends DefaultPlayerExecutor {
+
     public SpigotPlayerExecutor(LanguageAPI languageAPI, LanguageConfig languageConfig) {
         super(languageAPI, languageConfig);
     }
