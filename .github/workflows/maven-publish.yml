@@ -1,5 +1,7 @@
 name: Publish package to the repository
 on:
+  push:
+    branches: [development]
   release:
     types: [created]
 jobs:
