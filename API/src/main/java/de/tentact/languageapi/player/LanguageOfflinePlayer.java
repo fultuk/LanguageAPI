@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 /**
- * You can get this interface by {@link PlayerManager#getLanguageOfflinePlayer(UUID)} or {@link PlayerExecutor#getLanguageOfflinePlayer(UUID)}
+ * Use {@link PlayerExecutor#getLanguageOfflinePlayer(UUID)} to get an instance
  * @since 1.8
  */
 public interface LanguageOfflinePlayer {

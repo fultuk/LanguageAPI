@@ -45,6 +45,9 @@ public class VelocityPlayerExecutor extends DefaultPlayerExecutor {
 
     @Override
     public @Nullable LanguagePlayer getLanguagePlayer(UUID playerId) {
+        if(!this.proxyServer.getPlayer(playerId).isPresent()) {
+            return null;
+        }
         return new DefaultLanguagePlayer(this.proxyServer, playerId);
     }
 

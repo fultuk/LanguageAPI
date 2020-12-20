@@ -35,20 +35,17 @@ import java.util.UUID;
 
 public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implements LanguagePlayer {
 
-    private final UUID playerID;
-    private final ProxyServer proxyServer;
-    private Player player;
+    private final Player player;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
     public DefaultLanguagePlayer(ProxyServer proxyServer, UUID playerID) {
         super(playerID);
-        this.playerID = playerID;
-        this.proxyServer = proxyServer;
+        this.player = proxyServer.getPlayer(playerID).get();
     }
 
     @Override
     public void sendMessage(@NotNull Translation translation) {
-        Player player = this.getPlayer();
+        Player player = this.player;
         if (player == null) {
             return;
         }
@@ -66,7 +63,7 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (!this.languageAPI.isMultipleTranslation(multipleTranslationKey)) {
             throw new IllegalArgumentException(multipleTranslationKey + " was not found");
         }
-        Player player = this.getPlayer();
+        Player player = this.player;
         if (player == null) {
             return;
         }
@@ -76,18 +73,10 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
 
     @Override
     public void kickPlayer(Translation translation) {
-        Player player = this.getPlayer();
+        Player player = this.player;
         if (player == null) {
             return;
         }
         player.disconnect(LegacyComponentSerializer.legacyLinking().deserialize(translation.getMessage(this.getLanguage())));
-    }
-
-    private Player getPlayer() {
-        if (this.player != null) {
-            return this.player;
-        }
-        this.proxyServer.getPlayer(this.playerID).ifPresent(value -> this.player = value);
-        return this.player;
     }
 }

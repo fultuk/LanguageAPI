@@ -34,18 +34,17 @@ import java.util.UUID;
 
 public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implements LanguagePlayer {
 
-    private final UUID playerID;
-    private ProxiedPlayer proxiedPlayer;
+    private final ProxiedPlayer proxiedPlayer;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
     public DefaultLanguagePlayer(UUID playerID) {
         super(playerID);
-        this.playerID = playerID;
+        this.proxiedPlayer = ProxyServer.getInstance().getPlayer(playerID);
     }
 
     @Override
     public void sendMessage(@NotNull Translation translation) {
-        ProxiedPlayer proxiedPlayer = this.getProxiedPlayer();
+        ProxiedPlayer proxiedPlayer =this.proxiedPlayer;
         if (proxiedPlayer == null) {
             return;
         }
@@ -63,7 +62,7 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (!this.languageAPI.isMultipleTranslation(multipleTranslationKey)) {
             throw new IllegalArgumentException(multipleTranslationKey + " was not found");
         }
-        ProxiedPlayer proxiedPlayer = this.getProxiedPlayer();
+        ProxiedPlayer proxiedPlayer = this.proxiedPlayer;
         if (proxiedPlayer == null) {
             return;
         }
@@ -73,19 +72,10 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
 
     @Override
     public void kickPlayer(Translation translation) {
-        ProxiedPlayer proxiedPlayer = this.getProxiedPlayer();
+        ProxiedPlayer proxiedPlayer = this.proxiedPlayer;
         if (proxiedPlayer == null) {
             return;
         }
         proxiedPlayer.disconnect(translation.getMessage(this.getLanguage()));
     }
-
-    private ProxiedPlayer getProxiedPlayer() {
-        if (this.proxiedPlayer != null) {
-            return this.proxiedPlayer;
-        }
-        this.proxiedPlayer = ProxyServer.getInstance().getPlayer(this.playerID);
-        return this.proxiedPlayer;
-    }
-
 }

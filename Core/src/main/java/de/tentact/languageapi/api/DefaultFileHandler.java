@@ -37,14 +37,17 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-public class VelocityFileHandler implements FileHandler {
+/**
+ * @since 1.9
+ */
+public class DefaultFileHandler implements FileHandler {
 
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private static final Type translationType = new TypeToken<Map<String, String>>(){}.getType();
 
     @Override
     public boolean loadFile(@NotNull File file, boolean doOverwrite) {
-        Document document = Documents.jsonStorage().read(file);
+        Document document = Documents.yamlStorage().read(file);
         Map<String, String> map = document.get("languageapi", translationType);
 
         String language = map.get("language");
@@ -77,7 +80,6 @@ public class VelocityFileHandler implements FileHandler {
             return false;
         }
         Map<String, String> keysAndTranslations = new HashMap<>();
-
         keysAndTranslations.put("language", language);
         keysAndTranslations.putAll(this.languageAPI.getKeysAndTranslations(language));
 

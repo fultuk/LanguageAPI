@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.UUID;
 
 /**
- * You can get this by {@link PlayerManager#getLanguagePlayer(UUID)} or {@link PlayerExecutor#getLanguagePlayer(UUID)}
+ * Use {@link PlayerExecutor#getLanguagePlayer(UUID)} to get an instance
  * @since 1.8
  */
 public interface LanguagePlayer extends LanguageOfflinePlayer {
@@ -97,6 +97,4 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
      * @param translation the {@link Translation} to get the translated message from
      */
     void kickPlayer(Translation translation);
-
-
 }

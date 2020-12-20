@@ -57,6 +57,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     private final Cache<String, HashMap<String, String>> translationCache;
     private final Map<String, Translation> translationMap;
     private final PlayerExecutor playerExecutor;
+    private final FileHandler fileHandler;
     private final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("LanguageAPI-Thread-%d").build());
 
     public DefaultLanguageAPI(LanguageConfig languageConfig) {
@@ -65,6 +66,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         this.mySQL = languageConfig.getMySQL();
         this.translationCache = CacheBuilder.newBuilder().expireAfterWrite(languageConfig.getLanguageSetting().getCachedTime(), TimeUnit.MINUTES).build();
         this.translationMap = new HashMap<>();
+        this.fileHandler = new DefaultFileHandler();
     }
 
     @Override
@@ -129,7 +131,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
             try (Connection connection = this.getDataSource().getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO " + language.toLowerCase() + " (transkey, translation) VALUES (?,?);")) {
                 preparedStatement.setString(1, translationKey.toLowerCase());
-                preparedStatement.setString(2, this.replaceColor(message));
+                preparedStatement.setString(2, this.translateColorCode(message));
                 preparedStatement.execute();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -329,7 +331,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         this.executorService.execute(() -> {
             try (Connection connection = this.getDataSource().getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("UPDATE " + language + " SET translation=? WHERE transkey=?;")) {
-                preparedStatement.setString(1, this.replaceColor(message));
+                preparedStatement.setString(1, this.translateColorCode(message));
                 preparedStatement.setString(2, transkey.toLowerCase());
                 preparedStatement.execute();
             } catch (SQLException throwables) {
@@ -520,7 +522,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         try (Connection connection = this.getDataSource().getConnection();
              ResultSet resultSet = connection.createStatement().executeQuery("SELECT translation FROM " + lang.toLowerCase() + " WHERE transkey='" + transkey.toLowerCase() + "';")) {
             if (resultSet.next()) {
-                String translation = this.replaceColor(resultSet.getString("translation"));
+                String translation = this.translateColorCode(resultSet.getString("translation"));
 
                 HashMap<String, String> cacheMap = new HashMap<>();
                 cacheMap.put(lang, translation);
@@ -643,9 +645,10 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         this.translationMap.put(translation.getTranslationKey(), translation);
     }
 
-
     @Override
-    public abstract FileHandler getFileHandler();
+    public FileHandler getFileHandler() {
+        return this.fileHandler;
+    }
 
     @Override
     public void executeAsync(Runnable command) {
@@ -660,8 +663,14 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         this.languageConfig.getLogger().log(Level.INFO, message);
     }
 
-    private String replaceColor(String value) {
-        return value.replace('&', '§');
+    private String translateColorCode(String textToTranslate) {
+        char[] b = textToTranslate.toCharArray();
+        for (int i = 0; i < b.length - 1; i++) {
+            if (b[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i+1]) > -1) {
+                b[i] = '§';
+                b[i+1] = Character.toLowerCase(b[i+1]);
+            }
+        }
+        return new String(b);
     }
-
 }

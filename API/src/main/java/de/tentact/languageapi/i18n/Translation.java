@@ -49,7 +49,6 @@ public interface Translation {
     @NotNull
     String getMessage(@NotNull UUID playerUUID);
 
-
     /**
      * @param language the language to get the translation in
      * @return returns a translation of the key in the given language
@@ -88,8 +87,7 @@ public interface Translation {
     Translation getPrefixTranslation();
 
     /**
-     * a method to replace parameter in the specific translation for a player - this is reset after {@link Translation#getMessage()}
-     *
+     * a method to replace parameter in the specific translation for a player - this is resetted after {@link Translation#getMessage()}
      * @param old         the old String to replace
      * @param replacement the replacement for the paramater
      * @return returns {@link Translation} after replacing the parameter
@@ -105,11 +103,9 @@ public interface Translation {
 
     /**
      * Create the default translation for the {@link Translation}
-     *
      * @param message the default translation
      * @return the {@link Translation} after setting the default translation
      */
-
     Translation createDefaults(String message);
 
     /**

@@ -42,6 +42,9 @@ public class SpigotPlayerExecutor extends DefaultPlayerExecutor {
 
     @Override
     public @Nullable LanguagePlayer getLanguagePlayer(UUID playerId) {
+        if(Bukkit.getPlayer(playerId) == null) {
+            return null;
+        }
         return new DefaultLanguagePlayer(playerId);
     }
 

@@ -34,18 +34,17 @@ import java.util.UUID;
 
 public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implements LanguagePlayer {
 
-    private final UUID playerID;
-    private Player player;
+    private final Player player;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
     public DefaultLanguagePlayer(UUID playerID) {
         super(playerID);
-        this.playerID = playerID;
+        this.player = Bukkit.getPlayer(playerID);
     }
 
     @Override
     public void sendMessage(@NotNull Translation translation) {
-        Player player = this.getPlayer();
+        Player player = this.player;
         if (player == null) {
             return;
         }
@@ -63,7 +62,7 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (!this.languageAPI.isMultipleTranslation(multipleTranslationKey)) {
             throw new IllegalArgumentException(multipleTranslationKey + " was not found");
         }
-        Player player = this.getPlayer();
+        Player player = this.player;
         if (player == null) {
             return;
         }
@@ -73,19 +72,10 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
 
     @Override
     public void kickPlayer(Translation translation) {
-        Player player = this.getPlayer();
+        Player player = this.player;
         if (player == null) {
             return;
         }
         player.kickPlayer(translation.getMessage(this.getLanguage()));
     }
-
-    private Player getPlayer() {
-        if (this.player != null) {
-            return this.player;
-        }
-        this.player = Bukkit.getPlayer(this.playerID);
-        return this.player;
-    }
-
 }
