@@ -30,9 +30,8 @@ import java.io.File;
 
 /**
  * This is used to import files and insert the values into the database
- * The BungeeCord & Spigot FileHandler will produce a YAML-File, the Velocity one will produce a JSON-File
+ * The {@link FileHandler} will produces a YAML-File
  */
-
 public interface FileHandler {
 
     /**

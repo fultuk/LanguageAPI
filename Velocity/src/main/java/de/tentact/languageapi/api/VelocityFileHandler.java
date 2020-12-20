@@ -82,7 +82,7 @@ public class VelocityFileHandler implements FileHandler {
         keysAndTranslations.putAll(this.languageAPI.getKeysAndTranslations(language));
 
         Document document = new DefaultDocument("languageapi", keysAndTranslations);
-        document.json().write(new File(language.toLowerCase() + ".json"));
+        document.yaml().write(new File(language.toLowerCase() + ".yml"));
         return true;
     }
 }

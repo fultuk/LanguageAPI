@@ -37,8 +37,7 @@ import java.util.UUID;
 
 /**
  * An API to the LanguageAPI, which aims to make the translation of messages into different languages efficient and easy.
- * Everything works with a unique key that returns the translation in the correct language. A key can not only lead to a translation,
- * but can lead also to a collection of keys that lead back to the translations.
+ * Everything works with a unique key that returns the translation in the correct language.
  */
 public abstract class LanguageAPI {
 
@@ -199,7 +198,6 @@ public abstract class LanguageAPI {
      * @return returns if {@param param} is a parameter of the given translationkey
      * @since 1.8
      */
-
     public abstract boolean isParameter(String translationKey, String param);
 
     /**
@@ -229,7 +227,6 @@ public abstract class LanguageAPI {
      *                            Deletes a set of translations
      * @since 1.8
      */
-
     public abstract void removeMultipleTranslation(final String multipleTranslation);
 
     /**
@@ -237,7 +234,6 @@ public abstract class LanguageAPI {
      * @param translationKey      the translationkey that should be removed from the set
      * @since 1.8
      */
-
     public abstract void removeSingleTranslationFromMultipleTranslation(final String multipleTranslation, final String translationKey);
 
     /**
@@ -260,7 +256,6 @@ public abstract class LanguageAPI {
      * @return returns if the translationkey is in the database for that language
      * @since 1.8
      */
-
     public abstract boolean isKey(String translationkey, String language);
 
     /**
