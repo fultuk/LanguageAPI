@@ -57,7 +57,6 @@ public class DefaultSpecificPlayerExecutor implements SpecificPlayerExecutor {
     @Override
     public void setPlayerLanguage(@NotNull String newLanguage, boolean orElseDefault) {
         this.playerExecutor.setPlayerLanguage(this.playerId, newLanguage, orElseDefault);
-
     }
 
     @Override

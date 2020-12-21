@@ -26,30 +26,27 @@ package de.tentact.languageapi.player;
 
 import de.tentact.languageapi.LanguageAPI;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
 public class DefaultLanguageOfflinePlayer implements LanguageOfflinePlayer {
 
     private final PlayerExecutor playerExecutor;
-
     private final UUID playerID;
-
-    private final String language;
 
     public DefaultLanguageOfflinePlayer(@NotNull UUID playerID) {
         this.playerID = playerID;
         this.playerExecutor = LanguageAPI.getInstance().getPlayerExecutor();
-        this.language = this.playerExecutor.getPlayerLanguage(playerID);
     }
 
     @Override
-    public void setLanguage(@NotNull String language) {
+    public void setLanguage(@Nullable String language) {
         this.setLanguage(language, false);
     }
 
     @Override
-    public void setLanguage(@NotNull String language, boolean orElseDefault) {
+    public void setLanguage(@Nullable String language, boolean orElseDefault) {
         if (!LanguageAPI.getInstance().isLanguage(language) && !orElseDefault) {
             throw new IllegalArgumentException(language + " was not found");
         }
@@ -58,7 +55,7 @@ public class DefaultLanguageOfflinePlayer implements LanguageOfflinePlayer {
 
     @Override
     public @NotNull String getLanguage() {
-        return this.language;
+        return this.playerExecutor.getPlayerLanguage(this.playerID);
     }
 
     @Override

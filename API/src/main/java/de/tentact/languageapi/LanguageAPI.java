@@ -319,8 +319,7 @@ public abstract class LanguageAPI {
      * @return returns if the given language is a valid language
      * @since 1.8
      */
-
-    public abstract boolean isLanguage(String language);
+    public abstract boolean isLanguage(@Nullable String language);
 
     /**
      * @return returns all created languages

@@ -40,12 +40,12 @@ public class Configuration {
     private LanguageConfig languageConfig;
 
     public Configuration(Logger logger) {
-        if (settingsFile.exists()) {
-            settingsDocument = Documents.jsonStorage().read(settingsFile);
+        if (this.settingsFile.exists()) {
+            this.settingsDocument = Documents.jsonStorage().read(settingsFile);
         } else {
             try {
                 Files.createFile(settingsFile.toPath());
-                settingsDocument.append("config",
+                this.settingsDocument.append("config",
                         new LanguageConfig(
                                 new MySQL(
                                         "hostname",
@@ -70,10 +70,9 @@ public class Configuration {
     }
 
     public LanguageConfig getLanguageConfig() {
-        if (this.languageConfig != null) {
-            return this.languageConfig;
+        if (this.languageConfig == null) {
+            this.languageConfig = this.settingsDocument.get("config", LanguageConfig.class);
         }
-        this.languageConfig = this.settingsDocument.get("config", LanguageConfig.class);
         return this.languageConfig;
     }
 

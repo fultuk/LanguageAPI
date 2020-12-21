@@ -47,7 +47,7 @@ public class MySQL {
     }
 
     public void connect() {
-        if (isNotConnected()) {
+        if (this.isNotConnected()) {
             this.dataSource = new HikariDataSource();
             this.dataSource.setJdbcUrl("jdbc:mysql://" + hostname + ":" + port + "/" + database);
             this.dataSource.setUsername(this.username);
@@ -61,14 +61,14 @@ public class MySQL {
     }
 
     public void closeConnection() {
-        if (isNotConnected()) {
+        if (this.isNotConnected()) {
             return;
         }
         this.dataSource.close();
     }
 
     public void createDefaultTable() {
-        if (isNotConnected())
+        if (this.isNotConnected())
             return;
         try (Connection connection = this.dataSource.getConnection()) {
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS playerlanguage(uuid VARCHAR(64) UNIQUE, language VARCHAR(64));");
@@ -82,7 +82,7 @@ public class MySQL {
     }
 
     public void createTable(String tableName) {
-        if (isNotConnected())
+        if (this.isNotConnected())
             return;
         try (Connection connection = this.dataSource.getConnection()) {
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS " + tableName + "(transkey VARCHAR(64) UNIQUE, translation VARCHAR(2000));");

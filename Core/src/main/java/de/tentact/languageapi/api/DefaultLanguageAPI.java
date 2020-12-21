@@ -54,7 +54,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     private final MySQL mySQL;
     private final LanguageConfig languageConfig;
 
-    private final Cache<String, HashMap<String, String>> translationCache;
+    private final Cache<String, Map<String, String>> translationCache;
     private final Map<String, Translation> translationMap;
     private final PlayerExecutor playerExecutor;
     private final FileHandler fileHandler;
@@ -82,7 +82,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
                     ex.printStackTrace();
                 }
                 this.addMessage("languageapi-prefix", "&eLanguageAPI x &7", language);
-                this.logInfo("Creating new language:" + language);
+                this.logInfo("Creating new language: " + language);
             });
 
         }
@@ -93,11 +93,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         if (!this.getDefaultLanguage().equalsIgnoreCase(language) && this.isLanguage(language)) {
             this.executorService.execute(() -> {
                 try (Connection connection = this.getDataSource().getConnection()) {
-                    try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE ?;")) {
-                        preparedStatement.setString(1, language.toLowerCase());
-                        preparedStatement.execute();
-                    }
-                    try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM languages WHERE language=?;")) {
+                    try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE " + language.toLowerCase() + "; DELETE FROM languages WHERE language=?;")) {
                         preparedStatement.setString(1, language.toLowerCase());
                         preparedStatement.execute();
                     }
@@ -516,18 +512,21 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
             this.languageConfig.getLogger().log(Level.WARNING, "As result you will get the translationkey as translation");
             return transkey;
         }
-        if (this.translationCache.getIfPresent(transkey) != null && Objects.requireNonNull(this.translationCache.getIfPresent(transkey)).containsKey(lang)) {
-            return Objects.requireNonNull(this.translationCache.getIfPresent(transkey)).get(lang);
+        Map<String, String> cacheMap = this.translationCache.getIfPresent(transkey.toLowerCase());
+        if (cacheMap != null && cacheMap.containsKey(lang)) {
+            return cacheMap.get(lang);
         }
         try (Connection connection = this.getDataSource().getConnection();
-             ResultSet resultSet = connection.createStatement().executeQuery("SELECT translation FROM " + lang.toLowerCase() + " WHERE transkey='" + transkey.toLowerCase() + "';")) {
-            if (resultSet.next()) {
-                String translation = this.translateColorCode(resultSet.getString("translation"));
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT translation FROM " + lang.toLowerCase() + " WHERE transkey=?;")) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    String translation = this.translateColorCode(resultSet.getString("translation"));
 
-                HashMap<String, String> cacheMap = new HashMap<>();
-                cacheMap.put(lang, translation);
-                translationCache.put(transkey, cacheMap);
-                return translation;
+                    Map<String, String> map = new HashMap<>(1);
+                    map.put(lang, translation);
+                    translationCache.put(transkey, map);
+                    return translation;
+                }
             }
         } catch (SQLException throwables) {
             return transkey;
@@ -537,6 +536,9 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public boolean isLanguage(String language) {
+        if (language == null) {
+            return false;
+        }
         if (this.getAvailableLanguages().isEmpty()) {
             throw new UnsupportedOperationException("There are no languages available");
         }
@@ -548,9 +550,9 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     public List<String> getAvailableLanguages() {
         List<String> languages = new ArrayList<>();
         try (Connection connection = this.getDataSource().getConnection();
-             ResultSet rs = connection.createStatement().executeQuery("SELECT language FROM languages")) {
-            while (rs.next()) {
-                languages.add(rs.getString("language").toLowerCase());
+             ResultSet resultSet = connection.createStatement().executeQuery("SELECT language FROM languages")) {
+            while (resultSet.next()) {
+                languages.add(resultSet.getString("language").toLowerCase());
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -660,15 +662,15 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     }
 
     private void logInfo(String message) {
-        this.languageConfig.getLogger().log(Level.INFO, message);
+        this.languageConfig.getLogger().info(message);
     }
 
     private String translateColorCode(String textToTranslate) {
         char[] b = textToTranslate.toCharArray();
         for (int i = 0; i < b.length - 1; i++) {
-            if (b[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i+1]) > -1) {
+            if (b[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1) {
                 b[i] = '§';
-                b[i+1] = Character.toLowerCase(b[i+1]);
+                b[i + 1] = Character.toLowerCase(b[i + 1]);
             }
         }
         return new String(b);
