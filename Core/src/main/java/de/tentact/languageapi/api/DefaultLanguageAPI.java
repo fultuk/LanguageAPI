@@ -446,7 +446,6 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
         return false;
     }
 
@@ -455,7 +454,6 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     public String getMessage(String transkey, UUID playerUUID) {
         return this.getMessage(transkey, this.playerExecutor.getPlayerLanguage(playerUUID));
     }
-
 
     @NotNull
     @Override
