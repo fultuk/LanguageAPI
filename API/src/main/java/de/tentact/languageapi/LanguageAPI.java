@@ -388,7 +388,7 @@ public abstract class LanguageAPI {
 
     /**
      *
-     * @param prefixTranslation the prefixTranslation %PREFIX% will be replaced with
+     * @param prefixTranslation the prefixTranslation before the actual translation
      * @param translationKey the translationkey to fetch the translation from
      * @return returns a {@link Translation} with a prefixTranslation set
      * @since 1.8

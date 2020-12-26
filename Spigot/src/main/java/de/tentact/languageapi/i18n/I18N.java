@@ -84,7 +84,6 @@ public enum I18N {
             "languageapi-export-help"
     ));
 
-    private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private final String key;
 
     I18N(String key, String defaultTranslation) {
@@ -93,12 +92,12 @@ public enum I18N {
 
     I18N(String key, String defaultTranslation, String parameter) {
         this.key = key;
-        this.languageAPI.addMessageToDefault(key, defaultTranslation, parameter);
+        LanguageAPI.getInstance().addMessageToDefault(key, defaultTranslation, parameter);
     }
 
     I18N(String key, List<String> keys) {
         this.key = key;
-        this.languageAPI.setMultipleTranslation(key, new ArrayList<>(keys), false);
+        LanguageAPI.getInstance().setMultipleTranslation(key, new ArrayList<>(keys), false);
     }
 
     public Translation get() {
@@ -107,8 +106,8 @@ public enum I18N {
 
     public Translation get(boolean withPrefix) {
         if (withPrefix) {
-            return this.languageAPI.getTranslationWithPrefix(LANGUAGEAPI_PREFIX.get(false), this.key);
+            return LanguageAPI.getInstance().getTranslationWithPrefix(LANGUAGEAPI_PREFIX.get(false), this.key);
         }
-        return this.languageAPI.getTranslation(this.key);
+        return LanguageAPI.getInstance().getTranslation(this.key);
     }
 }
