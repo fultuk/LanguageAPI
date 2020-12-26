@@ -8,6 +8,9 @@
         <version>1.9-SNAPSHOT</version>
         <groupId>de.tentact.languageapi</groupId>
     </parent>
+    <properties>
+        <maven.deploy.skip>false</maven.deploy.skip>
+    </properties>
     <packaging>jar</packaging>
     <artifactId>BungeeCord</artifactId>
     <build>

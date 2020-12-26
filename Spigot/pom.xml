@@ -8,6 +8,9 @@
         <version>1.9-SNAPSHOT</version>
         <groupId>de.tentact.languageapi</groupId>
     </parent>
+    <properties>
+        <maven.deploy.skip>false</maven.deploy.skip>
+    </properties>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
     <artifactId>Spigot</artifactId>
