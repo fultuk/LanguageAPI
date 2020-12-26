@@ -87,6 +87,11 @@ public class DefaultTranslation implements Translation {
     }
 
     @Override
+    public boolean hasPrefix() {
+        return this.prefixTranslation != null;
+    }
+
+    @Override
     public @NotNull Translation replace(String old, String replacement) {
         params.put(old, replacement);
         return this;

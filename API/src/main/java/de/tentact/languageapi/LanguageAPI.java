@@ -308,7 +308,6 @@ public abstract class LanguageAPI {
      * @param language       the language of the translation
      * @return returns the translation to the key and language
      * @throws IllegalArgumentException if the language was not found
-     * @throws IllegalArgumentException if the translationKey was not found for the language
      * @since 1.8
      */
     @NotNull

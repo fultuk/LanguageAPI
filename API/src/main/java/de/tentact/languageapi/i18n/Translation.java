@@ -87,6 +87,12 @@ public interface Translation {
     Translation getPrefixTranslation();
 
     /**
+     * @return if the translation has a {@link Translation} as prefix set
+     * @since 1.9
+     */
+    boolean hasPrefix();
+
+    /**
      * a method to replace parameter in the specific translation for a player - this is resetted after {@link Translation#getMessage()}
      * @param old         the old String to replace
      * @param replacement the replacement for the paramater
