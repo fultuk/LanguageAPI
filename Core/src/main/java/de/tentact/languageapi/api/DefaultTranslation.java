@@ -31,18 +31,20 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class DefaultTranslation implements Translation {
 
     private final String translationKey;
     private Translation prefixTranslation = null;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
-    private final HashMap<String, String> params = new HashMap<>();
-    private String message;
+    private final Map<String, String> params;
 
     public DefaultTranslation(@NotNull String translationKey) {
         this.translationKey = translationKey;
+        this.params = new HashMap<>();
     }
 
     @NotNull
@@ -61,12 +63,13 @@ public class DefaultTranslation implements Translation {
     @Override
     public String getMessage(@NotNull String language, boolean orElseDefault) {
         String prefix = "";
+
         if (this.hasPrefixTranslation()) {
             prefix = this.prefixTranslation.getMessage(language, orElseDefault);
         }
-        message = this.languageAPI.getMessage(this.translationKey, language);
-        params.forEach((key, value) -> message = message.replace(key, value));
-        params.clear();
+        AtomicReference<String> message = new AtomicReference<>(this.languageAPI.getMessage(this.translationKey, language));
+        this.params.forEach((key, value) -> message.set(message.get().replace(key, value)));
+        this.params.clear();
         return prefix + message;
     }
 
@@ -94,7 +97,7 @@ public class DefaultTranslation implements Translation {
 
     @Override
     public @NotNull Translation replace(String old, String replacement) {
-        params.put(old, replacement);
+        this.params.put(old, replacement);
         return this;
     }
 

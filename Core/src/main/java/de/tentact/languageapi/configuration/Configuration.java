@@ -36,12 +36,12 @@ import java.util.logging.Logger;
 
 public class Configuration {
 
-    Document settingsDocument = new DefaultDocument();
-    final File settingsFile = new File("plugins/LanguageAPI", "config.json");
+    private Document settingsDocument = new DefaultDocument();
     private LanguageConfig languageConfig;
 
     public Configuration(Logger logger) {
-        if (this.settingsFile.exists()) {
+        File settingsFile = new File("plugins/LanguageAPI", "config.json");
+        if (settingsFile.exists()) {
             this.settingsDocument = Documents.jsonStorage().read(settingsFile);
         } else {
             try {

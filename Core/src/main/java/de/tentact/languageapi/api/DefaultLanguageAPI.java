@@ -48,7 +48,6 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 public abstract class DefaultLanguageAPI extends LanguageAPI {
 
@@ -83,7 +82,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
                     ex.printStackTrace();
                 }
                 this.addMessage("languageapi-prefix", "&eLanguageAPI x &7", language);
-                this.logInfo("Creating new language: " + language);
+                this.languageConfig.getLogger().info("Creating new language: " + language);
             });
 
         }
@@ -101,7 +100,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
-                this.logInfo("Deleting language:" + language);
+                this.languageConfig.getLogger().info("Deleting language:" + language);
             });
         }
     }
@@ -248,7 +247,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        ArrayList<String> translationKeysAsArrayList = new ArrayList<>(Arrays.asList(translationKeys));
+        List<String> translationKeysAsArrayList = new ArrayList<>(Arrays.asList(translationKeys));
         translationKeysAsArrayList.add(transkey);
         this.setMultipleTranslation(multipleTranslation, translationKeysAsArrayList, true);
     }
@@ -507,8 +506,8 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
             throw new IllegalArgumentException(lang + " was not found");
         }
         if (!this.isKey(transkey, lang)) {
-            this.languageConfig.getLogger().log(Level.WARNING, "Translationkey '" + transkey + "' not found in language '" + lang + "'");
-            this.languageConfig.getLogger().log(Level.WARNING, "As result you will get the translationkey as translation");
+            this.languageConfig.getLogger().warning( "Translationkey '" + transkey + "' not found in language '" + lang + "'");
+            this.languageConfig.getLogger().warning( "As result you will get the translationkey as translation");
             return transkey;
         }
         Map<String, String> cacheMap = this.translationCache.getIfPresent(transkey.toLowerCase());
@@ -520,7 +519,6 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     String translation = this.translateColorCode(resultSet.getString("translation"));
-
                     Map<String, String> map = new HashMap<>(1);
                     map.put(lang, translation);
                     translationCache.put(transkey, map);
@@ -655,10 +653,6 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     private HikariDataSource getDataSource() {
         return this.mySQL.getDataSource();
-    }
-
-    private void logInfo(String message) {
-        this.languageConfig.getLogger().info(message);
     }
 
     private String translateColorCode(String textToTranslate) {

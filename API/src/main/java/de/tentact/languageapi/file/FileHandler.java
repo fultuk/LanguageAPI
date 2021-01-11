@@ -51,7 +51,7 @@ public interface FileHandler {
      * @return returns if all files were imported correctly
      * @since 1.8
      */
-    default boolean loadFiles(@NotNull File[] files) {
+    default boolean loadFiles(@NotNull File... files) {
        return this.loadFiles(files, false);
     }
 
@@ -72,9 +72,11 @@ public interface FileHandler {
      * @since 1.8
      */
     default boolean loadFiles(@NotNull File[] files, boolean doOverwrite) {
-        boolean passed = false;
+        boolean passed = true;
         for (File file : files) {
-            passed = this.loadFile(file, doOverwrite);
+            if(!this.loadFile(file, doOverwrite)) {
+                passed = false;
+            }
         }
         return passed;
     }
