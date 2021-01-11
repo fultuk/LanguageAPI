@@ -80,7 +80,6 @@ public interface PlayerExecutor {
      * @param playerUUID player uuid the player is created with
      * @param language   the language that the player has on creation
      */
-
      void registerPlayer(UUID playerUUID, String language);
 
     /**

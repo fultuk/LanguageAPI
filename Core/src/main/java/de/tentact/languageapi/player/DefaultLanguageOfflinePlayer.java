@@ -60,7 +60,7 @@ public class DefaultLanguageOfflinePlayer implements LanguageOfflinePlayer {
     }
 
     @Override
-    public UUID getUniqueId() {
+    public @NotNull UUID getUniqueId() {
         return this.playerID;
     }
 

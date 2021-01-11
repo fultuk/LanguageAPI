@@ -294,7 +294,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        throw new IllegalArgumentException(translationKey + " has no parameter");
+        return null;
     }
 
     @Override
@@ -335,12 +335,12 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
                 throwables.printStackTrace();
             }
         });
-        translationCache.invalidate(transkey.toLowerCase());
+        this.translationCache.invalidate(transkey.toLowerCase());
     }
 
     @Override
     public void setMultipleTranslation(String multipleTranslation, List<String> translationKeys, boolean overwrite) {
-        if (isMultipleTranslation(multipleTranslation)) {
+        if (this.isMultipleTranslation(multipleTranslation)) {
             if (!overwrite) {
                 return;
             }
@@ -367,8 +367,8 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public void removeMultipleTranslation(final String multipleTranslation) {
-        if (!isMultipleTranslation(multipleTranslation)) {
-            throw new IllegalArgumentException(multipleTranslation + " was not found");
+        if (!this.isMultipleTranslation(multipleTranslation)) {
+            throw new IllegalArgumentException("Multiple Translation "+multipleTranslation + " was not found");
         }
         this.executorService.execute(() -> {
             try (Connection connection = this.getDataSource().getConnection();
@@ -384,7 +384,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public void removeSingleTranslationFromMultipleTranslation(final String multipleTranslation, final String transkey) {
-        if (!isMultipleTranslation(multipleTranslation)) {
+        if (!this.isMultipleTranslation(multipleTranslation)) {
             throw new IllegalArgumentException(multipleTranslation + " was not found");
         }
         List<String> translationKeysAsArrayList = null;
@@ -538,9 +538,6 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         if (language == null) {
             return false;
         }
-        if (this.getAvailableLanguages().isEmpty()) {
-            throw new UnsupportedOperationException("There are no languages available");
-        }
         return this.getAvailableLanguages().contains(language.toLowerCase());
     }
 
@@ -573,7 +570,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
             }
             return keys;
         }
-        throw new IllegalArgumentException(language + " was not found");
+        throw new IllegalArgumentException("Language "+language + " was not found");
     }
 
     @Override
@@ -590,13 +587,13 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
             }
             return messages;
         }
-        throw new IllegalArgumentException(language + " was not found");
+        throw new IllegalArgumentException("Language "+language + " was not found");
     }
 
     @Override
     public @NotNull Map<String, String> getKeysAndTranslations(String language) {
         if (!this.isLanguage(language)) {
-            throw new IllegalArgumentException(language + " was not found");
+            throw new IllegalArgumentException("Language "+language + " was not found");
         }
         Map<String, String> keysAndTranslations = new HashMap<>();
         this.getAllTranslationKeys(language).forEach(key -> keysAndTranslations.put(key, this.getMessage(key, language)));

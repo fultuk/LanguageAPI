@@ -104,24 +104,24 @@ public class DefaultTranslation implements Translation {
     }
 
     @Override
-    public Translation createDefaults(String message) {
+    public @NotNull Translation createDefaults(String message) {
         this.languageAPI.addMessageToDefault(this.translationKey, message);
         return this;
     }
 
     @Override
-    public Translation createDefaults(String message, String param) {
+    public @NotNull Translation createDefaults(String message, String param) {
         this.languageAPI.addMessageToDefault(this.translationKey, message, param);
         return this;
     }
 
     @Override
-    public Translation addTranslation(String language, String message) {
+    public @NotNull Translation addTranslation(String language, String message) {
         return this.addTranslation(language, message, null);
     }
 
     @Override
-    public Translation addTranslation(String language, String message, String param) {
+    public @NotNull Translation addTranslation(String language, String message, String param) {
         this.languageAPI.addMessage(this.translationKey, message, language, param);
         return this;
     }

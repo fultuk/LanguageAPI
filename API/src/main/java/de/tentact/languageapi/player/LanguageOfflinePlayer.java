@@ -40,23 +40,25 @@ public interface LanguageOfflinePlayer {
     /**
      * @param language the language to set to the player
      */
-    void setLanguage(@NotNull String language);
+    void setLanguage(@Nullable String language);
 
     /**
      * @param language the language to set to the player
      * @param orElseDefault whether to use the default language if the given language was not found
      */
-    void setLanguage(@NotNull String language, boolean orElseDefault);
+    void setLanguage(@Nullable String language, boolean orElseDefault);
 
     /**
      * @return returns the players language
      */
-    @NotNull String getLanguage();
+    @NotNull
+    String getLanguage();
 
     /**
      * Gets the players uniqueId
      * @return returns the player uniqueId
      */
+    @NotNull
     UUID getUniqueId();
 
     /**

@@ -29,7 +29,6 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MySQL {
@@ -53,7 +52,7 @@ public class MySQL {
             this.dataSource.setJdbcUrl("jdbc:mysql://" + hostname + ":" + port + "/" + database);
             this.dataSource.setUsername(this.username);
             this.dataSource.setPassword(this.password);
-            this.logger.log(Level.INFO,"Creating connection to database");
+            this.logger.info("Creating connection to database");
         }
     }
 
@@ -76,7 +75,7 @@ public class MySQL {
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(64) UNIQUE);");
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(transkey VARCHAR(64) UNIQUE, param VARCHAR(2000));");
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS MultipleTranslation(multipleKey VARCHAR(64) UNIQUE , transkeys VARCHAR(2000));");
-            this.logger.log(Level.INFO,"Creating default tables");
+            this.logger.info("Creating default tables");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -87,7 +86,7 @@ public class MySQL {
             return;
         try (Connection connection = this.dataSource.getConnection()) {
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS " + tableName + "(transkey VARCHAR(64) UNIQUE, translation VARCHAR(2000));");
-            this.logger.log(Level.INFO,"Creating table: " + tableName);
+            this.logger.info("Creating table: " + tableName);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

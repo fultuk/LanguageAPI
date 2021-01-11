@@ -113,6 +113,7 @@ public interface Translation {
      * @param message the default translation
      * @return the {@link Translation} after setting the default translation
      */
+    @NotNull
     Translation createDefaults(String message);
 
     /**
@@ -122,6 +123,7 @@ public interface Translation {
      * @param param   the parameter of the translation
      * @return the {@link Translation} after setting the default translation
      */
+    @NotNull
     Translation createDefaults(String message, String param);
 
     /**
@@ -130,6 +132,7 @@ public interface Translation {
      * @param message the translated message
      * @return the current {@link Translation}
      */
+    @NotNull
     Translation addTranslation(String language, String message);
 
     /**
@@ -139,6 +142,7 @@ public interface Translation {
      * @param param the parameters to the token
      * @return the current {@link Translation}
      */
+    @NotNull
     Translation addTranslation(String language, String message, String param);
 
 }

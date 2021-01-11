@@ -40,7 +40,6 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -63,23 +62,24 @@ public class ChatListener implements Listener {
         }
         if (this.languageCommand.editingMessage.contains(player)) {
             if (!event.getMessage().equalsIgnoreCase("finish")) {
-                List<String> currentArray = editedMessage.getIfPresent(languagePlayer.getUniqueId());
+                List<String> currentArray = this.editedMessage.getIfPresent(languagePlayer.getUniqueId());
                 if (currentArray != null) {
-                    editedMessage.invalidate(languagePlayer.getUniqueId());
+                    this.editedMessage.invalidate(languagePlayer.getUniqueId());
                 } else {
                     currentArray = new ArrayList<>();
                 }
                 currentArray.add(event.getMessage());
-                editedMessage.put(languagePlayer.getUniqueId(), currentArray);
+                this.editedMessage.put(languagePlayer.getUniqueId(), currentArray);
                 event.setCancelled(true);
             } else {
-                if (editedMessage.getIfPresent(languagePlayer.getUniqueId()) == null) {
+                List<String> messages = this.editedMessage.getIfPresent(languagePlayer.getUniqueId());
+                if (messages == null) {
                     languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_SAME.get());
                     event.setCancelled(true);
                     return;
                 }
                 StringBuilder result = new StringBuilder();
-                for (String message : Objects.requireNonNull(editedMessage.getIfPresent(languagePlayer.getUniqueId()))) {
+                for (String message : messages) {
                     result.append(message).append(" ");
                 }
                 String transKey = this.languageCommand.givenParameter.get(player).get(0);
@@ -92,7 +92,7 @@ public class ChatListener implements Listener {
                         .replace("%KEY%", transKey)
                         .replace("%LANG%", language)
                         .replace("%MSG%", result.toString()));
-                editedMessage.invalidate(languagePlayer.getUniqueId());
+                this.editedMessage.invalidate(languagePlayer.getUniqueId());
             }
         }
     }

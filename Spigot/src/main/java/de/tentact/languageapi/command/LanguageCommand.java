@@ -36,6 +36,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -346,6 +347,10 @@ public class LanguageCommand implements TabExecutor {
                             break;
                     }
                 } else {
+                    Inventory inventory = this.languageInventory.getLanguageInventory();
+                    if(inventory == null) {
+                        return false;
+                    }
                     player.openInventory(this.languageInventory.getLanguageInventory());
                 }
             } else {
