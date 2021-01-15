@@ -22,16 +22,16 @@ Get the API
 Repository:
 ```
 	<repository>
-             <id>jitpack.io</id>
-	     <url>https://jitpack.io</url>
-	</repository>
+            <id>tentact-snapshot</id>
+            <url>https://archiva.tentact.de/repository/tentact-snapshot/</url>
+        </repository>
 ```
 Dependency:
 ```
        <dependency>
-	    <groupId>com.github.0utplay.LanguageAPI</groupId>
-	    <artifactId>API</artifactId>
-	    <version>1.8-RELEASE</version>
-	</dependency>
+            <groupId>de.tentact.languageapi</groupId>
+            <artifactId>API</artifactId>
+            <version>1.9-SNAPSHOT</version>
+        </dependency>
 ```
 
