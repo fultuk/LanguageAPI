@@ -294,7 +294,6 @@ public abstract class LanguageAPI {
     @NotNull
     public abstract List<String> getMultipleMessages(String transkey, String language, String prefixKey);
 
-
     /**
      * @param translationkey the translationkey to get the translation from
      * @param playerUUID     the player uuid to get the language from
@@ -416,7 +415,7 @@ public abstract class LanguageAPI {
     /**
      * Updates an {@link Translation} in the HashMap
      * @param translation the translation to update
-     *                    @since 1.8
+     * @since 1.8
      */
     public abstract void updateTranslation(Translation translation);
 

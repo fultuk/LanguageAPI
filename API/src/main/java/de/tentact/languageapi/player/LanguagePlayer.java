@@ -27,23 +27,27 @@ package de.tentact.languageapi.player;
 
 import de.tentact.languageapi.i18n.Translation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
 /**
  * Use {@link PlayerExecutor#getLanguagePlayer(UUID)} to get an instance
+ *
  * @since 1.8
  */
 public interface LanguagePlayer extends LanguageOfflinePlayer {
 
     /**
      * Sends a message to the player by a {@link Translation}
+     *
      * @param translation the {@link Translation} to get the translated message from
      */
     void sendMessage(@NotNull Translation translation);
 
     /**
      * Sends a message to the player by a translationkey
+     *
      * @param translationKey the translationkey to get the translation from
      */
     void sendMessageByKey(@NotNull String translationKey);
@@ -59,6 +63,7 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
 
     /**
      * Sends multiple messages to the player by a single multipleTranslationKey
+     *
      * @param multipleTranslationKey the multipleTranslationKey to get the Collection of translationkeys
      */
     default void sendMultipleTranslationWithPrefix(@NotNull String multipleTranslationKey, String prefixKey) {
@@ -67,6 +72,7 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
 
     /**
      * Sends multiple messages to the player by a single {@link Translation}
+     *
      * @param multipleTranslation the multipleTranslation to get the Collection of translationkeys
      */
     default void sendMultipleTranslation(@NotNull Translation multipleTranslation) {
@@ -79,8 +85,9 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
 
     /**
      * Sends multiple messages to the player by a single multipleTranslationKey
+     *
      * @param multipleTranslationKey the multipleTranslationKey to get the Collection of translationkeys
-     * @param language the language to get the translation in
+     * @param language               the language to get the translation in
      */
     default void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language) {
         this.sendMultipleTranslation(multipleTranslationKey, language, null);
@@ -88,13 +95,15 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
 
     /**
      * Sends multiple messages to the player by a single multipleTranslationKey
+     *
      * @param multipleTranslationKey the multipleTranslationKey to get the Collection of translationkeys
-     * @param language the language to get the translation in
+     * @param language               the language to get the translation in
      */
-    void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language, String prefixKey);
+    void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language, @Nullable String prefixKey);
 
     /**
      * Kick a player with a {@link Translation} as reason
+     *
      * @param translation the {@link Translation} to get the translated message from
      */
     void kickPlayer(Translation translation);

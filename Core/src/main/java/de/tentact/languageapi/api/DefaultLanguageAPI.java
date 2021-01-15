@@ -476,7 +476,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     @Override
     public @NotNull List<String> getMultipleMessages(String transkey, String language, String prefixKey) {
         List<String> resolvedMessages = new ArrayList<>();
-        String[] translationKeys = new String[]{};
+        String[] translationKeys = new String[0];
         String prefix = "";
         if (prefixKey != null && !prefixKey.isEmpty()) {
             prefix = this.getMessage(prefixKey, language);
