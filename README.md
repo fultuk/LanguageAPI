@@ -38,9 +38,12 @@ Download
 -
 Latest Bungeecord Snapshot
 https://archiva.tentact.de/#artifact-details-download-content~tentact-snapshot/de.tentact.languageapi/BungeeCord/1.9-SNAPSHOT
+
 Latest Spigot Snapshot
 https://archiva.tentact.de/#artifact-details-download-content~tentact-snapshot/de.tentact.languageapi/Spigot/1.9-SNAPSHOT
+
 Latest Velocity Snapshot
 https://archiva.tentact.de/#artifact-details-download-content~tentact-snapshot/de.tentact.languageapi/Velocity/1.9-SNAPSHOT
+
 
 Choose the latest file (the top file) and put it into your plugins folder.
