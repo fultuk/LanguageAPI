@@ -189,7 +189,7 @@ public abstract class LanguageAPI {
     /**
      * @param translationKey the translationkey to check the parameters for
      * @return returns if the translationkey has any parameters
-     * @since 1.8
+     * @since 1.9
      */
     public abstract LanguageFuture<Boolean> hasParameterAsync(String translationKey);
 
@@ -204,7 +204,7 @@ public abstract class LanguageAPI {
     /**
      * @param translationKey the translationkey to get the parameters for
      * @return returns all the parameters to the translationKey, null if the key does not have any parameters
-     * @since 1.8
+     * @since 1.9
      */
     @Nullable
     public abstract LanguageFuture<String> getParameterAsync(String translationKey);
@@ -221,7 +221,7 @@ public abstract class LanguageAPI {
      * @param translationKey the translationkey to check the parameters for
      * @param parameter          the parameter to check for
      * @return returns if {@param parameter} is a parameter of the given translationkey
-     * @since 1.8
+     * @since 1.9
      */
     public abstract LanguageFuture<Boolean> isParameterAsync(String translationKey, String parameter);
 
@@ -294,7 +294,7 @@ public abstract class LanguageAPI {
     /**
      * @param transkey the translationkey which holds the other keys
      * @return returns a {@link List<String>} with the translated messages in the default language
-     * @since 1.8
+     * @since 1.9
      */
     @NotNull
     public abstract LanguageFuture<List<String>> getMultipleMessagesAsync(String transkey);
@@ -312,7 +312,7 @@ public abstract class LanguageAPI {
      * @param transkey   the translationkey which holds the other keys
      * @param playerUUID the player UUID is needed to select the language
      * @return returns a {@link List<String>} with the translated messages
-     * @since 1.8
+     * @since 1.9
      */
     @NotNull
     public abstract LanguageFuture<List<String>> getMultipleMessagesAsync(String transkey, UUID playerUUID);
@@ -330,7 +330,7 @@ public abstract class LanguageAPI {
      * @param transkey the translationkey which holds the other keys
      * @param language the language to get the translation in
      * @return returns a {@link List<String>} with the translated messages
-     * @since 1.8
+     * @since 1.9
      */
     @NotNull
     public abstract LanguageFuture<List<String>> getMultipleMessagesAsync(String transkey, String language);
@@ -348,7 +348,7 @@ public abstract class LanguageAPI {
      * @param transkey the translationkey which holds the other keys
      * @param language the language to get the translation in
      * @return returns a {@link List<String>} with the translated messages
-     * @since 1.8
+     * @since 1.9
      */
     @NotNull
     public abstract LanguageFuture<List<String>> getMultipleMessagesAsync(String transkey, String language, String prefixKey);
@@ -366,7 +366,7 @@ public abstract class LanguageAPI {
      * @param translationkey the translationkey to get the translation from
      * @param playerUUID     the player uuid to get the language from
      * @return returns the translation for a given player
-     * @since 1.8
+     * @since 1.9
      */
     @NotNull
     public abstract LanguageFuture<String> getMessageAsync(String translationkey, UUID playerUUID);
@@ -386,7 +386,7 @@ public abstract class LanguageAPI {
      * @param language       the language of the translation
      * @return returns the translation to the key and language
      * @throws IllegalArgumentException if the language was not found
-     * @since 1.8
+     * @since 1.9
      */
     @NotNull
     public abstract LanguageFuture<String> getMessageAsync(String translationkey, String language);
@@ -401,7 +401,7 @@ public abstract class LanguageAPI {
     /**
      * @param language the language to check if it is a language
      * @return returns if the given language is a valid language
-     * @since 1.8
+     * @since 1.9
      */
     public abstract LanguageFuture<Boolean> isLanguageAsync(@Nullable String language);
 
@@ -414,7 +414,7 @@ public abstract class LanguageAPI {
 
     /**
      * @return returns all created languages
-     * @since 1.8
+     * @since 1.9
      */
     @NotNull
     public abstract LanguageFuture<List<String>> getAvailableLanguagesAsync();
@@ -432,7 +432,7 @@ public abstract class LanguageAPI {
      * @param language the loanguage to get the keys from
      * @return returns all the translationkeys for the language
      * @throws IllegalArgumentException if the language was not found
-     * @since 1.8
+     * @since 1.9
      */
     @NotNull
     public abstract LanguageFuture<List<String>> getAllTranslationKeysAsync(String language);
@@ -450,7 +450,7 @@ public abstract class LanguageAPI {
      * @param language the language to get the translations from
      * @return returns all the translations for that language
      * @throws IllegalArgumentException if the language was not found
-     * @since 1.8
+     * @since 1.9
      */
     @NotNull
     public abstract LanguageFuture<List<String>> getAllTranslationsAsync(String language);
@@ -468,7 +468,7 @@ public abstract class LanguageAPI {
      *
      * @param language the language to get the keys and translations from
      * @return returns a {@link Map} with every key and its translation in the given language
-     * @since 1.8
+     * @since 1.9
      */
     @NotNull
     public abstract LanguageFuture<Map<String, String>> getKeysAndTranslationsAsync(String language);
