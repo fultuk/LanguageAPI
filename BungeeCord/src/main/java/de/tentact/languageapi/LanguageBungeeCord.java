@@ -40,16 +40,16 @@ public class LanguageBungeeCord extends Plugin {
     public void onEnable() {
         Configuration configuration = new Configuration(this.getLogger());
         LanguageConfig languageConfig = configuration.getLanguageConfig();
-        mySQL = configuration.getLanguageConfig().getMySQL();
-        mySQL.connect();
+        this.mySQL = configuration.getLanguageConfig().getMySQL();
+        this.mySQL.connect();
         LanguageAPI.setInstance(new BungeeCordLanguageAPI(languageConfig));
-        mySQL.createDefaultTable();
+        this.mySQL.createDefaultTable();
         LanguageAPI.getInstance().createLanguage(languageConfig.getLanguageSetting().getDefaultLanguage());
         new Updater(this);
     }
 
     @Override
     public void onDisable() {
-        mySQL.closeConnection();
+        this.mySQL.closeConnection();
     }
 }

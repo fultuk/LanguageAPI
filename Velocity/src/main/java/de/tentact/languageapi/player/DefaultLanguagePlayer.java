@@ -41,7 +41,7 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
 
     public DefaultLanguagePlayer(ProxyServer proxyServer, UUID playerID) {
         super(playerID);
-        this.player = proxyServer.getPlayer(playerID).get();
+        this.player = proxyServer.getPlayer(playerID).isPresent() ? proxyServer.getPlayer(playerID).get() : null;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (player == null) {
             return;
         }
-        player.sendMessage(LegacyComponentSerializer.legacyLinking().deserialize(translation.getMessage(this.getLanguage())));
+        translation.getMessageAsync(this.getLanguage()).thenAccept(message -> player.sendMessage(LegacyComponentSerializer.legacyLinking().deserialize(message)));
     }
 
 
@@ -68,7 +68,9 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (player == null) {
             return;
         }
-        this.languageAPI.getMultipleMessages(multipleTranslationKey, language, prefixKey).forEach(s -> player.sendMessage(LegacyComponentSerializer.legacyLinking().deserialize(s)));
+        this.languageAPI.getMultipleMessagesAsync(multipleTranslationKey, language, prefixKey)
+                .thenAccept(messages ->
+                        messages.forEach(s -> player.sendMessage(LegacyComponentSerializer.legacyLinking().deserialize(s))));
     }
 
 
@@ -78,6 +80,7 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (player == null) {
             return;
         }
-        player.disconnect(LegacyComponentSerializer.legacyLinking().deserialize(translation.getMessage(this.getLanguage())));
+        translation.getMessageAsync(this.getLanguage())
+                .thenAccept(message -> player.disconnect(LegacyComponentSerializer.legacyLinking().deserialize(message)));
     }
 }

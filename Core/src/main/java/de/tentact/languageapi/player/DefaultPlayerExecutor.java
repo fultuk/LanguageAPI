@@ -53,7 +53,7 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
         this.languageConfig = languageConfig;
         this.mySQL = languageConfig.getMySQL();
         this.languageAPI = languageAPI;
-        this.dataSource = mySQL.getDataSource();
+        this.dataSource = this.mySQL.getDataSource();
     }
 
     @NotNull

@@ -57,7 +57,7 @@ public class MySQL {
     }
 
     public boolean isNotConnected() {
-        return dataSource == null;
+        return this.dataSource.isClosed();
     }
 
     public void closeConnection() {
@@ -68,8 +68,9 @@ public class MySQL {
     }
 
     public void createDefaultTable() {
-        if (this.isNotConnected())
+        if (this.isNotConnected()) {
             return;
+        }
         try (Connection connection = this.dataSource.getConnection()) {
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS playerlanguage(uuid VARCHAR(64) UNIQUE, language VARCHAR(64));");
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(64) UNIQUE);");

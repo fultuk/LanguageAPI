@@ -49,7 +49,7 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (player == null) {
             return;
         }
-        player.sendMessage(translation.getMessage(this.getLanguage()));
+        translation.getMessageAsync(this.getLanguage()).thenAccept(player::sendMessage);
     }
 
 
@@ -67,7 +67,9 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (player == null) {
             return;
         }
-        this.languageAPI.getMultipleMessages(multipleTranslationKey, language, prefixKey).forEach(player::sendMessage);
+        this.languageAPI.getMultipleMessagesAsync(multipleTranslationKey, language, prefixKey)
+                .thenAccept(messages ->
+                        messages.forEach(player::sendMessage));
     }
 
 
@@ -77,6 +79,8 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (player == null) {
             return;
         }
-        player.kickPlayer(translation.getMessage(this.getLanguage()));
+        translation.getMessageAsync(this.getLanguage())
+                .thenAccept(player::kickPlayer);
+
     }
 }

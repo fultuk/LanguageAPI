@@ -39,12 +39,9 @@ import java.util.logging.Logger;
 @Plugin(id = "languageapi", name = "LanguageAPI", version = "1.9", authors = {"0utplay"})
 public class LanguageVelocity {
 
-    private final Logger logger;
-
     @Inject
     public LanguageVelocity(ProxyServer proxyServer, Logger logger) {
-        this.logger = logger;
-        Configuration configuration = new Configuration(this.getLogger());
+        Configuration configuration = new Configuration(logger);
         LanguageConfig languageConfig = configuration.getLanguageConfig();
 
         MySQL mySQL = configuration.getLanguageConfig().getMySQL();
@@ -55,10 +52,7 @@ public class LanguageVelocity {
 
         LanguageAPI.getInstance().createLanguage(languageConfig.getLanguageSetting().getDefaultLanguage());
 
-        new Updater(proxyServer, this.logger);
+        new Updater(proxyServer, logger);
     }
 
-    public Logger getLogger() {
-        return this.logger;
-    }
 }

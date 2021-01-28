@@ -38,7 +38,7 @@ public class DefaultSpecificPlayerExecutor implements SpecificPlayerExecutor {
     private final PlayerExecutor playerExecutor;
 
     public DefaultSpecificPlayerExecutor(UUID playerId) {
-        this.playerExecutor = languageAPI.getPlayerExecutor();
+        this.playerExecutor = this.languageAPI.getPlayerExecutor();
         this.playerId = playerId;
     }
 

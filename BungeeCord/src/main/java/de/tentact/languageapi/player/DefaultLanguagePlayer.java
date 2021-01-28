@@ -45,7 +45,7 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
 
     @Override
     public void sendMessage(@NotNull Translation translation) {
-        ProxiedPlayer proxiedPlayer =this.proxiedPlayer;
+        ProxiedPlayer proxiedPlayer = this.proxiedPlayer;
         if (proxiedPlayer == null) {
             return;
         }

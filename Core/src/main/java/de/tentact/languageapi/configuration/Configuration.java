@@ -47,20 +47,7 @@ public class Configuration {
             try {
                 Files.createFile(settingsFile.toPath());
                 this.settingsDocument.append("config",
-                        new LanguageConfig(
-                                new MySQL(
-                                        "hostname",
-                                        "languagapi",
-                                        "languagapi",
-                                        "password",
-                                        3306
-                                ),
-                                new LanguageSetting(
-                                        "de_de",
-                                        5,
-                                        true
-                                )
-                        )
+                        this.getDefaultLanguageConfig()
                 ).json().write(settingsFile);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -75,6 +62,23 @@ public class Configuration {
             this.languageConfig = this.settingsDocument.get("config", LanguageConfig.class);
         }
         return this.languageConfig;
+    }
+
+    private LanguageConfig getDefaultLanguageConfig() {
+        return new LanguageConfig(
+                new MySQL(
+                        "hostname",
+                        "languagapi",
+                        "languagapi",
+                        "password",
+                        3306
+                ),
+                new LanguageSetting(
+                        "de_de",
+                        5,
+                        true
+                )
+        );
     }
 
 }

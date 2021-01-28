@@ -30,6 +30,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.concurrent.LanguageFuture;
 import de.tentact.languageapi.configuration.LanguageConfig;
 import de.tentact.languageapi.configuration.MySQL;
 import de.tentact.languageapi.file.FileHandler;
@@ -266,50 +267,77 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public boolean hasParameter(String translationKey) {
-        try (Connection connection = this.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Parameter WHERE transkey=?;")) {
-            preparedStatement.setString(1, translationKey);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.next();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return false;
+        return this.hasParameterAsync(translationKey).getAfter(5, false);
+    }
+
+    @Override
+    public LanguageFuture<Boolean> hasParameterAsync(String translationKey) {
+        return (LanguageFuture<Boolean>) LanguageFuture.supplyAsync(() -> {
+            try (Connection connection = this.getDataSource().getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Parameter WHERE transkey=?;")) {
+                preparedStatement.setString(1, translationKey);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                return resultSet.next();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            return false;
+        }).exceptionally(throwable -> {
+            throwable.printStackTrace();
+            return false;
+        });
     }
 
     @Override
     public @Nullable String getParameter(String translationKey) {
-        if (!this.hasParameter(translationKey)) {
-            return null;
-        }
-        try (Connection connection = this.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT param FROM Parameter WHERE transkey=?;")) {
-            preparedStatement.setString(1, translationKey.toLowerCase());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getString("param");
+        return this.getParameterAsync(translationKey).getAfter(5, null);
+    }
+
+    @Override
+    public @NotNull LanguageFuture<String> getParameterAsync(String translationKey) {
+        return (LanguageFuture<String>) LanguageFuture.supplyAsync(() -> {
+            if (!this.hasParameter(translationKey)) {
+                return null;
             }
-            resultSet.close();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return null;
+            try (Connection connection = this.getDataSource().getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT param FROM Parameter WHERE transkey=?;")) {
+                preparedStatement.setString(1, translationKey.toLowerCase());
+                ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()) {
+                    return resultSet.getString("param");
+                }
+                resultSet.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            return null;
+        }).exceptionally(throwable -> {
+            throwable.printStackTrace();
+            return null;
+        });
     }
 
     @Override
-    public boolean isParameter(String translationKey, String param) {
-        if (!this.hasParameter(translationKey)) {
-            return false;
-        }
-        return this.getParameter(translationKey).contains(param);
+    public boolean isParameter(String translationKey, String parameter) {
+        return this.isParameterAsync(translationKey, parameter).getAfter(5, false);
     }
 
     @Override
-    public void deleteMessageInEveryLang(String transkey) {
+    public LanguageFuture<Boolean> isParameterAsync(String translationKey, String parameter) {
+        return LanguageFuture.supplyAsync(() -> {
+            if (!this.hasParameter(translationKey)) {
+                return false;
+            }
+            return this.getParameter(translationKey).contains(parameter);
+        });
+    }
+
+    @Override
+    public void deleteMessageInEveryLang(String translationKey) {
         this.executorService.execute(() -> {
-            for (String langs : this.getAvailableLanguages()) {
-                if (this.isKey(transkey, langs)) {
-                    this.deleteMessage(transkey, langs);
+            for (String languages : this.getAvailableLanguages()) {
+                if (this.isKey(translationKey, languages)) {
+                    this.deleteMessage(translationKey, languages);
                 }
             }
         });
@@ -367,7 +395,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     @Override
     public void removeMultipleTranslation(final String multipleTranslation) {
         if (!this.isMultipleTranslation(multipleTranslation)) {
-            throw new IllegalArgumentException("Multiple Translation "+multipleTranslation + " was not found");
+            throw new IllegalArgumentException("Multiple Translation " + multipleTranslation + " was not found");
         }
         this.executorService.execute(() -> {
             try (Connection connection = this.getDataSource().getConnection();
@@ -438,164 +466,245 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public boolean isKey(String transkey, String lang) {
-        try (Connection connection = this.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + lang.toLowerCase() + " WHERE transkey=?;")) {
-            preparedStatement.setString(1, transkey.toLowerCase());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return resultSet.next();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return false;
+        return this.isKeyAsync(transkey, lang).getAfter(5, false);
+    }
+
+    public LanguageFuture<Boolean> isKeyAsync(String translationKey, String language) {
+        return (LanguageFuture<Boolean>) LanguageFuture.supplyAsync(() -> {
+            try (Connection connection = this.getDataSource().getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + language.toLowerCase() + " WHERE transkey=?;")) {
+                preparedStatement.setString(1, translationKey.toLowerCase());
+                ResultSet resultSet = preparedStatement.executeQuery();
+                return resultSet.next();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            return false;
+        }).exceptionally(throwable -> {
+            throwable.printStackTrace();
+            return false;
+        });
     }
 
     @NotNull
     @Override
-    public String getMessage(String transkey, UUID playerUUID) {
-        return this.getMessage(transkey, this.playerExecutor.getPlayerLanguage(playerUUID));
+    public String getMessage(String translationKey, UUID playerUUID) {
+        return this.getMessageAsync(translationKey, playerUUID).getAfter(5, "");
+    }
+
+    @Override
+    public @NotNull LanguageFuture<String> getMessageAsync(String translationkey, UUID playerUUID) {
+        return LanguageFuture.supplyAsync(() ->
+                this.getMessage(translationkey, this.playerExecutor.getPlayerLanguage(playerUUID)));
     }
 
     @NotNull
     @Override
     public List<String> getMultipleMessages(String transkey) {
-        return this.getMultipleMessages(transkey, this.getDefaultLanguage());
+        return this.getMultipleMessagesAsync(transkey).getAfter(5, Collections.emptyList());
+    }
+
+    @Override
+    public @NotNull LanguageFuture<List<String>> getMultipleMessagesAsync(String transkey) {
+        return LanguageFuture.supplyAsync(() ->
+                this.getMultipleMessages(transkey, this.getDefaultLanguage())
+        );
     }
 
     @NotNull
     @Override
     public List<String> getMultipleMessages(String transkey, UUID playerUUID) {
-        return this.getMultipleMessages(transkey, this.playerExecutor.getPlayerLanguage(playerUUID));
+        return this.getMultipleMessagesAsync(transkey, playerUUID).getAfter(5, Collections.emptyList());
+    }
+
+    @Override
+    public @NotNull LanguageFuture<List<String>> getMultipleMessagesAsync(String transkey, UUID playerUUID) {
+        return LanguageFuture.supplyAsync(() -> this.getMultipleMessages(transkey, this.playerExecutor.getPlayerLanguage(playerUUID)));
     }
 
     @NotNull
     @Override
     public List<String> getMultipleMessages(String transkey, String language) {
-        return this.getMultipleMessages(transkey, language, "");
+        return this.getMultipleMessagesAsync(transkey, language).getAfter(5, Collections.emptyList());
+    }
+
+    @Override
+    public @NotNull LanguageFuture<List<String>> getMultipleMessagesAsync(String transkey, String language) {
+        return LanguageFuture.supplyAsync(() -> this.getMultipleMessages(transkey, language, ""));
     }
 
     @Override
     public @NotNull List<String> getMultipleMessages(String transkey, String language, String prefixKey) {
-        List<String> resolvedMessages = new ArrayList<>();
-        String[] translationKeys = new String[0];
-        String prefix = "";
-        if (prefixKey != null && !prefixKey.isEmpty()) {
-            prefix = this.getMessage(prefixKey, language);
-        }
-        try (Connection connection = this.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT transkeys FROM MultipleTranslation WHERE multipleKey=?;")) {
-            preparedStatement.setString(1, transkey.toLowerCase());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                String mysqlString = resultSet.getString("transkeys");
-                translationKeys = mysqlString.split(",");
+        return this.getMultipleMessagesAsync(transkey, language, prefixKey).getAfter(5, Collections.emptyList());
+    }
+
+    @Override
+    public @NotNull LanguageFuture<List<String>> getMultipleMessagesAsync(String transkey, String language, String prefixKey) {
+        return LanguageFuture.supplyAsync(() -> {
+            List<String> resolvedMessages = new ArrayList<>();
+            String[] translationKeys = new String[0];
+            String prefix = "";
+            if (prefixKey != null && !prefixKey.isEmpty()) {
+                prefix = this.getMessage(prefixKey, language);
             }
-            resultSet.close();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        for (String translationKey : translationKeys) {
-            resolvedMessages.add(prefix + this.getMessage(translationKey, language));
-        }
-        return resolvedMessages;
+            try (Connection connection = this.getDataSource().getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT transkeys FROM MultipleTranslation WHERE multipleKey=?;")) {
+                preparedStatement.setString(1, transkey.toLowerCase());
+                ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()) {
+                    String mysqlString = resultSet.getString("transkeys");
+                    translationKeys = mysqlString.split(",");
+                }
+                resultSet.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            for (String translationKey : translationKeys) {
+                resolvedMessages.add(prefix + this.getMessage(translationKey, language));
+            }
+            return resolvedMessages;
+        });
     }
 
     @NotNull
     @Override
-    public String getMessage(String transkey, String lang) {
-        if (!this.isLanguage(lang)) {
-            throw new IllegalArgumentException(lang + " was not found");
-        }
-        if (!this.isKey(transkey, lang)) {
-            this.languageConfig.getLogger().warning( "Translationkey '" + transkey + "' not found in language '" + lang + "'");
-            this.languageConfig.getLogger().warning( "As result you will get the translationkey as translation");
-            return transkey;
-        }
-        Map<String, String> cacheMap = this.translationCache.getIfPresent(transkey.toLowerCase());
-        if (cacheMap != null && cacheMap.containsKey(lang)) {
-            return cacheMap.get(lang);
-        }
-        try (Connection connection = this.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT translation FROM " + lang.toLowerCase() + " WHERE transkey=?;")) {
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    String translation = this.translateColorCode(resultSet.getString("translation"));
-                    Map<String, String> map = new HashMap<>(1);
-                    map.put(lang, translation);
-                    translationCache.put(transkey, map);
-                    return translation;
-                }
+    public String getMessage(String translationKey, String language) {
+        return this.getMessageAsync(translationKey, language).getAfter(5, translationKey);
+    }
+
+    @Override
+    public @NotNull LanguageFuture<String> getMessageAsync(String translationKey, String language) {
+        return LanguageFuture.supplyAsync(() -> {
+            if (!this.isLanguage(language)) {
+                throw new IllegalArgumentException(language + " was not found");
             }
-        } catch (SQLException throwables) {
-            return transkey;
-        }
-        return transkey;
+            if (!this.isKey(translationKey, language)) {
+                this.languageConfig.getLogger().warning("Translationkey '" + translationKey + "' not found in language '" + language + "'");
+                this.languageConfig.getLogger().warning("As result you will get the translationkey as translation");
+                return translationKey;
+            }
+            Map<String, String> cacheMap = this.translationCache.getIfPresent(translationKey.toLowerCase());
+            if (cacheMap != null && cacheMap.containsKey(language)) {
+                return cacheMap.get(language);
+            }
+            try (Connection connection = this.getDataSource().getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT translation FROM " + language.toLowerCase() + " WHERE transkey=?;")) {
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        String translation = this.translateColorCode(resultSet.getString("translation"));
+                        Map<String, String> map = new HashMap<>(1);
+                        map.put(language, translation);
+                        translationCache.put(translationKey, map);
+                        return translation;
+                    }
+                }
+            } catch (SQLException throwables) {
+                return translationKey;
+            }
+            return translationKey;
+        });
     }
 
     @Override
     public boolean isLanguage(String language) {
-        if (language == null) {
-            return false;
-        }
-        return this.getAvailableLanguages().contains(language.toLowerCase());
+        return this.isLanguageAsync(language).getAfter(5, false);
+    }
+
+    @Override
+    public LanguageFuture<Boolean> isLanguageAsync(@Nullable String language) {
+        return LanguageFuture.supplyAsync(() -> {
+            if (language == null) {
+                return false;
+            }
+            return this.getAvailableLanguages().contains(language.toLowerCase());
+        });
     }
 
     @NotNull
     @Override
     public List<String> getAvailableLanguages() {
-        List<String> languages = new ArrayList<>();
-        try (Connection connection = this.getDataSource().getConnection();
-             ResultSet resultSet = connection.createStatement().executeQuery("SELECT language FROM languages")) {
-            while (resultSet.next()) {
-                languages.add(resultSet.getString("language").toLowerCase());
+        return this.getAvailableLanguagesAsync().getAfter(5, Collections.emptyList());
+    }
+
+    @Override
+    public @NotNull LanguageFuture<List<String>> getAvailableLanguagesAsync() {
+        return LanguageFuture.supplyAsync(() -> {
+            List<String> languages = new ArrayList<>();
+            try (Connection connection = this.getDataSource().getConnection();
+                 ResultSet resultSet = connection.createStatement().executeQuery("SELECT language FROM languages")) {
+                while (resultSet.next()) {
+                    languages.add(resultSet.getString("language").toLowerCase());
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return languages;
+            return languages;
+        });
     }
 
     @Override
     public @NotNull List<String> getAllTranslationKeys(String language) {
-        List<String> keys = new ArrayList<>();
-        if (this.isLanguage(language)) {
-            try (Connection connection = this.getDataSource().getConnection();
-                 ResultSet resultSet = connection.createStatement().executeQuery("SELECT transkey FROM " + language)) {
-                while (resultSet.next()) {
-                    keys.add(resultSet.getString("transkey"));
+        return this.getAllTranslationsAsync(language).getAfter(5, Collections.emptyList());
+    }
+
+    @Override
+    public @NotNull LanguageFuture<List<String>> getAllTranslationKeysAsync(String language) {
+        return LanguageFuture.supplyAsync(() -> {
+            List<String> keys = new ArrayList<>();
+            if (this.isLanguage(language)) {
+                try (Connection connection = this.getDataSource().getConnection();
+                     ResultSet resultSet = connection.createStatement().executeQuery("SELECT transkey FROM " + language)) {
+                    while (resultSet.next()) {
+                        keys.add(resultSet.getString("transkey"));
+                    }
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
                 }
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                return keys;
             }
-            return keys;
-        }
-        throw new IllegalArgumentException("Language "+language + " was not found");
+            throw new IllegalArgumentException("Language " + language + " was not found");
+        });
     }
 
     @Override
     public @NotNull List<String> getAllTranslations(String language) {
-        List<String> messages = new ArrayList<>();
-        if (this.isLanguage(language)) {
-            try (Connection connection = this.getDataSource().getConnection();
-                 ResultSet resultSet = connection.createStatement().executeQuery("SELECT translation FROM " + language)) {
-                while (resultSet.next()) {
-                    messages.add(resultSet.getString("translation"));
+        return this.getAllTranslationsAsync(language).getAfter(5, Collections.emptyList());
+    }
+
+    @Override
+    public @NotNull LanguageFuture<List<String>> getAllTranslationsAsync(String language) {
+        return LanguageFuture.supplyAsync(() -> {
+            List<String> messages = new ArrayList<>();
+            if (this.isLanguage(language)) {
+                try (Connection connection = this.getDataSource().getConnection();
+                     ResultSet resultSet = connection.createStatement().executeQuery("SELECT translation FROM " + language)) {
+                    while (resultSet.next()) {
+                        messages.add(resultSet.getString("translation"));
+                    }
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
                 }
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                return messages;
             }
-            return messages;
-        }
-        throw new IllegalArgumentException("Language "+language + " was not found");
+            throw new IllegalArgumentException("Language " + language + " was not found");
+        });
     }
 
     @Override
     public @NotNull Map<String, String> getKeysAndTranslations(String language) {
-        if (!this.isLanguage(language)) {
-            throw new IllegalArgumentException("Language "+language + " was not found");
-        }
-        Map<String, String> keysAndTranslations = new HashMap<>();
-        this.getAllTranslationKeys(language).forEach(key -> keysAndTranslations.put(key, this.getMessage(key, language)));
-        return keysAndTranslations;
+        return this.getKeysAndTranslationsAsync(language).getAfter(5, new HashMap<>());
+    }
+
+    @Override
+    public @NotNull LanguageFuture<Map<String, String>> getKeysAndTranslationsAsync(String language) {
+        return LanguageFuture.supplyAsync(() -> {
+            if (!this.isLanguage(language)) {
+                throw new IllegalArgumentException("Language " + language + " was not found");
+            }
+            Map<String, String> keysAndTranslations = new HashMap<>();
+            this.getAllTranslationKeys(language).forEach(key -> keysAndTranslations.put(key, this.getMessage(key, language)));
+            return keysAndTranslations;
+        });
     }
 
     @Override
