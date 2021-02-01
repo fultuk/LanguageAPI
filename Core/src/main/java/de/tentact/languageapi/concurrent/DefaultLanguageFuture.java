@@ -25,19 +25,18 @@
 
 package de.tentact.languageapi.concurrent;
 
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
+import java.util.concurrent.TimeoutException;
 
-public abstract class LanguageFuture<T> extends CompletableFuture<T>  {
+public class DefaultLanguageFuture<T> extends LanguageFuture<T> {
 
-    public T getAfter(int seconds, T value) {
-        return this.getAfter(seconds, TimeUnit.SECONDS, value);
-    }
-
-    public abstract T getAfter(int timeout, TimeUnit timeUnit, T value);
-
-    public static <T> LanguageFuture<T> supplyAsync(Supplier<T> supplier) {
-        return (LanguageFuture<T>) CompletableFuture.supplyAsync(supplier);
+    @Override
+    public T getAfter(int timeout, TimeUnit timeUnit, T value) {
+        try {
+            return this.get(timeout, timeUnit);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            return value;
+        }
     }
 }

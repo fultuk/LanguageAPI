@@ -83,8 +83,9 @@ public class MySQL {
     }
 
     public void createTable(String tableName) {
-        if (this.isNotConnected())
+        if (this.isNotConnected()) {
             return;
+        }
         try (Connection connection = this.dataSource.getConnection()) {
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS " + tableName + "(transkey VARCHAR(64) UNIQUE, translation VARCHAR(2000));");
             this.logger.info("Creating table: " + tableName);

@@ -272,7 +272,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public LanguageFuture<Boolean> hasParameterAsync(String translationKey) {
-        return (LanguageFuture<Boolean>) LanguageFuture.supplyAsync(() -> {
+        return LanguageFuture.supplyAsync(() -> {
             try (Connection connection = this.getDataSource().getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Parameter WHERE transkey=?;")) {
                 preparedStatement.setString(1, translationKey);
@@ -281,9 +281,6 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
-            return false;
-        }).exceptionally(throwable -> {
-            throwable.printStackTrace();
             return false;
         });
     }
@@ -295,7 +292,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public @NotNull LanguageFuture<String> getParameterAsync(String translationKey) {
-        return (LanguageFuture<String>) LanguageFuture.supplyAsync(() -> {
+        return LanguageFuture.supplyAsync(() -> {
             if (!this.hasParameter(translationKey)) {
                 return null;
             }
@@ -310,9 +307,6 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
-            return null;
-        }).exceptionally(throwable -> {
-            throwable.printStackTrace();
             return null;
         });
     }
@@ -470,7 +464,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     }
 
     public LanguageFuture<Boolean> isKeyAsync(String translationKey, String language) {
-        return (LanguageFuture<Boolean>) LanguageFuture.supplyAsync(() -> {
+        return  LanguageFuture.supplyAsync(() -> {
             try (Connection connection = this.getDataSource().getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + language.toLowerCase() + " WHERE transkey=?;")) {
                 preparedStatement.setString(1, translationKey.toLowerCase());
@@ -479,9 +473,6 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
-            return false;
-        }).exceptionally(throwable -> {
-            throwable.printStackTrace();
             return false;
         });
     }

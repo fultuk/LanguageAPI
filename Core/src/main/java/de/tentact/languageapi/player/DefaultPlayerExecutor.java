@@ -29,6 +29,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.concurrent.LanguageFuture;
 import de.tentact.languageapi.configuration.LanguageConfig;
 import de.tentact.languageapi.configuration.MySQL;
 import de.tentact.languageapi.i18n.Translation;
@@ -59,26 +60,33 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
     @NotNull
     @Override
     public String getPlayerLanguage(UUID playerUUID) {
-        if (!this.isRegisteredPlayer(playerUUID)) {
-            this.registerPlayer(playerUUID);
-        }
-        String cachedLanguage = this.languageCache.getIfPresent(playerUUID);
-        if (cachedLanguage != null) {
-            return this.validateLanguage(cachedLanguage);
-        }
-        try (Connection connection = this.mySQL.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT language FROM playerlanguage WHERE uuid=?;")) {
-            preparedStatement.setString(1, playerUUID.toString());
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    String language = resultSet.getString("language").toLowerCase();
-                    this.languageCache.put(playerUUID, language);
-                    return language;
-                }
+        return this.getPlayerLanguageAsync(playerUUID).getAfter(5, this.languageAPI.getDefaultLanguage());
+    }
+
+    @Override
+    public @NotNull LanguageFuture<String> getPlayerLanguageAsync(UUID playerUUID) {
+        return LanguageFuture.supplyAsync(() -> {
+            if (!this.isRegisteredPlayer(playerUUID)) {
+                this.registerPlayer(playerUUID);
             }
-        } catch (SQLException ignored) {
-        }
-        return this.languageAPI.getDefaultLanguage();
+            String cachedLanguage = this.languageCache.getIfPresent(playerUUID);
+            if (cachedLanguage != null) {
+                return this.validateLanguage(cachedLanguage);
+            }
+            try (Connection connection = this.mySQL.getDataSource().getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT language FROM playerlanguage WHERE uuid=?;")) {
+                preparedStatement.setString(1, playerUUID.toString());
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        String language = resultSet.getString("language").toLowerCase();
+                        this.languageCache.put(playerUUID, language);
+                        return language;
+                    }
+                }
+            } catch (SQLException ignored) {
+            }
+            return this.languageAPI.getDefaultLanguage();
+        });
     }
 
     @Override
@@ -91,9 +99,9 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
 
     @Override
     public void setPlayerLanguage(UUID playerUUID, String newLanguage, boolean orElseDefault) {
-        if (!languageAPI.isLanguage(newLanguage)) {
+        if (!this.languageAPI.isLanguage(newLanguage)) {
             if (orElseDefault) {
-                this.setPlayerLanguage(playerUUID, languageAPI.getDefaultLanguage());
+                this.setPlayerLanguage(playerUUID, this.languageAPI.getDefaultLanguage());
                 return;
             }
             return;
@@ -107,28 +115,32 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
             throw new IllegalArgumentException("Language " + newLanguage + " was not found!");
         }
         if (!this.isRegisteredPlayer(playerUUID)) {
+            this.languageAPI.executeAsync(() -> {
+                try (Connection connection = this.dataSource.getConnection();
+                     PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO playerlanguage (uuid, language) VALUES (?,?);")) {
+                    preparedStatement.setString(1, playerUUID.toString());
+                    preparedStatement.setString(2, newLanguage.toLowerCase());
+                    preparedStatement.execute();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            });
+            this.languageCache.put(playerUUID, newLanguage.toLowerCase());
+            return;
+        }
+        if (this.isPlayersLanguage(playerUUID, newLanguage)) {
+            return;
+        }
+        this.languageAPI.executeAsync(() -> {
             try (Connection connection = this.dataSource.getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO playerlanguage (uuid, language) VALUES (?,?);")) {
+                 PreparedStatement preparedStatement = connection.prepareStatement("UPDATE playerlanguage SET language=? WHERE uuid=?;")) {
                 preparedStatement.setString(1, playerUUID.toString());
                 preparedStatement.setString(2, newLanguage.toLowerCase());
                 preparedStatement.execute();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
-            languageCache.put(playerUUID, newLanguage.toLowerCase());
-            return;
-        }
-        if (this.isPlayersLanguage(playerUUID, newLanguage)) {
-            return;
-        }
-        try (Connection connection = this.dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE playerlanguage SET language=? WHERE uuid=?;")) {
-            preparedStatement.setString(1, playerUUID.toString());
-            preparedStatement.setString(2, newLanguage.toLowerCase());
-            preparedStatement.execute();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        });
         this.languageCache.put(playerUUID, newLanguage.toLowerCase());
     }
 
@@ -147,23 +159,29 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
             String currentLanguage = this.getPlayerLanguage(playerUUID);
             if (!this.languageAPI.isLanguage(currentLanguage)) {
                 this.setPlayerLanguage(playerUUID, this.languageAPI.getDefaultLanguage());
-                this.logInfo("Update old language: " + currentLanguage + " of player: " + playerUUID.toString());
             }
         }
     }
 
     @Override
     public boolean isRegisteredPlayer(UUID playerUUID) {
-        try (Connection connection = this.dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM playerlanguage WHERE uuid=?;")) {
-            preparedStatement.setString(1, playerUUID.toString());
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                return resultSet.next();
+        return this.isRegisteredPlayerAsync(playerUUID).getAfter(5, false);
+    }
+
+    @Override
+    public LanguageFuture<Boolean> isRegisteredPlayerAsync(UUID playerUUID) {
+        return LanguageFuture.supplyAsync(() -> {
+            try (Connection connection = this.dataSource.getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM playerlanguage WHERE uuid=?;")) {
+                preparedStatement.setString(1, playerUUID.toString());
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    return resultSet.next();
+                }
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return false;
+            return false;
+        });
     }
 
     @Override

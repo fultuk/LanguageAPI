@@ -68,5 +68,4 @@ public class DefaultLanguageOfflinePlayer implements LanguageOfflinePlayer {
     public boolean isOnline() {
         return this.playerExecutor.getLanguagePlayer(this.playerID) != null;
     }
-
 }
