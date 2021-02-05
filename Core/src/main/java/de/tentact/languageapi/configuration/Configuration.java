@@ -76,7 +76,8 @@ public class Configuration {
                 new LanguageSetting(
                         "de_de",
                         5,
-                        true
+                        true,
+                        false
                 )
         );
     }

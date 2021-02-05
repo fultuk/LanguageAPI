@@ -29,6 +29,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class LanguageFuture<T> extends CompletableFuture<T>  {
@@ -47,5 +48,9 @@ public class LanguageFuture<T> extends CompletableFuture<T>  {
 
     public static <T> LanguageFuture<T> supplyAsync(Supplier<T> supplier) {
         return (LanguageFuture<T>) CompletableFuture.supplyAsync(supplier);
+    }
+
+    public LanguageFuture<T> exceptionally(Function<Throwable, ? extends T> fn) {
+        return (LanguageFuture<T>) super.exceptionally(fn);
     }
 }

@@ -26,6 +26,7 @@
 package de.tentact.languageapi.player;
 
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.concurrent.LanguageFuture;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -75,6 +76,12 @@ public interface SpecificPlayerExecutor {
      * @return returns if a player is in the database
      */
     boolean isRegisteredPlayer();
+
+    /**
+     * @return returns if a player is in the database
+     * @since 1.9
+     */
+    LanguageFuture<Boolean> isRegisteredPlayerAsync();
 
     /**
      * Gets an {@link LanguagePlayer} - null if the player is not online

@@ -26,6 +26,7 @@
 package de.tentact.languageapi.player;
 
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.concurrent.LanguageFuture;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -77,7 +78,12 @@ public class DefaultSpecificPlayerExecutor implements SpecificPlayerExecutor {
 
     @Override
     public boolean isRegisteredPlayer() {
-        return this.playerExecutor.isRegisteredPlayer(this.playerId);
+        return this.isRegisteredPlayerAsync().getAfter(5, false);
+    }
+
+    @Override
+    public LanguageFuture<Boolean> isRegisteredPlayerAsync() {
+        return this.playerExecutor.isRegisteredPlayerAsync(this.playerId);
     }
 
     @Override
