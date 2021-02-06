@@ -83,7 +83,8 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
                         return language;
                     }
                 }
-            } catch (SQLException ignored) {
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
             return this.languageAPI.getDefaultLanguage();
         });
@@ -154,7 +155,7 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
         String validLanguage = this.validateLanguage(language);
         if (!this.isRegisteredPlayer(playerUUID)) {
             this.setPlayerLanguage(playerUUID, validLanguage);
-            this.logInfo("Creating user: " + playerUUID.toString() + " with language " + validLanguage);
+            this.debug("Creating user: " + playerUUID.toString() + " with language " + validLanguage);
         } else {
             String currentLanguage = this.getPlayerLanguage(playerUUID);
             if (!this.languageAPI.isLanguage(currentLanguage)) {
@@ -177,8 +178,8 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     return resultSet.next();
                 }
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
             return false;
         });
@@ -206,7 +207,7 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
         return language;
     }
 
-    private void logInfo(String message) {
-        this.languageConfig.getLogger().info(message);
+    private void debug(String message) {
+        this.languageConfig.debug(message);
     }
 }

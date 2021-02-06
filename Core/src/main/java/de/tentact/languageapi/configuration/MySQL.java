@@ -82,7 +82,7 @@ public class MySQL {
         }
     }
 
-    public void createTable(String tableName) {
+    public void createLanguageTable(String tableName) {
         if (this.isNotConnected()) {
             return;
         }
