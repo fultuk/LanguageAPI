@@ -125,7 +125,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         }
         this.executorService.execute(() -> {
             try (Connection connection = this.getDataSource().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO " + language.toLowerCase() + " (translationKey, translation) VALUES (?,?);")) {
+                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO " + language.toLowerCase() + " (translationkey, translation) VALUES (?,?);")) {
                 preparedStatement.setString(1, translationKey.toLowerCase());
                 preparedStatement.setString(2, this.translateColorCode(message));
                 preparedStatement.execute();
@@ -165,7 +165,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         }
         this.executorService.execute(() -> {
             try (Connection connection = this.getDataSource().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("REPLACE INTO Parameter(translationKey, param) VALUES (?,?);")) {
+                 PreparedStatement preparedStatement = connection.prepareStatement("REPLACE INTO Parameter(translationkey, param) VALUES (?,?);")) {
                 preparedStatement.setString(1, translationKey.toLowerCase());
                 preparedStatement.setString(2, param.replace(" ", ""));
                 preparedStatement.execute();
@@ -186,7 +186,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         }
         this.executorService.execute(() -> {
             try (Connection connection = this.getDataSource().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Parameter SET param=? WHERE translationKey=?;")) {
+                 PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Parameter SET param=? WHERE translationkey=?;")) {
                 preparedStatement.setString(1, parameter.replace(param, ""));
                 preparedStatement.setString(2, translationKey);
                 preparedStatement.execute();
@@ -204,7 +204,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         }
         this.executorService.execute(() -> {
             try (Connection connection = this.getDataSource().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Parameter WHERE translationKey=?;")) {
+                 PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Parameter WHERE translationkey=?;")) {
                 preparedStatement.setString(1, translationKey);
                 preparedStatement.execute();
             } catch (SQLException throwable) {
@@ -238,7 +238,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     public void addTranslationKeyToMultipleTranslation(final String multipleTranslation, final String translationKey) {
         String[] translationKeys = new String[]{};
         try (Connection connection = this.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT translationKeys FROM MultipleTranslation WHERE multipleKey=?;")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT translationkey FROM MultipleTranslation WHERE multipleKey=?;")) {
             preparedStatement.setString(1, multipleTranslation.toLowerCase());
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -277,7 +277,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
                 return false;
             }
             try (Connection connection = this.getDataSource().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Parameter WHERE translationKey=?;")) {
+                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Parameter WHERE translationkey=?;")) {
                 preparedStatement.setString(1, translationKey);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 return resultSet.next();
@@ -303,7 +303,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
                 return null;
             }
             try (Connection connection = this.getDataSource().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT param FROM Parameter WHERE translationKey=?;")) {
+                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT param FROM Parameter WHERE translationkey=?;")) {
                 preparedStatement.setString(1, translationKey.toLowerCase());
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()) {
@@ -357,7 +357,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         }
         this.executorService.execute(() -> {
             try (Connection connection = this.getDataSource().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("UPDATE " + language + " SET translation=? WHERE translationKey=?;")) {
+                 PreparedStatement preparedStatement = connection.prepareStatement("UPDATE " + language + " SET translation=? WHERE translationkey=?;")) {
                 preparedStatement.setString(1, this.translateColorCode(message));
                 preparedStatement.setString(2, translationKey.toLowerCase());
                 preparedStatement.execute();
@@ -383,7 +383,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         this.executorService.execute(() -> {
             try (Connection connection = this.getDataSource().getConnection();
                  PreparedStatement preparedStatement =
-                         connection.prepareStatement("INSERT INTO MultipleTranslation(multipleKey, translationKeys) VALUES (?,?)")) {
+                         connection.prepareStatement("INSERT INTO MultipleTranslation(multipleKey, translationkey) VALUES (?,?)")) {
                 preparedStatement.setString(1, multipleTranslation);
                 preparedStatement.setString(2, stringBuilder.toString());
                 preparedStatement.execute();
@@ -419,7 +419,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         }
         List<String> translationKeysAsArrayList = null;
         try (Connection connection = this.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT translationKeys FROM MultipleTranslation WHERE multipleKey=?")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT translationkey FROM MultipleTranslation WHERE multipleKey=?")) {
             preparedStatement.setString(1, multipleTranslation.toLowerCase());
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -458,7 +458,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
             throw new IllegalArgumentException("Translationkey " + translationKey + " was not found!");
         }
         try (Connection connection = this.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM ? WHERE translationKey=?;")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM ? WHERE translationkey=?;")) {
             preparedStatement.setString(1, language.toLowerCase());
             preparedStatement.setString(2, translationKey.toLowerCase());
             preparedStatement.execute();
@@ -475,7 +475,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     public LanguageFuture<Boolean> isKeyAsync(String translationKey, String language) {
         return LanguageFuture.supplyAsync(() -> {
             try (Connection connection = this.getDataSource().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + language.toLowerCase() + " WHERE translationKey=?;")) {
+                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + language.toLowerCase() + " WHERE translationkey=?;")) {
                 preparedStatement.setString(1, translationKey.toLowerCase());
                 ResultSet resultSet = preparedStatement.executeQuery();
                 return resultSet.next();
@@ -548,7 +548,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
                 prefix = this.getMessage(prefixKey, language);
             }
             try (Connection connection = this.getDataSource().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT translationKeys FROM MultipleTranslation WHERE multipleKey=?;")) {
+                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT translationkey FROM MultipleTranslation WHERE multipleKey=?;")) {
                 preparedStatement.setString(1, multipleKey.toLowerCase());
                 ResultSet resultSet = preparedStatement.executeQuery();
                 if (resultSet.next()) {
@@ -588,7 +588,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
                 return cacheMap.get(language);
             }
             try (Connection connection = this.getDataSource().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT translation FROM " + language.toLowerCase() + " WHERE translationKey=?;")) {
+                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT translation FROM " + language.toLowerCase() + " WHERE translationkey=?;")) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
                         String translation = this.translateColorCode(resultSet.getString("translation"));
@@ -653,7 +653,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
             List<String> keys = new ArrayList<>();
             if (this.isLanguage(language)) {
                 try (Connection connection = this.getDataSource().getConnection();
-                     ResultSet resultSet = connection.createStatement().executeQuery("SELECT translationKey FROM " + language)) {
+                     ResultSet resultSet = connection.createStatement().executeQuery("SELECT translationkey FROM " + language)) {
                     while (resultSet.next()) {
                         keys.add(resultSet.getString("translationKey"));
                     }

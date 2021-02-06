@@ -74,8 +74,8 @@ public class MySQL {
         try (Connection connection = this.dataSource.getConnection()) {
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS playerlanguage(uuid VARCHAR(64) UNIQUE, language VARCHAR(64));");
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(64) UNIQUE);");
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(transkey VARCHAR(64) UNIQUE, param VARCHAR(2000));");
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS MultipleTranslation(multipleKey VARCHAR(64) UNIQUE , transkeys VARCHAR(2000));");
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(translationkey VARCHAR(64) UNIQUE, param VARCHAR(2000));");
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS MultipleTranslation(multipleKey VARCHAR(64) UNIQUE , translationkey VARCHAR(2000));");
             this.logger.info("Creating default tables");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -87,7 +87,7 @@ public class MySQL {
             return;
         }
         try (Connection connection = this.dataSource.getConnection()) {
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS " + tableName + "(transkey VARCHAR(64) UNIQUE, translation VARCHAR(2000));");
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS " + tableName + "(translationkey VARCHAR(64) UNIQUE, translation VARCHAR(2000));");
             this.logger.info("Creating table: " + tableName);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
