@@ -32,7 +32,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class LanguageFuture<T> extends CompletableFuture<T>  {
+public class LanguageFuture<T> extends CompletableFuture<T> {
 
     public T getAfter(int seconds, T value) {
         return this.getAfter(seconds, TimeUnit.SECONDS, value);

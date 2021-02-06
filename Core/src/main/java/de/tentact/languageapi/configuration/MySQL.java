@@ -57,6 +57,9 @@ public class MySQL {
     }
 
     public boolean isNotConnected() {
+        if(this.dataSource == null) {
+            return true;
+        }
         return this.dataSource.isClosed();
     }
 

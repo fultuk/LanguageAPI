@@ -45,6 +45,7 @@ public class Configuration {
             this.settingsDocument = Documents.jsonStorage().read(settingsFile);
         } else {
             try {
+                Files.createDirectories(settingsFile.getParentFile().toPath());
                 Files.createFile(settingsFile.toPath());
                 this.settingsDocument.append("config",
                         this.getDefaultLanguageConfig()

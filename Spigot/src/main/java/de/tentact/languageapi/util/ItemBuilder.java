@@ -60,10 +60,10 @@ public class ItemBuilder {
     }
 
     public static ItemStack buildSkull(String value, String displayName, List<String> lore) {
-        ItemStack itemStack = new ItemStack(Material.LEGACY_SKULL_ITEM, 1, (byte) 3);
-        itemStack.setLore(lore);
+        ItemStack itemStack = new ItemStack(Material.SKULL_ITEM, 1, (byte) 3);
         SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
         skullMeta.setDisplayName(displayName);
+        skullMeta.setLore(lore);
 
         GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "");
         gameProfile.getProperties().put("textures", new Property("textures", value));
