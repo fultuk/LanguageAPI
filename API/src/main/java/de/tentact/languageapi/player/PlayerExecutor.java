@@ -50,6 +50,7 @@ public interface PlayerExecutor {
     /**
      * @param playerUUID the player uuid to specify the player
      * @return returns a String with the language of the player in the database - registers the player if he not exists
+     * @since 1.9
      */
     @NotNull
     CompletableFuture<String> getPlayerLanguageAsync(UUID playerUUID);
@@ -99,6 +100,7 @@ public interface PlayerExecutor {
     /**
      * @param playerUUID player uuid the player was created with
      * @return returns if a player is in the database
+     * @since 1.9
      */
     CompletableFuture<Boolean> isRegisteredPlayerAsync(UUID playerUUID);
 

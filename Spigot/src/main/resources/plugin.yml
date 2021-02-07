@@ -2,7 +2,7 @@ name: LanguageAPI
 main: de.tentact.languageapi.LanguageSpigot
 version: 1.9
 author: 0utplay
-api-version: 1.15
+api-version: 1.13
 commands:
   languageapi:
     aliases: [lang, language, langapi]

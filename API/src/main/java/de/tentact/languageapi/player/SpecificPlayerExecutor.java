@@ -43,6 +43,10 @@ public interface SpecificPlayerExecutor {
     @NotNull
     String getPlayerLanguage();
 
+    /**
+     * @return returns a String with the language of the player in the database
+     * @since 1.9
+     */
     @NotNull
     CompletableFuture<String> getPlayerLanguageAsync();
 
