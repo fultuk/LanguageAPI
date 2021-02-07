@@ -50,6 +50,8 @@ public enum I18N {
     LANGUAGEAPI_KEY_NOT_FOUND("languageapi-key-not-found", "Der Translationkey %KEY% wurde in %LANG% nicht gefunden.", "%KEY%, %LANG%"),
     LANGUAGEAPI_UPDATE_SUCCESS("languageapi-update-success", "&7Die Übersetzung des Translationkeys %KEY% in %LANG% wurde erfolgreich zu ''%MSG%''&7 geändert.",
             "%MSG%"),
+    LANGUAGEAPI_LANGUAGES_LIST("languageapi-languages-list", "Aktuell sind folgende Sprachen verfügbar: %LANGUAGES%", "%LANGUAGES%"),
+    LANGUAGE_LIST_HELP("languageapi-list-help", "Verwende /lang list um die alle verfügbaren Sprachen anzuzeigen"),
     LANGUAGEAPI_UPDATE_INSTRUCTIONS("languageapi-update-instructions", "Nun kannst du die Übersetzung in den Chat eingeben, wenn benötigt auch mehrmals.\nMit ''finish'' wird die Übersetzung gespeichert."),
     LANGUAGEAPI_UPDATE_SAME("languageapi-update-same", "Es wurde nichts verändert und die Übersetzung wurde abgebrochen."),
     LANGUAGEAPI_UPDATE_HELP("languageapi-update-help", "Verwende /lang update <Sprache> <Translationkey> <Übersetzung> um eine Übersetzung zu ändern"),
@@ -77,12 +79,14 @@ public enum I18N {
     LANGUAGEAPI_NOPERMS("languageapi-noperms", "Du hast keine Rechte dazu."),
     LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE("languageapi-player-selected-language", "Du hast die Sprache %LANGUAGE% ausgewählt.", "%LANGUAGE%"),
     LANGUAGEAPI_INFO("languageapi-info", "Du benutzt folgende Version der LanguageAPI: %VERSION%", "%VERSION%"),
-    LANGUAGEAPI_HELP("languageapi-help", Arrays.asList("languageapi-add-help",
+    LANGUAGEAPI_HELP("languageapi-help", Arrays.asList(
+            "languageapi-add-help",
             "languageapi-update-help",
             "languageapi-copy-help",
             "languageapi-create-help",
             "languageapi-import-help",
-            "languageapi-export-help"
+            "languageapi-export-help",
+            "languageapi-list-help"
     ));
 
     private final String key;
