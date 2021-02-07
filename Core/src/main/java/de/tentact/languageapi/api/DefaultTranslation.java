@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class DefaultTranslation implements Translation {
@@ -53,29 +54,48 @@ public class DefaultTranslation implements Translation {
         return this.getMessage(this.languageAPI.getDefaultLanguage());
     }
 
+    @Override
+    public @NotNull CompletableFuture<String> getMessageAsync() {
+        return this.getMessageAsync(this.languageAPI.getDefaultLanguage());
+    }
+
     @NotNull
     @Override
     public String getMessage(@NotNull UUID playerUUID) {
         return this.getMessage(this.languageAPI.getPlayerExecutor().getPlayerLanguage(playerUUID));
     }
 
+    @Override
+    public @NotNull CompletableFuture<String> getMessageAsync(@NotNull UUID playerUUID) {
+        return this.getMessageAsync(this.languageAPI.getPlayerExecutor().getPlayerLanguage(playerUUID));
+    }
+
     @NotNull
     @Override
     public String getMessage(@NotNull String language, boolean orElseDefault) {
         String prefix = "";
-
         if (this.hasPrefixTranslation()) {
             prefix = this.prefixTranslation.getMessage(language, orElseDefault);
         }
         AtomicReference<String> message = new AtomicReference<>(this.languageAPI.getMessage(this.translationKey, language));
         this.params.forEach((key, value) -> message.set(message.get().replace(key, value)));
         this.params.clear();
-        return prefix + message;
+        return prefix + message.get();
+    }
+
+    @Override
+    public @NotNull CompletableFuture<String> getMessageAsync(@NotNull String language, boolean orElseDefault) {
+        return CompletableFuture.supplyAsync(() -> this.getMessage(language, orElseDefault));
     }
 
     @Override
     public String getParameter() {
         return this.languageAPI.getParameter(this.translationKey);
+    }
+
+    @Override
+    public CompletableFuture<String> getParameterAsync() {
+        return this.languageAPI.getParameterAsync(this.translationKey);
     }
 
     @Override

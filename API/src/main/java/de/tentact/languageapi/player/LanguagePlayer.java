@@ -76,7 +76,7 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
      * @param multipleTranslation the multipleTranslation to get the Collection of translationkeys
      */
     default void sendMultipleTranslation(@NotNull Translation multipleTranslation) {
-        if (multipleTranslation.hasPrefix()) {
+        if (multipleTranslation.getPrefixTranslation() != null) {
             this.sendMultipleTranslationWithPrefix(multipleTranslation.getTranslationKey(), multipleTranslation.getPrefixTranslation().getTranslationKey());
         } else {
             this.sendMultipleTranslation(multipleTranslation.getTranslationKey());

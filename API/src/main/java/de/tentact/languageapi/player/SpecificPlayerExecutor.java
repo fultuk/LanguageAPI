@@ -29,6 +29,8 @@ import de.tentact.languageapi.LanguageAPI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
  * This is the {@link PlayerExecutor} but for an specific player
  * @since 1.8
@@ -40,6 +42,9 @@ public interface SpecificPlayerExecutor {
      */
     @NotNull
     String getPlayerLanguage();
+
+    @NotNull
+    CompletableFuture<String> getPlayerLanguageAsync();
 
     /**
      * @param language the language to check
@@ -75,6 +80,12 @@ public interface SpecificPlayerExecutor {
      * @return returns if a player is in the database
      */
     boolean isRegisteredPlayer();
+
+    /**
+     * @return returns if a player is in the database
+     * @since 1.9
+     */
+    CompletableFuture<Boolean> isRegisteredPlayerAsync();
 
     /**
      * Gets an {@link LanguagePlayer} - null if the player is not online

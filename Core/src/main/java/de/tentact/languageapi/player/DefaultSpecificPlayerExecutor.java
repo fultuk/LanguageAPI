@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class DefaultSpecificPlayerExecutor implements SpecificPlayerExecutor {
 
@@ -38,13 +39,18 @@ public class DefaultSpecificPlayerExecutor implements SpecificPlayerExecutor {
     private final PlayerExecutor playerExecutor;
 
     public DefaultSpecificPlayerExecutor(UUID playerId) {
-        this.playerExecutor = languageAPI.getPlayerExecutor();
+        this.playerExecutor = this.languageAPI.getPlayerExecutor();
         this.playerId = playerId;
     }
 
     @Override
     public @NotNull String getPlayerLanguage() {
         return this.playerExecutor.getPlayerLanguage(this.playerId);
+    }
+
+    @Override
+    public @NotNull CompletableFuture<String> getPlayerLanguageAsync() {
+        return this.playerExecutor.getPlayerLanguageAsync(this.playerId);
     }
 
     @Override
@@ -78,6 +84,11 @@ public class DefaultSpecificPlayerExecutor implements SpecificPlayerExecutor {
     @Override
     public boolean isRegisteredPlayer() {
         return this.playerExecutor.isRegisteredPlayer(this.playerId);
+    }
+
+    @Override
+    public CompletableFuture<Boolean> isRegisteredPlayerAsync() {
+        return this.playerExecutor.isRegisteredPlayerAsync(this.playerId);
     }
 
     @Override

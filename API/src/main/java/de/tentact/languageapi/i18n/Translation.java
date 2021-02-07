@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * This interface can only be accessed via {@link LanguageAPI#getTranslation(String)}
@@ -44,11 +45,24 @@ public interface Translation {
     String getMessage();
 
     /**
+     * @return returns a translation of the key in the default language
+     */
+    @NotNull
+    CompletableFuture<String> getMessageAsync();
+
+    /**
      * @param playerUUID the player's uniqueid to fetch the language from
      * @return returns a translation of the key in the language fetched by @link UUID
      */
     @NotNull
     String getMessage(@NotNull UUID playerUUID);
+
+    /**
+     * @param playerUUID the player's uniqueid to fetch the language from
+     * @return returns a translation of the key in the language fetched by @link UUID
+     */
+    @NotNull
+    CompletableFuture<String> getMessageAsync(@NotNull UUID playerUUID);
 
     /**
      * @param language the language to get the translation in
@@ -60,6 +74,15 @@ public interface Translation {
     }
 
     /**
+     * @param language the language to get the translation in
+     * @return returns a translation of the key in the given language
+     */
+    @NotNull
+    default CompletableFuture<String> getMessageAsync(@NotNull String language) {
+        return this.getMessageAsync(language, false);
+    }
+
+    /**
      * @param language      the language to get the translation in
      * @param orElseDefault whether to use the default language if the given one was not found
      * @return returns a translation of the key in the given language if found, else uses default language if orElseDefault is <code>true<code/>
@@ -68,10 +91,23 @@ public interface Translation {
     String getMessage(@NotNull String language, boolean orElseDefault);
 
     /**
+     * @param language      the language to get the translation in
+     * @param orElseDefault whether to use the default language if the given one was not found
+     * @return returns a translation of the key in the given language if found, else uses default language if orElseDefault is <code>true<code/>
+     */
+    @NotNull
+    CompletableFuture<String> getMessageAsync(@NotNull String language, boolean orElseDefault);
+
+    /**
      * @return returns all parameters for the key in the {@link Translation#getTranslationKey()}
      */
     @Nullable
     String getParameter();
+
+    /**
+     * @return returns all parameters for the key in the {@link Translation#getTranslationKey()}
+     */
+    CompletableFuture<String> getParameterAsync();
 
     /**
      * @param prefixTranslation the prefix translation to get the prefix from

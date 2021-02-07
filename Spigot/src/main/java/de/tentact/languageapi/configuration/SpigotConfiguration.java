@@ -38,11 +38,11 @@ import java.util.logging.Logger;
 
 public class SpigotConfiguration extends Configuration{
 
-    Document inventoryDocument = new DefaultDocument();
-    final File inventoryFile = new File("plugins/LanguageAPI", "languages.json");
+    private Document inventoryDocument = new DefaultDocument();
+    private final File inventoryFile = new File("plugins/LanguageAPI", "languages.json");
 
-    final File importDir = new File("plugins/LanguageAPI/import");
-    final File exportDir = new File("plugins/LanguageAPI/export");
+    private final File importDir = new File("plugins/LanguageAPI/import");
+    private final File exportDir = new File("plugins/LanguageAPI/export");
 
     private LanguageInventory languageInventory;
 

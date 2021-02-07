@@ -39,6 +39,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public abstract class DefaultPlayerExecutor implements PlayerExecutor {
@@ -53,7 +54,7 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
         this.languageConfig = languageConfig;
         this.mySQL = languageConfig.getMySQL();
         this.languageAPI = languageAPI;
-        this.dataSource = mySQL.getDataSource();
+        this.dataSource = this.mySQL.getDataSource();
     }
 
     @NotNull
@@ -76,9 +77,15 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
                     return language;
                 }
             }
-        } catch (SQLException ignored) {
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
         }
         return this.languageAPI.getDefaultLanguage();
+    }
+
+    @Override
+    public @NotNull CompletableFuture<String> getPlayerLanguageAsync(UUID playerUUID) {
+        return CompletableFuture.supplyAsync(() -> this.getPlayerLanguage(playerUUID));
     }
 
     @Override
@@ -91,9 +98,9 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
 
     @Override
     public void setPlayerLanguage(UUID playerUUID, String newLanguage, boolean orElseDefault) {
-        if (!languageAPI.isLanguage(newLanguage)) {
+        if (!this.languageAPI.isLanguage(newLanguage)) {
             if (orElseDefault) {
-                this.setPlayerLanguage(playerUUID, languageAPI.getDefaultLanguage());
+                this.setPlayerLanguage(playerUUID, this.languageAPI.getDefaultLanguage());
                 return;
             }
             return;
@@ -107,28 +114,32 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
             throw new IllegalArgumentException("Language " + newLanguage + " was not found!");
         }
         if (!this.isRegisteredPlayer(playerUUID)) {
+            this.languageAPI.executeAsync(() -> {
+                try (Connection connection = this.dataSource.getConnection();
+                     PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO playerlanguage (uuid, language) VALUES (?,?);")) {
+                    preparedStatement.setString(1, playerUUID.toString());
+                    preparedStatement.setString(2, newLanguage.toLowerCase());
+                    preparedStatement.execute();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            });
+            this.languageCache.put(playerUUID, newLanguage.toLowerCase());
+            return;
+        }
+        if (this.isPlayersLanguage(playerUUID, newLanguage)) {
+            return;
+        }
+        this.languageAPI.executeAsync(() -> {
             try (Connection connection = this.dataSource.getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO playerlanguage (uuid, language) VALUES (?,?);")) {
+                 PreparedStatement preparedStatement = connection.prepareStatement("UPDATE playerlanguage SET language=? WHERE uuid=?;")) {
                 preparedStatement.setString(1, playerUUID.toString());
                 preparedStatement.setString(2, newLanguage.toLowerCase());
                 preparedStatement.execute();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
-            languageCache.put(playerUUID, newLanguage.toLowerCase());
-            return;
-        }
-        if (this.isPlayersLanguage(playerUUID, newLanguage)) {
-            return;
-        }
-        try (Connection connection = this.dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE playerlanguage SET language=? WHERE uuid=?;")) {
-            preparedStatement.setString(1, playerUUID.toString());
-            preparedStatement.setString(2, newLanguage.toLowerCase());
-            preparedStatement.execute();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        });
         this.languageCache.put(playerUUID, newLanguage.toLowerCase());
     }
 
@@ -142,12 +153,11 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
         String validLanguage = this.validateLanguage(language);
         if (!this.isRegisteredPlayer(playerUUID)) {
             this.setPlayerLanguage(playerUUID, validLanguage);
-            this.logInfo("Creating user: " + playerUUID.toString() + " with language " + validLanguage);
+            this.debug("Creating user: " + playerUUID.toString() + " with language " + validLanguage);
         } else {
             String currentLanguage = this.getPlayerLanguage(playerUUID);
             if (!this.languageAPI.isLanguage(currentLanguage)) {
                 this.setPlayerLanguage(playerUUID, this.languageAPI.getDefaultLanguage());
-                this.logInfo("Update old language: " + currentLanguage + " of player: " + playerUUID.toString());
             }
         }
     }
@@ -160,10 +170,15 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 return resultSet.next();
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public CompletableFuture<Boolean> isRegisteredPlayerAsync(UUID playerUUID) {
+        return CompletableFuture.supplyAsync(() -> this.isRegisteredPlayer(playerUUID));
     }
 
     @Override
@@ -188,7 +203,7 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
         return language;
     }
 
-    private void logInfo(String message) {
-        this.languageConfig.getLogger().info(message);
+    private void debug(String message) {
+        this.languageConfig.debug(message);
     }
 }

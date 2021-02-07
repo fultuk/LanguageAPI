@@ -45,7 +45,7 @@ public class Updater {
 
         int onlineVersion = Integer.parseInt(fetchedVersion.replace(".", ""));
         if (onlineVersion > localVersion) {
-            this.plugin.getLogger().log(Level.INFO, "There is a new version available. Current version: " + plugin.getDescription().getVersion() + ", newest version: " + fetchedVersion);
+            this.plugin.getLogger().info("There is a new version available. Current version: " + plugin.getDescription().getVersion() + ", newest version: " + fetchedVersion);
         }
     }
 

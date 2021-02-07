@@ -53,4 +53,10 @@ public class LanguageConfig {
     public void setLogger(Logger logger) {
         this.logger = logger;
     }
+
+    public void debug(String message) {
+        if(this.languageSetting.isDebugLogging()) {
+            this.logger.info(message);
+        }
+    }
 }

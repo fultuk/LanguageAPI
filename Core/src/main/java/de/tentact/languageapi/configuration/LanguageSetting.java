@@ -25,16 +25,21 @@
 
 package de.tentact.languageapi.configuration;
 
+import com.google.gson.annotations.SerializedName;
+
 public class LanguageSetting {
 
     private final String defaultLanguage;
     private final int cachedTime;
+    @SerializedName("notify")
     private final boolean isNotify;
+    private final boolean debugLogging;
 
-    public LanguageSetting(String defaultLanguage, int cacheTime, boolean isNotify) {
+    public LanguageSetting(String defaultLanguage, int cacheTime, boolean isNotify, boolean debugLogging) {
         this.defaultLanguage = defaultLanguage;
         this.cachedTime = cacheTime;
         this.isNotify = isNotify;
+        this.debugLogging = debugLogging;
     }
 
     public String getDefaultLanguage() {
@@ -47,5 +52,9 @@ public class LanguageSetting {
 
     public boolean isNotify() {
         return this.isNotify;
+    }
+
+    public boolean isDebugLogging() {
+        return this.debugLogging;
     }
 }

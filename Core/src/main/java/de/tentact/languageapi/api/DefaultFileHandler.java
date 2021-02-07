@@ -34,7 +34,9 @@ import de.tentact.languageapi.file.FileHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +45,6 @@ import java.util.Map;
  */
 public class DefaultFileHandler implements FileHandler {
 
-    private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private static final Type translationType = new TypeToken<Map<String, String>>(){}.getType();
 
     @Override
@@ -57,8 +58,8 @@ public class DefaultFileHandler implements FileHandler {
             return false;
         }
         map.forEach((key, value) -> {
-            if (!this.languageAPI.addMessage(key, value, language) && doOverwrite) {
-                this.languageAPI.updateMessage(key, value, language);
+            if (!LanguageAPI.getInstance().addMessage(key, value, language) && doOverwrite) {
+                LanguageAPI.getInstance().updateMessage(key, value, language);
             }
         });
         return true;
@@ -67,7 +68,7 @@ public class DefaultFileHandler implements FileHandler {
     @Override
     public boolean exportAll() {
         boolean passed = true;
-        for (String language : this.languageAPI.getAvailableLanguages()) {
+        for (String language : LanguageAPI.getInstance().getAvailableLanguages()) {
             if (!this.exportLanguageToFile(language)) {
                 passed = false;
             }
@@ -77,15 +78,21 @@ public class DefaultFileHandler implements FileHandler {
 
     @Override
     public boolean exportLanguageToFile(@NotNull String language) {
-        if (!this.languageAPI.isLanguage(language)) {
+        if (!LanguageAPI.getInstance().isLanguage(language)) {
             return false;
         }
         Map<String, String> keysAndTranslations = new HashMap<>();
         keysAndTranslations.put("language", language);
-        keysAndTranslations.putAll(this.languageAPI.getKeysAndTranslations(language));
+        keysAndTranslations.putAll(LanguageAPI.getInstance().getKeysAndTranslations(language));
 
         Document document = new DefaultDocument("languageapi", keysAndTranslations);
-        document.yaml().write(new File(language.toLowerCase() + ".yml"));
+        File file = new File("plugins/LanguageAPI/export", language.toLowerCase()+".yml");
+        try {
+            Files.createDirectories(file.getParentFile().toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        document.yaml().write(file);
         return true;
     }
 }

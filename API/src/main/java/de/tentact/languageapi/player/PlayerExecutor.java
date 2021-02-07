@@ -32,6 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * An interface to set and get properties of an player by its uniqueId
@@ -45,6 +46,13 @@ public interface PlayerExecutor {
      */
     @NotNull
     String getPlayerLanguage(UUID playerUUID);
+
+    /**
+     * @param playerUUID the player uuid to specify the player
+     * @return returns a String with the language of the player in the database - registers the player if he not exists
+     */
+    @NotNull
+    CompletableFuture<String> getPlayerLanguageAsync(UUID playerUUID);
 
     /**
      * Checks if the given language equals the set language of the player
@@ -87,6 +95,12 @@ public interface PlayerExecutor {
      * @return returns if a player is in the database
      */
      boolean isRegisteredPlayer(UUID playerUUID);
+
+    /**
+     * @param playerUUID player uuid the player was created with
+     * @return returns if a player is in the database
+     */
+    CompletableFuture<Boolean> isRegisteredPlayerAsync(UUID playerUUID);
 
     /**
      * Broadcast a message
