@@ -26,11 +26,11 @@
 package de.tentact.languageapi.player;
 
 import de.tentact.languageapi.LanguageAPI;
-import de.tentact.languageapi.concurrent.LanguageFuture;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class DefaultSpecificPlayerExecutor implements SpecificPlayerExecutor {
 
@@ -46,6 +46,11 @@ public class DefaultSpecificPlayerExecutor implements SpecificPlayerExecutor {
     @Override
     public @NotNull String getPlayerLanguage() {
         return this.playerExecutor.getPlayerLanguage(this.playerId);
+    }
+
+    @Override
+    public @NotNull CompletableFuture<String> getPlayerLanguageAsync() {
+        return this.playerExecutor.getPlayerLanguageAsync(this.playerId);
     }
 
     @Override
@@ -78,11 +83,11 @@ public class DefaultSpecificPlayerExecutor implements SpecificPlayerExecutor {
 
     @Override
     public boolean isRegisteredPlayer() {
-        return this.isRegisteredPlayerAsync().getAfter(5, false);
+        return this.playerExecutor.isRegisteredPlayer(this.playerId);
     }
 
     @Override
-    public LanguageFuture<Boolean> isRegisteredPlayerAsync() {
+    public CompletableFuture<Boolean> isRegisteredPlayerAsync() {
         return this.playerExecutor.isRegisteredPlayerAsync(this.playerId);
     }
 

@@ -25,7 +25,6 @@
 
 package de.tentact.languageapi;
 
-import de.tentact.languageapi.concurrent.LanguageFuture;
 import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.i18n.Translation;
 import de.tentact.languageapi.player.PlayerExecutor;
@@ -36,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * An API to the LanguageAPI, which aims to make the translation of messages into different languages efficient and easy.
@@ -191,7 +191,7 @@ public abstract class LanguageAPI {
      * @return returns if the translationkey has any parameters
      * @since 1.9
      */
-    public abstract LanguageFuture<Boolean> hasParameterAsync(String translationKey);
+    public abstract CompletableFuture<Boolean> hasParameterAsync(String translationKey);
 
     /**
      * @param translationKey the translationkey to get the parameters for
@@ -207,7 +207,7 @@ public abstract class LanguageAPI {
      * @since 1.9
      */
     @Nullable
-    public abstract LanguageFuture<String> getParameterAsync(String translationKey);
+    public abstract CompletableFuture<String> getParameterAsync(String translationKey);
 
     /**
      * @param translationKey the translationkey to check the parameters for
@@ -223,7 +223,7 @@ public abstract class LanguageAPI {
      * @return returns if {@param parameter} is a parameter of the given translationkey
      * @since 1.9
      */
-    public abstract LanguageFuture<Boolean> isParameterAsync(String translationKey, String parameter);
+    public abstract CompletableFuture<Boolean> isParameterAsync(String translationKey, String parameter);
 
     /**
      * @param translationKey the translationkey to delete in every language
@@ -297,7 +297,7 @@ public abstract class LanguageAPI {
      * @since 1.9
      */
     @NotNull
-    public abstract LanguageFuture<List<String>> getMultipleMessagesAsync(String transkey);
+    public abstract CompletableFuture<List<String>> getMultipleMessagesAsync(String transkey);
 
     /**
      * @param transkey   the translationkey which holds the other keys
@@ -315,7 +315,7 @@ public abstract class LanguageAPI {
      * @since 1.9
      */
     @NotNull
-    public abstract LanguageFuture<List<String>> getMultipleMessagesAsync(String transkey, UUID playerUUID);
+    public abstract CompletableFuture<List<String>> getMultipleMessagesAsync(String transkey, UUID playerUUID);
 
     /**
      * @param transkey the translationkey which holds the other keys
@@ -333,7 +333,7 @@ public abstract class LanguageAPI {
      * @since 1.9
      */
     @NotNull
-    public abstract LanguageFuture<List<String>> getMultipleMessagesAsync(String transkey, String language);
+    public abstract CompletableFuture<List<String>> getMultipleMessagesAsync(String transkey, String language);
 
     /**
      * @param transkey the translationkey which holds the other keys
@@ -351,7 +351,7 @@ public abstract class LanguageAPI {
      * @since 1.9
      */
     @NotNull
-    public abstract LanguageFuture<List<String>> getMultipleMessagesAsync(String transkey, String language, String prefixKey);
+    public abstract CompletableFuture<List<String>> getMultipleMessagesAsync(String transkey, String language, String prefixKey);
 
     /**
      * @param translationkey the translationkey to get the translation from
@@ -369,7 +369,7 @@ public abstract class LanguageAPI {
      * @since 1.9
      */
     @NotNull
-    public abstract LanguageFuture<String> getMessageAsync(String translationkey, UUID playerUUID);
+    public abstract CompletableFuture<String> getMessageAsync(String translationkey, UUID playerUUID);
 
     /**
      * @param translationkey translationkey to get the translation from
@@ -389,7 +389,7 @@ public abstract class LanguageAPI {
      * @since 1.9
      */
     @NotNull
-    public abstract LanguageFuture<String> getMessageAsync(String translationkey, String language);
+    public abstract CompletableFuture<String> getMessageAsync(String translationkey, String language);
 
     /**
      * @param language the language to check if it is a language
@@ -403,7 +403,7 @@ public abstract class LanguageAPI {
      * @return returns if the given language is a valid language
      * @since 1.9
      */
-    public abstract LanguageFuture<Boolean> isLanguageAsync(@Nullable String language);
+    public abstract CompletableFuture<Boolean> isLanguageAsync(@Nullable String language);
 
     /**
      * @return returns all created languages
@@ -417,7 +417,7 @@ public abstract class LanguageAPI {
      * @since 1.9
      */
     @NotNull
-    public abstract LanguageFuture<List<String>> getAvailableLanguagesAsync();
+    public abstract CompletableFuture<List<String>> getAvailableLanguagesAsync();
 
     /**
      * @param language the loanguage to get the keys from
@@ -435,7 +435,7 @@ public abstract class LanguageAPI {
      * @since 1.9
      */
     @NotNull
-    public abstract LanguageFuture<List<String>> getAllTranslationKeysAsync(String language);
+    public abstract CompletableFuture<List<String>> getAllTranslationKeysAsync(String language);
 
     /**
      * @param language the language to get the translations from
@@ -453,7 +453,7 @@ public abstract class LanguageAPI {
      * @since 1.9
      */
     @NotNull
-    public abstract LanguageFuture<List<String>> getAllTranslationsAsync(String language);
+    public abstract CompletableFuture<List<String>> getAllTranslationsAsync(String language);
 
     /**
      *
@@ -471,7 +471,7 @@ public abstract class LanguageAPI {
      * @since 1.9
      */
     @NotNull
-    public abstract LanguageFuture<Map<String, String>> getKeysAndTranslationsAsync(String language);
+    public abstract CompletableFuture<Map<String, String>> getKeysAndTranslationsAsync(String language);
 
     /**
      * @return returns the default language from the config

@@ -26,7 +26,6 @@
 package de.tentact.languageapi.api;
 
 import de.tentact.languageapi.LanguageAPI;
-import de.tentact.languageapi.concurrent.LanguageFuture;
 import de.tentact.languageapi.i18n.Translation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,6 +33,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class DefaultTranslation implements Translation {
@@ -51,53 +51,50 @@ public class DefaultTranslation implements Translation {
     @NotNull
     @Override
     public String getMessage() {
-        return this.getMessageAsync().getAfter(5, "");
+        return this.getMessage(this.languageAPI.getDefaultLanguage());
     }
 
     @Override
-    public @NotNull LanguageFuture<String> getMessageAsync() {
+    public @NotNull CompletableFuture<String> getMessageAsync() {
         return this.getMessageAsync(this.languageAPI.getDefaultLanguage());
     }
 
     @NotNull
     @Override
     public String getMessage(@NotNull UUID playerUUID) {
-        return this.getMessageAsync(playerUUID).getAfter(5, "");
+        return this.getMessage(this.languageAPI.getPlayerExecutor().getPlayerLanguage(playerUUID));
     }
 
     @Override
-    public @NotNull LanguageFuture<String> getMessageAsync(@NotNull UUID playerUUID) {
+    public @NotNull CompletableFuture<String> getMessageAsync(@NotNull UUID playerUUID) {
         return this.getMessageAsync(this.languageAPI.getPlayerExecutor().getPlayerLanguage(playerUUID));
     }
 
     @NotNull
     @Override
     public String getMessage(@NotNull String language, boolean orElseDefault) {
-        return this.getMessageAsync(language, orElseDefault).getAfter(5, "");
+        String prefix = "";
+        if (this.hasPrefixTranslation()) {
+            prefix = this.prefixTranslation.getMessage(language, orElseDefault);
+        }
+        AtomicReference<String> message = new AtomicReference<>(this.languageAPI.getMessage(this.translationKey, language));
+        this.params.forEach((key, value) -> message.set(message.get().replace(key, value)));
+        this.params.clear();
+        return prefix + message.get();
     }
 
     @Override
-    public @NotNull LanguageFuture<String> getMessageAsync(@NotNull String language, boolean orElseDefault) {
-        return LanguageFuture.supplyAsync(() -> {
-            String prefix = "";
-
-            if (this.hasPrefixTranslation()) {
-                prefix = this.prefixTranslation.getMessage(language, orElseDefault);
-            }
-            AtomicReference<String> message = new AtomicReference<>(this.languageAPI.getMessage(this.translationKey, language));
-            this.params.forEach((key, value) -> message.set(message.get().replace(key, value)));
-            this.params.clear();
-            return prefix + message;
-        });
+    public @NotNull CompletableFuture<String> getMessageAsync(@NotNull String language, boolean orElseDefault) {
+        return CompletableFuture.supplyAsync(() -> this.getMessage(language, orElseDefault));
     }
 
     @Override
     public String getParameter() {
-        return this.getParameterAsync().getAfter(5, null);
+        return this.languageAPI.getParameter(this.translationKey);
     }
 
     @Override
-    public LanguageFuture<String> getParameterAsync() {
+    public CompletableFuture<String> getParameterAsync() {
         return this.languageAPI.getParameterAsync(this.translationKey);
     }
 

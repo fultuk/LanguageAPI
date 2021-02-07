@@ -26,11 +26,11 @@
 package de.tentact.languageapi.i18n;
 
 import de.tentact.languageapi.LanguageAPI;
-import de.tentact.languageapi.concurrent.LanguageFuture;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * This interface can only be accessed via {@link LanguageAPI#getTranslation(String)}
@@ -48,7 +48,7 @@ public interface Translation {
      * @return returns a translation of the key in the default language
      */
     @NotNull
-    LanguageFuture<String> getMessageAsync();
+    CompletableFuture<String> getMessageAsync();
 
     /**
      * @param playerUUID the player's uniqueid to fetch the language from
@@ -62,7 +62,7 @@ public interface Translation {
      * @return returns a translation of the key in the language fetched by @link UUID
      */
     @NotNull
-    LanguageFuture<String> getMessageAsync(@NotNull UUID playerUUID);
+    CompletableFuture<String> getMessageAsync(@NotNull UUID playerUUID);
 
     /**
      * @param language the language to get the translation in
@@ -78,7 +78,7 @@ public interface Translation {
      * @return returns a translation of the key in the given language
      */
     @NotNull
-    default LanguageFuture<String> getMessageAsync(@NotNull String language) {
+    default CompletableFuture<String> getMessageAsync(@NotNull String language) {
         return this.getMessageAsync(language, false);
     }
 
@@ -96,7 +96,7 @@ public interface Translation {
      * @return returns a translation of the key in the given language if found, else uses default language if orElseDefault is <code>true<code/>
      */
     @NotNull
-    LanguageFuture<String> getMessageAsync(@NotNull String language, boolean orElseDefault);
+    CompletableFuture<String> getMessageAsync(@NotNull String language, boolean orElseDefault);
 
     /**
      * @return returns all parameters for the key in the {@link Translation#getTranslationKey()}
@@ -107,7 +107,7 @@ public interface Translation {
     /**
      * @return returns all parameters for the key in the {@link Translation#getTranslationKey()}
      */
-    LanguageFuture<String> getParameterAsync();
+    CompletableFuture<String> getParameterAsync();
 
     /**
      * @param prefixTranslation the prefix translation to get the prefix from

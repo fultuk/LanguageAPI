@@ -26,13 +26,13 @@
 package de.tentact.languageapi.player;
 
 import de.tentact.languageapi.LanguageAPI;
-import de.tentact.languageapi.concurrent.LanguageFuture;
 import de.tentact.languageapi.i18n.Translation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * An interface to set and get properties of an player by its uniqueId
@@ -52,7 +52,7 @@ public interface PlayerExecutor {
      * @return returns a String with the language of the player in the database - registers the player if he not exists
      */
     @NotNull
-    LanguageFuture<String> getPlayerLanguageAsync(UUID playerUUID);
+    CompletableFuture<String> getPlayerLanguageAsync(UUID playerUUID);
 
     /**
      * Checks if the given language equals the set language of the player
@@ -100,7 +100,7 @@ public interface PlayerExecutor {
      * @param playerUUID player uuid the player was created with
      * @return returns if a player is in the database
      */
-    LanguageFuture<Boolean> isRegisteredPlayerAsync(UUID playerUUID);
+    CompletableFuture<Boolean> isRegisteredPlayerAsync(UUID playerUUID);
 
     /**
      * Broadcast a message
