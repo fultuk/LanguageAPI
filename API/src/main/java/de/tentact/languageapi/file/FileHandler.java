@@ -96,4 +96,13 @@ public interface FileHandler {
      */
     boolean exportLanguageToFile(@NotNull String language);
 
+    /**
+     * Exports all translationKeys and translations into a file
+     * @since 1.9
+     * @param language the language to export
+     * @param file the parent file destination
+     * @return whether the language was exported or not
+     */
+    boolean exportLanguageToFile(@NotNull String language, File file);
+
 }

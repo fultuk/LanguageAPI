@@ -78,6 +78,11 @@ public class DefaultFileHandler implements FileHandler {
 
     @Override
     public boolean exportLanguageToFile(@NotNull String language) {
+        return this.exportLanguageToFile(language, new File("plugins/LanguageAPI/export"));
+    }
+
+    @Override
+    public boolean exportLanguageToFile(@NotNull String language, File file) {
         if (!LanguageAPI.getInstance().isLanguage(language)) {
             return false;
         }
@@ -86,13 +91,13 @@ public class DefaultFileHandler implements FileHandler {
         keysAndTranslations.putAll(LanguageAPI.getInstance().getKeysAndTranslations(language));
 
         Document document = new DefaultDocument("languageapi", keysAndTranslations);
-        File file = new File("plugins/LanguageAPI/export", language.toLowerCase()+".yml");
+        File outputFile = new File(file, language.toLowerCase()+".yml");
         try {
-            Files.createDirectories(file.getParentFile().toPath());
+            Files.createDirectories(outputFile.getParentFile().toPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        document.yaml().write(file);
+        document.yaml().write(outputFile);
         return true;
     }
 }
