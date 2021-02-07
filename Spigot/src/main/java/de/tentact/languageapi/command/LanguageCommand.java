@@ -305,7 +305,7 @@ public class LanguageCommand implements TabExecutor {
                                 return false;
                             }
                             if (!this.languageAPI.isLanguage(args[1]) && !args[1].equalsIgnoreCase("@a") && !args[1].equalsIgnoreCase("all")) {
-                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_NOT_FOUND.get());
+                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_NOT_FOUND.get().replace("%LANG%", args[1]));
                                 return false;
                             }
                             if (args[1].equalsIgnoreCase("@a") || args[1].equalsIgnoreCase("all")) {

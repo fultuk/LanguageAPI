@@ -86,7 +86,7 @@ public class DefaultFileHandler implements FileHandler {
         keysAndTranslations.putAll(LanguageAPI.getInstance().getKeysAndTranslations(language));
 
         Document document = new DefaultDocument("languageapi", keysAndTranslations);
-        File file = new File("/plugins/LanguageAPI/export/", language.toLowerCase()+".yml");
+        File file = new File("plugins/LanguageAPI/export", language.toLowerCase()+".yml");
         try {
             Files.createDirectories(file.getParentFile().toPath());
         } catch (IOException e) {
