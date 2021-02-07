@@ -102,7 +102,7 @@ public enum I18N {
 
     I18N(String key, List<String> keys) {
         this.key = key;
-        LanguageAPI.getInstance().setMultipleTranslation(key, new ArrayList<>(keys), false);
+        LanguageAPI.getInstance().setMultipleTranslation(key, new ArrayList<>(keys), true);
     }
 
     public Translation get() {

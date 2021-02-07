@@ -78,7 +78,7 @@ public class MySQL {
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS playerlanguage(uuid VARCHAR(64) UNIQUE, language VARCHAR(64));");
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(64) UNIQUE);");
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(translationkey VARCHAR(128) UNIQUE, param VARCHAR(2000));");
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS MultipleTranslation(multipleKey VARCHAR(128) UNIQUE , translationkey VARCHAR(2000));");
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS MultipleTranslation(multipleKey VARCHAR(128) UNIQUE, translationkey VARCHAR(2000));");
             this.logger.info("Creating default tables");
         } catch (SQLException e) {
             e.printStackTrace();
