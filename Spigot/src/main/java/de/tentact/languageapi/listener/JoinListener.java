@@ -61,13 +61,13 @@ public class JoinListener implements Listener {
         if (!player.hasPermission("languageapi.notify")) {
             return;
         }
-        if (!this.languageSpigot.spigotConfiguration.getLanguageConfig().getLanguageSetting().isNotify()) {
+        if (!this.languageSpigot.getSpigotConfiguration().getLanguageConfig().getLanguageSetting().isNotify()) {
             return;
         }
-        if (!updater.hasUpdate()) {
+        if (!this.updater.hasUpdate()) {
             return;
         }
-        player.sendMessage(LanguageAPI.getInstance().getLanguageAPIPrefix() + "Es ist ein neues Update verfügbar. Aktuelle Version: §6" + updater.getLocalVersion()
+        player.sendMessage(LanguageAPI.getInstance().getLanguageAPIPrefix() + "Es ist ein neues Update verfügbar. Aktuelle Version: §6" + this.updater.getLocalVersion()
                 + "§7. Neuste Version: §c" + updater.getOnlineVersion() + "");
     }
 }

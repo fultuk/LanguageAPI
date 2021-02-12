@@ -57,7 +57,7 @@ public class LanguageCommand implements TabExecutor {
 
     public LanguageCommand(LanguageSpigot languageSpigot) {
         this.languageSpigot = languageSpigot;
-        this.languageInventory = languageSpigot.spigotConfiguration.getLanguageInventory();
+        this.languageInventory = languageSpigot.getSpigotConfiguration().getLanguageInventory();
         this.version = languageSpigot.getVersion();
     }
 
@@ -341,7 +341,7 @@ public class LanguageCommand implements TabExecutor {
                                 return false;
                             }
                             this.languageSpigot.getLogger().log(Level.INFO, "Reloading config.json...");
-                            this.languageSpigot.spigotConfiguration = new SpigotConfiguration(this.languageSpigot.getLogger());
+                            this.languageSpigot.setSpigotConfiguration(new SpigotConfiguration(this.languageSpigot.getLogger()));
                             languagePlayer.sendMessage(I18N.LANGUAGEAPI_RELOAD_SUCCESS.get());
                             break;
                         case "help":

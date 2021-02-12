@@ -43,7 +43,7 @@ public class LanguageSpigot extends JavaPlugin {
 
     private Updater updater;
     private MySQL mySQL;
-    public SpigotConfiguration spigotConfiguration;
+    private SpigotConfiguration spigotConfiguration;
 
     @Override
     public void onEnable() {
@@ -78,6 +78,14 @@ public class LanguageSpigot extends JavaPlugin {
 
     public String getVersion() {
         return "1.9-SNAPSHOT-1514-0702";
+    }
+
+    public void setSpigotConfiguration(SpigotConfiguration spigotConfiguration) {
+        this.spigotConfiguration = spigotConfiguration;
+    }
+
+    public SpigotConfiguration getSpigotConfiguration() {
+        return this.spigotConfiguration;
     }
 
     public Updater getUpdater() {
