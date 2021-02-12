@@ -37,7 +37,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class JoinListener implements Listener {
 
-
     private final LanguageSpigot languageSpigot;
     private final Updater updater;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
@@ -56,7 +55,11 @@ public class JoinListener implements Listener {
         if (playerExecutor.isRegisteredPlayer()) {
             playerExecutor.registerPlayer();
         } else {
-            player.performCommand("languageapi");
+            if (this.languageSpigot.spigotConfiguration.getLanguageInventory().getLanguageInventoryConfiguration().isUseInventory()) {
+                player.performCommand("languageapi");
+            } else {
+                playerExecutor.registerPlayer();
+            }
         }
         if (!player.hasPermission("languageapi.notify")) {
             return;

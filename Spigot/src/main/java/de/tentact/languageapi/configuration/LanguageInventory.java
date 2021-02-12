@@ -32,6 +32,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class LanguageInventory {
 
+    //TODO: merge this with LanguageInventoryConfiguration
     private final LanguageInventoryConfiguration languageInventoryConfiguration;
     private transient Inventory inventory;
 
