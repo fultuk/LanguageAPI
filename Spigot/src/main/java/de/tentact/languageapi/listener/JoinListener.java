@@ -55,11 +55,8 @@ public class JoinListener implements Listener {
         if (playerExecutor.isRegisteredPlayer()) {
             playerExecutor.registerPlayer();
         } else {
-            if (this.languageSpigot.spigotConfiguration.getLanguageInventory().getLanguageInventoryConfiguration().isUseInventory()) {
-                player.performCommand("languageapi");
-            } else {
-                playerExecutor.registerPlayer();
-            }
+            //TODO: rethink this, players might not be registered
+            player.performCommand("languageapi");
         }
         if (!player.hasPermission("languageapi.notify")) {
             return;
