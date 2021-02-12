@@ -26,21 +26,30 @@
 package de.tentact.languageapi.api;
 
 import de.tentact.languageapi.configuration.LanguageConfig;
+import de.tentact.languageapi.player.BungeeConsoleExecutor;
 import de.tentact.languageapi.player.BungeePlayerExecutor;
+import de.tentact.languageapi.player.ConsoleExecutor;
 import de.tentact.languageapi.player.PlayerExecutor;
 import org.jetbrains.annotations.NotNull;
 
 public class BungeeCordLanguageAPI extends DefaultLanguageAPI {
 
     private final PlayerExecutor playerExecutor;
+    private final ConsoleExecutor consoleExecutor;
 
     public BungeeCordLanguageAPI(LanguageConfig languageConfig) {
         super(languageConfig);
         this.playerExecutor = new BungeePlayerExecutor(this, languageConfig);
+        this.consoleExecutor = new BungeeConsoleExecutor(this);
     }
 
     @Override
     public @NotNull PlayerExecutor getPlayerExecutor() {
         return this.playerExecutor;
+    }
+
+    @Override
+    public @NotNull ConsoleExecutor getConsoleExecutor() {
+        return this.consoleExecutor;
     }
 }

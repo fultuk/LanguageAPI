@@ -39,6 +39,11 @@ import java.util.concurrent.CompletableFuture;
 public interface Translation {
 
     /**
+     * Sends this {@link Translation} to the console
+     */
+    void sendToConsole();
+
+    /**
      * @return returns a translation of the key in the default language
      */
     @NotNull

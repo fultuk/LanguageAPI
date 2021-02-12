@@ -52,9 +52,8 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         proxiedPlayer.sendMessage(translation.getMessage(this.getLanguage()));
     }
 
-
     @Override
-    public void sendMessageByKey(@NotNull String translationKey) {
+    public void sendMessage(String translationKey) {
         this.sendMessage(this.languageAPI.getTranslation(translationKey));
     }
 

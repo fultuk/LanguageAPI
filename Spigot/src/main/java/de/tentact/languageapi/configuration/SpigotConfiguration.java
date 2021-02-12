@@ -49,22 +49,22 @@ public class SpigotConfiguration extends Configuration{
     public SpigotConfiguration(Logger logger) {
         super(logger);
         try {
-            if (!importDir.exists()) {
-                Files.createDirectories(importDir.getParentFile().toPath());
+            if (!this.importDir.exists()) {
+                Files.createDirectories(this.importDir.getParentFile().toPath());
             }
-            if (!exportDir.exists()) {
-                Files.createDirectories(exportDir.getParentFile().toPath());
+            if (!this.exportDir.exists()) {
+                Files.createDirectories(this.exportDir.getParentFile().toPath());
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (inventoryFile.exists()) {
-            inventoryDocument = Documents.jsonStorage().read(inventoryFile);
+        if (this.inventoryFile.exists()) {
+            this.inventoryDocument = Documents.jsonStorage().read(this.inventoryFile);
         } else {
             try {
-                Files.createDirectories(inventoryFile.getParentFile().toPath());
-                Files.createFile(inventoryFile.toPath());
-                inventoryDocument.append("config",
+                Files.createDirectories(this.inventoryFile.getParentFile().toPath());
+                Files.createFile(this.inventoryFile.toPath());
+                this.inventoryDocument.append("config",
                         new LanguageInventory(
                                 new LanguageInventoryConfiguration(
                                         true,
@@ -87,7 +87,7 @@ public class SpigotConfiguration extends Configuration{
                                                         Collections.singletonList("Click to select english.")
                                                 )
                                         )
-                                ))).json().write(inventoryFile);
+                                ))).json().write(this.inventoryFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }

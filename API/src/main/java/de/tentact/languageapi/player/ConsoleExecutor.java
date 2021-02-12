@@ -1,8 +1,8 @@
 /*
  * MIT License
  *
- * Copyright (c) 2020 0utplay (Aldin Sijamhodzic)
- * Copyright (c) 2020 contributors
+ * Copyright (c) 2021 0utplay (Aldin Sijamhodzic)
+ * Copyright (c) 2021 contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,33 +23,27 @@
  * SOFTWARE.
  */
 
-package de.tentact.languageapi.api;
+package de.tentact.languageapi.player;
 
-import de.tentact.languageapi.configuration.LanguageConfig;
-import de.tentact.languageapi.player.ConsoleExecutor;
-import de.tentact.languageapi.player.PlayerExecutor;
-import de.tentact.languageapi.player.SpigotConsoleExecutor;
-import de.tentact.languageapi.player.SpigotPlayerExecutor;
-import org.jetbrains.annotations.NotNull;
+import de.tentact.languageapi.i18n.Translation;
 
-public class SpigotLanguageAPI extends DefaultLanguageAPI {
+/**
+ * @since 1.9
+ */
+public interface ConsoleExecutor {
 
-    private final PlayerExecutor playerExecutor;
-    private final ConsoleExecutor consoleExecutor;
+    /**
+     * Sends a message to the console
+     * @param translation the translation to be send
+     * @since 1.9
+     */
+    void sendMessage(Translation translation);
 
-    public SpigotLanguageAPI(LanguageConfig languageConfig) {
-        super(languageConfig);
-        this.playerExecutor = new SpigotPlayerExecutor(this, languageConfig);
-        this.consoleExecutor = new SpigotConsoleExecutor(this);
-    }
+    /**
+     * sends a message to the console by its translationKey
+     * @param translationKey the translationKey
+     * @since 1.9
+     */
+    void sendMessage(String translationKey);
 
-    @Override
-    public @NotNull PlayerExecutor getPlayerExecutor() {
-        return this.playerExecutor;
-    }
-
-    @Override
-    public @NotNull ConsoleExecutor getConsoleExecutor() {
-        return this.consoleExecutor;
-    }
 }

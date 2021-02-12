@@ -27,6 +27,7 @@ package de.tentact.languageapi;
 
 import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.i18n.Translation;
+import de.tentact.languageapi.player.ConsoleExecutor;
 import de.tentact.languageapi.player.PlayerExecutor;
 import de.tentact.languageapi.player.SpecificPlayerExecutor;
 import org.jetbrains.annotations.NotNull;
@@ -515,12 +516,20 @@ public abstract class LanguageAPI {
     public abstract Translation getTranslationWithPrefix(Translation prefixTranslation, String translationKey);
 
     /**
-     * Gets a {@link PlayerExecutor} without a specific player
+     * Gets the {@link PlayerExecutor} without a specific player
      * @return returns a {@link PlayerExecutor}
      * @since 1.8
      */
     @NotNull
     public abstract PlayerExecutor getPlayerExecutor();
+
+    /**
+     * Gets the {@link ConsoleExecutor}
+     * @return returns the {@link ConsoleExecutor}
+     * @since 1.9
+     */
+    @NotNull
+    public abstract ConsoleExecutor getConsoleExecutor();
 
     /**
      * Gets a {@link SpecificPlayerExecutor} to do updates for a specific player

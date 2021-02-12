@@ -52,9 +52,8 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         translation.getMessageAsync(this.getLanguage()).thenAccept(player::sendMessage);
     }
 
-
     @Override
-    public void sendMessageByKey(@NotNull String translationKey) {
+    public void sendMessage(String translationKey) {
         this.sendMessage(this.languageAPI.getTranslation(translationKey));
     }
 

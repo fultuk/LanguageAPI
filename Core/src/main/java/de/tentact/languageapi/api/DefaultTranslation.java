@@ -48,6 +48,11 @@ public class DefaultTranslation implements Translation {
         this.params = new HashMap<>();
     }
 
+    @Override
+    public void sendToConsole() {
+        this.languageAPI.getConsoleExecutor().sendMessage(this);
+    }
+
     @NotNull
     @Override
     public String getMessage() {

@@ -58,7 +58,6 @@ public class Updater {
         }
     }
 
-
     private String getOnlineVersion(String pluginName) {
         Scanner scanner = null;
         try {
@@ -79,7 +78,7 @@ public class Updater {
     }
 
     public String getOnlineVersion() {
-        return this.getOnlineVersion(pluginName);
+        return this.getOnlineVersion(this.pluginName);
     }
 
     public boolean hasUpdate() {

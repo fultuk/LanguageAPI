@@ -1,8 +1,8 @@
 /*
  * MIT License
  *
- * Copyright (c) 2020 0utplay (Aldin Sijamhodzic)
- * Copyright (c) 2020 contributors
+ * Copyright (c) 2021 0utplay (Aldin Sijamhodzic)
+ * Copyright (c) 2021 contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,33 +23,27 @@
  * SOFTWARE.
  */
 
-package de.tentact.languageapi.api;
+package de.tentact.languageapi.player;
 
-import de.tentact.languageapi.configuration.LanguageConfig;
-import de.tentact.languageapi.player.ConsoleExecutor;
-import de.tentact.languageapi.player.PlayerExecutor;
-import de.tentact.languageapi.player.SpigotConsoleExecutor;
-import de.tentact.languageapi.player.SpigotPlayerExecutor;
-import org.jetbrains.annotations.NotNull;
+import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.i18n.Translation;
+import net.md_5.bungee.api.ProxyServer;
 
-public class SpigotLanguageAPI extends DefaultLanguageAPI {
+public class BungeeConsoleExecutor implements ConsoleExecutor{
 
-    private final PlayerExecutor playerExecutor;
-    private final ConsoleExecutor consoleExecutor;
+    private final LanguageAPI languageAPI;
 
-    public SpigotLanguageAPI(LanguageConfig languageConfig) {
-        super(languageConfig);
-        this.playerExecutor = new SpigotPlayerExecutor(this, languageConfig);
-        this.consoleExecutor = new SpigotConsoleExecutor(this);
+    public BungeeConsoleExecutor(LanguageAPI languageAPI) {
+        this.languageAPI = languageAPI;
     }
 
     @Override
-    public @NotNull PlayerExecutor getPlayerExecutor() {
-        return this.playerExecutor;
+    public void sendMessage(Translation translation) {
+        translation.getMessageAsync().thenAccept(message -> ProxyServer.getInstance().getConsole().sendMessage(message));
     }
 
     @Override
-    public @NotNull ConsoleExecutor getConsoleExecutor() {
-        return this.consoleExecutor;
+    public void sendMessage(String translationKey) {
+        this.sendMessage(this.languageAPI.getTranslation(translationKey));
     }
 }

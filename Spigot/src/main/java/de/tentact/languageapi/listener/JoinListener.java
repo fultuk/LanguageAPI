@@ -50,7 +50,7 @@ public class JoinListener implements Listener {
     @EventHandler
     public void handlePlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        SpecificPlayerExecutor playerExecutor = languageAPI.getSpecificPlayerExecutor(player.getUniqueId());
+        SpecificPlayerExecutor playerExecutor = this.languageAPI.getSpecificPlayerExecutor(player.getUniqueId());
 
         if (playerExecutor.isRegisteredPlayer()) {
             playerExecutor.registerPlayer();

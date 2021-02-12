@@ -34,6 +34,7 @@ import de.tentact.languageapi.configuration.LanguageConfig;
 import de.tentact.languageapi.configuration.MySQL;
 import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.i18n.Translation;
+import de.tentact.languageapi.player.ConsoleExecutor;
 import de.tentact.languageapi.player.DefaultSpecificPlayerExecutor;
 import de.tentact.languageapi.player.PlayerExecutor;
 import de.tentact.languageapi.player.SpecificPlayerExecutor;
@@ -712,6 +713,9 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public abstract @NotNull PlayerExecutor getPlayerExecutor();
+
+    @Override
+    public abstract @NotNull ConsoleExecutor getConsoleExecutor();
 
     @Override
     public @NotNull SpecificPlayerExecutor getSpecificPlayerExecutor(@NotNull UUID playerId) {

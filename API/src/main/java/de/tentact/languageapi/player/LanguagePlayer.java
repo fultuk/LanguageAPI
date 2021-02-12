@@ -33,7 +33,6 @@ import java.util.UUID;
 
 /**
  * Use {@link PlayerExecutor#getLanguagePlayer(UUID)} to get an instance
- *
  * @since 1.8
  */
 public interface LanguagePlayer extends LanguageOfflinePlayer {
@@ -47,10 +46,20 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
 
     /**
      * Sends a message to the player by a translationkey
-     *
      * @param translationKey the translationkey to get the translation from
+     * @since 1.9
      */
-    void sendMessageByKey(@NotNull String translationKey);
+    void sendMessage(String translationKey);
+
+    /**
+     * Sends a message to the player by a translationkey
+     * @param translationKey the translationkey to get the translation from
+     * @deprecated use {@link #sendMessage(String)} instead
+     */
+    @Deprecated
+    default void sendMessageByKey(@NotNull String translationKey) {
+        this.sendMessage(translationKey);
+    }
 
     /**
      * Sends multiple messages to the player by a single multipleTranslationKey

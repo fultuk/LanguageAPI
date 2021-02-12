@@ -27,21 +27,30 @@ package de.tentact.languageapi.api;
 
 import com.velocitypowered.api.proxy.ProxyServer;
 import de.tentact.languageapi.configuration.LanguageConfig;
+import de.tentact.languageapi.player.ConsoleExecutor;
 import de.tentact.languageapi.player.PlayerExecutor;
+import de.tentact.languageapi.player.VelocityConsoleExecutor;
 import de.tentact.languageapi.player.VelocityPlayerExecutor;
 import org.jetbrains.annotations.NotNull;
 
 public class VelocityLanguageAPI extends DefaultLanguageAPI {
 
     private final PlayerExecutor playerExecutor;
+    private final ConsoleExecutor consoleExecutor;
 
     public VelocityLanguageAPI(ProxyServer proxyServer, LanguageConfig languageConfig) {
         super(languageConfig);
         this.playerExecutor = new VelocityPlayerExecutor(proxyServer, this, languageConfig);
+        this.consoleExecutor = new VelocityConsoleExecutor(this, proxyServer.getConsoleCommandSource());
     }
 
     @Override
     public @NotNull PlayerExecutor getPlayerExecutor() {
         return this.playerExecutor;
+    }
+
+    @Override
+    public @NotNull ConsoleExecutor getConsoleExecutor() {
+        return this.consoleExecutor;
     }
 }
