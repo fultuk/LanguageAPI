@@ -25,9 +25,9 @@
 
 package de.tentact.languageapi;
 
+import de.tentact.languageapi.console.ConsoleExecutor;
 import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.i18n.Translation;
-import de.tentact.languageapi.player.ConsoleExecutor;
 import de.tentact.languageapi.player.PlayerExecutor;
 import de.tentact.languageapi.player.SpecificPlayerExecutor;
 import org.jetbrains.annotations.NotNull;

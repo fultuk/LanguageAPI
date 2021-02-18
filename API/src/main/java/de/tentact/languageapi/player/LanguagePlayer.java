@@ -26,6 +26,7 @@
 package de.tentact.languageapi.player;
 
 import de.tentact.languageapi.i18n.Translation;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,6 +58,7 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
      * @deprecated use {@link #sendMessage(String)} instead
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     default void sendMessageByKey(@NotNull String translationKey) {
         this.sendMessage(translationKey);
     }

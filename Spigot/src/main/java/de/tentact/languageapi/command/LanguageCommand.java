@@ -335,7 +335,6 @@ public class LanguageCommand implements TabExecutor {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_EXPORT_SUCCESS.get().replace("%FILE%", args[1].toLowerCase() + ".yml"));
                             }
                             break;
-
                         case "reload":
                             if (this.checkDoesNotHavePermission(player, args)) {
                                 return false;

@@ -27,7 +27,7 @@ package de.tentact.languageapi.api;
 
 import com.velocitypowered.api.proxy.ProxyServer;
 import de.tentact.languageapi.configuration.LanguageConfig;
-import de.tentact.languageapi.player.ConsoleExecutor;
+import de.tentact.languageapi.console.ConsoleExecutor;
 import de.tentact.languageapi.player.PlayerExecutor;
 import de.tentact.languageapi.player.VelocityConsoleExecutor;
 import de.tentact.languageapi.player.VelocityPlayerExecutor;

@@ -26,10 +26,11 @@
 package de.tentact.languageapi.player;
 
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.console.ConsoleExecutor;
 import de.tentact.languageapi.i18n.Translation;
 import net.md_5.bungee.api.ProxyServer;
 
-public class BungeeConsoleExecutor implements ConsoleExecutor{
+public class BungeeConsoleExecutor implements ConsoleExecutor {
 
     private final LanguageAPI languageAPI;
 

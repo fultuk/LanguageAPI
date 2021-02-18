@@ -23,7 +23,7 @@
  * SOFTWARE.
  */
 
-package de.tentact.languageapi.player;
+package de.tentact.languageapi.console;
 
 import de.tentact.languageapi.i18n.Translation;
 

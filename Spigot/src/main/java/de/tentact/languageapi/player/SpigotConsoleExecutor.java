@@ -26,6 +26,7 @@
 package de.tentact.languageapi.player;
 
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.console.ConsoleExecutor;
 import de.tentact.languageapi.i18n.Translation;
 import org.bukkit.Bukkit;
 

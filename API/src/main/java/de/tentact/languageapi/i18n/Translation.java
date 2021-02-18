@@ -40,6 +40,7 @@ public interface Translation {
 
     /**
      * Sends this {@link Translation} to the console
+     * @since 1.9
      */
     void sendToConsole();
 

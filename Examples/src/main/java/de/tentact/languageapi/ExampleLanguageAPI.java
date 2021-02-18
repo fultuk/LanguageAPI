@@ -57,6 +57,8 @@ public class ExampleLanguageAPI {
          */
         LanguagePlayer languagePlayer = this.playerExecutor.getLanguagePlayer(UUID.randomUUID());
 
+
+
         /*
          * Get a LanguageOfflinePlayer by the uuid
          *
@@ -68,6 +70,8 @@ public class ExampleLanguageAPI {
          * Get a Translation by its key
          */
         Translation translation = this.languageAPI.getTranslation("translation-key");
+
+
 
 
         /*

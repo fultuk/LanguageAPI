@@ -27,6 +27,7 @@ package de.tentact.languageapi.player;
 
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.console.ConsoleExecutor;
 import de.tentact.languageapi.i18n.Translation;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 
