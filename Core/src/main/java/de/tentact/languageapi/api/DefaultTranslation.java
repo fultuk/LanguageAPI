@@ -41,11 +41,11 @@ public class DefaultTranslation implements Translation {
     private final String translationKey;
     private Translation prefixTranslation = null;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
-    private final Map<String, String> params;
+    private final Map<String, String> parameter;
 
     public DefaultTranslation(@NotNull String translationKey) {
         this.translationKey = translationKey;
-        this.params = new HashMap<>();
+        this.parameter = new HashMap<>();
     }
 
     @Override
@@ -83,8 +83,8 @@ public class DefaultTranslation implements Translation {
             prefix = this.prefixTranslation.getMessage(language, orElseDefault);
         }
         AtomicReference<String> message = new AtomicReference<>(this.languageAPI.getMessage(this.translationKey, language));
-        this.params.forEach((key, value) -> message.set(message.get().replace(key, value)));
-        this.params.clear();
+        this.parameter.forEach((key, value) -> message.set(message.get().replace(key, value)));
+        this.parameter.clear();
         return prefix + message.get();
     }
 
@@ -122,7 +122,7 @@ public class DefaultTranslation implements Translation {
 
     @Override
     public @NotNull Translation replace(String old, String replacement) {
-        this.params.put(old, replacement);
+        this.parameter.put(old, replacement);
         return this;
     }
 

@@ -34,11 +34,13 @@ import java.util.UUID;
 public class DefaultLanguageOfflinePlayer implements LanguageOfflinePlayer {
 
     private final PlayerExecutor playerExecutor;
+    private final SpecificPlayerExecutor specificPlayerExecutor;
     private final UUID playerID;
 
     public DefaultLanguageOfflinePlayer(@NotNull UUID playerID) {
         this.playerID = playerID;
         this.playerExecutor = LanguageAPI.getInstance().getPlayerExecutor();
+        this.specificPlayerExecutor = LanguageAPI.getInstance().getSpecificPlayerExecutor(this.playerID);
     }
 
     @Override
@@ -62,6 +64,11 @@ public class DefaultLanguageOfflinePlayer implements LanguageOfflinePlayer {
     @Override
     public @NotNull UUID getUniqueId() {
         return this.playerID;
+    }
+
+    @Override
+    public SpecificPlayerExecutor getSpecificPlayerExecutor() {
+        return this.specificPlayerExecutor;
     }
 
     @Override

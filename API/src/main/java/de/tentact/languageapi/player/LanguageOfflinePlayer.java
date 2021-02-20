@@ -25,7 +25,6 @@
 
 package de.tentact.languageapi.player;
 
-import de.tentact.languageapi.LanguageAPI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,9 +64,7 @@ public interface LanguageOfflinePlayer {
      * Gets a {@link SpecificPlayerExecutor} for the specific player
      * @return returns the {@link SpecificPlayerExecutor} for the {@link LanguageOfflinePlayer}
      */
-    default SpecificPlayerExecutor getSpecificPlayerExecutor() {
-        return LanguageAPI.getInstance().getSpecificPlayerExecutor(this.getUniqueId());
-    }
+     SpecificPlayerExecutor getSpecificPlayerExecutor();
 
     /**
      * Get a {@link LanguagePlayer}

@@ -30,6 +30,7 @@ import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.i18n.Translation;
 import de.tentact.languageapi.player.PlayerExecutor;
 import de.tentact.languageapi.player.SpecificPlayerExecutor;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -545,6 +546,7 @@ public abstract class LanguageAPI {
      * @param translation the translation to update
      * @since 1.8
      */
+    @ApiStatus.Internal
     public abstract void updateTranslation(Translation translation);
 
     /**
