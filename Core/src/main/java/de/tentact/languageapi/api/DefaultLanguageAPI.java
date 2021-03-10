@@ -94,7 +94,8 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         if (!this.getDefaultLanguage().equalsIgnoreCase(language) && this.isLanguage(language)) {
             this.executorService.execute(() -> {
                 try (Connection connection = this.getDataSource().getConnection()) {
-                    try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE " + language.toLowerCase() + "; DELETE FROM languages WHERE language=?;")) {
+                    try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE " + language.toLowerCase() + ";" +
+                            " DELETE FROM languages WHERE language=?;")) {
                         preparedStatement.setString(1, language.toLowerCase());
                         preparedStatement.execute();
                     }
@@ -138,37 +139,26 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     }
 
     @Override
-    public void addParameter(final String translationKey, final String param) {
-        if (param == null || param.isEmpty()) {
+    public void addParameter(final String translationKey, final String parameter) {
+        if (parameter == null || parameter.isEmpty()) {
             return;
         }
-        if (this.isParameter(translationKey, param)) {
+        if (this.isParameter(translationKey, parameter)) {
             return;
         }
-        String currentParameter = this.getParameter(translationKey);
-        if (currentParameter == null) {
-            this.setParameter(translationKey, param);
-        } else {
-            String joinedParameter = currentParameter.replace(" ", "");
-            if (joinedParameter.endsWith(",")) {
-                joinedParameter += param;
-            } else {
-                joinedParameter += "," + param;
-            }
-            this.setParameter(translationKey, joinedParameter);
-        }
+        this.setParameter(translationKey, parameter);
     }
 
     @Override
-    public void setParameter(String translationKey, String param) {
-        if (param == null || param.isEmpty()) {
+    public void setParameter(String translationKey, String parameter) {
+        if (parameter == null || parameter.isEmpty()) {
             return;
         }
         this.executorService.execute(() -> {
             try (Connection connection = this.getDataSource().getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("REPLACE INTO Parameter(translationkey, param) VALUES (?,?);")) {
                 preparedStatement.setString(1, translationKey.toLowerCase());
-                preparedStatement.setString(2, param.replace(" ", ""));
+                preparedStatement.setString(2, parameter.replace(" ", ""));
                 preparedStatement.execute();
             } catch (SQLException throwable) {
                 throwable.printStackTrace();
@@ -177,19 +167,18 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     }
 
     @Override
-    public void deleteParameter(final String translationKey, final String param) {
+    public void deleteParameter(final String translationKey, final String parameter) {
         if (!this.hasParameter(translationKey)) {
             return;
         }
-        String parameter = this.getParameter(translationKey);
-        if (parameter == null || !parameter.contains(param)) {
+        if(!this.isParameter(translationKey, parameter)) {
             return;
         }
         this.executorService.execute(() -> {
             try (Connection connection = this.getDataSource().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("UPDATE Parameter SET param=? WHERE translationkey=?;")) {
-                preparedStatement.setString(1, parameter.replace(param, ""));
-                preparedStatement.setString(2, translationKey);
+                 PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Parameter WHERE translationkey=? AND parameter=?;")) {
+                preparedStatement.setString(1, translationKey);
+                preparedStatement.setString(2, parameter);
                 preparedStatement.execute();
             } catch (SQLException throwable) {
                 throwable.printStackTrace();
@@ -294,18 +283,32 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         if (!this.hasParameter(translationKey)) {
             return null;
         }
+        List<String> parameter = this.getParameterAsList(translationKey);
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String s : parameter) {
+            stringBuilder.append(s).append(",");
+        }
+        return stringBuilder.toString();
+    }
+
+    @Override
+    public List<String> getParameterAsList(String translationKey) {
+        if (!this.hasParameter(translationKey)) {
+            return Collections.emptyList();
+        }
+        List<String> parameter = new ArrayList<>();
         try (Connection connection = this.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT param FROM Parameter WHERE translationkey=?;")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT parameter FROM Parameter WHERE translationkey=?;")) {
             preparedStatement.setString(1, translationKey.toLowerCase());
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getString("param");
+            while (resultSet.next()) {
+                parameter.add(resultSet.getString("parameter"));
             }
             resultSet.close();
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
-        return null;
+        return parameter;
     }
 
     @Override
@@ -314,11 +317,21 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     }
 
     @Override
+    public CompletableFuture<List<String>> getParameterAsListAsync(String translationKey) {
+        return CompletableFuture.supplyAsync(() -> this.getParameterAsList(translationKey));
+    }
+
+    @Override
     public boolean isParameter(String translationKey, String parameter) {
         if (!this.hasParameter(translationKey)) {
             return false;
         }
-        return this.getParameter(translationKey).contains(parameter);
+        for (String s : this.getParameterAsList(translationKey)) {
+            if (s.equalsIgnoreCase(parameter)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -340,13 +353,13 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public void updateMessage(String translationKey, String message, String language) {
-        if (!this.isLanguage(language)) {
-            throw new IllegalArgumentException("Language " + language + " was not found!");
-        }
-        if (!this.isKey(translationKey, language)) {
-            throw new IllegalArgumentException("Translationkey " + translationKey + " was not found!");
-        }
         this.executorService.execute(() -> {
+            if (!this.isLanguage(language)) {
+                throw new IllegalArgumentException("Language " + language + " was not found!");
+            }
+            if (!this.isKey(translationKey, language)) {
+                throw new IllegalArgumentException("Translationkey " + translationKey + " was not found!");
+            }
             try (Connection connection = this.getDataSource().getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("UPDATE " + language + " SET translation=? WHERE translationkey=?;")) {
                 preparedStatement.setString(1, this.translateColorCode(message));
@@ -355,8 +368,8 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
             } catch (SQLException throwable) {
                 throwable.printStackTrace();
             }
+            this.translationCache.invalidate(translationKey.toLowerCase());
         });
-        this.translationCache.invalidate(translationKey.toLowerCase());
     }
 
     @Override
@@ -442,20 +455,22 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public void deleteMessage(String translationKey, String language) {
-        if (!this.isLanguage(language)) {
-            throw new IllegalArgumentException("Language " + language + " was not found!");
-        }
-        if (!this.isKey(translationKey, language)) {
-            throw new IllegalArgumentException("Translationkey " + translationKey + " was not found!");
-        }
-        try (Connection connection = this.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM ? WHERE translationkey=?;")) {
-            preparedStatement.setString(1, language.toLowerCase());
-            preparedStatement.setString(2, translationKey.toLowerCase());
-            preparedStatement.execute();
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-        }
+        this.executorService.execute(() -> {
+            if (!this.isLanguage(language)) {
+                throw new IllegalArgumentException("Language " + language + " was not found!");
+            }
+            if (!this.isKey(translationKey, language)) {
+                throw new IllegalArgumentException("Translationkey " + translationKey + " was not found!");
+            }
+            try (Connection connection = this.getDataSource().getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM ? WHERE translationkey=?;")) {
+                preparedStatement.setString(1, language.toLowerCase());
+                preparedStatement.setString(2, translationKey.toLowerCase());
+                preparedStatement.execute();
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
+            }
+        });
     }
 
     @Override

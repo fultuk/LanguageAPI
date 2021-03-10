@@ -77,7 +77,7 @@ public class MySQL {
         try (Connection connection = this.dataSource.getConnection()) {
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS playerlanguage(uuid VARCHAR(36) PRIMARY KEY, language VARCHAR(8));");
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS languages(language VARCHAR(32) PRIMARY KEY);");
-            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(translationkey VARCHAR(128), param VARCHAR(2000), PRIMARY KEY (translationkey));");
+            connection.createStatement().execute("CREATE TABLE IF NOT EXISTS Parameter(translationkey VARCHAR(128), parameter VARCHAR(128));");
             connection.createStatement().execute("CREATE TABLE IF NOT EXISTS MultipleTranslation(multipleKey VARCHAR(128), translationkey VARCHAR(2000), PRIMARY KEY (multipleKey));");
             this.logger.info("Creating default tables");
         } catch (SQLException e) {

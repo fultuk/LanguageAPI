@@ -145,25 +145,25 @@ public abstract class LanguageAPI {
 
     /**
      * @param translationKey the translationkey to find the parameters
-     * @param param  the parameters to the translationkey (ex. %KEY%,%KEY2%)
+     * @param parameter  the parameters to the translationkey (ex. %KEY%,%KEY2%)
      * @since 1.9 (updated how it works)
      */
-    public abstract void addParameter(final String translationKey, final String param);
+    public abstract void addParameter(final String translationKey, final String parameter);
 
     /**
      * Sets the parameters (overrides)
      * @param translationKey the translationkey to find the parameters
-     * @param param    the parameters to the translationkey (ex. %KEY%)
+     * @param parameter    the parameters to the translationkey (ex. %KEY%)
      * @since 1.9
      */
-    public abstract void setParameter(final String translationKey, final String param);
+    public abstract void setParameter(final String translationKey, final String parameter);
 
     /**
      * @param translationKey the translationkey to find the parameters
-     * @param param    the parameters to the translationkey (ex. %KEY%)
+     * @param parameter    the parameters to the translationkey (ex. %KEY%)
      * @since 1.8
      */
-    public abstract void deleteParameter(final String translationKey, final String param);
+    public abstract void deleteParameter(final String translationKey, final String parameter);
 
     /**
      * @param translationKey the translationkey to find the parameters
@@ -199,17 +199,37 @@ public abstract class LanguageAPI {
      * @param translationKey the translationkey to get the parameters for
      * @return returns all the parameters to the translationKey, null if the key does not have any parameters
      * @since 1.8
+     * @deprecated use {@link LanguageAPI#getParameterAsList(String)}
      */
     @Nullable
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public abstract String getParameter(String translationKey);
+
+    /**
+     * @param translationKey the translationkey to get the parameters for
+     * @return returns all the parameters to the translationKey, the list is empty if there are no parameters
+     * @since 1.9
+     */
+    public abstract List<String> getParameterAsList(String translationKey);
 
     /**
      * @param translationKey the translationkey to get the parameters for
      * @return returns all the parameters to the translationKey, null if the key does not have any parameters
      * @since 1.9
+     * @deprecated use {@link LanguageAPI#getParameterAsListAsync(String)}
      */
     @Nullable
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public abstract CompletableFuture<String> getParameterAsync(String translationKey);
+
+    /**
+     * @param translationKey the translationkey to get the parameters for
+     * @return returns all the parameters to the translationKey, the list is empty if there are no parameters
+     * @since 1.9
+     */
+    public abstract CompletableFuture<List<String>> getParameterAsListAsync(String translationKey);
 
     /**
      * @param translationKey the translationkey to check the parameters for
