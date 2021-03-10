@@ -147,7 +147,10 @@ public abstract class LanguageAPI {
      * @param translationKey the translationkey to find the parameters
      * @param parameter  the parameters to the translationkey (ex. %KEY%,%KEY2%)
      * @since 1.9 (updated how it works)
+     * @deprecated use {@link LanguageAPI#setParameter(String, String)}
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public abstract void addParameter(final String translationKey, final String parameter);
 
     /**

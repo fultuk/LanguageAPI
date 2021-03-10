@@ -113,7 +113,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         if (!this.isLanguage(language)) {
             throw new IllegalArgumentException("Language " + language + " was not found!");
         }
-        this.addParameter(translationKey, param);
+        this.setParameter(translationKey, param);
         return this.addMessage(translationKey, message, language);
     }
 
@@ -140,12 +140,6 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public void addParameter(final String translationKey, final String parameter) {
-        if (parameter == null || parameter.isEmpty()) {
-            return;
-        }
-        if (this.isParameter(translationKey, parameter)) {
-            return;
-        }
         this.setParameter(translationKey, parameter);
     }
 
@@ -154,9 +148,12 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         if (parameter == null || parameter.isEmpty()) {
             return;
         }
+        if (this.isParameter(translationKey, parameter)) {
+            return;
+        }
         this.executorService.execute(() -> {
             try (Connection connection = this.getDataSource().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("REPLACE INTO Parameter(translationkey, param) VALUES (?,?);")) {
+                 PreparedStatement preparedStatement = connection.prepareStatement("REPLACE INTO Parameter(translationkey, parameter) VALUES (?,?);")) {
                 preparedStatement.setString(1, translationKey.toLowerCase());
                 preparedStatement.setString(2, parameter.replace(" ", ""));
                 preparedStatement.execute();
@@ -220,7 +217,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public boolean addMessageToDefault(final String translationKey, final String translation, final String param) {
-        this.addParameter(translationKey, param);
+        this.setParameter(translationKey, param);
         return this.addMessageToDefault(translationKey, translation);
     }
 
