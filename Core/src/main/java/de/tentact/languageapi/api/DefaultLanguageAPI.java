@@ -168,7 +168,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         if (!this.hasParameter(translationKey)) {
             return;
         }
-        if(!this.isParameter(translationKey, parameter)) {
+        if (!this.isParameter(translationKey, parameter)) {
             return;
         }
         this.executorService.execute(() -> {
@@ -223,21 +223,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public void addTranslationKeyToMultipleTranslation(final String multipleTranslation, final String translationKey) {
-        String[] translationKeys = new String[]{};
-        try (Connection connection = this.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT translationkey FROM MultipleTranslation WHERE multipleKey=?;")) {
-            preparedStatement.setString(1, multipleTranslation.toLowerCase());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                translationKeys = resultSet.getString("translationkey").split(",");
-            }
-            resultSet.close();
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-        }
-        List<String> translationKeysAsArrayList = new ArrayList<>(Arrays.asList(translationKeys));
-        translationKeysAsArrayList.add(translationKey);
-        this.setMultipleTranslation(multipleTranslation, translationKeysAsArrayList, true);
+        this.addMultipleTranslation(multipleTranslation, translationKey);
     }
 
     @Override
@@ -371,33 +357,36 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public void setMultipleTranslation(String multipleTranslation, List<String> translationKeys, boolean overwrite) {
-        if (this.isMultipleTranslation(multipleTranslation)) {
-            if (!overwrite) {
-                return;
-            }
-            this.removeMultipleTranslation(multipleTranslation);
-        }
-        StringBuilder stringBuilder = new StringBuilder();
-        for (String translationKey : translationKeys) {
-            stringBuilder.append(translationKey.toLowerCase()).append(",");
+        this.addMultipleTranslations(multipleTranslation, translationKeys);
+    }
+
+    @Override
+    public void addMultipleTranslation(String multipleTranslation, String translationKey) {
+        if (this.isMultipleTranslationKey(multipleTranslation, translationKey)) {
+            return;
         }
         this.executorService.execute(() -> {
             try (Connection connection = this.getDataSource().getConnection();
                  PreparedStatement preparedStatement =
                          connection.prepareStatement("INSERT INTO MultipleTranslation(multipleKey, translationkey) VALUES (?,?)")) {
-                preparedStatement.setString(1, multipleTranslation);
-                preparedStatement.setString(2, stringBuilder.toString());
+                preparedStatement.setString(1, multipleTranslation.toLowerCase());
+                preparedStatement.setString(2, translationKey.toLowerCase());
                 preparedStatement.execute();
             } catch (SQLException throwable) {
                 throwable.printStackTrace();
             }
         });
-
     }
 
+    @Override
+    public void addMultipleTranslations(String multipleTranslation, List<String> translationKeys) {
+        for (String translationKey : translationKeys) {
+            this.addMultipleTranslation(multipleTranslation, translationKey);
+        }
+    }
 
     @Override
-    public void removeMultipleTranslation(final String multipleTranslation) {
+    public void deleteMultipleTranslation(String multipleTranslation) {
         if (!this.isMultipleTranslation(multipleTranslation)) {
             throw new IllegalArgumentException("Multiple Translation " + multipleTranslation + " was not found");
         }
@@ -410,7 +399,6 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
                 throwable.printStackTrace();
             }
         });
-
     }
 
     @Override
@@ -418,23 +406,17 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         if (!this.isMultipleTranslation(multipleTranslation)) {
             throw new IllegalArgumentException(multipleTranslation + " was not found");
         }
-        List<String> translationKeysAsArrayList = null;
+        if (!this.isMultipleTranslationKey(multipleTranslation, translationKey)) {
+            throw new IllegalArgumentException("Key: " + translationKey + " was not found for: " + multipleTranslation);
+        }
         try (Connection connection = this.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT translationkey FROM MultipleTranslation WHERE multipleKey=?")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM MultipleTranslation WHERE multipleKey=? AND translationkey=?")) {
             preparedStatement.setString(1, multipleTranslation.toLowerCase());
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                translationKeysAsArrayList = new ArrayList<>(Arrays.asList(resultSet.getString("translationKeys").split(",")));
-            }
-            resultSet.close();
+            preparedStatement.setString(2, translationKey.toLowerCase());
+            preparedStatement.execute();
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
-        if (translationKeysAsArrayList == null) {
-            return;
-        }
-        translationKeysAsArrayList.remove(translationKey);
-        this.setMultipleTranslation(multipleTranslation, translationKeysAsArrayList, true);
     }
 
     @Override
@@ -442,6 +424,20 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         try (Connection connection = this.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM MultipleTranslation WHERE multipleKey=?;")) {
             preparedStatement.setString(1, multipleTranslation.toLowerCase());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isMultipleTranslationKey(String multipleTranslation, String translationKey) {
+        try (Connection connection = this.getDataSource().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM MultipleTranslation WHERE multipleKey=? AND translationkey=?;")) {
+            preparedStatement.setString(1, multipleTranslation.toLowerCase());
+            preparedStatement.setString(2, translationKey.toLowerCase());
             ResultSet resultSet = preparedStatement.executeQuery();
             return resultSet.next();
         } catch (SQLException throwable) {
@@ -533,6 +529,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public @NotNull List<String> getMultipleMessages(String multipleKey, String language, String prefixKey) {
+
         List<String> resolvedMessages = new ArrayList<>();
         String[] translationKeys = new String[0];
         String prefix = "";
