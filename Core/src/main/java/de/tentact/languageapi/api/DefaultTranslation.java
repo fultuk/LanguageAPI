@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -94,13 +95,24 @@ public class DefaultTranslation implements Translation {
     }
 
     @Override
+    @Deprecated
     public String getParameter() {
         return this.languageAPI.getParameter(this.translationKey);
     }
 
     @Override
+    public List<String> getParameterAsList() {
+        return this.languageAPI.getParameterAsList(this.translationKey);
+    }
+
+    @Override
     public CompletableFuture<String> getParameterAsync() {
         return this.languageAPI.getParameterAsync(this.translationKey);
+    }
+
+    @Override
+    public CompletableFuture<List<String>> getParameterAsListAsync() {
+        return this.languageAPI.getParameterAsListAsync(this.translationKey);
     }
 
     @Override

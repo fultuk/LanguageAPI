@@ -331,7 +331,6 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
                 }
             }
         });
-
     }
 
     @Override
@@ -356,6 +355,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     }
 
     @Override
+    @Deprecated
     public void setMultipleTranslation(String multipleTranslation, List<String> translationKeys, boolean overwrite) {
         this.addMultipleTranslations(multipleTranslation, translationKeys);
     }

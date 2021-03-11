@@ -26,9 +26,11 @@
 package de.tentact.languageapi.i18n;
 
 import de.tentact.languageapi.LanguageAPI;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -106,14 +108,30 @@ public interface Translation {
 
     /**
      * @return returns all parameters for the key in the {@link Translation#getTranslationKey()}
+     * @deprecated {@link Translation#getParameterAsList()}
      */
     @Nullable
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     String getParameter();
+
+    /**
+     * @return returns all parameters for the key in the {@link Translation#getTranslationKey()} as list
+     */
+    List<String> getParameterAsList();
+
+    /**
+     * @return returns all parameters for the key in the {@link Translation#getTranslationKey()}
+     * @deprecated {@link Translation#getParameterAsListAsync()}
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
+    CompletableFuture<String> getParameterAsync();
 
     /**
      * @return returns all parameters for the key in the {@link Translation#getTranslationKey()}
      */
-    CompletableFuture<String> getParameterAsync();
+    CompletableFuture<List<String>> getParameterAsListAsync();
 
     /**
      * @param prefixTranslation the prefix translation to get the prefix from

@@ -80,13 +80,13 @@ public enum I18N {
     LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE("languageapi-player-selected-language", "Du hast die Sprache %LANGUAGE% ausgewählt.", "%LANGUAGE%"),
     LANGUAGEAPI_INFO("languageapi-info", "Du benutzt folgende Version der LanguageAPI: %VERSION%", "%VERSION%"),
     LANGUAGEAPI_HELP("languageapi-help", Arrays.asList(
-            "languageapi-add-help",
-            "languageapi-update-help",
-            "languageapi-copy-help",
-            "languageapi-create-help",
-            "languageapi-import-help",
-            "languageapi-export-help",
-            "languageapi-list-help"
+            LANGUAGEAPI_ADD_HELP.key,
+            LANGUAGEAPI_UPDATE_HELP.key,
+            LANGUAGEAPI_COPY_HELP.key,
+            LANGUAGEAPI_CREATE_HELP.key,
+            LANGUAGEAPI_IMPORT_HELP.key,
+            LANGUAGEAPI_EXPORT_HELP.key,
+            LANGUAGE_LIST_HELP.key
     ));
 
     private final String key;
