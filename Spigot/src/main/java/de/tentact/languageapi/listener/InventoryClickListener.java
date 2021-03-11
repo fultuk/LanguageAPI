@@ -70,13 +70,13 @@ public class InventoryClickListener implements Listener {
                     .findFirst()
                     .ifPresent(languageItem -> {
                         Player player = (Player) event.getWhoClicked();
+                        player.closeInventory();
                         playerExecutor.setPlayerLanguage(player.getUniqueId(), languageItem.getLanguageName());
                         LanguagePlayer languagePlayer = playerExecutor.getLanguagePlayer(player.getUniqueId());
                         //Even if it should never be null here
                         if (languagePlayer != null) {
                             languagePlayer.sendMessage(I18N.LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE.get().replace("%LANGUAGE%", languageItem.getLanguageName()));
                         }
-                        player.closeInventory();
                     });
         }
     }

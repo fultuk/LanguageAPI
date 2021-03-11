@@ -94,8 +94,10 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         if (!this.getDefaultLanguage().equalsIgnoreCase(language) && this.isLanguage(language)) {
             this.executorService.execute(() -> {
                 try (Connection connection = this.getDataSource().getConnection()) {
-                    try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE " + language.toLowerCase() + ";" +
-                            " DELETE FROM languages WHERE language=?;")) {
+                    try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE " + language.toLowerCase() + ";")) {
+                        preparedStatement.execute();
+                    }
+                    try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM languages WHERE language=?")) {
                         preparedStatement.setString(1, language.toLowerCase());
                         preparedStatement.execute();
                     }

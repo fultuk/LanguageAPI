@@ -114,11 +114,11 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
 
     @Override
     public void setPlayerLanguage(UUID playerId, String newLanguage) {
-        if (!this.languageAPI.isLanguage(newLanguage)) {
-            throw new IllegalArgumentException("Language " + newLanguage + " was not found!");
-        }
-        if (!this.isRegisteredPlayer(playerId)) {
-            this.languageAPI.executeAsync(() -> {
+        this.languageAPI.executeAsync(() -> {
+            if (!this.languageAPI.isLanguage(newLanguage)) {
+                throw new IllegalArgumentException("Language " + newLanguage + " was not found!");
+            }
+            if (!this.isRegisteredPlayer(playerId)) {
                 try (Connection connection = this.dataSource.getConnection();
                      PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO playerlanguage (uuid, language) VALUES (?,?);")) {
                     preparedStatement.setString(1, playerId.toString());
@@ -127,24 +127,19 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
-            });
-            this.languageCache.put(playerId, newLanguage.toLowerCase());
-            return;
-        }
-        if (this.isPlayersLanguage(playerId, newLanguage)) {
-            return;
-        }
-        this.languageAPI.executeAsync(() -> {
+                this.languageCache.put(playerId, newLanguage.toLowerCase());
+                return;
+            }
             try (Connection connection = this.dataSource.getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("UPDATE playerlanguage SET language=? WHERE uuid=?;")) {
-                preparedStatement.setString(1, playerId.toString());
-                preparedStatement.setString(2, newLanguage.toLowerCase());
+                preparedStatement.setString(1, newLanguage.toLowerCase());
+                preparedStatement.setString(2, playerId.toString());
                 preparedStatement.execute();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
+            this.languageCache.put(playerId, newLanguage.toLowerCase());
         });
-        this.languageCache.put(playerId, newLanguage.toLowerCase());
     }
 
     @Override
