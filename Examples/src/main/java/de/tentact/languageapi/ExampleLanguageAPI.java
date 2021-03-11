@@ -96,7 +96,7 @@ public class ExampleLanguageAPI {
          * Send a message directly by the translationKey
          */
 
-        languagePlayer.sendMessageByKey("translation-key");
+        languagePlayer.sendMessage("translation-key");
 
         /*
          * Get a message from the api without sending to a player

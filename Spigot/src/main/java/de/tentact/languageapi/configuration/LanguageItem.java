@@ -29,18 +29,20 @@ import java.util.List;
 
 public class LanguageItem {
 
+    private final String material;
     private final String headValue;
     private final String displayName;
     private final String languageName;
     private final int inventorySlot;
     private final List<String> lore;
 
-    public LanguageItem(String headValue, String displayName, String languageName, int inventorySlot, List<String> lore) {
+    public LanguageItem(String material,String headValue, String displayName, String languageName, int inventorySlot, List<String> lore) {
         this.headValue = headValue;
         this.displayName = displayName;
         this.languageName = languageName;
         this.inventorySlot = inventorySlot;
         this.lore = lore;
+        this.material = material;
     }
 
     public String getHeadValue() {
@@ -61,5 +63,9 @@ public class LanguageItem {
 
     public int getInventorySlot() {
         return this.inventorySlot;
+    }
+
+    public String getMaterial() {
+        return this.material;
     }
 }

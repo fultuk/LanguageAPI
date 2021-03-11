@@ -36,7 +36,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.logging.Logger;
 
-public class SpigotConfiguration extends Configuration{
+public class SpigotConfiguration extends Configuration {
 
     private Document inventoryDocument = new DefaultDocument();
     private final File inventoryFile = new File("plugins/LanguageAPI", "languages.json");
@@ -73,6 +73,7 @@ public class SpigotConfiguration extends Configuration{
                                         (byte) -1,
                                         Arrays.asList(
                                                 new LanguageItem(
+                                                        "PLAYER_HEAD",
                                                         "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWU3ODk5YjQ4MDY4NTg2OTdlMjgzZjA4NGQ5MTczZmU0ODc4ODY0NTM3NzQ2MjZiMjRiZDhjZmVjYzc3YjNmIn19fQ==",
                                                         "Deutsch (Deutschland)",
                                                         "de_de",
@@ -80,6 +81,7 @@ public class SpigotConfiguration extends Configuration{
                                                         Collections.singletonList("Klicke um Deutsch auszuwählen.")
                                                 ),
                                                 new LanguageItem(
+                                                        "PLAYER_HEAD",
                                                         "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTllZGNkZDdiMDYxNzNkN2QyMjFjNzI3NGM4NmNiYTM1NzMwMTcwNzg4YmI2YTFkYjA5Y2M2ODEwNDM1YjkyYyJ9fX0=",
                                                         "English (UK)",
                                                         "en_en",

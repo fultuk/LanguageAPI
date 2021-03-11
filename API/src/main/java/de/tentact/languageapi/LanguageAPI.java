@@ -89,8 +89,21 @@ public abstract class LanguageAPI {
      * @param param          the parameters that are used in the translation (ex. %KEY%) - seperate them by ',' (ex. %PARAM1%,%PARAM2%)
      *                       adds an translation to the given language with a proper translation and parameters
      * @since 1.8
+     * @deprecated use {@link LanguageAPI#addMessage(String, String, String, List)}
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public abstract boolean addMessage(final String translationKey, final String message, final String language, String param);
+
+    /**
+     * @param translationKey the translationkey to find the translation
+     * @param message        the translation to that translationkey
+     * @param language       the language of the translation
+     * @param parameter          the parameters that are used in the translation
+     *                       adds an translation to the given language with a proper translation and parameters
+     * @since 1.9
+     */
+    public abstract boolean addMessage(final String translationKey, final String message, final String language, List<String> parameter);
 
     /**
      * @param translationKey the translationkey to find the translation
@@ -131,8 +144,22 @@ public abstract class LanguageAPI {
      * @param param          the parameters to the translation
      * @return if the translation was added
      * @since 1.8
+     * @deprecated use {@link LanguageAPI#addMessageToDefault(String, String, List)}
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public abstract boolean addMessageToDefault(final String translationKey, final String translation, final String param);
+
+    /**
+     * Adds a translation to the default language with the parameters
+     *
+     * @param translationKey translationkey to the translation
+     * @param translation    the translation to the translationkey
+     * @param parameter          the parameters to the translation
+     * @return if the translation was added
+     * @since 1.9
+     */
+    public abstract boolean addMessageToDefault(final String translationKey, final String translation, final List<String> parameter);
 
     /**
      * @param multipleTranslation the translationkey to the set of translations
@@ -157,13 +184,22 @@ public abstract class LanguageAPI {
     public abstract void addParameter(final String translationKey, final String parameter);
 
     /**
-     * Sets the parameters (overrides)
+     * Sets the parameter
+     *
+     * @param translationKey the translationkey to find the parameters
+     * @param parameter      the parameter to the translationkey (ex. %KEY%)
+     * @since 1.9
+     */
+    public abstract void setParameter(final String translationKey, final String parameter);
+
+    /**
+     * Sets the parameter
      *
      * @param translationKey the translationkey to find the parameters
      * @param parameter      the parameters to the translationkey (ex. %KEY%)
      * @since 1.9
      */
-    public abstract void setParameter(final String translationKey, final String parameter);
+    public abstract void setParameter(final String translationKey, final List<String> parameter);
 
     /**
      * @param translationKey the translationkey to find the parameters

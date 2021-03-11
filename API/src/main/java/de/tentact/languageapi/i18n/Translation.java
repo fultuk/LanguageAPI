@@ -182,9 +182,23 @@ public interface Translation {
      * @param message the default translation
      * @param param   the parameter of the translation
      * @return the {@link Translation} after setting the default translation
+     * @deprecated use {@link Translation#createDefaults(String, List)}
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     @NotNull
     Translation createDefaults(String message, String param);
+
+    /**
+     * Create the default translation for the {@link Translation}
+     *
+     * @param message the default translation
+     * @param parameter   the parameters of the translation
+     * @return the {@link Translation} after setting the default translation
+     * @since 1.9
+     */
+    @NotNull
+    Translation createDefaults(String message, List<String> parameter);
 
     /**
      * Adds a translation to the {@link Translation#getTranslationKey()} in the given language
@@ -201,8 +215,22 @@ public interface Translation {
      * @param message the translated message
      * @param param the parameters to the token
      * @return the current {@link Translation}
+     * @deprecated use {@link Translation#addTranslation(String, String, List)}
      */
     @NotNull
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     Translation addTranslation(String language, String message, String param);
+
+    /**
+     * Adds a translation to the {@link Translation#getTranslationKey()} in the given language with parameters
+     * @param language the language of the translation
+     * @param message the translated message
+     * @param parameter the parameters to the token
+     * @return the current {@link Translation}
+     * @since 1.9
+     */
+    @NotNull
+    Translation addTranslation(String language, String message, List<String> parameter);
 
 }

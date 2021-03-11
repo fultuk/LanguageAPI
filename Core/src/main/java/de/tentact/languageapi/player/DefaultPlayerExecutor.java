@@ -59,21 +59,25 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
 
     @NotNull
     @Override
-    public String getPlayerLanguage(UUID playerUUID) {
-        if (!this.isRegisteredPlayer(playerUUID)) {
-            this.registerPlayer(playerUUID);
+    public String getPlayerLanguage(UUID playerId) {
+        if (!this.isRegisteredPlayer(playerId)) {
+            this.registerPlayer(playerId);
         }
-        String cachedLanguage = this.languageCache.getIfPresent(playerUUID);
+        String cachedLanguage = this.languageCache.getIfPresent(playerId);
         if (cachedLanguage != null) {
-            return this.validateLanguage(cachedLanguage);
+            if (!this.languageAPI.isLanguage(cachedLanguage)) {
+                this.languageCache.invalidate(playerId);
+                return this.languageAPI.getDefaultLanguage();
+            }
+            return cachedLanguage;
         }
         try (Connection connection = this.mySQL.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT language FROM playerlanguage WHERE uuid=?;")) {
-            preparedStatement.setString(1, playerUUID.toString());
+            preparedStatement.setString(1, playerId.toString());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     String language = resultSet.getString("language").toLowerCase();
-                    this.languageCache.put(playerUUID, language);
+                    this.languageCache.put(playerId, language);
                     return language;
                 }
             }
@@ -84,89 +88,89 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
     }
 
     @Override
-    public @NotNull CompletableFuture<String> getPlayerLanguageAsync(UUID playerUUID) {
-        return CompletableFuture.supplyAsync(() -> this.getPlayerLanguage(playerUUID));
+    public @NotNull CompletableFuture<String> getPlayerLanguageAsync(UUID playerId) {
+        return CompletableFuture.supplyAsync(() -> this.getPlayerLanguage(playerId));
     }
 
     @Override
-    public boolean isPlayersLanguage(UUID playerUUID, String language) {
+    public boolean isPlayersLanguage(UUID playerId, String language) {
         if (!this.languageAPI.isLanguage(language)) {
             return false;
         }
-        return this.getPlayerLanguage(playerUUID).equalsIgnoreCase(language);
+        return this.getPlayerLanguage(playerId).equalsIgnoreCase(language);
     }
 
     @Override
-    public void setPlayerLanguage(UUID playerUUID, String newLanguage, boolean orElseDefault) {
+    public void setPlayerLanguage(UUID playerId, String newLanguage, boolean orElseDefault) {
         if (!this.languageAPI.isLanguage(newLanguage)) {
             if (orElseDefault) {
-                this.setPlayerLanguage(playerUUID, this.languageAPI.getDefaultLanguage());
+                this.setPlayerLanguage(playerId, this.languageAPI.getDefaultLanguage());
                 return;
             }
             return;
         }
-        this.setPlayerLanguage(playerUUID, newLanguage);
+        this.setPlayerLanguage(playerId, newLanguage);
     }
 
     @Override
-    public void setPlayerLanguage(UUID playerUUID, String newLanguage) {
+    public void setPlayerLanguage(UUID playerId, String newLanguage) {
         if (!this.languageAPI.isLanguage(newLanguage)) {
             throw new IllegalArgumentException("Language " + newLanguage + " was not found!");
         }
-        if (!this.isRegisteredPlayer(playerUUID)) {
+        if (!this.isRegisteredPlayer(playerId)) {
             this.languageAPI.executeAsync(() -> {
                 try (Connection connection = this.dataSource.getConnection();
                      PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO playerlanguage (uuid, language) VALUES (?,?);")) {
-                    preparedStatement.setString(1, playerUUID.toString());
+                    preparedStatement.setString(1, playerId.toString());
                     preparedStatement.setString(2, newLanguage.toLowerCase());
                     preparedStatement.execute();
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
             });
-            this.languageCache.put(playerUUID, newLanguage.toLowerCase());
+            this.languageCache.put(playerId, newLanguage.toLowerCase());
             return;
         }
-        if (this.isPlayersLanguage(playerUUID, newLanguage)) {
+        if (this.isPlayersLanguage(playerId, newLanguage)) {
             return;
         }
         this.languageAPI.executeAsync(() -> {
             try (Connection connection = this.dataSource.getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("UPDATE playerlanguage SET language=? WHERE uuid=?;")) {
-                preparedStatement.setString(1, playerUUID.toString());
+                preparedStatement.setString(1, playerId.toString());
                 preparedStatement.setString(2, newLanguage.toLowerCase());
                 preparedStatement.execute();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
         });
-        this.languageCache.put(playerUUID, newLanguage.toLowerCase());
+        this.languageCache.put(playerId, newLanguage.toLowerCase());
     }
 
     @Override
-    public void registerPlayer(UUID playerUUID) {
-        this.registerPlayer(playerUUID, this.languageAPI.getDefaultLanguage());
+    public void registerPlayer(UUID playerId) {
+        this.registerPlayer(playerId, this.languageAPI.getDefaultLanguage());
     }
 
     @Override
-    public void registerPlayer(UUID playerUUID, String language) {
+    public void registerPlayer(UUID playerId, String language) {
         String validLanguage = this.validateLanguage(language);
-        if (!this.isRegisteredPlayer(playerUUID)) {
-            this.setPlayerLanguage(playerUUID, validLanguage);
-            this.debug("Creating user: " + playerUUID.toString() + " with language " + validLanguage);
+        if (!this.isRegisteredPlayer(playerId)) {
+            this.setPlayerLanguage(playerId, validLanguage);
+            this.debug("Creating user: " + playerId.toString() + " with language " + validLanguage);
         } else {
-            String currentLanguage = this.getPlayerLanguage(playerUUID);
+            String currentLanguage = this.getPlayerLanguage(playerId);
             if (!this.languageAPI.isLanguage(currentLanguage)) {
-                this.setPlayerLanguage(playerUUID, this.languageAPI.getDefaultLanguage());
+                this.setPlayerLanguage(playerId, this.languageAPI.getDefaultLanguage());
             }
         }
     }
 
     @Override
-    public boolean isRegisteredPlayer(UUID playerUUID) {
+    public boolean isRegisteredPlayer(UUID playerId) {
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM playerlanguage WHERE uuid=?;")) {
-            preparedStatement.setString(1, playerUUID.toString());
+            preparedStatement.setString(1, playerId.toString());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 return resultSet.next();
             }
@@ -177,8 +181,8 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
     }
 
     @Override
-    public CompletableFuture<Boolean> isRegisteredPlayerAsync(UUID playerUUID) {
-        return CompletableFuture.supplyAsync(() -> this.isRegisteredPlayer(playerUUID));
+    public CompletableFuture<Boolean> isRegisteredPlayerAsync(UUID playerId) {
+        return CompletableFuture.supplyAsync(() -> this.isRegisteredPlayer(playerId));
     }
 
     @Override

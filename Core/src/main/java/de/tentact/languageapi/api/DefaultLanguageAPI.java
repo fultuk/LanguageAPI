@@ -118,6 +118,15 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     }
 
     @Override
+    public boolean addMessage(String translationKey, String message, String language, List<String> parameter) {
+        if (!this.isLanguage(language)) {
+            throw new IllegalArgumentException("Language " + language + " was not found!");
+        }
+        this.setParameter(translationKey, parameter);
+        return this.addMessage(translationKey, message, language);
+    }
+
+    @Override
     public boolean addMessage(final String translationKey, final String message, final String language) {
         if (!this.isLanguage(language)) {
             return false;
@@ -161,6 +170,13 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
                 throwable.printStackTrace();
             }
         });
+    }
+
+    @Override
+    public void setParameter(String translationKey, List<String> parameter) {
+        for (String s : parameter) {
+            this.setParameter(translationKey, s);
+        }
     }
 
     @Override
@@ -218,6 +234,12 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     @Override
     public boolean addMessageToDefault(final String translationKey, final String translation, final String param) {
         this.setParameter(translationKey, param);
+        return this.addMessageToDefault(translationKey, translation);
+    }
+
+    @Override
+    public boolean addMessageToDefault(String translationKey, String translation, List<String> parameter) {
+        this.setParameter(translationKey, parameter);
         return this.addMessageToDefault(translationKey, translation);
     }
 

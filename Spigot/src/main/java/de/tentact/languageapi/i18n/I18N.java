@@ -29,6 +29,7 @@ import de.tentact.languageapi.LanguageAPI;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public enum I18N {
@@ -92,10 +93,15 @@ public enum I18N {
     private final String key;
 
     I18N(String key, String defaultTranslation) {
-        this(key, defaultTranslation, null);
+        this(key, defaultTranslation, Collections.emptyList());
     }
 
     I18N(String key, String defaultTranslation, String parameter) {
+        this.key = key;
+        LanguageAPI.getInstance().addMessageToDefault(key, defaultTranslation, Arrays.asList(parameter.split(",")));
+    }
+
+    I18N(String key, String defaultTranslation, List<String> parameter) {
         this.key = key;
         LanguageAPI.getInstance().addMessageToDefault(key, defaultTranslation, parameter);
     }
