@@ -41,7 +41,7 @@ public class LanguageInventory {
     }
 
     public Inventory getLanguageInventory() {
-        if(this.inventory != null) {
+        if (this.inventory != null) {
             return this.inventory;
         }
         if (this.languageInventoryConfiguration == null) {
@@ -54,14 +54,14 @@ public class LanguageInventory {
 
         ItemBuilder builder = new ItemBuilder(this.languageInventoryConfiguration.getFillItemMaterial());
         byte subId = this.languageInventoryConfiguration.getSubId();
-        if(subId != -1) {
-             builder.setSubId(subId);
+        if (subId != -1) {
+            builder.setSubId(subId);
         }
         for (int i = 0; i < inventory.getSize(); i++) {
             inventory.setItem(i, builder.build());
         }
         for (LanguageItem languageItem : this.languageInventoryConfiguration.getLanguages()) {
-            ItemStack itemStack = ItemBuilder.buildSkull(languageItem.getHeadValue(), languageItem.getDisplayName(), languageItem.getLore());
+            ItemStack itemStack = ItemBuilder.buildSkull(languageItem.getMaterial(), languageItem.getHeadValue(), languageItem.getDisplayName(), languageItem.getLore());
             inventory.setItem(languageItem.getInventorySlot(), itemStack);
         }
         this.inventory = inventory;

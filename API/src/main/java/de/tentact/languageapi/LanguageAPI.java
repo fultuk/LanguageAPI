@@ -58,7 +58,7 @@ public abstract class LanguageAPI {
 
     /**
      * @param languageAPI instance of the interface
-     * sets the instance of the interface - set by the implementation
+     *                    sets the instance of the interface - set by the implementation
      * @since 1.8
      */
     public static void setInstance(@NotNull LanguageAPI languageAPI) {
@@ -84,33 +84,46 @@ public abstract class LanguageAPI {
 
     /**
      * @param translationKey the translationkey to find the translation
-     * @param message  the translation to that translationkey
-     * @param language the language of the translation
-     * @param param    the parameters that are used in the translation (ex. %KEY%) - seperate them by ',' (ex. %PARAM1%,%PARAM2%)
-     *                 adds an translation to the given language with a proper translation and parameters
+     * @param message        the translation to that translationkey
+     * @param language       the language of the translation
+     * @param param          the parameters that are used in the translation (ex. %KEY%) - seperate them by ',' (ex. %PARAM1%,%PARAM2%)
+     *                       adds an translation to the given language with a proper translation and parameters
      * @since 1.8
+     * @deprecated use {@link LanguageAPI#addMessage(String, String, String, List)}
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public abstract boolean addMessage(final String translationKey, final String message, final String language, String param);
 
     /**
      * @param translationKey the translationkey to find the translation
-     * @param message  the translation to that translationkey
-     * @param language the language of the translation
+     * @param message        the translation to that translationkey
+     * @param language       the language of the translation
+     * @param parameter          the parameters that are used in the translation
+     *                       adds an translation to the given language with a proper translation and parameters
+     * @since 1.9
+     */
+    public abstract boolean addMessage(final String translationKey, final String message, final String language, List<String> parameter);
+
+    /**
+     * @param translationKey the translationkey to find the translation
+     * @param message        the translation to that translationkey
+     * @param language       the language of the translation
      * @since 1.8
      */
     public abstract boolean addMessage(final String translationKey, final String message, final String language);
 
     /**
      * @param translationKey the translationkey to the translation (the translation is the key)
-     * @param language the language to the translationkey
-     *                 adds a translation without an proper translation, it just uses the translationkey as translation
+     * @param language       the language to the translationkey
+     *                       adds a translation without an proper translation, it just uses the translationkey as translation
      * @since 1.8
      */
     public abstract boolean addMessage(final String translationKey, final String language);
 
     /**
      * @param translationKey the translationkey to the translation
-     *                 adds a translation without an proper translation to the default language, it just uses the translationkey as translation
+     *                       adds a translation without an proper translation to the default language, it just uses the translationkey as translation
      * @since 1.8
      */
     public abstract boolean addMessage(final String translationKey);
@@ -125,49 +138,79 @@ public abstract class LanguageAPI {
 
     /**
      * Adds a translation to the default language with the parameters
-     * @param translationKey    translationkey to the translation
-     * @param translation the translation to the translationkey
-     * @param param       the parameters to the translation
      *
+     * @param translationKey translationkey to the translation
+     * @param translation    the translation to the translationkey
+     * @param param          the parameters to the translation
      * @return if the translation was added
      * @since 1.8
+     * @deprecated use {@link LanguageAPI#addMessageToDefault(String, String, List)}
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public abstract boolean addMessageToDefault(final String translationKey, final String translation, final String param);
+
+    /**
+     * Adds a translation to the default language with the parameters
+     *
+     * @param translationKey translationkey to the translation
+     * @param translation    the translation to the translationkey
+     * @param parameter          the parameters to the translation
+     * @return if the translation was added
+     * @since 1.9
+     */
+    public abstract boolean addMessageToDefault(final String translationKey, final String translation, final List<String> parameter);
 
     /**
      * @param multipleTranslation the translationkey to the set of translations
      * @param translationKey      the translationkey that should be added to the set
      *                            adds an single translationkey to an set of keys
      * @since 1.8
+     * @deprecated use {@link LanguageAPI#addMultipleTranslation(String, String)}
      */
 
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public abstract void addTranslationKeyToMultipleTranslation(final String multipleTranslation, final String translationKey);
 
     /**
      * @param translationKey the translationkey to find the parameters
-     * @param param  the parameters to the translationkey (ex. %KEY%,%KEY2%)
+     * @param parameter      the parameters to the translationkey (ex. %KEY%,%KEY2%)
      * @since 1.9 (updated how it works)
+     * @deprecated use {@link LanguageAPI#setParameter(String, String)}
      */
-    public abstract void addParameter(final String translationKey, final String param);
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
+    public abstract void addParameter(final String translationKey, final String parameter);
 
     /**
-     * Sets the parameters (overrides)
+     * Sets the parameter
+     *
      * @param translationKey the translationkey to find the parameters
-     * @param param    the parameters to the translationkey (ex. %KEY%)
+     * @param parameter      the parameter to the translationkey (ex. %KEY%)
      * @since 1.9
      */
-    public abstract void setParameter(final String translationKey, final String param);
+    public abstract void setParameter(final String translationKey, final String parameter);
+
+    /**
+     * Sets the parameter
+     *
+     * @param translationKey the translationkey to find the parameters
+     * @param parameter      the parameters to the translationkey (ex. %KEY%)
+     * @since 1.9
+     */
+    public abstract void setParameter(final String translationKey, final List<String> parameter);
 
     /**
      * @param translationKey the translationkey to find the parameters
-     * @param param    the parameters to the translationkey (ex. %KEY%)
+     * @param parameter      the parameters to the translationkey (ex. %KEY%)
      * @since 1.8
      */
-    public abstract void deleteParameter(final String translationKey, final String param);
+    public abstract void deleteParameter(final String translationKey, final String parameter);
 
     /**
      * @param translationKey the translationkey to find the parameters
-     *                 deletes all parameter to a translationkey
+     *                       deletes all parameter to a translationkey
      * @since 1.8
      */
     public abstract void deleteAllParameter(final String translationKey);
@@ -199,21 +242,41 @@ public abstract class LanguageAPI {
      * @param translationKey the translationkey to get the parameters for
      * @return returns all the parameters to the translationKey, null if the key does not have any parameters
      * @since 1.8
+     * @deprecated use {@link LanguageAPI#getParameterAsList(String)}
      */
     @Nullable
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public abstract String getParameter(String translationKey);
+
+    /**
+     * @param translationKey the translationkey to get the parameters for
+     * @return returns all the parameters to the translationKey, the list is empty if there are no parameters
+     * @since 1.9
+     */
+    public abstract List<String> getParameterAsList(String translationKey);
 
     /**
      * @param translationKey the translationkey to get the parameters for
      * @return returns all the parameters to the translationKey, null if the key does not have any parameters
      * @since 1.9
+     * @deprecated use {@link LanguageAPI#getParameterAsListAsync(String)}
      */
     @Nullable
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public abstract CompletableFuture<String> getParameterAsync(String translationKey);
 
     /**
+     * @param translationKey the translationkey to get the parameters for
+     * @return returns all the parameters to the translationKey, the list is empty if there are no parameters
+     * @since 1.9
+     */
+    public abstract CompletableFuture<List<String>> getParameterAsListAsync(String translationKey);
+
+    /**
      * @param translationKey the translationkey to check the parameters for
-     * @param parameter          the parameter to check for
+     * @param parameter      the parameter to check for
      * @return returns if {@param parameter} is a parameter of the given translationkey
      * @since 1.8
      */
@@ -221,7 +284,7 @@ public abstract class LanguageAPI {
 
     /**
      * @param translationKey the translationkey to check the parameters for
-     * @param parameter          the parameter to check for
+     * @param parameter      the parameter to check for
      * @return returns if {@param parameter} is a parameter of the given translationkey
      * @since 1.9
      */
@@ -246,15 +309,44 @@ public abstract class LanguageAPI {
      * @param translationKeys     a list of all translationskey to add in the set
      * @param overwrite           decides whether it will overwrite a current set if it already exists
      * @since 1.8
+     * @deprecated use {@link LanguageAPI#addMultipleTranslations(String, List)} or {@link LanguageAPI#addMultipleTranslation(String, String)}
      */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
     public abstract void setMultipleTranslation(final String multipleTranslation, List<String> translationKeys, boolean overwrite);
+
+    /**
+     * @param multipleTranslation the translationkey to the set of translations
+     * @param translationKey    a translationkey to add to the multipltranslation
+     * @since 1.9
+     */
+    public abstract void addMultipleTranslation(final String multipleTranslation, String translationKey);
+
+    /**
+     * @param multipleTranslation the translationkey to the set of translations
+     * @param translationKeys     all translationkeys to add to the set of translations
+     * @since 1.9
+     */
+    public abstract void addMultipleTranslations(final String multipleTranslation, List<String> translationKeys);
 
     /**
      * @param multipleTranslation the translationkey to the set of translations
      *                            Deletes a set of translations
      * @since 1.8
+     * @deprecated use {@link LanguageAPI#deleteMultipleTranslation(String)}
      */
-    public abstract void removeMultipleTranslation(final String multipleTranslation);
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "2.0")
+    public void removeMultipleTranslation(final String multipleTranslation) {
+        this.deleteMultipleTranslation(multipleTranslation);
+    }
+
+    /**
+     * @param multipleTranslation the translationkey to the set of translations
+     *                            Deletes a set of translations
+     * @since 1.9
+     */
+    public abstract void deleteMultipleTranslation(final String multipleTranslation);
 
     /**
      * @param multipleTranslation the translationkey to the set of translations
@@ -269,6 +361,13 @@ public abstract class LanguageAPI {
      * @since 1.8
      */
     public abstract boolean isMultipleTranslation(final String multipleTranslation);
+
+    /**
+     * @param multipleTranslation the translationkey to the set of translations
+     * @return returns if the translationkey is a set of translations
+     * @since 1.9
+     */
+    public abstract boolean isMultipleTranslationKey(final String multipleTranslation, String translationKey);
 
     /**
      * @param translationkey the translationkey to delete the translation from
@@ -286,12 +385,12 @@ public abstract class LanguageAPI {
     public abstract boolean isKey(String translationkey, String language);
 
     /**
-     * @param transkey the translationkey which holds the other keys
+     * @param translationKey the translationkey which holds the other keys
      * @return returns a {@link List<String>} with the translated messages in the default language
      * @since 1.8
      */
     @NotNull
-    public abstract List<String> getMultipleMessages(String transkey);
+    public abstract List<String> getMultipleMessages(String translationKey);
 
     /**
      * @param transkey the translationkey which holds the other keys
@@ -458,7 +557,6 @@ public abstract class LanguageAPI {
     public abstract CompletableFuture<List<String>> getAllTranslationsAsync(String language);
 
     /**
-     *
      * @param language the language to get the keys and translations from
      * @return returns a {@link Map} with every key and its translation in the given language
      * @since 1.8
@@ -467,7 +565,6 @@ public abstract class LanguageAPI {
     public abstract Map<String, String> getKeysAndTranslations(String language);
 
     /**
-     *
      * @param language the language to get the keys and translations from
      * @return returns a {@link Map} with every key and its translation in the given language
      * @since 1.9
@@ -499,6 +596,7 @@ public abstract class LanguageAPI {
 
     /**
      * Gets a {@link Translation} by its key
+     *
      * @param translationKey the translationKey to fetch the translation from
      * @return returns an {@link Translation}
      * @since 1.8
@@ -507,9 +605,8 @@ public abstract class LanguageAPI {
     public abstract Translation getTranslation(@NotNull String translationKey);
 
     /**
-     *
      * @param prefixTranslation the prefixTranslation before the actual translation
-     * @param translationKey the translationkey to fetch the translation from
+     * @param translationKey    the translationkey to fetch the translation from
      * @return returns a {@link Translation} with a prefixTranslation set
      * @since 1.8
      */
@@ -518,6 +615,7 @@ public abstract class LanguageAPI {
 
     /**
      * Gets the {@link PlayerExecutor} without a specific player
+     *
      * @return returns a {@link PlayerExecutor}
      * @since 1.8
      */
@@ -526,6 +624,7 @@ public abstract class LanguageAPI {
 
     /**
      * Gets the {@link ConsoleExecutor}
+     *
      * @return returns the {@link ConsoleExecutor}
      * @since 1.9
      */
@@ -534,6 +633,7 @@ public abstract class LanguageAPI {
 
     /**
      * Gets a {@link SpecificPlayerExecutor} to do updates for a specific player
+     *
      * @param playerId the uniqueId to identify the player with
      * @return returns a {@link SpecificPlayerExecutor} for the given playerId
      * @since 1.8
@@ -543,6 +643,7 @@ public abstract class LanguageAPI {
 
     /**
      * Updates an {@link Translation} in the cache
+     *
      * @param translation the translation to update
      * @since 1.8
      */
@@ -557,6 +658,7 @@ public abstract class LanguageAPI {
 
     /**
      * execute a {@link Runnable} async using the LanguageAPI {@link java.util.concurrent.ExecutorService}
+     *
      * @param command the command to run
      * @since 1.8
      */

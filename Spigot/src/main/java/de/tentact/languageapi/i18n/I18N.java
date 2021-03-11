@@ -29,6 +29,7 @@ import de.tentact.languageapi.LanguageAPI;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public enum I18N {
@@ -80,29 +81,34 @@ public enum I18N {
     LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE("languageapi-player-selected-language", "Du hast die Sprache %LANGUAGE% ausgewählt.", "%LANGUAGE%"),
     LANGUAGEAPI_INFO("languageapi-info", "Du benutzt folgende Version der LanguageAPI: %VERSION%", "%VERSION%"),
     LANGUAGEAPI_HELP("languageapi-help", Arrays.asList(
-            "languageapi-add-help",
-            "languageapi-update-help",
-            "languageapi-copy-help",
-            "languageapi-create-help",
-            "languageapi-import-help",
-            "languageapi-export-help",
-            "languageapi-list-help"
+            LANGUAGEAPI_ADD_HELP.key,
+            LANGUAGEAPI_UPDATE_HELP.key,
+            LANGUAGEAPI_COPY_HELP.key,
+            LANGUAGEAPI_CREATE_HELP.key,
+            LANGUAGEAPI_IMPORT_HELP.key,
+            LANGUAGEAPI_EXPORT_HELP.key,
+            LANGUAGE_LIST_HELP.key
     ));
 
     private final String key;
 
     I18N(String key, String defaultTranslation) {
-        this(key, defaultTranslation, null);
+        this(key, defaultTranslation, Collections.emptyList());
     }
 
     I18N(String key, String defaultTranslation, String parameter) {
+        this.key = key;
+        LanguageAPI.getInstance().addMessageToDefault(key, defaultTranslation, Arrays.asList(parameter.split(",")));
+    }
+
+    I18N(String key, String defaultTranslation, List<String> parameter) {
         this.key = key;
         LanguageAPI.getInstance().addMessageToDefault(key, defaultTranslation, parameter);
     }
 
     I18N(String key, List<String> keys) {
         this.key = key;
-        LanguageAPI.getInstance().setMultipleTranslation(key, new ArrayList<>(keys), true);
+        LanguageAPI.getInstance().addMultipleTranslations(key, new ArrayList<>(keys));
     }
 
     public Translation get() {

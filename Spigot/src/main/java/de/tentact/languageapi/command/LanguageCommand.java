@@ -47,8 +47,10 @@ import java.util.logging.Level;
 public class LanguageCommand implements TabExecutor {
 
     public final LanguageAPI languageAPI = LanguageAPI.getInstance();
-    private final List<String> tabComplete = Arrays.asList("add", "remove", "update", "create", "delete",
-            "param", "copy", "translations", "reload", "import", "export", "help", "info", "list");
+    private final List<String> tabComplete = Arrays.asList(
+            "add", "remove", "update", "create", "delete",
+            "param", "copy", "translations", "reload",
+            "import", "export", "help", "info", "list");
     public final List<Player> editingMessage = new ArrayList<>();
     public final Map<Player, List<String>> givenParameter = new HashMap<>();
     private final LanguageSpigot languageSpigot;
@@ -211,11 +213,15 @@ public class LanguageCommand implements TabExecutor {
                                 return false;
                             }
                             key = args[1].toLowerCase();
-                            if (!this.languageAPI.hasParameter(key) || "".equalsIgnoreCase(this.languageAPI.getParameter(key))) {
+                            if (!this.languageAPI.hasParameter(key) || this.languageAPI.getParameterAsList(key).isEmpty()) {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_KEY_HAS_NO_PARAM.get().replace("%KEY%", key));
                                 return false;
                             }
-                            languagePlayer.sendMessage(I18N.LANGUAGEAPI_SHOW_SUCCESS.get().replace("%PARAM%", this.languageAPI.getParameter(key)).replace("%KEY%", key));
+                            StringBuilder stringBuilder = new StringBuilder();
+                            for (String parameter : this.languageAPI.getParameterAsList(key)) {
+                                stringBuilder.append(parameter).append(",");
+                            }
+                            languagePlayer.sendMessage(I18N.LANGUAGEAPI_SHOW_SUCCESS.get().replace("%PARAM%", stringBuilder.toString()).replace("%KEY%", key));
                             return true;
                         case "translations":
                             if (this.checkDoesNotHavePermission(player, args)) {
@@ -244,7 +250,8 @@ public class LanguageCommand implements TabExecutor {
                                 if (this.languageAPI.getDefaultLanguage().contains(language)) {
                                     if (this.languageAPI.isKey(key, language)) {
                                         this.languageAPI.deleteMessage(key, language); //EINE SPRACHE EIN KEY
-                                        languagePlayer.sendMessage(I18N.LANGUAGEAPI_REMOVE_KEY_IN_LANGUAGE.get().replace("%KEY%", key)
+                                        languagePlayer.sendMessage(I18N.LANGUAGEAPI_REMOVE_KEY_IN_LANGUAGE.get()
+                                                .replace("%KEY%", key)
                                                 .replace("%LANG%", language));
                                         return true;
                                     } else if (key.endsWith("*")) {
@@ -253,7 +260,8 @@ public class LanguageCommand implements TabExecutor {
                                                 this.languageAPI.deleteMessage(keys, language);
                                             }
                                         }
-                                        languagePlayer.sendMessage(I18N.LANGUAGEAPI_REMOVE_EVERY_KEY_IN_LANGUAGE.get().replace("%LANG%", language)
+                                        languagePlayer.sendMessage(I18N.LANGUAGEAPI_REMOVE_EVERY_KEY_IN_LANGUAGE.get()
+                                                .replace("%LANG%", language)
                                                 .replace("%STARTSWITH%", key.replace("*", "")));
                                         return true;
                                     } else {
@@ -281,7 +289,8 @@ public class LanguageCommand implements TabExecutor {
                                                 this.languageAPI.deleteAllParameter(key);
                                             }
                                         });
-                                        languagePlayer.sendMessage(I18N.LANGUAGEAPI_REMOVE_KEY_IN_EVERY_LANGUAGE.get().replace("%KEY%", key));
+                                        languagePlayer.sendMessage(I18N.LANGUAGEAPI_REMOVE_KEY_IN_EVERY_LANGUAGE.get()
+                                                .replace("%KEY%", key));
                                     }
                                     return true;
                                 }
@@ -297,7 +306,8 @@ public class LanguageCommand implements TabExecutor {
                             }
                             File file = new File("plugins/LanguageAPI/import", args[1]);
                             if (!file.exists()) {
-                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_FILE_NOT_FOUND.get().replace("%FILE%", args[1]));
+                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_FILE_NOT_FOUND.get()
+                                        .replace("%FILE%", args[1]));
                                 return false;
                             }
                             boolean passed = this.languageAPI.getFileHandler().loadFile(file, this.parseBoolean(args[2]));
@@ -305,7 +315,8 @@ public class LanguageCommand implements TabExecutor {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_ERROR.get());
                                 return false;
                             }
-                            languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_SUCCESS.get().replace("%FILE%", args[1]));
+                            languagePlayer.sendMessage(I18N.LANGUAGEAPI_IMPORT_SUCCESS.get()
+                                    .replace("%FILE%", args[1]));
                             break;
                         case "export":
                             if (this.checkDoesNotHavePermission(player, args)) {
@@ -332,7 +343,8 @@ public class LanguageCommand implements TabExecutor {
                                     languagePlayer.sendMessage(I18N.LANGUAGEAPI_EXPORT_ERROR.get().replace("%LANGUAGE%", args[1]));
                                     return false;
                                 }
-                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_EXPORT_SUCCESS.get().replace("%FILE%", args[1].toLowerCase() + ".yml"));
+                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_EXPORT_SUCCESS.get()
+                                        .replace("%FILE%", args[1].toLowerCase() + ".yml"));
                             }
                             break;
                         case "reload":

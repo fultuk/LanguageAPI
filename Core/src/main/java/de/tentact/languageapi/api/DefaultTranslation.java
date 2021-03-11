@@ -30,9 +30,7 @@ import de.tentact.languageapi.i18n.Translation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -99,8 +97,18 @@ public class DefaultTranslation implements Translation {
     }
 
     @Override
+    public List<String> getParameterAsList() {
+        return this.languageAPI.getParameterAsList(this.translationKey);
+    }
+
+    @Override
     public CompletableFuture<String> getParameterAsync() {
         return this.languageAPI.getParameterAsync(this.translationKey);
+    }
+
+    @Override
+    public CompletableFuture<List<String>> getParameterAsListAsync() {
+        return this.languageAPI.getParameterAsListAsync(this.translationKey);
     }
 
     @Override
@@ -138,6 +146,12 @@ public class DefaultTranslation implements Translation {
     }
 
     @Override
+    public @NotNull Translation createDefaults(String message, List<String> parameter) {
+        this.languageAPI.addMessageToDefault(this.translationKey, message, parameter);
+        return this;
+    }
+
+    @Override
     public @NotNull Translation createDefaults(String message, String param) {
         this.languageAPI.addMessageToDefault(this.translationKey, message, param);
         return this;
@@ -145,7 +159,13 @@ public class DefaultTranslation implements Translation {
 
     @Override
     public @NotNull Translation addTranslation(String language, String message) {
-        return this.addTranslation(language, message, null);
+        return this.addTranslation(language, message, Collections.emptyList());
+    }
+
+    @Override
+    public @NotNull Translation addTranslation(String language, String message, List<String> parameter) {
+        this.languageAPI.addMessage(this.translationKey, language, message, parameter);
+        return this;
     }
 
     @Override
