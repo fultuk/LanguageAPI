@@ -349,12 +349,12 @@ public abstract class LanguageAPI {
     public abstract boolean isKey(String translationkey, String language);
 
     /**
-     * @param transkey the translationkey which holds the other keys
+     * @param translationKey the translationkey which holds the other keys
      * @return returns a {@link List<String>} with the translated messages in the default language
      * @since 1.8
      */
     @NotNull
-    public abstract List<String> getMultipleMessages(String transkey);
+    public abstract List<String> getMultipleMessages(String translationKey);
 
     /**
      * @param transkey the translationkey which holds the other keys

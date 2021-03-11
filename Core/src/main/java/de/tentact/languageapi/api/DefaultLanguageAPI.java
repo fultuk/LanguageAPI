@@ -528,29 +528,31 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     }
 
     @Override
-    public @NotNull List<String> getMultipleMessages(String multipleKey, String language, String prefixKey) {
-
+    public @NotNull List<String> getMultipleMessages(String multipletranslationKey, String language, String prefixKey) {
         List<String> resolvedMessages = new ArrayList<>();
-        String[] translationKeys = new String[0];
+        List<String> translationKeys = new ArrayList<>();
+
         String prefix = "";
         if (prefixKey != null && !prefixKey.isEmpty()) {
             prefix = this.getMessage(prefixKey, language);
         }
+
         try (Connection connection = this.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT translationkey FROM MultipleTranslation WHERE multipleKey=?;")) {
-            preparedStatement.setString(1, multipleKey.toLowerCase());
+            preparedStatement.setString(1, multipletranslationKey.toLowerCase());
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                String column = resultSet.getString("translationKey");
-                translationKeys = column.split(",");
+            while (resultSet.next()) {
+                translationKeys.add(resultSet.getString("translationkey").toLowerCase());
             }
             resultSet.close();
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
+
         for (String translationKey : translationKeys) {
             resolvedMessages.add(prefix + this.getMessage(translationKey, language));
         }
+
         return resolvedMessages;
     }
 
