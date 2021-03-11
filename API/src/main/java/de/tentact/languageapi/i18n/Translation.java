@@ -108,7 +108,7 @@ public interface Translation {
 
     /**
      * @return returns all parameters for the key in the {@link Translation#getTranslationKey()}
-     * @deprecated {@link Translation#getParameterAsList()}
+     * @deprecated use {@link Translation#getParameterAsList()}
      */
     @Nullable
     @Deprecated

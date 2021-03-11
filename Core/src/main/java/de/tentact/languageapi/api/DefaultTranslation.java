@@ -95,7 +95,6 @@ public class DefaultTranslation implements Translation {
     }
 
     @Override
-    @Deprecated
     public String getParameter() {
         return this.languageAPI.getParameter(this.translationKey);
     }

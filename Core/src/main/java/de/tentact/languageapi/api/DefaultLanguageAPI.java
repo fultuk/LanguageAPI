@@ -228,6 +228,9 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public void copyLanguage(String languageFrom, String languageTo) {
+        if(languageFrom == null || languageTo == null) {
+            return;
+        }
         if (!this.isLanguage(languageFrom.toLowerCase()) || !this.isLanguage(languageTo.toLowerCase())) {
             throw new IllegalArgumentException("Language " + languageFrom + " or " + languageTo + " was not found!");
         }
@@ -247,7 +250,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         }
         try (Connection connection = this.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Parameter WHERE translationkey=?;")) {
-            preparedStatement.setString(1, translationKey);
+            preparedStatement.setString(1, translationKey.toLowerCase());
             ResultSet resultSet = preparedStatement.executeQuery();
             return resultSet.next();
         } catch (SQLException throwable) {
@@ -756,7 +759,10 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         this.languageConfig.debug(message);
     }
 
-    //Original from bungeecord
+    /*
+    This is from the Bungeecord-API
+    https://github.com/SpigotMC/BungeeCord/blob/a7c6edeb638f0a2ba4fb051f2b0be5a6e226c955/chat/src/main/java/net/md_5/bungee/api/ChatColor.java#L214
+     */
     private String translateColorCode(String textToTranslate) {
         char[] b = textToTranslate.toCharArray();
         for (int i = 0; i < b.length - 1; i++) {
