@@ -77,7 +77,7 @@ public class LanguageSpigot extends JavaPlugin {
     }
 
     public String getVersion() {
-        return "1.9-SNAPSHOT-1514-0702";
+        return "1.9-SNAPSHOT-1203-1121";
     }
 
     public void setSpigotConfiguration(SpigotConfiguration spigotConfiguration) {

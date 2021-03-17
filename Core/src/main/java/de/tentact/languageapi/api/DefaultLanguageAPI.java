@@ -183,13 +183,13 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public void deleteParameter(final String translationKey, final String parameter) {
-        if (!this.hasParameter(translationKey)) {
-            return;
-        }
-        if (!this.isParameter(translationKey, parameter)) {
-            return;
-        }
         this.executorService.execute(() -> {
+            if (!this.hasParameter(translationKey)) {
+                return;
+            }
+            if (!this.isParameter(translationKey, parameter)) {
+                return;
+            }
             try (Connection connection = this.getDataSource().getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Parameter WHERE translationkey=? AND parameter=?;")) {
                 preparedStatement.setString(1, translationKey);
@@ -252,13 +252,13 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public void copyLanguage(String languageFrom, String languageTo) {
-        if(languageFrom == null || languageTo == null) {
-            return;
-        }
-        if (!this.isLanguage(languageFrom.toLowerCase()) || !this.isLanguage(languageTo.toLowerCase())) {
-            throw new IllegalArgumentException("Language " + languageFrom + " or " + languageTo + " was not found!");
-        }
         this.executorService.execute(() -> {
+            if (languageFrom == null || languageTo == null) {
+                return;
+            }
+            if (!this.isLanguage(languageFrom.toLowerCase()) || !this.isLanguage(languageTo.toLowerCase())) {
+                throw new IllegalArgumentException("Language " + languageFrom + " or " + languageTo + " was not found!");
+            }
             try (Connection connection = this.getDataSource().getConnection()) {
                 connection.createStatement().execute("INSERT IGNORE " + languageTo + " SELECT * FROM " + languageFrom + ";");
             } catch (SQLException throwable) {

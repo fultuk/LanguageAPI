@@ -70,8 +70,8 @@ public class LanguageCommand implements TabExecutor {
             if (languagePlayer == null) {
                 return false;
             }
-            if (player.hasPermission("system.languageapi")) { //lang add lang key MSG | lang remove lang key | lang update lang key msg | lang createlang lang | lang deletelang lang
-                if (args.length >= 1) { //lang reload
+            if (player.hasPermission("system.languageapi")) {
+                if (args.length >= 1) {
                     switch (args[0].toLowerCase()) {
                         case "add":
                             if (this.checkDoesNotHavePermission(player, args)) {
@@ -137,25 +137,22 @@ public class LanguageCommand implements TabExecutor {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_CREATE_HELP.get());
                                 return false;
                             }
-                            language = args[1].toLowerCase();
-                            if (!this.languageAPI.getAvailableLanguages().contains(language)) {
-                                this.languageAPI.createLanguage(language);
-                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_CREATE_SUCCESS.get().replace("%LANG%", language));
-                                return true;
-                            } else {
-                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_ALREADY_EXISTS.get().replace("%LANG%", language));
-                                return false;
-                            }
+                            this.languageAPI.getAvailableLanguagesAsync().thenAccept(languageList -> {
+                                final String lowerCaseLanguage = args[1].toLowerCase();
+                                if (!languageList.contains(lowerCaseLanguage)) {
+                                    this.languageAPI.createLanguage(lowerCaseLanguage);
+                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_CREATE_SUCCESS.get().replace("%LANG%", lowerCaseLanguage));
+                                } else {
+                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_ALREADY_EXISTS.get().replace("%LANG%", lowerCaseLanguage));
+                                }
+                            });
                         case "list":
                             if (this.checkDoesNotHavePermission(player, args)) {
                                 return false;
                             }
                             this.languageAPI.getAvailableLanguagesAsync().thenAccept(languageList -> {
-                                StringBuilder languageBuilder = new StringBuilder();
-                                for (String languages : languageList) {
-                                    languageBuilder.append(languages).append(", ");
-                                }
-                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANGUAGES_LIST.get().replace("%LANGUAGES%", languageBuilder.toString()));
+                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANGUAGES_LIST.get().replace("%LANGUAGES%",
+                                        String.join(",", languageList.toArray(new CharSequence[0]))));
                             });
                         case "delete":
                             if (this.checkDoesNotHavePermission(player, args)) {
@@ -187,20 +184,21 @@ public class LanguageCommand implements TabExecutor {
                             if (args.length >= 3) {
                                 String langfrom = args[1].toLowerCase();
                                 String langto = args[2].toLowerCase();
-                                if (this.languageAPI.getAvailableLanguages().contains(langfrom) && this.languageAPI.getAvailableLanguages().contains(langto)) {
-                                    this.languageAPI.copyLanguage(langfrom, langto);
-                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_COPY_SUCCESS.get().replace("%OLDLANG%", langfrom)
-                                            .replace("%NEWLANG%", langto));
-                                    return true;
-                                } else {
-                                    language = langfrom;
-                                    if (this.languageAPI.getAvailableLanguages().contains(langfrom)) {
-                                        language = langto;
+                                this.languageAPI.isLanguageAsync(langfrom).thenAccept(isLangFrom -> this.languageAPI.isLanguageAsync(langto).thenAccept(isLangTo -> {
+                                    String resultLanguage;
+                                    if (isLangFrom && isLangTo) {
+                                        this.languageAPI.copyLanguage(langfrom, langto);
+                                        languagePlayer.sendMessage(I18N.LANGUAGEAPI_COPY_SUCCESS.get().replace("%OLDLANG%", langfrom)
+                                                .replace("%NEWLANG%", langto));
+                                    } else {
+                                        resultLanguage = langfrom;
+                                        if (this.languageAPI.getAvailableLanguages().contains(langfrom)) {
+                                            resultLanguage = langto;
+                                        }
+                                        languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_NOT_FOUND.get()
+                                                .replace("%LANG%", resultLanguage));
                                     }
-                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_NOT_FOUND.get()
-                                            .replace("%LANG%", language));
-                                    return false;
-                                }
+                                }));
                             } else {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_COPY_HELP.get());
                                 return false;
