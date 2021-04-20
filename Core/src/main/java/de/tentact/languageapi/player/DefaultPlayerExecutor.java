@@ -149,8 +149,9 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
 
     @Override
     public void registerPlayer(UUID playerId, String language) {
-        String validLanguage = this.validateLanguage(language);
-        LanguageAPI.getInstance().executeAsync(() -> {
+        this.languageAPI.executeAsync(() -> {
+            String validLanguage = this.validateLanguage(language);
+
             if (!this.isRegisteredPlayer(playerId)) {
                 this.setPlayerLanguage(playerId, validLanguage);
                 this.debug("Creating user: " + playerId + " with language " + validLanguage);

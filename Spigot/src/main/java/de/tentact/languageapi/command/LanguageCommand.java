@@ -222,11 +222,10 @@ public class LanguageCommand implements TabExecutor {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_KEY_HAS_NO_PARAM.get().replace("%KEY%", key));
                                 return false;
                             }
-                            this.languageAPI.getParameterAsListAsync(key).thenAccept(parameterList -> {
-                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_SHOW_SUCCESS.get()
-                                        .replace("%PARAM%", String.join(",", parameterList))
-                                        .replace("%KEY%", key));
-                            });
+                            this.languageAPI.getParameterAsListAsync(key).thenAccept(parameterList ->
+                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_SHOW_SUCCESS.get()
+                                            .replace("%PARAM%", String.join(",", parameterList))
+                                            .replace("%KEY%", key)));
                             return true;
                         case "translations":
                             if (this.checkDoesNotHavePermission(player, args)) {

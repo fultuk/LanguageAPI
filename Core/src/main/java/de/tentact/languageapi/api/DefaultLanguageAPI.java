@@ -301,12 +301,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         if (!this.hasParameter(translationKey)) {
             return null;
         }
-        List<String> parameter = this.getParameterAsList(translationKey);
-        StringBuilder stringBuilder = new StringBuilder();
-        for (String s : parameter) {
-            stringBuilder.append(s).append(",");
-        }
-        return stringBuilder.toString();
+        return String.join(",", this.getParameterAsList(translationKey));
     }
 
     @Override
