@@ -92,6 +92,7 @@ public class ExampleLanguageAPI {
         translation.replace("toReplace", "with");
         languagePlayer.sendMessage(translation.replace("%EXAMPLE%", "Replacement"));
 
+
         /*
          * Send a message directly by the translationKey
          */
