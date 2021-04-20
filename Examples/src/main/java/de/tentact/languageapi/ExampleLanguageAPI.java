@@ -133,9 +133,13 @@ public class ExampleLanguageAPI {
     public void export() {
         FileHandler fileHandler = this.languageAPI.getFileHandler();
 
-        boolean passed = fileHandler.exportLanguageToFile("languageName");
+        fileHandler.exportLanguageToFile("languageName").thenAccept(passed -> {
 
-        boolean allFilesPassed = fileHandler.exportAll();
+        });
+
+        fileHandler.exportAll().thenAccept(allFilesPassed -> {
+
+        });
     }
 
 }

@@ -28,6 +28,7 @@ package de.tentact.languageapi.file;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * This is used to import files and insert the values into the database
@@ -61,8 +62,18 @@ public interface FileHandler {
      * @param doOverwrite whether to overwrite old translations
      * @return returns if it imported correctly
      * @since 1.8
+     *
      */
     boolean loadFile(@NotNull File file, boolean doOverwrite);
+
+    /**
+     * Loads a file and inserts the content to the database async
+     * @param file the file that should be read
+     * @param doOverwrite whether to overwrite old translations
+     * @return returns if it imported correctly
+     * @since 1.9
+     */
+    CompletableFuture<Boolean> loadFileAsync(@NotNull File file, boolean doOverwrite);
 
     /**
      * Loads files and inserts the content to the database
@@ -86,7 +97,7 @@ public interface FileHandler {
      * @since 1.9
      * @return whether all languages were exported or not
      */
-    boolean exportAll();
+    CompletableFuture<Boolean> exportAll();
 
     /**
      * Exports all translationKeys and translations into a file
@@ -94,7 +105,7 @@ public interface FileHandler {
      * @param language the language to export
      * @return whether the language was exported or not
      */
-    boolean exportLanguageToFile(@NotNull String language);
+    CompletableFuture<Boolean> exportLanguageToFile(@NotNull String language);
 
     /**
      * Exports all translationKeys and translations into a file
@@ -103,6 +114,6 @@ public interface FileHandler {
      * @param file the parent file destination
      * @return whether the language was exported or not
      */
-    boolean exportLanguageToFile(@NotNull String language, File file);
+    CompletableFuture<Boolean> exportLanguageToFile(@NotNull String language, File file);
 
 }

@@ -39,13 +39,15 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @since 1.9
  */
 public class DefaultFileHandler implements FileHandler {
 
-    private static final Type translationType = new TypeToken<Map<String, String>>(){}.getType();
+    private static final Type translationType = new TypeToken<Map<String, String>>() {
+    }.getType();
 
     @Override
     public boolean loadFile(@NotNull File file, boolean doOverwrite) {
@@ -66,38 +68,47 @@ public class DefaultFileHandler implements FileHandler {
     }
 
     @Override
-    public boolean exportAll() {
-        boolean passed = true;
-        for (String language : LanguageAPI.getInstance().getAvailableLanguages()) {
-            if (!this.exportLanguageToFile(language)) {
-                passed = false;
-            }
-        }
-        return passed;
+    public CompletableFuture<Boolean> loadFileAsync(@NotNull File file, boolean doOverwrite) {
+        return CompletableFuture.supplyAsync(() -> this.loadFile(file, doOverwrite));
     }
 
     @Override
-    public boolean exportLanguageToFile(@NotNull String language) {
+    public CompletableFuture<Boolean> exportAll() {
+        return CompletableFuture.supplyAsync(() -> {
+            boolean passed = true;
+            for (String language : LanguageAPI.getInstance().getAvailableLanguages()) {
+                if (!this.exportLanguageToFile(language).join()) {
+                    passed = false;
+                }
+            }
+            return passed;
+        });
+    }
+
+    @Override
+    public CompletableFuture<Boolean> exportLanguageToFile(@NotNull String language) {
         return this.exportLanguageToFile(language, new File("plugins/LanguageAPI/export"));
     }
 
     @Override
-    public boolean exportLanguageToFile(@NotNull String language, File file) {
-        if (!LanguageAPI.getInstance().isLanguage(language)) {
-            return false;
-        }
-        Map<String, String> keysAndTranslations = new HashMap<>();
-        keysAndTranslations.put("language", language);
-        keysAndTranslations.putAll(LanguageAPI.getInstance().getKeysAndTranslations(language));
+    public CompletableFuture<Boolean> exportLanguageToFile(@NotNull String language, File file) {
+        return CompletableFuture.supplyAsync(() -> {
+            if (!LanguageAPI.getInstance().isLanguage(language)) {
+                return false;
+            }
+            Map<String, String> keysAndTranslations = new HashMap<>();
+            keysAndTranslations.put("language", language);
+            keysAndTranslations.putAll(LanguageAPI.getInstance().getKeysAndTranslations(language));
 
-        Document document = new DefaultDocument("languageapi", keysAndTranslations);
-        File outputFile = new File(file, language.toLowerCase()+".yml");
-        try {
-            Files.createDirectories(outputFile.getParentFile().toPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        document.yaml().write(outputFile);
-        return true;
+            Document document = new DefaultDocument("languageapi", keysAndTranslations);
+            File outputFile = new File(file, language.toLowerCase() + ".yml");
+            try {
+                Files.createDirectories(outputFile.getParentFile().toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            document.yaml().write(outputFile);
+            return true;
+        });
     }
 }
