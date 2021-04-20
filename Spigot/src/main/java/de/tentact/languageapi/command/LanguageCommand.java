@@ -41,7 +41,12 @@ import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 public class LanguageCommand implements TabExecutor {
@@ -119,16 +124,17 @@ public class LanguageCommand implements TabExecutor {
                                 return false;
                             }
                             key = args[2].toLowerCase();
-                            if (this.languageAPI.isKey(key, language)) {
-                                editingMessage.add(player);
-                                givenParameter.put(player, Arrays.asList(key, language));
-                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_INSTRUCTIONS.get());
-                                return true;
-                            } else {
-                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_KEY_NOT_FOUND.get().replace("%KEY%", key)
-                                        .replace("%LANG%", language));
-                                return false;
-                            }
+                            final String effectiveLanguage = language;
+                            this.languageAPI.isKeyAsync(key, language).thenAccept(isKey -> {
+                                if (isKey) {
+                                    this.editingMessage.add(player);
+                                    this.givenParameter.put(player, Arrays.asList(key, effectiveLanguage));
+                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_INSTRUCTIONS.get());
+                                } else {
+                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_KEY_NOT_FOUND.get().replace("%KEY%", key)
+                                            .replace("%LANG%", effectiveLanguage));
+                                }
+                            });
                         case "create":
                             if (this.checkDoesNotHavePermission(player, args)) {
                                 return false;
@@ -371,7 +377,7 @@ public class LanguageCommand implements TabExecutor {
                     if (inventory == null) {
                         return false;
                     }
-                    player.openInventory(this.languageInventory.getLanguageInventory());
+                    player.openInventory(inventory);
                 }
             } else {
                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_NOPERMS.get());

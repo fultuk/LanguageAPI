@@ -49,7 +49,7 @@ public class MySQL {
     public void connect() {
         if (this.isNotConnected()) {
             this.dataSource = new HikariDataSource();
-            this.dataSource.setJdbcUrl("jdbc:mysql://" + hostname + ":" + port + "/" + database);
+            this.dataSource.setJdbcUrl("jdbc:mysql://" + this.hostname + ":" + this.port + "/" + this.database);
             this.dataSource.setUsername(this.username);
             this.dataSource.setPassword(this.password);
             this.logger.info("Creating connection to database");

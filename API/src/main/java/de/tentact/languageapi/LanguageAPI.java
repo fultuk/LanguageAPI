@@ -385,6 +385,14 @@ public abstract class LanguageAPI {
     public abstract boolean isKey(String translationkey, String language);
 
     /**
+     * @param translationkey the translationkey to check if it is one
+     * @param language       the language to the translationkey
+     * @return returns if the translationkey is in the database for that language
+     * @since 1.9
+     */
+    public abstract CompletableFuture<Boolean> isKeyAsync(String translationkey, String language);
+
+    /**
      * @param translationKey the translationkey which holds the other keys
      * @return returns a {@link List<String>} with the translated messages in the default language
      * @since 1.8
