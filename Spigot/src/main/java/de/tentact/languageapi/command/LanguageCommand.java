@@ -152,13 +152,14 @@ public class LanguageCommand implements TabExecutor {
                                     languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_ALREADY_EXISTS.get().replace("%LANG%", lowerCaseLanguage));
                                 }
                             });
+                            break;
                         case "list":
                             if (this.checkDoesNotHavePermission(player, args)) {
                                 return false;
                             }
                             this.languageAPI.getAvailableLanguagesAsync().thenAccept(languageList ->
                                     languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANGUAGES_LIST.get()
-                                            .replace("%LANGUAGES%", String.join(",", languageList))));
+                                            .replace("%LANGUAGES%", String.join(", ", languageList))));
                         case "delete":
                             if (this.checkDoesNotHavePermission(player, args)) {
                                 return false;

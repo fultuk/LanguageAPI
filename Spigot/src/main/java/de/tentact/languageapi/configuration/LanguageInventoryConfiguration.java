@@ -66,7 +66,7 @@ public class LanguageInventoryConfiguration {
     }
 
     private int calculateRows() {
-        return (int) Math.ceil(languages.size() / 9.0);
+        return (int) Math.ceil(this.languages.size() / 9.0);
     }
 
     public int getInventorySize() {

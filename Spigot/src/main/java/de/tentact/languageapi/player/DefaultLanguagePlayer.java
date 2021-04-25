@@ -71,7 +71,6 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
                         messages.forEach(player::sendMessage));
     }
 
-
     @Override
     public void kickPlayer(Translation translation) {
         Player player = this.player;

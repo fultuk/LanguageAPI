@@ -74,7 +74,10 @@ public class SpigotConfiguration extends Configuration {
                                         Arrays.asList(
                                                 new LanguageItem(
                                                         "PLAYER_HEAD",
-                                                        "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWU3ODk5YjQ4MDY4NTg2OTdlMjgzZjA4NGQ5MTczZmU0ODc4ODY0NTM3NzQ2MjZiMjRiZDhjZmVjYzc3YjNmIn19fQ==",
+                                                        "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0" +
+                                                                "dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWU3ODk5YjQ4MDY4NTg" +
+                                                                "2OTdlMjgzZjA4NGQ5MTczZmU0ODc4ODY0NTM3NzQ2MjZiMjRiZDhjZm" +
+                                                                "VjYzc3YjNmIn19fQ==",
                                                         "Deutsch (Deutschland)",
                                                         "de_de",
                                                         1,
@@ -82,7 +85,10 @@ public class SpigotConfiguration extends Configuration {
                                                 ),
                                                 new LanguageItem(
                                                         "PLAYER_HEAD",
-                                                        "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTllZGNkZDdiMDYxNzNkN2QyMjFjNzI3NGM4NmNiYTM1NzMwMTcwNzg4YmI2YTFkYjA5Y2M2ODEwNDM1YjkyYyJ9fX0=",
+                                                        "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0" +
+                                                                "dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTllZGNkZDdiMDYxNz" +
+                                                                "NkN2QyMjFjNzI3NGM4NmNiYTM1NzMwMTcwNzg4YmI2YTFkYjA5Y2M2O" +
+                                                                "DEwNDM1YjkyYyJ9fX0=",
                                                         "English (UK)",
                                                         "en_en",
                                                         0,

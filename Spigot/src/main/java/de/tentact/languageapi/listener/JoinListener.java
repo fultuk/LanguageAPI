@@ -55,8 +55,9 @@ public class JoinListener implements Listener {
         if (playerExecutor.isRegisteredPlayer()) {
             playerExecutor.registerPlayer();
         } else {
-            //TODO: rethink this, players might not be registered
-            player.performCommand("languageapi");
+            Bukkit.getScheduler().runTaskLater(this.languageSpigot, () -> {
+                player.performCommand("languageapi");
+            }, 1L);
         }
         if (!player.hasPermission("languageapi.notify")) {
             return;
