@@ -30,9 +30,14 @@ import de.tentact.languageapi.i18n.Translation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.UnaryOperator;
 
 public class DefaultTranslation implements Translation {
 
@@ -81,7 +86,11 @@ public class DefaultTranslation implements Translation {
             prefix = this.prefixTranslation.getMessage(language, orElseDefault);
         }
         AtomicReference<String> message = new AtomicReference<>(this.languageAPI.getMessage(this.translationKey, language));
-        this.parameter.forEach((key, value) -> message.set(message.get().replace(key, value)));
+
+        for (Map.Entry<String, String> parameterEntry : this.parameter.entrySet()) {
+            UnaryOperator<String> replaceString = s -> s.replace(parameterEntry.getKey(), parameterEntry.getValue());
+            message.getAndUpdate(replaceString);
+        }
         this.parameter.clear();
         return prefix + message.get();
     }
