@@ -408,12 +408,6 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     @Override
     public void removeSingleTranslationFromMultipleTranslation(final String multipleTranslation, final String translationKey) {
         this.executorService.execute(() -> {
-            if (!this.isMultipleTranslation(multipleTranslation)) {
-                throw new IllegalArgumentException(multipleTranslation + " was not found");
-            }
-            if (!this.isMultipleTranslationKey(multipleTranslation, translationKey)) {
-                throw new IllegalArgumentException("Key: " + translationKey + " was not found for: " + multipleTranslation);
-            }
             try (Connection connection = this.getDataSource().getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM MultipleTranslation WHERE multipleKey=? AND translationkey=?")) {
                 preparedStatement.setString(1, multipleTranslation.toLowerCase());
@@ -458,13 +452,9 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
             if (!this.isLanguage(language)) {
                 throw new IllegalArgumentException("Language " + language + " was not found!");
             }
-            if (!this.isKey(translationKey, language)) {
-                throw new IllegalArgumentException("Translationkey " + translationKey + " was not found!");
-            }
             try (Connection connection = this.getDataSource().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM ? WHERE translationkey=?;")) {
-                preparedStatement.setString(1, language.toLowerCase());
-                preparedStatement.setString(2, translationKey.toLowerCase());
+                 PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM " + language.toLowerCase() + " WHERE translationkey=?;")) {
+                preparedStatement.setString(1, translationKey.toLowerCase());
                 preparedStatement.execute();
             } catch (SQLException throwable) {
                 throwable.printStackTrace();
