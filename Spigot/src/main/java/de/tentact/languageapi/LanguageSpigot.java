@@ -27,8 +27,8 @@ package de.tentact.languageapi;
 
 import de.tentact.languageapi.api.SpigotLanguageAPI;
 import de.tentact.languageapi.command.LanguageCommand;
+import de.tentact.languageapi.configuration.DatabaseProvider;
 import de.tentact.languageapi.configuration.LanguageConfig;
-import de.tentact.languageapi.configuration.MySQL;
 import de.tentact.languageapi.configuration.SpigotConfiguration;
 import de.tentact.languageapi.listener.ChatListener;
 import de.tentact.languageapi.listener.InventoryClickListener;
@@ -42,7 +42,7 @@ import java.util.logging.Level;
 public class LanguageSpigot extends JavaPlugin {
 
     private Updater updater;
-    private MySQL mySQL;
+    private DatabaseProvider databaseProvider;
     private SpigotConfiguration spigotConfiguration;
 
     @Override
@@ -53,10 +53,10 @@ public class LanguageSpigot extends JavaPlugin {
         this.spigotConfiguration = new SpigotConfiguration(this.getLogger());
         LanguageConfig languageConfig = this.spigotConfiguration.getLanguageConfig();
 
-        this.mySQL = languageConfig.getMySQL();
-        this.mySQL.connect();
+        this.databaseProvider = languageConfig.getDatabaseProvider();
+        this.databaseProvider.connect();
         LanguageAPI.setInstance(new SpigotLanguageAPI(languageConfig));
-        this.mySQL.createDefaultTable();
+        this.databaseProvider.createDefaultTable();
 
         LanguageAPI.getInstance().createLanguage(languageConfig.getLanguageSetting().getDefaultLanguage());
         this.updater = new Updater(this);
@@ -73,7 +73,7 @@ public class LanguageSpigot extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        mySQL.closeConnection();
+        databaseProvider.closeConnection();
     }
 
     public String getVersion() {

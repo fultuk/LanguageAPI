@@ -30,8 +30,8 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 import de.tentact.languageapi.api.VelocityLanguageAPI;
 import de.tentact.languageapi.configuration.Configuration;
+import de.tentact.languageapi.configuration.DatabaseProvider;
 import de.tentact.languageapi.configuration.LanguageConfig;
-import de.tentact.languageapi.configuration.MySQL;
 import de.tentact.languageapi.util.Updater;
 
 import java.util.logging.Logger;
@@ -44,11 +44,11 @@ public class LanguageVelocity {
         Configuration configuration = new Configuration(logger);
         LanguageConfig languageConfig = configuration.getLanguageConfig();
 
-        MySQL mySQL = configuration.getLanguageConfig().getMySQL();
-        mySQL.connect();
+        DatabaseProvider databaseProvider = configuration.getLanguageConfig().getDatabaseProvider();
+        databaseProvider.connect();
         LanguageAPI.setInstance(new VelocityLanguageAPI(proxyServer, languageConfig));
 
-        mySQL.createDefaultTable();
+        databaseProvider.createDefaultTable();
 
         LanguageAPI.getInstance().createLanguage(languageConfig.getLanguageSetting().getDefaultLanguage());
 

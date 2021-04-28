@@ -29,8 +29,8 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.configuration.DatabaseProvider;
 import de.tentact.languageapi.configuration.LanguageConfig;
-import de.tentact.languageapi.configuration.MySQL;
 import de.tentact.languageapi.i18n.Translation;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class DefaultPlayerExecutor implements PlayerExecutor {
 
-    private final MySQL mySQL;
+    private final DatabaseProvider databaseProvider;
     private final LanguageAPI languageAPI;
     private final HikariDataSource dataSource;
     private final LanguageConfig languageConfig;
@@ -52,9 +52,9 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
 
     public DefaultPlayerExecutor(LanguageAPI languageAPI, LanguageConfig languageConfig) {
         this.languageConfig = languageConfig;
-        this.mySQL = languageConfig.getMySQL();
+        this.databaseProvider = languageConfig.getDatabaseProvider();
         this.languageAPI = languageAPI;
-        this.dataSource = this.mySQL.getDataSource();
+        this.dataSource = this.databaseProvider.getDataSource();
     }
 
     @NotNull
@@ -71,7 +71,7 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
             }
             return cachedLanguage;
         }
-        try (Connection connection = this.mySQL.getDataSource().getConnection();
+        try (Connection connection = this.databaseProvider.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT language FROM playerlanguage WHERE uuid=?;")) {
             preparedStatement.setString(1, playerId.toString());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {

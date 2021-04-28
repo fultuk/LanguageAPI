@@ -25,21 +25,24 @@
 
 package de.tentact.languageapi.configuration;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.logging.Logger;
 
 public class LanguageConfig {
 
-    private final MySQL mySQL;
+    @SerializedName("mySQL")
+    private final DatabaseProvider databaseProvider;
     private final LanguageSetting languageSetting;
     private transient Logger logger;
 
-    public LanguageConfig(MySQL mySQL, LanguageSetting languageSetting) {
-        this.mySQL = mySQL;
+    public LanguageConfig(DatabaseProvider databaseProvider, LanguageSetting languageSetting) {
+        this.databaseProvider = databaseProvider;
         this.languageSetting = languageSetting;
     }
 
-    public MySQL getMySQL() {
-        return this.mySQL;
+    public DatabaseProvider getDatabaseProvider() {
+        return this.databaseProvider;
     }
 
     public LanguageSetting getLanguageSetting() {

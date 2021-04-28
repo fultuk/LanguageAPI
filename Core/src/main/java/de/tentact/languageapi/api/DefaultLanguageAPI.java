@@ -30,8 +30,8 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.configuration.DatabaseProvider;
 import de.tentact.languageapi.configuration.LanguageConfig;
-import de.tentact.languageapi.configuration.MySQL;
 import de.tentact.languageapi.console.ConsoleExecutor;
 import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.i18n.Translation;
@@ -58,7 +58,7 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class DefaultLanguageAPI extends LanguageAPI {
 
-    private final MySQL mySQL;
+    private final DatabaseProvider databaseProvider;
     private final LanguageConfig languageConfig;
 
     private final Cache<String, Map<String, String>> translationCache;
@@ -70,7 +70,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     public DefaultLanguageAPI(LanguageConfig languageConfig) {
         this.languageConfig = languageConfig;
         this.playerExecutor = this.getPlayerExecutor();
-        this.mySQL = languageConfig.getMySQL();
+        this.databaseProvider = languageConfig.getDatabaseProvider();
         this.translationCache = CacheBuilder.newBuilder().expireAfterWrite(languageConfig.getLanguageSetting().getCachedTime(), TimeUnit.MINUTES).build();
         this.translationMap = new HashMap<>();
         this.fileHandler = new DefaultFileHandler();
@@ -80,7 +80,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     public void createLanguage(final String language) {
         this.executorService.execute(() -> {
             if (this.getAvailableLanguages().isEmpty() || !this.isLanguage(language)) {
-                this.mySQL.createLanguageTable(language.replace(" ", "").toLowerCase());
+                this.databaseProvider.createLanguageTable(language.replace(" ", "").toLowerCase());
 
                 try (Connection connection = this.getDataSource().getConnection();
                      PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO languages(language) VALUES (?)")) {
@@ -99,7 +99,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     @Override
     public void deleteLanguage(String language) {
         this.executorService.execute(() -> {
-        if (!this.getDefaultLanguage().equalsIgnoreCase(language) && this.isLanguage(language)) {
+            if (!this.getDefaultLanguage().equalsIgnoreCase(language) && this.isLanguage(language)) {
                 try (Connection connection = this.getDataSource().getConnection()) {
                     try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE " + language.toLowerCase() + ";")) {
                         preparedStatement.execute();
@@ -356,9 +356,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     public void deleteMessageInEveryLang(String translationKey) {
         this.executorService.execute(() -> {
             for (String languages : this.getAvailableLanguages()) {
-                if (this.isKey(translationKey, languages)) {
-                    this.deleteMessage(translationKey, languages);
-                }
+                this.deleteMessage(translationKey, languages);
             }
         });
     }
@@ -601,30 +599,31 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         if (!this.isLanguage(language)) {
             throw new IllegalArgumentException(language + " was not found");
         }
-        if (!this.isKey(translationKey, language)) {
-            this.languageConfig.debug("Translationkey '" + translationKey + "' not found in language '" + language + "'");
-            this.languageConfig.debug("As result you will get the translationKey as translation");
-            return translationKey;
-        }
+
         Map<String, String> cacheMap = this.translationCache.getIfPresent(translationKey.toLowerCase());
         if (cacheMap != null && cacheMap.containsKey(language)) {
             return cacheMap.get(language);
         }
+
         try (Connection connection = this.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT translation FROM " + language.toLowerCase() + " WHERE translationkey=?;")) {
             preparedStatement.setString(1, translationKey);
+
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     String translation = this.translateColorCode(resultSet.getString("translation"));
+
                     Map<String, String> map = new HashMap<>(1);
                     map.put(language, translation);
                     this.translationCache.put(translationKey, map);
                     return translation;
+                } else {
+                    this.languageConfig.debug("Translationkey '" + translationKey + "' not found in language '" + language + "'");
+                    this.languageConfig.debug("As result you will get the translationKey as translation");
                 }
             }
         } catch (SQLException throwable) {
             throwable.printStackTrace();
-            return translationKey;
         }
         return translationKey;
     }
@@ -783,7 +782,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     }
 
     private HikariDataSource getDataSource() {
-        return this.mySQL.getDataSource();
+        return this.databaseProvider.getDataSource();
     }
 
     private void debug(String message) {

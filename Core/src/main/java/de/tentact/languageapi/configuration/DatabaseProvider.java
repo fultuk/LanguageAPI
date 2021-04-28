@@ -31,14 +31,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
-public class MySQL {
+public class DatabaseProvider {
 
     private final String hostname, database, username, password;
     private final int port;
     private transient HikariDataSource dataSource;
     private transient Logger logger;
 
-    public MySQL(String hostname, String database, String username, String password, int port) {
+    public DatabaseProvider(String hostname, String database, String username, String password, int port) {
         this.hostname = hostname;
         this.database = database;
         this.username = username;

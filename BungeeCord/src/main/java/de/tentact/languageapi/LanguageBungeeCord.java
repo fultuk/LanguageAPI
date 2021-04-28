@@ -27,29 +27,29 @@ package de.tentact.languageapi;
 
 import de.tentact.languageapi.api.BungeeCordLanguageAPI;
 import de.tentact.languageapi.configuration.Configuration;
+import de.tentact.languageapi.configuration.DatabaseProvider;
 import de.tentact.languageapi.configuration.LanguageConfig;
-import de.tentact.languageapi.configuration.MySQL;
 import de.tentact.languageapi.util.Updater;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class LanguageBungeeCord extends Plugin {
 
-    private MySQL mySQL;
+    private DatabaseProvider databaseProvider;
 
     @Override
     public void onEnable() {
         Configuration configuration = new Configuration(this.getLogger());
         LanguageConfig languageConfig = configuration.getLanguageConfig();
-        this.mySQL = configuration.getLanguageConfig().getMySQL();
-        this.mySQL.connect();
+        this.databaseProvider = configuration.getLanguageConfig().getDatabaseProvider();
+        this.databaseProvider.connect();
         LanguageAPI.setInstance(new BungeeCordLanguageAPI(languageConfig));
-        this.mySQL.createDefaultTable();
+        this.databaseProvider.createDefaultTable();
         LanguageAPI.getInstance().createLanguage(languageConfig.getLanguageSetting().getDefaultLanguage());
         new Updater(this);
     }
 
     @Override
     public void onDisable() {
-        this.mySQL.closeConnection();
+        this.databaseProvider.closeConnection();
     }
 }

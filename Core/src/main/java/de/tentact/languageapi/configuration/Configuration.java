@@ -55,7 +55,7 @@ public class Configuration {
             }
         }
         this.getLanguageConfig().setLogger(logger);
-        this.getLanguageConfig().getMySQL().setLogger(logger);
+        this.getLanguageConfig().getDatabaseProvider().setLogger(logger);
     }
 
     public LanguageConfig getLanguageConfig() {
@@ -67,7 +67,7 @@ public class Configuration {
 
     private LanguageConfig getDefaultLanguageConfig() {
         return new LanguageConfig(
-                new MySQL(
+                new DatabaseProvider(
                         "hostname",
                         "languagapi",
                         "languagapi",
@@ -75,7 +75,7 @@ public class Configuration {
                         3306
                 ),
                 new LanguageSetting(
-                        "de_de",
+                        "en_en",
                         5,
                         true,
                         false
