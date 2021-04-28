@@ -75,7 +75,7 @@ public class Configuration {
                         3306
                 ),
                 new LanguageSetting(
-                        "en_en",
+                        "deDE",
                         5,
                         true,
                         false

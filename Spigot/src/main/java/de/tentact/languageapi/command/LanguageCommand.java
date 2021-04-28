@@ -87,7 +87,7 @@ public class LanguageCommand implements TabExecutor {
                                 return false;
                             }
                             String language = args[1].toLowerCase();
-                            if (!this.languageAPI.getAvailableLanguages().contains(args[1].toLowerCase())) {
+                            if(!this.languageAPI.isLanguage(language)) {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_NOT_FOUND.get().replace("%LANG%", language));
                                 return false;
                             }
@@ -117,8 +117,8 @@ public class LanguageCommand implements TabExecutor {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_HELP.get());
                                 return false;
                             }
-                            language = args[1].toLowerCase();
-                            if (!this.languageAPI.getAvailableLanguages().contains(language)) {
+                            language = args[1];
+                            if(!this.languageAPI.isLanguage(language)) {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_NOT_FOUND.get()
                                         .replace("%LANG%", language));
                                 return false;
@@ -143,13 +143,12 @@ public class LanguageCommand implements TabExecutor {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_CREATE_HELP.get());
                                 return false;
                             }
-                            this.languageAPI.getAvailableLanguagesAsync().thenAccept(languageList -> {
-                                final String lowerCaseLanguage = args[1].toLowerCase();
-                                if (!languageList.contains(lowerCaseLanguage)) {
-                                    this.languageAPI.createLanguage(lowerCaseLanguage);
-                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_CREATE_SUCCESS.get().replace("%LANG%", lowerCaseLanguage));
+                            this.languageAPI.isLanguageAsync(args[1]).thenAccept(isLanguage -> {
+                                if (!isLanguage) {
+                                    this.languageAPI.createLanguage(args[1]);
+                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_CREATE_SUCCESS.get().replace("%LANG%", args[1]));
                                 } else {
-                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_ALREADY_EXISTS.get().replace("%LANG%", lowerCaseLanguage));
+                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_ALREADY_EXISTS.get().replace("%LANG%", args[1]));
                                 }
                             });
                             break;
@@ -188,8 +187,8 @@ public class LanguageCommand implements TabExecutor {
                                 return false;
                             }
                             if (args.length >= 3) {
-                                String langfrom = args[1].toLowerCase();
-                                String langto = args[2].toLowerCase();
+                                String langfrom = args[1];
+                                String langto = args[2];
                                 this.languageAPI.isLanguageAsync(langfrom).thenAccept(isLangFrom ->
                                         this.languageAPI.isLanguageAsync(langto).thenAccept(isLangTo -> {
                                             String resultLanguage;
@@ -232,12 +231,12 @@ public class LanguageCommand implements TabExecutor {
                             if (this.checkDoesNotHavePermission(player, args)) {
                                 return false;
                             }
-                            language = args[1].toLowerCase();
-                            if (this.languageAPI.getAvailableLanguages().contains(language)) {
-                                List<String> allKeys = this.languageAPI.getAllTranslationKeys(language);
-                                for (int i = 0; i < allKeys.size(); i++) {
-                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_TRANSLATION_SUCCESS.get().replace("%KEY%", allKeys.get(i))
-                                            .replace("%MSG%", this.languageAPI.getAllTranslations(language).get(i)));
+                            language = args[1];
+                            if (this.languageAPI.isLanguage(language)) {
+                                Map<String, String> translationMap = this.languageAPI.getKeysAndTranslations(language);
+                                for (Map.Entry<String, String> translationEntry : translationMap.entrySet()) {
+                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_TRANSLATION_SUCCESS.get().replace("%KEY%", translationEntry.getKey())
+                                            .replace("%MSG%", translationEntry.getValue()));
                                 }
                                 return true;
                             } else {
@@ -250,7 +249,7 @@ public class LanguageCommand implements TabExecutor {
                                 return false;
                             }
                             if (args.length >= 3) {
-                                language = args[1].toLowerCase();
+                                language = args[1];
                                 key = args[2].toLowerCase();
                                 if (this.languageAPI.getDefaultLanguage().contains(language)) {
                                     if (this.languageAPI.isKey(key, language)) {
