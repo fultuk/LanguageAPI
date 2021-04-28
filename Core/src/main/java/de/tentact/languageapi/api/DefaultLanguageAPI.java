@@ -46,7 +46,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,18 +118,12 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public boolean addMessage(final String translationKey, final String message, final String language, String param) {
-        if (!this.isLanguage(language)) {
-            throw new IllegalArgumentException("Language " + language + " was not found!");
-        }
         this.setParameter(translationKey, param);
         return this.addMessage(translationKey, message, language);
     }
 
     @Override
     public boolean addMessage(String translationKey, String message, String language, List<String> parameter) {
-        if (!this.isLanguage(language)) {
-            throw new IllegalArgumentException("Language " + language + " was not found!");
-        }
         this.setParameter(translationKey, parameter);
         return this.addMessage(translationKey, message, language);
     }
@@ -191,12 +184,6 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     @Override
     public void deleteParameter(final String translationKey, final String parameter) {
         this.executorService.execute(() -> {
-            if (!this.hasParameter(translationKey)) {
-                return;
-            }
-            if (!this.isParameter(translationKey, parameter)) {
-                return;
-            }
             try (Connection connection = this.getDataSource().getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Parameter WHERE translationkey=? AND parameter=?;")) {
                 preparedStatement.setString(1, translationKey);
@@ -212,10 +199,6 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     @Override
     public void deleteAllParameter(final String translationKey) {
         this.executorService.execute(() -> {
-            if (!this.hasParameter(translationKey)) {
-                return;
-            }
-
             try (Connection connection = this.getDataSource().getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM Parameter WHERE translationkey=?;")) {
                 preparedStatement.setString(1, translationKey);
@@ -306,18 +289,15 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public List<String> getParameterAsList(String translationKey) {
-        if (!this.hasParameter(translationKey)) {
-            return Collections.emptyList();
-        }
         List<String> parameter = new ArrayList<>();
         try (Connection connection = this.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT parameter FROM Parameter WHERE translationkey=?;")) {
             preparedStatement.setString(1, translationKey.toLowerCase());
+
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 parameter.add(resultSet.getString("parameter"));
             }
-            resultSet.close();
         } catch (SQLException throwable) {
             throwable.printStackTrace();
         }
@@ -336,9 +316,6 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public boolean isParameter(String translationKey, String parameter) {
-        if (!this.hasParameter(translationKey)) {
-            return false;
-        }
         for (String s : this.getParameterAsList(translationKey)) {
             if (s.equalsIgnoreCase(parameter)) {
                 return true;
@@ -366,9 +343,6 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         this.executorService.execute(() -> {
             if (!this.isLanguage(language)) {
                 throw new IllegalArgumentException("Language " + language + " was not found!");
-            }
-            if (!this.isKey(translationKey, language)) {
-                throw new IllegalArgumentException("Translationkey " + translationKey + " was not found!");
             }
             try (Connection connection = this.getDataSource().getConnection();
                  PreparedStatement preparedStatement = connection.prepareStatement("UPDATE " + language + " SET translation=? WHERE translationkey=?;")) {
