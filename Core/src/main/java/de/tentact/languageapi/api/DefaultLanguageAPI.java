@@ -83,7 +83,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
                 try (Connection connection = this.getDataSource().getConnection();
                      PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO languages(language) VALUES (?)")) {
-                    preparedStatement.setString(1, language.toLowerCase());
+                    preparedStatement.setString(1, language);
                     preparedStatement.execute();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
@@ -100,11 +100,11 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         this.executorService.execute(() -> {
             if (!this.getDefaultLanguage().equalsIgnoreCase(language) && this.isLanguage(language)) {
                 try (Connection connection = this.getDataSource().getConnection()) {
-                    try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE " + language.toLowerCase() + ";")) {
+                    try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE " + language + ";")) {
                         preparedStatement.execute();
                     }
                     try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM languages WHERE language=?")) {
-                        preparedStatement.setString(1, language.toLowerCase());
+                        preparedStatement.setString(1, language);
                         preparedStatement.execute();
                     }
                 } catch (SQLException throwable) {
@@ -138,7 +138,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         }
         this.executorService.execute(() -> {
             try (Connection connection = this.getDataSource().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO " + language.toLowerCase() + " (translationkey, translation) VALUES (?,?);")) {
+                 PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO " + language + " (translationkey, translation) VALUES (?,?);")) {
                 preparedStatement.setString(1, translationKey.toLowerCase());
                 preparedStatement.setString(2, this.translateColorCode(message));
                 preparedStatement.execute();
@@ -247,7 +247,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
             if (languageFrom == null || languageTo == null) {
                 return;
             }
-            if (!this.isLanguage(languageFrom.toLowerCase()) || !this.isLanguage(languageTo.toLowerCase())) {
+            if (!this.isLanguage(languageFrom) || !this.isLanguage(languageTo)) {
                 throw new IllegalArgumentException("Language " + languageFrom + " or " + languageTo + " was not found!");
             }
             try (Connection connection = this.getDataSource().getConnection()) {
@@ -453,7 +453,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
                 throw new IllegalArgumentException("Language " + language + " was not found!");
             }
             try (Connection connection = this.getDataSource().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM " + language.toLowerCase() + " WHERE translationkey=?;")) {
+                 PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM " + language+ " WHERE translationkey=?;")) {
                 preparedStatement.setString(1, translationKey.toLowerCase());
                 preparedStatement.execute();
             } catch (SQLException throwable) {
@@ -465,7 +465,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     @Override
     public boolean isKey(String translationKey, String language) {
         try (Connection connection = this.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + language.toLowerCase() + " WHERE translationkey=?;")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + language + " WHERE translationkey=?;")) {
             preparedStatement.setString(1, translationKey.toLowerCase());
             ResultSet resultSet = preparedStatement.executeQuery();
             return resultSet.next();
@@ -565,12 +565,12 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         }
 
         Map<String, String> cacheMap = this.translationCache.getIfPresent(translationKey.toLowerCase());
-        if (cacheMap != null && cacheMap.containsKey(language)) {
-            return cacheMap.get(language);
+        if (cacheMap != null && cacheMap.containsKey(language.toLowerCase())) {
+            return cacheMap.get(language.toLowerCase());
         }
 
         try (Connection connection = this.getDataSource().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT translation FROM " + language.toLowerCase() + " WHERE translationkey=?;")) {
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT translation FROM " + language + " WHERE translationkey=?;")) {
             preparedStatement.setString(1, translationKey);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -578,7 +578,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
                     String translation = this.translateColorCode(resultSet.getString("translation"));
 
                     Map<String, String> map = new HashMap<>(1);
-                    map.put(language, translation);
+                    map.put(language.toLowerCase(), translation);
                     this.translationCache.put(translationKey, map);
                     return translation;
                 } else {
@@ -602,7 +602,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         if (language == null) {
             return false;
         }
-        return this.getAvailableLanguages().contains(language.toLowerCase());
+        return this.containsIgnoreCase(this.getAvailableLanguages(), language);
     }
 
     @Override
@@ -617,7 +617,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
         try (Connection connection = this.getDataSource().getConnection();
              ResultSet resultSet = connection.createStatement().executeQuery("SELECT language FROM languages")) {
             while (resultSet.next()) {
-                languages.add(resultSet.getString("language").toLowerCase());
+                languages.add(resultSet.getString("language"));
             }
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -691,7 +691,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public @NotNull String getDefaultLanguage() {
-        return this.languageConfig.getLanguageSetting().getDefaultLanguage().toLowerCase();
+        return this.languageConfig.getLanguageSetting().getDefaultLanguage();
     }
 
     @Override
@@ -755,7 +755,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     /*
     This is from the Bungeecord-API
-    https://github.com/SpigotMC/BungeeCord/blob/a7c6edeb638f0a2ba4fb051f2b0be5a6e226c955/chat/src/main/java/net/md_5/bungee/api/ChatColor.java#L214
+    https://github.com/SpigotMC/BungeeCord/blob/master/chat/src/main/java/net/md_5/bungee/api/ChatColor.java
      */
     private String translateColorCode(String textToTranslate) {
         char[] b = textToTranslate.toCharArray();
@@ -766,5 +766,14 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
             }
         }
         return new String(b);
+    }
+
+    private boolean containsIgnoreCase(List<String> list, String comparingString) {
+        for (String s : list) {
+            if (s.equalsIgnoreCase(comparingString)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
