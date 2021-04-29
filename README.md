@@ -20,8 +20,8 @@ Get the API
 Repository:
 ```
 	<repository>
-            <id>tentact-release</id>
-            <url>https://archiva.tentact.de/repository/tentact-release/</url>
+            <id>tentact-snapshot</id>
+            <url>https://archiva.tentact.de/repository/tentact-snapshot/</url>
         </repository>
 ```
 Dependency:
@@ -29,19 +29,19 @@ Dependency:
        <dependency>
             <groupId>de.tentact.languageapi</groupId>
             <artifactId>API</artifactId>
-            <version>1.9-RELEASE</version>
+            <version>2.0-SNAPSHOT</version>
         </dependency>
 ```
 Download
 -
 Latest Bungeecord Snapshot
-https://archiva.tentact.de/#artifact-details-download-content~tentact-release/de.tentact.languageapi/BungeeCord/1.9-RELEASE
+https://archiva.tentact.de/#artifact-details-download-content~tentact-snapshot/de.tentact.languageapi/BungeeCord/2.0-SNAPSHOT
 
 Latest Spigot Snapshot
-https://archiva.tentact.de/#artifact-details-download-content~tentact-release/de.tentact.languageapi/Spigot/1.9-RELEASE
+https://archiva.tentact.de/#artifact-details-download-content~tentact-snapshot/de.tentact.languageapi/Spigot/2.0-SNAPSHOT
 
 Latest Velocity Snapshot
-https://archiva.tentact.de/#artifact-details-download-content~tentact-release/de.tentact.languageapi/Velocity/1.9-RELEASE
+https://archiva.tentact.de/#artifact-details-download-content~tentact-snapshot/de.tentact.languageapi/Velocity/2.0-SNAPSHOT
 
 
 Choose the latest file (the top file) and put it into your plugins folder.
