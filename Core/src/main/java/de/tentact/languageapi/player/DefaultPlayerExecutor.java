@@ -27,6 +27,8 @@ package de.tentact.languageapi.player;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.configuration.DatabaseProvider;
@@ -48,7 +50,23 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
     private final LanguageAPI languageAPI;
     private final HikariDataSource dataSource;
     private final LanguageConfig languageConfig;
-    private final Cache<UUID, String> languageCache = CacheBuilder.newBuilder().expireAfterWrite(5L, TimeUnit.MINUTES).build();
+    private final Cache<UUID, String> languageCache = CacheBuilder
+            .newBuilder()
+            .expireAfterWrite(5L, TimeUnit.MINUTES)
+            .build();
+    protected final Cache<UUID, LanguagePlayer> playerCache = CacheBuilder
+            .newBuilder()
+            .expireAfterWrite(5L, TimeUnit.MINUTES)
+            .build();
+    private final LoadingCache<UUID, LanguageOfflinePlayer> offlinePlayerCache = CacheBuilder
+            .newBuilder()
+            .expireAfterWrite(5L, TimeUnit.MINUTES)
+            .build(new CacheLoader<UUID, LanguageOfflinePlayer>() {
+                @Override
+                public LanguageOfflinePlayer load(UUID uuid) {
+                    return new DefaultLanguageOfflinePlayer(uuid);
+                }
+            });
 
     public DefaultPlayerExecutor(LanguageAPI languageAPI, LanguageConfig languageConfig) {
         this.languageConfig = languageConfig;
@@ -195,7 +213,7 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
 
     @Override
     public @NotNull LanguageOfflinePlayer getLanguageOfflinePlayer(UUID playerId) {
-        return new DefaultLanguageOfflinePlayer(playerId);
+        return this.offlinePlayerCache.getUnchecked(playerId);
     }
 
     private String validateLanguage(String language) {

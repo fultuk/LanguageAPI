@@ -28,6 +28,7 @@ package de.tentact.languageapi.player;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.configuration.LanguageConfig;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,10 +43,17 @@ public class BungeePlayerExecutor extends DefaultPlayerExecutor {
 
     @Override
     public @Nullable LanguagePlayer getLanguagePlayer(UUID playerId) {
-        if(ProxyServer.getInstance().getPlayer(playerId) == null) {
+        LanguagePlayer languagePlayer = super.playerCache.getIfPresent(playerId);
+        if (languagePlayer != null) {
+            return languagePlayer;
+        }
+        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(playerId);
+        if (player == null) {
             return null;
         }
-        return new DefaultLanguagePlayer(playerId);
+        languagePlayer = new DefaultLanguagePlayer(player);
+        super.playerCache.put(playerId, languagePlayer);
+        return languagePlayer;
     }
 
     @Override

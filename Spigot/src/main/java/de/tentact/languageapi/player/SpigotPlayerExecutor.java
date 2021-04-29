@@ -28,6 +28,7 @@ package de.tentact.languageapi.player;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.configuration.LanguageConfig;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,10 +44,17 @@ public class SpigotPlayerExecutor extends DefaultPlayerExecutor {
 
     @Override
     public @Nullable LanguagePlayer getLanguagePlayer(UUID playerId) {
-        if(Bukkit.getPlayer(playerId) == null) {
+        LanguagePlayer languagePlayer = super.playerCache.getIfPresent(playerId);
+        if (languagePlayer != null) {
+            return languagePlayer;
+        }
+        Player player = Bukkit.getPlayer(playerId);
+        if (player == null) {
             return null;
         }
-        return new DefaultLanguagePlayer(playerId);
+        languagePlayer = new DefaultLanguagePlayer(player);
+        super.playerCache.put(playerId, languagePlayer);
+        return languagePlayer;
     }
 
     @Override

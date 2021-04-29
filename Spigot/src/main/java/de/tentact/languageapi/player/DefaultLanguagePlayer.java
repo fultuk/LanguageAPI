@@ -27,20 +27,17 @@ package de.tentact.languageapi.player;
 
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.i18n.Translation;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.UUID;
 
 public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implements LanguagePlayer {
 
     private final Player player;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
-    public DefaultLanguagePlayer(UUID playerID) {
-        super(playerID);
-        this.player = Bukkit.getPlayer(playerID);
+    public DefaultLanguagePlayer(Player player) {
+        super(player.getUniqueId());
+        this.player = player;
     }
 
     @Override

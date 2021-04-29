@@ -26,22 +26,19 @@
 package de.tentact.languageapi.player;
 
 import com.velocitypowered.api.proxy.Player;
-import com.velocitypowered.api.proxy.ProxyServer;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.i18n.Translation;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.UUID;
 
 public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implements LanguagePlayer {
 
     private final Player player;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
-    public DefaultLanguagePlayer(ProxyServer proxyServer, UUID playerID) {
-        super(playerID);
-        this.player = proxyServer.getPlayer(playerID).isPresent() ? proxyServer.getPlayer(playerID).get() : null;
+    public DefaultLanguagePlayer(Player player) {
+        super(player.getUniqueId());
+        this.player = player;
     }
 
     @Override

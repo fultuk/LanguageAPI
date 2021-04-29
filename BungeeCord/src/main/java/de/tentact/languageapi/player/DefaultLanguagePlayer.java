@@ -27,20 +27,17 @@ package de.tentact.languageapi.player;
 
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.i18n.Translation;
-import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.UUID;
 
 public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implements LanguagePlayer {
 
     private final ProxiedPlayer proxiedPlayer;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
-    public DefaultLanguagePlayer(UUID playerID) {
-        super(playerID);
-        this.proxiedPlayer = ProxyServer.getInstance().getPlayer(playerID);
+    public DefaultLanguagePlayer(ProxiedPlayer proxiedPlayer) {
+        super(proxiedPlayer.getUniqueId());
+        this.proxiedPlayer = proxiedPlayer;
     }
 
     @Override

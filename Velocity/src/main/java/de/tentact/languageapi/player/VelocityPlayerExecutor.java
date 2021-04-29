@@ -25,6 +25,7 @@
 
 package de.tentact.languageapi.player;
 
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.configuration.LanguageConfig;
@@ -32,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -46,10 +48,17 @@ public class VelocityPlayerExecutor extends DefaultPlayerExecutor {
 
     @Override
     public @Nullable LanguagePlayer getLanguagePlayer(UUID playerId) {
-        if(!this.proxyServer.getPlayer(playerId).isPresent()) {
+        LanguagePlayer languagePlayer = super.playerCache.getIfPresent(playerId);
+        if (languagePlayer != null) {
+            return languagePlayer;
+        }
+        Optional<Player> optionalPlayer = this.proxyServer.getPlayer(playerId);
+        if (!optionalPlayer.isPresent()) {
             return null;
         }
-        return new DefaultLanguagePlayer(this.proxyServer, playerId);
+        languagePlayer = new DefaultLanguagePlayer(optionalPlayer.get());
+        super.playerCache.put(playerId, languagePlayer);
+        return languagePlayer;
     }
 
     @Override
