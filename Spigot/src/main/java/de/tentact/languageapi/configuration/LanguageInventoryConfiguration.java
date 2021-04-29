@@ -25,7 +25,11 @@
 
 package de.tentact.languageapi.configuration;
 
+import de.tentact.languageapi.util.ItemBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
 
@@ -36,6 +40,7 @@ public class LanguageInventoryConfiguration {
     private final byte subId;
     private final Collection<LanguageItem> languages;
     private final boolean useInventory;
+    private transient Inventory inventory;
 
     public LanguageInventoryConfiguration(boolean useInventory, String name, String fillItemMaterial, byte subId, Collection<LanguageItem> languages) {
         this.useInventory = useInventory;
@@ -71,5 +76,30 @@ public class LanguageInventoryConfiguration {
 
     public int getInventorySize() {
         return this.calculateRows() * 9;
+    }
+
+    public Inventory getLanguageInventory() {
+        if (!this.useInventory) {
+            return null;
+        }
+        if (this.inventory != null) {
+            return this.inventory;
+        }
+        Inventory inventory = Bukkit.createInventory(null, this.getInventorySize(), this.name);
+
+        ItemBuilder builder = new ItemBuilder(this.getFillItemMaterial());
+        if (this.subId != -1) {
+            builder.setSubId(this.subId);
+        }
+        for (int i = 0; i < inventory.getSize(); i++) {
+            inventory.setItem(i, builder.build());
+        }
+        for (LanguageItem languageItem : this.languages) {
+            ItemStack itemStack = ItemBuilder.buildSkull(languageItem.getMaterial(), languageItem.getHeadValue(),
+                    languageItem.getDisplayName(), languageItem.getLore());
+            inventory.setItem(languageItem.getInventorySlot(), itemStack);
+        }
+        this.inventory = inventory;
+        return inventory;
     }
 }

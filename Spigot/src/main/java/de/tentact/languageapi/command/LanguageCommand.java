@@ -27,7 +27,7 @@ package de.tentact.languageapi.command;
 
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.LanguageSpigot;
-import de.tentact.languageapi.configuration.LanguageInventory;
+import de.tentact.languageapi.configuration.LanguageInventoryConfiguration;
 import de.tentact.languageapi.configuration.SpigotConfiguration;
 import de.tentact.languageapi.i18n.I18N;
 import de.tentact.languageapi.player.LanguagePlayer;
@@ -58,7 +58,7 @@ public class LanguageCommand implements TabExecutor {
             "param", "copy", "translations", "reload",
             "import", "export", "help", "info", "list");
     private final LanguageSpigot languageSpigot;
-    private final LanguageInventory languageInventory;
+    private final LanguageInventoryConfiguration languageInventory;
     private final String version;
     private static MetadataValue EDIT_MESSAGE;
 

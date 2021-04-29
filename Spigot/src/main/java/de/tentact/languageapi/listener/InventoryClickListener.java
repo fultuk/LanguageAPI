@@ -27,7 +27,6 @@ package de.tentact.languageapi.listener;
 
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.LanguageSpigot;
-import de.tentact.languageapi.configuration.LanguageInventory;
 import de.tentact.languageapi.configuration.LanguageInventoryConfiguration;
 import de.tentact.languageapi.i18n.I18N;
 import de.tentact.languageapi.player.LanguagePlayer;
@@ -42,13 +41,11 @@ import org.bukkit.inventory.ItemStack;
 
 public class InventoryClickListener implements Listener {
 
-    private final LanguageInventory languageInventory;
     private final LanguageInventoryConfiguration languageInventoryConfiguration;
     private final PlayerExecutor playerExecutor = LanguageAPI.getInstance().getPlayerExecutor();
 
-    public InventoryClickListener(LanguageSpigot languageSpigot, LanguageInventory languageInventory) {
-        this.languageInventory = languageInventory;
-        this.languageInventoryConfiguration = languageInventory.getLanguageInventoryConfiguration();
+    public InventoryClickListener(LanguageSpigot languageSpigot, LanguageInventoryConfiguration languageInventoryConfiguration) {
+        this.languageInventoryConfiguration = languageInventoryConfiguration;
         Bukkit.getPluginManager().registerEvents(this, languageSpigot);
     }
 
@@ -59,7 +56,7 @@ public class InventoryClickListener implements Listener {
 
         if (currentItem != null && event.getWhoClicked() instanceof Player) {
             int clickedSlot = event.getSlot();
-            if (!this.languageInventory.getLanguageInventory().equals(inventory)) {
+            if (!this.languageInventoryConfiguration.getLanguageInventory().equals(inventory)) {
                 return;
             }
             event.setCancelled(true);
