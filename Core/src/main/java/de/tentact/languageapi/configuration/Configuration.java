@@ -25,7 +25,6 @@
 
 package de.tentact.languageapi.configuration;
 
-import com.github.derrop.documents.DefaultDocument;
 import com.github.derrop.documents.Document;
 import com.github.derrop.documents.Documents;
 
@@ -36,32 +35,30 @@ import java.util.logging.Logger;
 
 public class Configuration {
 
-    private Document settingsDocument = new DefaultDocument();
-    private LanguageConfig languageConfig;
+    private final LanguageConfig languageConfig;
 
     public Configuration(Logger logger) {
         File settingsFile = new File("plugins/LanguageAPI", "config.json");
+        Document settingsDocument = Documents.newDocument();
         if (settingsFile.exists()) {
-            this.settingsDocument = Documents.jsonStorage().read(settingsFile);
+            settingsDocument = Documents.jsonStorage().read(settingsFile);
         } else {
             try {
                 Files.createDirectories(settingsFile.getParentFile().toPath());
                 Files.createFile(settingsFile.toPath());
-                this.settingsDocument.append("config",
+                settingsDocument.append("config",
                         this.getDefaultLanguageConfig()
                 ).json().write(settingsFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        this.getLanguageConfig().setLogger(logger);
-        this.getLanguageConfig().getDatabaseProvider().setLogger(logger);
+        this.languageConfig = settingsDocument.get("config", LanguageConfig.class);
+        this.languageConfig.setLogger(logger);
+        this.languageConfig.getDatabaseProvider().setLogger(logger);
     }
 
     public LanguageConfig getLanguageConfig() {
-        if (this.languageConfig == null) {
-            this.languageConfig = this.settingsDocument.get("config", LanguageConfig.class);
-        }
         return this.languageConfig;
     }
 

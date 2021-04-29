@@ -72,7 +72,7 @@ public class LanguageSpigot extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        databaseProvider.closeConnection();
+        this.databaseProvider.closeConnection();
     }
 
     public String getVersion() {

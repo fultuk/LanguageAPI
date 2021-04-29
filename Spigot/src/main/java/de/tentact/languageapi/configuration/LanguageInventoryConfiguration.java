@@ -50,20 +50,8 @@ public class LanguageInventoryConfiguration {
         this.languages = languages;
     }
 
-    public boolean isUseInventory() {
-        return this.useInventory;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
     public Material getFillItemMaterial() {
         return Material.getMaterial(this.fillItemMaterial);
-    }
-
-    public byte getSubId() {
-        return this.subId;
     }
 
     public Collection<LanguageItem> getLanguages() {

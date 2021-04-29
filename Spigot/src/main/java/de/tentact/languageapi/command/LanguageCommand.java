@@ -395,7 +395,7 @@ public class LanguageCommand implements TabExecutor {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] args) {
         if (args.length == 1) {
-            return this.getTabCompletes(args[0], tabComplete);
+            return this.getTabCompletes(args[0], this.tabComplete);
         } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("create")) {
                 return Collections.emptyList();
