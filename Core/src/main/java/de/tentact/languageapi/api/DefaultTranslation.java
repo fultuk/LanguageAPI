@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
@@ -185,5 +186,18 @@ public class DefaultTranslation implements Translation {
 
     private boolean hasPrefixTranslation() {
         return this.prefixTranslation != null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DefaultTranslation that = (DefaultTranslation) o;
+        return this.translationKey.equals(that.translationKey) && Objects.equals(this.prefixTranslation, that.prefixTranslation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.translationKey, this.prefixTranslation);
     }
 }

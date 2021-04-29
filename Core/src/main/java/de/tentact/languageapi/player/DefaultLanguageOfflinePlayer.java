@@ -29,6 +29,7 @@ import de.tentact.languageapi.LanguageAPI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class DefaultLanguageOfflinePlayer implements LanguageOfflinePlayer {
@@ -74,5 +75,18 @@ public class DefaultLanguageOfflinePlayer implements LanguageOfflinePlayer {
     @Override
     public boolean isOnline() {
         return this.playerExecutor.getLanguagePlayer(this.playerID) != null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DefaultLanguageOfflinePlayer)) return false;
+        DefaultLanguageOfflinePlayer that = (DefaultLanguageOfflinePlayer) o;
+        return this.playerID.equals(that.playerID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.playerID);
     }
 }
