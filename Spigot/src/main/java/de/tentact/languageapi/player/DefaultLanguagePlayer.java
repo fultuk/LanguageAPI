@@ -80,14 +80,4 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         translation.getMessageAsync(this.getLanguage())
                 .thenAccept(player::kickPlayer);
     }
-
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
 }
