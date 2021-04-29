@@ -83,11 +83,10 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
         }
         String cachedLanguage = this.languageCache.getIfPresent(playerId);
         if (cachedLanguage != null) {
-            if (!this.languageAPI.isLanguage(cachedLanguage)) {
-                this.languageCache.invalidate(playerId);
-                return this.languageAPI.getDefaultLanguage();
+            if (this.languageAPI.isLanguage(cachedLanguage)) {
+                return cachedLanguage;
             }
-            return cachedLanguage;
+            this.languageCache.invalidate(playerId);
         }
         try (Connection connection = this.databaseProvider.getDataSource().getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT language FROM playerlanguage WHERE uuid=?;")) {

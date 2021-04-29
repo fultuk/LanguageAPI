@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Use {@link PlayerExecutor#getLanguageOfflinePlayer(UUID)} to get an instance
@@ -52,6 +53,13 @@ public interface LanguageOfflinePlayer {
      */
     @NotNull
     String getLanguage();
+
+    /**
+     * @return returns the players language
+     * @since 1.9
+     */
+    @NotNull
+    CompletableFuture<String> getLanguageAsync();
 
     /**
      * Gets the players uniqueId

@@ -48,10 +48,12 @@ public class SpigotPlayerExecutor extends DefaultPlayerExecutor {
         if (languagePlayer != null) {
             return languagePlayer;
         }
+
         Player player = Bukkit.getPlayer(playerId);
         if (player == null) {
             return null;
         }
+
         languagePlayer = new DefaultLanguagePlayer(player);
         super.playerCache.put(playerId, languagePlayer);
         return languagePlayer;

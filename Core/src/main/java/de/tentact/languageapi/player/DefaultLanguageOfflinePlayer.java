@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class DefaultLanguageOfflinePlayer implements LanguageOfflinePlayer {
 
@@ -60,6 +61,11 @@ public class DefaultLanguageOfflinePlayer implements LanguageOfflinePlayer {
     @Override
     public @NotNull String getLanguage() {
         return this.playerExecutor.getPlayerLanguage(this.playerID);
+    }
+
+    @Override
+    public @NotNull CompletableFuture<String> getLanguageAsync() {
+        return this.playerExecutor.getPlayerLanguageAsync(this.playerID);
     }
 
     @Override

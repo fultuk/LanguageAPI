@@ -44,7 +44,7 @@ public class ExampleLanguageAPI {
     /**
      * Get the {@link PlayerExecutor}
      */
-    private final PlayerExecutor playerExecutor = languageAPI.getPlayerExecutor();
+    private final PlayerExecutor playerExecutor = this.languageAPI.getPlayerExecutor();
 
     /**
      * Examples for sending a message to a player

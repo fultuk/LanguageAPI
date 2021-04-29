@@ -25,6 +25,7 @@
 
 package de.tentact.languageapi.player;
 
+import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.i18n.Translation;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +35,7 @@ import java.util.UUID;
 
 /**
  * Use {@link PlayerExecutor#getLanguagePlayer(UUID)} to get an instance
+ *
  * @since 1.8
  */
 public interface LanguagePlayer extends LanguageOfflinePlayer {
@@ -47,6 +49,7 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
 
     /**
      * Sends a message to the player by a translationkey
+     *
      * @param translationKey the translationkey to get the translation from
      * @since 1.9
      */
@@ -54,6 +57,7 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
 
     /**
      * Sends a message to the player by a translationkey
+     *
      * @param translationKey the translationkey to get the translation from
      * @deprecated use {@link LanguagePlayer#sendMessage(String)} instead
      */
@@ -69,7 +73,8 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
      * @param multipleTranslationKey the multipleTranslationKey to get the Collection of translationkeys
      */
     default void sendMultipleTranslation(@NotNull String multipleTranslationKey) {
-        this.sendMultipleTranslation(multipleTranslationKey, this.getLanguage());
+        LanguageAPI.getInstance().executeAsync(() ->
+                this.sendMultipleTranslation(multipleTranslationKey, this.getLanguage()));
     }
 
     /**
@@ -78,7 +83,8 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
      * @param multipleTranslationKey the multipleTranslationKey to get the Collection of translationkeys
      */
     default void sendMultipleTranslationWithPrefix(@NotNull String multipleTranslationKey, String prefixKey) {
-        this.sendMultipleTranslation(multipleTranslationKey, this.getLanguage(), prefixKey);
+        LanguageAPI.getInstance().executeAsync(() ->
+                this.sendMultipleTranslation(multipleTranslationKey, this.getLanguage(), prefixKey));
     }
 
     /**
