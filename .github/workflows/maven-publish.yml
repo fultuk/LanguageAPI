@@ -1,0 +1,23 @@
+name: Publish package to the repository
+on:
+  push:
+    branches: [development]
+  release:
+    types: [created]
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Repository
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+          server-id: tentact-snapshot
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+      - name: Publish package
+        run: mvn --batch-mode deploy
+        env:
+          MAVEN_USERNAME: ${{ secrets.REPO_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.REPO_PASSWORD }}

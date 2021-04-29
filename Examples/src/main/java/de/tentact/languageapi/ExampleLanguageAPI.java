@@ -1,10 +1,29 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 0utplay (Aldin Sijamhodzic)
+ * Copyright (c) 2020 contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package de.tentact.languageapi;
-/*  Created in the IntelliJ IDEA.
-    Copyright(c) 2020
-    Created by 0utplay | Aldin Sijamhodzic
-    Datum: 06.09.2020
-    Uhrzeit: 09:48
-*/
 
 import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.i18n.Translation;
@@ -25,7 +44,7 @@ public class ExampleLanguageAPI {
     /**
      * Get the {@link PlayerExecutor}
      */
-    private final PlayerExecutor playerExecutor = languageAPI.getPlayerExecutor();
+    private final PlayerExecutor playerExecutor = this.languageAPI.getPlayerExecutor();
 
     /**
      * Examples for sending a message to a player
@@ -38,6 +57,8 @@ public class ExampleLanguageAPI {
          */
         LanguagePlayer languagePlayer = this.playerExecutor.getLanguagePlayer(UUID.randomUUID());
 
+
+
         /*
          * Get a LanguageOfflinePlayer by the uuid
          *
@@ -49,6 +70,8 @@ public class ExampleLanguageAPI {
          * Get a Translation by its key
          */
         Translation translation = this.languageAPI.getTranslation("translation-key");
+
+
 
 
         /*
@@ -69,11 +92,12 @@ public class ExampleLanguageAPI {
         translation.replace("toReplace", "with");
         languagePlayer.sendMessage(translation.replace("%EXAMPLE%", "Replacement"));
 
+
         /*
          * Send a message directly by the translationKey
          */
 
-        languagePlayer.sendMessageByKey("translation-key");
+        languagePlayer.sendMessage("translation-key");
 
         /*
          * Get a message from the api without sending to a player
@@ -101,6 +125,21 @@ public class ExampleLanguageAPI {
         //This loads multiple files and overwrites existing translations
         File[] filesToLoad = new File[0];
         boolean allFilesPassed = fileHandler.loadFiles(filesToLoad, true);
+    }
+
+    /**
+     * Use this if you want to export a language to a file (ingame command /lang export <Language>)
+     */
+    public void export() {
+        FileHandler fileHandler = this.languageAPI.getFileHandler();
+
+        fileHandler.exportLanguageToFile("languageName").thenAccept(passed -> {
+
+        });
+
+        fileHandler.exportAll().thenAccept(allFilesPassed -> {
+
+        });
     }
 
 }
