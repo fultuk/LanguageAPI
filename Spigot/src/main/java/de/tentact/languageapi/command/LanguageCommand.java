@@ -37,6 +37,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,7 +46,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -56,16 +57,16 @@ public class LanguageCommand implements TabExecutor {
             "add", "remove", "update", "create", "delete",
             "param", "copy", "translations", "reload",
             "import", "export", "help", "info", "list");
-    public final List<Player> editingMessage = new ArrayList<>();
-    public final Map<Player, List<String>> givenParameter = new HashMap<>();
     private final LanguageSpigot languageSpigot;
     private final LanguageInventory languageInventory;
     private final String version;
+    private static MetadataValue EDIT_MESSAGE;
 
     public LanguageCommand(LanguageSpigot languageSpigot) {
         this.languageSpigot = languageSpigot;
         this.languageInventory = languageSpigot.getSpigotConfiguration().getLanguageInventory();
         this.version = languageSpigot.getVersion();
+        EDIT_MESSAGE = new FixedMetadataValue(languageSpigot, true);
     }
 
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, String[] args) {
@@ -127,8 +128,8 @@ public class LanguageCommand implements TabExecutor {
                             final String effectiveLanguage = language;
                             this.languageAPI.isKeyAsync(key, language).thenAccept(isKey -> {
                                 if (isKey) {
-                                    this.editingMessage.add(player);
-                                    this.givenParameter.put(player, Arrays.asList(key, effectiveLanguage));
+                                    player.setMetadata("editMessage", EDIT_MESSAGE);
+                                    player.setMetadata("editParameter", new FixedMetadataValue(this.languageSpigot, Arrays.asList(key, effectiveLanguage)));
                                     languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_INSTRUCTIONS.get());
                                 } else {
                                     languagePlayer.sendMessage(I18N.LANGUAGEAPI_KEY_NOT_FOUND.get().replace("%KEY%", key)

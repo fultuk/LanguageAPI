@@ -706,10 +706,10 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public @NotNull Translation getTranslation(@NotNull String translationKey) {
-        if (this.translationMap.containsKey(translationKey)) {
-            return this.translationMap.get(translationKey);
+        if (this.translationMap.containsKey(translationKey.toLowerCase())) {
+            return this.translationMap.get(translationKey.toLowerCase());
         }
-        Translation translation = new DefaultTranslation(translationKey);
+        Translation translation = new DefaultTranslation(translationKey.toLowerCase());
         this.updateTranslation(translation);
         return translation;
     }
@@ -732,7 +732,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public void updateTranslation(Translation translation) {
-        this.translationMap.put(translation.getTranslationKey(), translation);
+        this.translationMap.put(translation.getTranslationKey().toLowerCase(), translation);
     }
 
     @Override

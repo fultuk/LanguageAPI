@@ -55,7 +55,7 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
     /**
      * Sends a message to the player by a translationkey
      * @param translationKey the translationkey to get the translation from
-     * @deprecated use {@link #sendMessage(String)} instead
+     * @deprecated use {@link LanguagePlayer#sendMessage(String)} instead
      */
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "2.0")

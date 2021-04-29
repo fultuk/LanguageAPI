@@ -61,12 +61,11 @@ public class LanguageSpigot extends JavaPlugin {
         LanguageAPI.getInstance().createLanguage(languageConfig.getLanguageSetting().getDefaultLanguage());
         this.updater = new Updater(this);
 
-        LanguageCommand languageCommand = new LanguageCommand(this);
-        Objects.requireNonNull(this.getCommand("languageapi")).setExecutor(languageCommand);
+        Objects.requireNonNull(this.getCommand("languageapi")).setExecutor(new LanguageCommand(this));
         Objects.requireNonNull(this.getCommand("languageapi")).setTabCompleter(new LanguageCommand(this));
 
         new JoinListener(this);
-        new ChatListener(this, languageCommand);
+        new ChatListener(this);
         new InventoryClickListener(this, this.spigotConfiguration.getLanguageInventory());
 
     }

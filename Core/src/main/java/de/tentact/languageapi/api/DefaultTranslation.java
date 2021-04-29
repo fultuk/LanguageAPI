@@ -74,8 +74,8 @@ public class DefaultTranslation implements Translation {
     }
 
     @Override
-    public @NotNull CompletableFuture<String> getMessageAsync(@NotNull UUID playerUUID) {
-        return this.getMessageAsync(this.languageAPI.getPlayerExecutor().getPlayerLanguage(playerUUID));
+    public @NotNull CompletableFuture<String> getMessageAsync(@NotNull UUID playerId) {
+        return this.languageAPI.getPlayerExecutor().getPlayerLanguageAsync(playerId).thenCompose(this::getMessageAsync);
     }
 
     @NotNull

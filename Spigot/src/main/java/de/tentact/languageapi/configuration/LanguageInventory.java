@@ -41,14 +41,14 @@ public class LanguageInventory {
     }
 
     public Inventory getLanguageInventory() {
-        if (this.inventory != null) {
-            return this.inventory;
-        }
         if (this.languageInventoryConfiguration == null) {
             return null;
         }
         if (!this.languageInventoryConfiguration.isUseInventory()) {
             return null;
+        }
+        if (this.inventory != null) {
+            return this.inventory;
         }
         Inventory inventory = Bukkit.createInventory(null, this.languageInventoryConfiguration.getInventorySize(), this.languageInventoryConfiguration.getName());
 

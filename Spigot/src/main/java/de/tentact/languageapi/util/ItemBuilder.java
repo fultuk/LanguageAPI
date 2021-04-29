@@ -60,7 +60,7 @@ public class ItemBuilder {
     }
 
     public static ItemStack buildSkull(String material,String value, String displayName, List<String> lore) {
-        ItemStack itemStack = new ItemStack(Material.valueOf(material), 1, (byte) 3);
+        ItemStack itemStack = new ItemStack(Material.getMaterial(material), 1, (byte) 3);
         SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
         skullMeta.setDisplayName(displayName);
         skullMeta.setLore(lore);

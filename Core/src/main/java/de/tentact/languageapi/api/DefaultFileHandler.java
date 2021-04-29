@@ -25,7 +25,6 @@
 
 package de.tentact.languageapi.api;
 
-import com.github.derrop.documents.DefaultDocument;
 import com.github.derrop.documents.Document;
 import com.github.derrop.documents.Documents;
 import com.google.gson.reflect.TypeToken;
@@ -100,7 +99,7 @@ public class DefaultFileHandler implements FileHandler {
             keysAndTranslations.put("language", language);
             keysAndTranslations.putAll(LanguageAPI.getInstance().getKeysAndTranslations(language));
 
-            Document document = new DefaultDocument("languageapi", keysAndTranslations);
+            Document document = Documents.newDocument("languageapi", keysAndTranslations);
             File outputFile = new File(file, language.toLowerCase() + ".yml");
             try {
                 Files.createDirectories(outputFile.getParentFile().toPath());

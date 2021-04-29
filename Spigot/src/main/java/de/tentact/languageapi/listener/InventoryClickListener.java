@@ -57,16 +57,16 @@ public class InventoryClickListener implements Listener {
         Inventory inventory = event.getInventory();
         ItemStack currentItem = event.getCurrentItem();
 
-        if(currentItem != null && event.getWhoClicked() instanceof Player) {
+        if (currentItem != null && event.getWhoClicked() instanceof Player) {
             int clickedSlot = event.getSlot();
-            if(!this.languageInventory.getLanguageInventory().equals(inventory)) {
+            if (!this.languageInventory.getLanguageInventory().equals(inventory)) {
                 return;
             }
             event.setCancelled(true);
-            this.languageInventoryConfiguration.getLanguages()
+            LanguageAPI.getInstance().executeAsync(() -> this.languageInventoryConfiguration.getLanguages()
                     .stream()
                     .filter(languageItem -> languageItem.getInventorySlot() == clickedSlot)
-                    .filter(languageItem -> LanguageAPI.getInstance().isLanguage(languageItem.getLanguageName().toLowerCase()))
+                    .filter(languageItem -> LanguageAPI.getInstance().isLanguage(languageItem.getLanguageName()))
                     .findFirst()
                     .ifPresent(languageItem -> {
                         Player player = (Player) event.getWhoClicked();
@@ -75,9 +75,10 @@ public class InventoryClickListener implements Listener {
                         LanguagePlayer languagePlayer = this.playerExecutor.getLanguagePlayer(player.getUniqueId());
                         //Even if it should never be null here
                         if (languagePlayer != null) {
-                            languagePlayer.sendMessage(I18N.LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE.get().replace("%LANGUAGE%", languageItem.getLanguageName()));
+                            languagePlayer.sendMessage(I18N.LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE.get()
+                                    .replace("%LANGUAGE%", languageItem.getLanguageName()));
                         }
-                    });
+                    }));
         }
     }
 }

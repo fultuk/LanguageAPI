@@ -25,7 +25,6 @@
 
 package de.tentact.languageapi.configuration;
 
-import com.github.derrop.documents.DefaultDocument;
 import com.github.derrop.documents.Document;
 import com.github.derrop.documents.Documents;
 
@@ -38,7 +37,7 @@ import java.util.logging.Logger;
 
 public class SpigotConfiguration extends Configuration {
 
-    private Document inventoryDocument = new DefaultDocument();
+    private Document inventoryDocument = Documents.newDocument();
     private final File inventoryFile = new File("plugins/LanguageAPI", "languages.json");
 
     private final File importDir = new File("plugins/LanguageAPI/import");
@@ -103,10 +102,9 @@ public class SpigotConfiguration extends Configuration {
     }
 
     public LanguageInventory getLanguageInventory() {
-        if (this.languageInventory != null) {
-            return this.languageInventory;
+        if (this.languageInventory == null) {
+            this.languageInventory = this.inventoryDocument.get("config", LanguageInventory.class);
         }
-        this.languageInventory = this.inventoryDocument.get("config", LanguageInventory.class);
         return this.languageInventory;
     }
 
