@@ -2,19 +2,17 @@ LanguageAPI - Translate your Plugins
 -
 What is LanguageAPI?
 - 
-An API to the LanguageAPI, which aims to make the translation of messages into different languages efficient and easy.
-Everything works with a unique key that returns the translation in the correct language. A key cannot only lead to a translation,
-but can lead also to a collection of keys that lead back to the translations.
+The LanguageAPI aims to make it easy to translate your plugins. As developer, you can use the LanguageAPI to give the
+user the opportunity to translate messages in every language the user wants to, this solves the problem of dealing with
+different languages in files.
 
-Features
--
-Powerful API
-
-Ingame commands to do changes
+As plugin user, the LanguageAPI gives you the opportunity to edit messages ingame with commands to make it easy
+and grant access to other staff-members
 
 How to use?
 -
-Check the examples on GitHub
+The API is pretty self explaining. Use ``LanguageAPI.getInstance()`` to obtain an instance and work with. 
+For more details look at the examples module.
 
 Get the API
 -
@@ -22,8 +20,8 @@ Get the API
 Repository:
 ```
 	<repository>
-            <id>tentact-snapshot</id>
-            <url>https://archiva.tentact.de/repository/tentact-snapshot/</url>
+            <id>tentact-release</id>
+            <url>https://archiva.tentact.de/repository/tentact-release/</url>
         </repository>
 ```
 Dependency:
@@ -31,19 +29,19 @@ Dependency:
        <dependency>
             <groupId>de.tentact.languageapi</groupId>
             <artifactId>API</artifactId>
-            <version>1.9-SNAPSHOT</version>
+            <version>1.9-RELEASE</version>
         </dependency>
 ```
 Download
 -
 Latest Bungeecord Snapshot
-https://archiva.tentact.de/#artifact-details-download-content~tentact-snapshot/de.tentact.languageapi/BungeeCord/1.9-SNAPSHOT
+https://archiva.tentact.de/#artifact-details-download-content~tentact-release/de.tentact.languageapi/BungeeCord/1.9-RELEASE
 
 Latest Spigot Snapshot
-https://archiva.tentact.de/#artifact-details-download-content~tentact-snapshot/de.tentact.languageapi/Spigot/1.9-SNAPSHOT
+https://archiva.tentact.de/#artifact-details-download-content~tentact-release/de.tentact.languageapi/Spigot/1.9-RELEASE
 
 Latest Velocity Snapshot
-https://archiva.tentact.de/#artifact-details-download-content~tentact-snapshot/de.tentact.languageapi/Velocity/1.9-SNAPSHOT
+https://archiva.tentact.de/#artifact-details-download-content~tentact-release/de.tentact.languageapi/Velocity/1.9-RELEASE
 
 
 Choose the latest file (the top file) and put it into your plugins folder.

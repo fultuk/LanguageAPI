@@ -30,7 +30,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>LanguageAPI</artifactId>
-    <version>1.9-SNAPSHOT</version>
+    <version>1.9-RELEASE</version>
     <groupId>de.tentact.languageapi</groupId>
     <name>LanguageAPI</name>
     <packaging>pom</packaging>

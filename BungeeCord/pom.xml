@@ -30,7 +30,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>LanguageAPI</artifactId>
-        <version>1.9-SNAPSHOT</version>
+        <version>1.9-RELEASE</version>
         <groupId>de.tentact.languageapi</groupId>
     </parent>
     <properties>
@@ -87,7 +87,7 @@
         <dependency>
             <groupId>de.tentact.languageapi</groupId>
             <artifactId>API</artifactId>
-            <version>1.9-SNAPSHOT</version>
+            <version>1.9-RELEASE</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -116,7 +116,7 @@
         <dependency>
             <groupId>de.tentact.languageapi</groupId>
             <artifactId>Core</artifactId>
-            <version>1.9-SNAPSHOT</version>
+            <version>1.9-RELEASE</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

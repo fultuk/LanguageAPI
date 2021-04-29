@@ -30,7 +30,7 @@
     <parent>
         <artifactId>LanguageAPI</artifactId>
         <groupId>de.tentact.languageapi</groupId>
-        <version>1.9-SNAPSHOT</version>
+        <version>1.9-RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>Core</artifactId>
@@ -49,7 +49,7 @@
         <dependency>
             <groupId>de.tentact.languageapi</groupId>
             <artifactId>API</artifactId>
-            <version>1.9-SNAPSHOT</version>
+            <version>1.9-RELEASE</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
