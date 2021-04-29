@@ -83,13 +83,16 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
         </pluginRepository>
     </pluginRepositories>
 
     <distributionManagement>
         <repository>
             <id>tentact-snapshot</id>
-            <url>https://archiva.tentact.de/repository/tentact-snapshot/</url>
+            <url>https://archiva.tentact.de/repository/tentact-release/</url>
         </repository>
     </distributionManagement>
 </project>
