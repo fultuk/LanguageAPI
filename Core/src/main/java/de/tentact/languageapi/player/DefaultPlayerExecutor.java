@@ -122,7 +122,6 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
         if (!this.languageAPI.isLanguage(newLanguage)) {
             if (orElseDefault) {
                 this.setPlayerLanguage(playerId, this.languageAPI.getDefaultLanguage());
-                return;
             }
             return;
         }

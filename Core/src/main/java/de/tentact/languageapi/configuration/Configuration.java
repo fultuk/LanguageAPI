@@ -74,6 +74,7 @@ public class Configuration {
                 new LanguageSetting(
                         "deDE",
                         5,
+                        "&eLanguageAPI x &7",
                         true,
                         false
                 )

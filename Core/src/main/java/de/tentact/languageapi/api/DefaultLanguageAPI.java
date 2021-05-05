@@ -89,7 +89,11 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
                     ex.printStackTrace();
                 }
 
-                this.addMessage("languageapi-prefix", "&eLanguageAPI x &7", language);
+                this.addMessage(
+                        "languageapi-prefix",
+                        this.languageConfig.getLanguageSetting().getDefaultPrefix(),
+                        language
+                );
                 this.debug("Creating new language: " + language);
             }
         });
@@ -453,7 +457,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
                 throw new IllegalArgumentException("Language " + language + " was not found!");
             }
             try (Connection connection = this.getDataSource().getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM " + language+ " WHERE translationkey=?;")) {
+                 PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM " + language + " WHERE translationkey=?;")) {
                 preparedStatement.setString(1, translationKey.toLowerCase());
                 preparedStatement.execute();
             } catch (SQLException throwable) {

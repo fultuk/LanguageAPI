@@ -31,13 +31,19 @@ public class LanguageSetting {
 
     private final String defaultLanguage;
     private final int cachedTime;
+    private final String defaultPrefix;
     @SerializedName("notify")
     private final boolean isNotify;
     private final boolean debugLogging;
 
     public LanguageSetting(String defaultLanguage, int cacheTime, boolean isNotify, boolean debugLogging) {
+        this(defaultLanguage, cacheTime, "&eLanguageAPI x &7", isNotify, debugLogging);
+    }
+
+    public LanguageSetting(String defaultLanguage, int cachedTime, String defaultPrefix, boolean isNotify, boolean debugLogging) {
         this.defaultLanguage = defaultLanguage;
-        this.cachedTime = cacheTime;
+        this.cachedTime = cachedTime;
+        this.defaultPrefix = defaultPrefix;
         this.isNotify = isNotify;
         this.debugLogging = debugLogging;
     }
@@ -48,6 +54,10 @@ public class LanguageSetting {
 
     public int getCachedTime() {
         return this.cachedTime;
+    }
+
+    public String getDefaultPrefix() {
+        return this.defaultPrefix;
     }
 
     public boolean isNotify() {
