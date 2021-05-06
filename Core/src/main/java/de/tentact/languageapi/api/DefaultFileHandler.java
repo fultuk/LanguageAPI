@@ -30,7 +30,6 @@ import com.github.derrop.documents.Documents;
 import com.google.gson.reflect.TypeToken;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.file.FileHandler;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;

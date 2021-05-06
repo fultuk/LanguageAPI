@@ -1,0 +1,16 @@
+de/tentact/languageapi/player/LanguageOfflinePlayer.java
+ de.tentact.languageapi.player.LanguageOfflinePlayer
+de/tentact/languageapi/console/ConsoleExecutor.java
+ de.tentact.languageapi.console.ConsoleExecutor
+de/tentact/languageapi/player/PlayerExecutor.java
+ de.tentact.languageapi.player.PlayerExecutor
+de/tentact/languageapi/file/FileHandler.java
+ de.tentact.languageapi.file.FileHandler
+de/tentact/languageapi/LanguageAPI.java
+ de.tentact.languageapi.LanguageAPI
+de/tentact/languageapi/player/LanguagePlayer.java
+ de.tentact.languageapi.player.LanguagePlayer
+de/tentact/languageapi/player/SpecificPlayerExecutor.java
+ de.tentact.languageapi.player.SpecificPlayerExecutor
+de/tentact/languageapi/i18n/Translation.java
+ de.tentact.languageapi.i18n.Translation
