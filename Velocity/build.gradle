@@ -5,11 +5,8 @@
 
 dependencies {
     implementation project(':API')
-    implementation 'com.google.guava:guava:30.0-jre'
-    implementation 'org.jetbrains:annotations:19.0.0'
-    implementation 'com.zaxxer:HikariCP:3.4.5'
     implementation 'net.kyori:adventure-api:4.0.0-SNAPSHOT'
     implementation 'net.kyori:adventure-text-serializer-legacy:4.0.0-SNAPSHOT'
     implementation project(':Core')
-    compileOnly 'com.velocitypowered:velocity-api:1.0.9'
+    compileOnly 'com.velocitypowered:velocity-api:1.1.5'
 }

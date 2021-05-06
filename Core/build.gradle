@@ -4,7 +4,7 @@
 
 dependencies {
     implementation project(':API')
-    implementation 'com.google.guava:guava:30.0-jre'
+    api 'com.google.guava:guava:30.0-jre'
     implementation 'com.zaxxer:HikariCP:4.0.3'
-    implementation 'com.github.derrop:documents:1.1-RELEASE'
+    api 'com.github.derrop:documents:1.1-RELEASE'
 }

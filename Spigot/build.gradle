@@ -3,10 +3,7 @@
  */
 
 dependencies {
-    implementation 'com.github.derrop:documents:1.1-RELEASE'
     implementation project(':API')
-    implementation 'org.jetbrains:annotations:19.0.0'
-    implementation 'com.zaxxer:HikariCP:3.4.5'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation project(':Core')
     compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
