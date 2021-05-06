@@ -63,8 +63,8 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
             .expireAfterWrite(5L, TimeUnit.MINUTES)
             .build(new CacheLoader<UUID, LanguageOfflinePlayer>() {
                 @Override
-                public LanguageOfflinePlayer load(UUID uuid) {
-                    return new DefaultLanguageOfflinePlayer(uuid);
+                public LanguageOfflinePlayer load(@NotNull UUID playerId) {
+                    return new DefaultLanguageOfflinePlayer(playerId);
                 }
             });
 
