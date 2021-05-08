@@ -35,11 +35,10 @@ import java.util.concurrent.CompletableFuture;
 public class DefaultSpecificPlayerExecutor implements SpecificPlayerExecutor {
 
     private final UUID playerId;
-    private final LanguageAPI languageAPI = LanguageAPI.getInstance();
     private final PlayerExecutor playerExecutor;
 
     public DefaultSpecificPlayerExecutor(UUID playerId) {
-        this.playerExecutor = this.languageAPI.getPlayerExecutor();
+        this.playerExecutor = LanguageAPI.getInstance().getPlayerExecutor();
         this.playerId = playerId;
     }
 
@@ -55,10 +54,7 @@ public class DefaultSpecificPlayerExecutor implements SpecificPlayerExecutor {
 
     @Override
     public boolean isPlayersLanguage(@NotNull String language) {
-        if (!this.languageAPI.isLanguage(language)) {
-            return false;
-        }
-        return this.playerExecutor.getPlayerLanguage(this.playerId).equalsIgnoreCase(language);
+        return this.playerExecutor.isPlayersLanguage(this.playerId, language);
     }
 
     @Override

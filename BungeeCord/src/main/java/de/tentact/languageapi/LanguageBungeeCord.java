@@ -29,8 +29,9 @@ import de.tentact.languageapi.api.BungeeCordLanguageAPI;
 import de.tentact.languageapi.configuration.Configuration;
 import de.tentact.languageapi.configuration.DatabaseProvider;
 import de.tentact.languageapi.configuration.LanguageConfig;
-import de.tentact.languageapi.util.Updater;
+import de.tentact.languageapi.util.UpdateNotifier;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.api.plugin.PluginDescription;
 
 public class LanguageBungeeCord extends Plugin {
 
@@ -45,11 +46,16 @@ public class LanguageBungeeCord extends Plugin {
         LanguageAPI.setInstance(new BungeeCordLanguageAPI(languageConfig));
         this.databaseProvider.createDefaultTable();
         LanguageAPI.getInstance().createLanguage(languageConfig.getLanguageSetting().getDefaultLanguage());
-        new Updater(this);
+        this.checkForUpdates(new UpdateNotifier());
     }
 
     @Override
     public void onDisable() {
         this.databaseProvider.closeConnection();
+    }
+
+    private void checkForUpdates(UpdateNotifier updateNotifier) {
+        PluginDescription pluginDescription = this.getDescription();
+        updateNotifier.checkForUpdates(pluginDescription.getVersion(), pluginDescription.getName(), this.getLogger());
     }
 }

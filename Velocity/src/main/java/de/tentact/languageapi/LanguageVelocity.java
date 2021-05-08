@@ -27,20 +27,21 @@ package de.tentact.languageapi;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.plugin.Plugin;
+import com.velocitypowered.api.plugin.PluginDescription;
 import com.velocitypowered.api.proxy.ProxyServer;
 import de.tentact.languageapi.api.VelocityLanguageAPI;
 import de.tentact.languageapi.configuration.Configuration;
 import de.tentact.languageapi.configuration.DatabaseProvider;
 import de.tentact.languageapi.configuration.LanguageConfig;
-import de.tentact.languageapi.util.Updater;
+import de.tentact.languageapi.util.UpdateNotifier;
 
 import java.util.logging.Logger;
 
-@Plugin(id = "languageapi", name = "LanguageAPI", version = "1.9", authors = {"0utplay"})
+@Plugin(id = "languageapi", name = "LanguageAPI", version = "2.0-SNAPSHOT-1111111", authors = {"0utplay"})
 public class LanguageVelocity {
 
     @Inject
-    public LanguageVelocity(ProxyServer proxyServer, Logger logger) {
+    public LanguageVelocity(ProxyServer proxyServer, Logger logger, PluginDescription pluginDescription) {
         Configuration configuration = new Configuration(logger);
         LanguageConfig languageConfig = configuration.getLanguageConfig();
 
@@ -49,10 +50,14 @@ public class LanguageVelocity {
         LanguageAPI.setInstance(new VelocityLanguageAPI(proxyServer, languageConfig));
 
         databaseProvider.createDefaultTable();
-
         LanguageAPI.getInstance().createLanguage(languageConfig.getLanguageSetting().getDefaultLanguage());
 
-        new Updater(proxyServer, logger);
+        this.checkForUpdates(new UpdateNotifier(), pluginDescription, logger);
+    }
+
+    private void checkForUpdates(UpdateNotifier updateNotifier, PluginDescription pluginDescription, Logger logger) {
+        pluginDescription.getVersion().ifPresent(version ->
+                updateNotifier.checkForUpdates(version, pluginDescription.getId(), logger));
     }
 
 }

@@ -1,7 +1,17 @@
-
 allprojects {
     group = 'de.tentact.languageapi'
-    version = '2.0-SNAPSHOT'
+    version = '2.0-SNAPSHOT-' + getCurrentShortRevision()
+}
+
+def getCurrentShortRevision() {
+    new ByteArrayOutputStream().withStream { os ->
+        exec {
+            executable = "git"
+            args = ["rev-parse", "HEAD"]
+            standardOutput = os
+        }
+        return os.toString().trim().substring(0, 8)
+    }
 }
 
 subprojects {
@@ -53,4 +63,5 @@ subprojects {
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
     }
+
 }

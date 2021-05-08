@@ -111,9 +111,6 @@ public abstract class DefaultPlayerExecutor implements PlayerExecutor {
 
     @Override
     public boolean isPlayersLanguage(UUID playerId, String language) {
-        if (!this.languageAPI.isLanguage(language)) {
-            return false;
-        }
         return this.getPlayerLanguage(playerId).equalsIgnoreCase(language);
     }
 

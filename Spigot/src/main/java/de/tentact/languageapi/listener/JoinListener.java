@@ -28,7 +28,7 @@ package de.tentact.languageapi.listener;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.LanguageSpigot;
 import de.tentact.languageapi.player.SpecificPlayerExecutor;
-import de.tentact.languageapi.util.Updater;
+import de.tentact.languageapi.util.UpdateNotifier;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -38,12 +38,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class JoinListener implements Listener {
 
     private final LanguageSpigot languageSpigot;
-    private final Updater updater;
+    private final UpdateNotifier updater;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
     public JoinListener(LanguageSpigot languageSpigot) {
         this.languageSpigot = languageSpigot;
-        this.updater = this.languageSpigot.getUpdater();
+        this.updater = this.languageSpigot.getUpdateNotifier();
         Bukkit.getPluginManager().registerEvents(this, languageSpigot);
     }
 
@@ -68,7 +68,7 @@ public class JoinListener implements Listener {
         if (!this.updater.hasUpdate()) {
             return;
         }
-        player.sendMessage(LanguageAPI.getInstance().getLanguageAPIPrefix() + "Es ist ein neues Update verfügbar. Aktuelle Version: §6" + this.updater.getLocalVersion()
-                + "§7. Neuste Version: §c" + updater.getOnlineVersion() + "");
+        player.sendMessage(LanguageAPI.getInstance().getLanguageAPIPrefix() + "Es ist ein neues Update verfügbar. Aktuelle Version: §6" + this.updater.getPluginVersion()
+                + "§7. Neuste Version: §c" + this.updater.getOnlineVersion() + "");
     }
 }

@@ -60,22 +60,23 @@ public class InventoryClickListener implements Listener {
                 return;
             }
             event.setCancelled(true);
-            LanguageAPI.getInstance().executeAsync(() -> this.languageInventoryConfiguration.getLanguages()
-                    .stream()
-                    .filter(languageItem -> languageItem.getInventorySlot() == clickedSlot)
-                    .filter(languageItem -> LanguageAPI.getInstance().isLanguage(languageItem.getLanguageName()))
-                    .findFirst()
-                    .ifPresent(languageItem -> {
-                        Player player = (Player) event.getWhoClicked();
-                        player.closeInventory();
-                        this.playerExecutor.setPlayerLanguage(player.getUniqueId(), languageItem.getLanguageName());
-                        LanguagePlayer languagePlayer = this.playerExecutor.getLanguagePlayer(player.getUniqueId());
-                        //Even if it should never be null here
-                        if (languagePlayer != null) {
-                            languagePlayer.sendMessage(I18N.LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE.get()
-                                    .replace("%LANGUAGE%", languageItem.getLanguageName()));
-                        }
-                    }));
+            LanguageAPI.getInstance().executeAsync(() ->
+                    this.languageInventoryConfiguration.getLanguages()
+                            .stream()
+                            .filter(languageItem -> languageItem.getInventorySlot() == clickedSlot)
+                            .filter(languageItem -> LanguageAPI.getInstance().isLanguage(languageItem.getLanguageName()))
+                            .findFirst()
+                            .ifPresent(languageItem -> {
+                                Player player = (Player) event.getWhoClicked();
+                                player.closeInventory();
+                                this.playerExecutor.setPlayerLanguage(player.getUniqueId(), languageItem.getLanguageName());
+                                LanguagePlayer languagePlayer = this.playerExecutor.getLanguagePlayer(player.getUniqueId());
+                                //Even if it should never be null here
+                                if (languagePlayer != null) {
+                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE.get()
+                                            .replace("%LANGUAGE%", languageItem.getLanguageName()));
+                                }
+                            }));
         }
     }
 }

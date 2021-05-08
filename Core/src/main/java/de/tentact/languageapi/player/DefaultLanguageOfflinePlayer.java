@@ -47,14 +47,11 @@ public class DefaultLanguageOfflinePlayer implements LanguageOfflinePlayer {
 
     @Override
     public void setLanguage(@Nullable String language) {
-        this.setLanguage(language, false);
+        this.setLanguage(language, true);
     }
 
     @Override
     public void setLanguage(@Nullable String language, boolean orElseDefault) {
-        if (!LanguageAPI.getInstance().isLanguage(language) && !orElseDefault) {
-            throw new IllegalArgumentException(language + " was not found");
-        }
         this.playerExecutor.setPlayerLanguage(this.playerID, language, orElseDefault);
     }
 

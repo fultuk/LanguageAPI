@@ -46,7 +46,7 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (player == null) {
             return;
         }
-        translation.getMessageAsync(this.getLanguage()).thenAccept(player::sendMessage);
+        super.getLanguageAsync().thenCompose(translation::getMessageAsync).thenAccept(player::sendMessage);
     }
 
     @Override
@@ -74,7 +74,6 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (player == null) {
             return;
         }
-        translation.getMessageAsync(this.getLanguage())
-                .thenAccept(player::kickPlayer);
+        super.getLanguageAsync().thenCompose(translation::getMessageAsync).thenAccept(player::kickPlayer);
     }
 }

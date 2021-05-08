@@ -88,7 +88,7 @@ public class LanguageCommand implements TabExecutor {
                                 return false;
                             }
                             String language = args[1].toLowerCase();
-                            if(!this.languageAPI.isLanguage(language)) {
+                            if (!this.languageAPI.isLanguage(language)) {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_NOT_FOUND.get().replace("%LANG%", language));
                                 return false;
                             }
@@ -119,7 +119,7 @@ public class LanguageCommand implements TabExecutor {
                                 return false;
                             }
                             language = args[1];
-                            if(!this.languageAPI.isLanguage(language)) {
+                            if (!this.languageAPI.isLanguage(language)) {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_NOT_FOUND.get()
                                         .replace("%LANG%", language));
                                 return false;
@@ -167,22 +167,20 @@ public class LanguageCommand implements TabExecutor {
                             if (!(args.length >= 2)) {
                                 return false;
                             }
-                            language = args[1].toLowerCase();
-                            if (this.languageAPI.getAvailableLanguages().contains(language) && !this.languageAPI.getDefaultLanguage().equalsIgnoreCase(language)) {
-                                this.languageAPI.deleteLanguage(language);
-                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_DELETE_SUCCESS.get().replace("%LANG%", language));
+                            language = args[1];
+                            this.languageAPI.executeAsync(() -> {
+                                if (this.containsIgnoreCase(this.languageAPI.getAvailableLanguages(), language) && !this.languageAPI.getDefaultLanguage().equalsIgnoreCase(language)) {
+                                    this.languageAPI.deleteLanguage(language);
+                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_DELETE_SUCCESS.get().replace("%LANG%", language));
+                                } else if (language.equalsIgnoreCase("*")) {
+                                    this.languageAPI.getAvailableLanguages().forEach(this.languageAPI::deleteLanguage);
 
-                                return true;
-                            } else if (language.equalsIgnoreCase("*")) {
-                                this.languageAPI.getAvailableLanguages().forEach(this.languageAPI::deleteLanguage);
-
-                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_DELETE_ALL_LANGS.get());
-                                return true;
-                            } else {
-                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_NOT_FOUND.get()
-                                        .replace("%LANG%", language));
-                                return false;
-                            }
+                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_DELETE_ALL_LANGS.get());
+                                } else {
+                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_NOT_FOUND.get()
+                                            .replace("%LANG%", language));
+                                }
+                            });
                         case "copy":
                             if (this.checkDoesNotHavePermission(player, args)) {
                                 return false;
@@ -200,7 +198,7 @@ public class LanguageCommand implements TabExecutor {
                                                         .replace("%NEWLANG%", langto));
                                             } else {
                                                 resultLanguage = langfrom;
-                                                if (this.languageAPI.getAvailableLanguages().contains(langfrom)) {
+                                                if (this.containsIgnoreCase(this.languageAPI.getAvailableLanguages(), langfrom)) {
                                                     resultLanguage = langto;
                                                 }
                                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_NOT_FOUND.get()
@@ -433,5 +431,14 @@ public class LanguageCommand implements TabExecutor {
             languagePlayer.sendMessage(I18N.LANGUAGEAPI_NOPERMS.get());
         }
         return true;
+    }
+
+    private boolean containsIgnoreCase(List<String> list, String comparingString) {
+        for (String s : list) {
+            if (s.equalsIgnoreCase(comparingString)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

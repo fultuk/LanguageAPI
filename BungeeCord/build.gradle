@@ -1,8 +1,17 @@
-
+plugins {
+    id 'net.minecrell.plugin-yml.bungee' version '0.3.0'
+}
 
 dependencies {
     implementation project(':API')
     implementation 'com.google.guava:guava:30.0-jre'
     implementation project(':Core')
     compileOnly 'net.md-5:bungeecord-api:1.16-R0.3'
+}
+
+bungee {
+    name = 'LanguageAPI'
+    main = 'de.tentact.languageapi.LanguageBungeecord'
+    version = project.version
+    author = '0utplay'
 }

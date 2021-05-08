@@ -33,22 +33,20 @@ import de.tentact.languageapi.configuration.SpigotConfiguration;
 import de.tentact.languageapi.listener.ChatListener;
 import de.tentact.languageapi.listener.InventoryClickListener;
 import de.tentact.languageapi.listener.JoinListener;
-import de.tentact.languageapi.util.Updater;
+import de.tentact.languageapi.util.UpdateNotifier;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
-import java.util.logging.Level;
 
 public class LanguageSpigot extends JavaPlugin {
 
-    private Updater updater;
     private DatabaseProvider databaseProvider;
     private SpigotConfiguration spigotConfiguration;
+    private UpdateNotifier updateNotifier;
 
     @Override
     public void onEnable() {
-
-        this.getLogger().log(Level.INFO, "Starting LanguageAPI Version: " + this.getVersion());
 
         this.spigotConfiguration = new SpigotConfiguration(this.getLogger());
         LanguageConfig languageConfig = this.spigotConfiguration.getLanguageConfig();
@@ -59,7 +57,8 @@ public class LanguageSpigot extends JavaPlugin {
         this.databaseProvider.createDefaultTable();
 
         LanguageAPI.getInstance().createLanguage(languageConfig.getLanguageSetting().getDefaultLanguage());
-        this.updater = new Updater(this);
+        this.updateNotifier = new UpdateNotifier();
+        this.checkForUpdates();
 
         Objects.requireNonNull(this.getCommand("languageapi")).setExecutor(new LanguageCommand(this));
         Objects.requireNonNull(this.getCommand("languageapi")).setTabCompleter(new LanguageCommand(this));
@@ -76,18 +75,23 @@ public class LanguageSpigot extends JavaPlugin {
     }
 
     public String getVersion() {
-        return "2.0-SNAPSHOT-2904-2044";
+        return this.getDescription().getVersion();
     }
 
     public void setSpigotConfiguration(SpigotConfiguration spigotConfiguration) {
         this.spigotConfiguration = spigotConfiguration;
     }
 
+    private void checkForUpdates() {
+        PluginDescriptionFile pluginDescriptionFile = this.getDescription();
+        this.updateNotifier.checkForUpdates(pluginDescriptionFile.getVersion(), pluginDescriptionFile.getName(), this.getLogger());
+    }
+
     public SpigotConfiguration getSpigotConfiguration() {
         return this.spigotConfiguration;
     }
 
-    public Updater getUpdater() {
-        return this.updater;
+    public UpdateNotifier getUpdateNotifier() {
+        return this.updateNotifier;
     }
 }

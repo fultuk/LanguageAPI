@@ -47,7 +47,7 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (player == null) {
             return;
         }
-        translation.getMessageAsync(this.getLanguage()).thenAccept(message -> player.sendMessage(LegacyComponentSerializer.legacyLinking().deserialize(message)));
+        super.getLanguageAsync().thenCompose(translation::getMessageAsync).thenAccept(message -> player.sendMessage(LegacyComponentSerializer.legacyLinking().deserialize(message)));
     }
 
     @Override
@@ -76,7 +76,6 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (player == null) {
             return;
         }
-        translation.getMessageAsync(this.getLanguage())
-                .thenAccept(message -> player.disconnect(LegacyComponentSerializer.legacyLinking().deserialize(message)));
+        super.getLanguageAsync().thenCompose(translation::getMessageAsync).thenAccept(message -> player.disconnect(LegacyComponentSerializer.legacyLinking().deserialize(message)));
     }
 }
