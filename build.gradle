@@ -6,7 +6,7 @@ ext.shortVersion = '2.0-SNAPSHOT'
 
 allprojects {
     group = 'de.tentact.languageapi'
-    version = '2.0-SNAPSHOT-' + getCurrentShortRevision()
+    version = shortVersion + '-' + getCurrentShortRevision()
 }
 
 def getCurrentShortRevision() {
@@ -63,8 +63,13 @@ subprojects {
         options.encoding = 'UTF-8'
     }
 
+    tasks.withType(Javadoc) {
+        options.encoding = 'UTF-8'
+        options.memberLevel = JavadocMemberLevel.PRIVATE
+    }
+
     shadowJar {
-        archiveFileName.set(project.name+"-"+shortVersion)
+        archiveFileName.set(project.name + "-" + shortVersion + ".jar")
     }
 
     if (project.name == 'Examples') return
@@ -76,7 +81,11 @@ subprojects {
 
     publishing {
         publications {
-            mavenJava(MavenPublication) {
+            maven(MavenPublication) {
+                groupId = project.group
+                artifactId = project.name
+                version = shortVersion
+
                 from components.java
             }
         }
