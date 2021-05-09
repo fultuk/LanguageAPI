@@ -63,7 +63,9 @@ subprojects {
         options.encoding = 'UTF-8'
     }
 
-    jar.archiveVersion.set(null)
+    shadowJar {
+        archiveFileName.set(project.name+"-"+shortVersion)
+    }
 
     if (project.name == 'Examples') return
 
@@ -71,7 +73,6 @@ subprojects {
         withJavadocJar()
         withSourcesJar()
     }
-
 
     publishing {
         publications {
@@ -92,9 +93,5 @@ subprojects {
                 }
             }
         }
-
     }
-
-
-
 }
