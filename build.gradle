@@ -57,37 +57,39 @@ subprojects {
         }
     }
 
-
-    java {
-        withJavadocJar()
-        withSourcesJar()
-    }
-
-    jar.archiveVersion.set(null)
-
     sourceCompatibility = '8'
 
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                from components.java
-            }
+    if(!it.name.equalsIgnoreCase("Examples")) {
+        java {
+            withJavadocJar()
+            withSourcesJar()
         }
 
-        repositories {
-            maven {
-                def releasesRepoUrl = 'https://archiva.tentact.de/repository/tentact-release/'
-                def snapshotsRepoUrl = 'https://archiva.tentact.de/repository/tentact-snapshot/'
-                url = shortVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+        jar.archiveVersion.set(null)
 
-                credentials {
-                    username = System.getenv("MAVEN_USERNAME")
-                    password = System.getenv("MAVEN_PASSWORD")
+
+
+        publishing {
+            publications {
+                mavenJava(MavenPublication) {
+                    from components.java
+                }
+            }
+
+            repositories {
+                maven {
+                    def releasesRepoUrl = 'https://archiva.tentact.de/repository/tentact-release/'
+                    def snapshotsRepoUrl = 'https://archiva.tentact.de/repository/tentact-snapshot/'
+                    url = shortVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+                    credentials {
+                        username = System.getenv("MAVEN_USERNAME")
+                        password = System.getenv("MAVEN_PASSWORD")
+                    }
                 }
             }
         }
     }
-
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
