@@ -74,6 +74,11 @@ subprojects {
                 def releasesRepoUrl = 'https://archiva.tentact.de/repository/tentact-release/'
                 def snapshotsRepoUrl = 'https://archiva.tentact.de/repository/tentact-snapshot/'
                 url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+                credentials {
+                    username = System.getenv("MAVEN_USERNAME")
+                    password = System.getenv("MAVEN_PASSWORD")
+                }
             }
         }
     }
