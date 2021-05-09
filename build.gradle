@@ -72,6 +72,10 @@ subprojects {
         archiveFileName.set(project.name + "-" + shortVersion + ".jar")
     }
 
+    jar {
+        archiveFileName.set(project.name + "-" + shortVersion + ".jar")
+    }
+
     if (project.name == 'Examples') return
 
     java {
@@ -89,6 +93,8 @@ subprojects {
                 from components.java
             }
         }
+
+
 
         repositories {
             maven {
