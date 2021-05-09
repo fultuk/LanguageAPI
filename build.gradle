@@ -1,3 +1,7 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "7.0.0"
+}
+
 allprojects {
     group = 'de.tentact.languageapi'
     version = '2.0-SNAPSHOT-' + getCurrentShortRevision()
@@ -18,6 +22,7 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'maven-publish'
     apply plugin: 'java-library'
+    apply plugin: 'com.github.johnrengelman.shadow'
 
     repositories {
         mavenLocal()
