@@ -55,10 +55,13 @@ subprojects {
         }
     }
 
+
     java {
         withJavadocJar()
         withSourcesJar()
     }
+
+    jar.archiveVersion.set(null)
 
     sourceCompatibility = '8'
 
