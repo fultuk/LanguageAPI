@@ -2,6 +2,8 @@ plugins {
     id "com.github.johnrengelman.shadow" version "7.0.0"
 }
 
+ext.shortVersion = '2.0-SNAPSHOT'
+
 allprojects {
     group = 'de.tentact.languageapi'
     version = '2.0-SNAPSHOT-' + getCurrentShortRevision()
@@ -76,7 +78,7 @@ subprojects {
             maven {
                 def releasesRepoUrl = 'https://archiva.tentact.de/repository/tentact-release/'
                 def snapshotsRepoUrl = 'https://archiva.tentact.de/repository/tentact-snapshot/'
-                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                url = shortVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
 
                 credentials {
                     username = System.getenv("MAVEN_USERNAME")

@@ -447,6 +447,7 @@ public abstract class LanguageAPI {
     /**
      * @param transkey the translationkey which holds the other keys
      * @param language the language to get the translation in
+     * @param prefixKey the translationkey of the prefix
      * @return returns a {@link List} with the translated messages
      * @since 1.8
      */
@@ -456,6 +457,7 @@ public abstract class LanguageAPI {
     /**
      * @param transkey the translationkey which holds the other keys
      * @param language the language to get the translation in
+     * @param prefixKey the translationkey of the prefix
      * @return returns a {@link List} with the translated messages
      * @since 1.9
      */
