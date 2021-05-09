@@ -28,7 +28,7 @@ package de.tentact.languageapi.player;
 import com.velocitypowered.api.proxy.Player;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.i18n.Translation;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implements LanguagePlayer {
@@ -47,7 +47,7 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (player == null) {
             return;
         }
-        super.getLanguageAsync().thenCompose(translation::getMessageAsync).thenAccept(message -> player.sendMessage(LegacyComponentSerializer.legacyLinking().deserialize(message)));
+        super.getLanguageAsync().thenCompose(translation::getMessageAsync).thenAccept(message -> player.sendMessage(GsonComponentSerializer.colorDownsamplingGson().deserialize(message)));
     }
 
     @Override
@@ -66,7 +66,7 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         }
         this.languageAPI.getMultipleMessagesAsync(multipleTranslationKey, language, prefixKey)
                 .thenAccept(messages ->
-                        messages.forEach(s -> player.sendMessage(LegacyComponentSerializer.legacyLinking().deserialize(s))));
+                        messages.forEach(s -> player.sendMessage(GsonComponentSerializer.colorDownsamplingGson().deserialize(s))));
     }
 
 
@@ -76,6 +76,7 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (player == null) {
             return;
         }
-        super.getLanguageAsync().thenCompose(translation::getMessageAsync).thenAccept(message -> player.disconnect(LegacyComponentSerializer.legacyLinking().deserialize(message)));
+
+        super.getLanguageAsync().thenCompose(translation::getMessageAsync).thenAccept(message -> player.disconnect(GsonComponentSerializer.colorDownsamplingGson().deserialize(message)));
     }
 }

@@ -29,7 +29,7 @@ import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.console.ConsoleExecutor;
 import de.tentact.languageapi.i18n.Translation;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 public class VelocityConsoleExecutor implements ConsoleExecutor {
 
@@ -43,7 +43,7 @@ public class VelocityConsoleExecutor implements ConsoleExecutor {
 
     @Override
     public void sendMessage(Translation translation) {
-        translation.getMessageAsync().thenAccept(message -> consoleCommandSource.sendMessage(LegacyComponentSerializer.legacyLinking().deserialize(message)));
+        translation.getMessageAsync().thenAccept(message -> consoleCommandSource.sendMessage(GsonComponentSerializer.colorDownsamplingGson().deserialize(message)));
     }
 
     @Override
