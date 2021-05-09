@@ -52,13 +52,15 @@ public class JoinListener implements Listener {
         Player player = event.getPlayer();
         SpecificPlayerExecutor playerExecutor = this.languageAPI.getSpecificPlayerExecutor(player.getUniqueId());
 
-        if (playerExecutor.isRegisteredPlayer()) {
-            playerExecutor.registerPlayer();
-        } else {
-            Bukkit.getScheduler().runTaskLater(this.languageSpigot, () -> {
-                player.performCommand("languageapi");
-            }, 1L);
-        }
+        playerExecutor.isRegisteredPlayerAsync().thenAccept(isRegistered -> {
+            if(isRegistered) {
+                playerExecutor.registerPlayer();
+            } else {
+                Bukkit.getScheduler().runTaskLater(this.languageSpigot, () -> {
+                    player.performCommand("languageapi");
+                }, 1L);
+            }
+        });
         if (!player.hasPermission("languageapi.notify")) {
             return;
         }
@@ -68,7 +70,8 @@ public class JoinListener implements Listener {
         if (!this.updater.hasUpdate()) {
             return;
         }
-        player.sendMessage(LanguageAPI.getInstance().getLanguageAPIPrefix() + "Es ist ein neues Update verfügbar. Aktuelle Version: §6" + this.updater.getPluginVersion()
+        player.sendMessage(LanguageAPI.getInstance().getLanguageAPIPrefix() + "Es ist ein neues Update verfügbar." +
+                " Aktuelle Version: §6" + this.updater.getPluginVersion()
                 + "§7. Neuste Version: §c" + this.updater.getOnlineVersion() + "");
     }
 }

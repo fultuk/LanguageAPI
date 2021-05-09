@@ -43,7 +43,8 @@ public class VelocityConsoleExecutor implements ConsoleExecutor {
 
     @Override
     public void sendMessage(Translation translation) {
-        translation.getMessageAsync().thenAccept(message -> consoleCommandSource.sendMessage(GsonComponentSerializer.colorDownsamplingGson().deserialize(message)));
+        translation.getMessageAsync().thenAccept(message ->
+                this.consoleCommandSource.sendMessage(GsonComponentSerializer.colorDownsamplingGson().deserialize(message)));
     }
 
     @Override

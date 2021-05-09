@@ -46,7 +46,7 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (this.proxiedPlayer == null) {
             return;
         }
-        this.getLanguageAsync().thenCompose(translation::getMessageAsync)
+        super.getLanguageAsync().thenCompose(translation::getMessageAsync)
                 .thenAccept(message -> this.proxiedPlayer.sendMessage(TextComponent.fromLegacyText(message)));
     }
 
@@ -60,7 +60,7 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (this.proxiedPlayer == null) {
             return;
         }
-        this.getLanguageAsync().thenCompose(language ->
+        super.getLanguageAsync().thenCompose(language ->
                 this.languageAPI.getMultipleMessagesAsync(multipleTranslationKey, language, prefixKey))
                 .thenAccept(messages -> messages
                         .forEach(message -> this.proxiedPlayer.sendMessage(TextComponent.fromLegacyText(message))));

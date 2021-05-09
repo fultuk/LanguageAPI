@@ -43,12 +43,11 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
 
     @Override
     public void sendMessage(@NotNull Translation translation) {
-        Player player = this.player;
-        if (player == null) {
+        if (this.player == null) {
             return;
         }
         super.getLanguageAsync().thenCompose(translation::getMessageAsync).thenAccept(message ->
-                player.sendMessage(GsonComponentSerializer.colorDownsamplingGson().deserialize(message)));
+                this.player.sendMessage(GsonComponentSerializer.colorDownsamplingGson().deserialize(message)));
     }
 
     @Override
@@ -61,7 +60,7 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (this.player == null) {
             return;
         }
-        this.getLanguageAsync().thenCompose(language ->
+        super.getLanguageAsync().thenCompose(language ->
                 this.languageAPI.getMultipleMessagesAsync(multipleTranslationKey, language, prefixKey))
                 .thenAccept(messages -> messages
                         .forEach(message ->
@@ -71,12 +70,11 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
 
     @Override
     public void kickPlayer(Translation translation) {
-        Player player = this.player;
-        if (player == null) {
+        if (this.player == null) {
             return;
         }
 
         super.getLanguageAsync().thenCompose(translation::getMessageAsync).thenAccept(message ->
-                player.disconnect(GsonComponentSerializer.colorDownsamplingGson().deserialize(message)));
+                this.player.disconnect(GsonComponentSerializer.colorDownsamplingGson().deserialize(message)));
     }
 }

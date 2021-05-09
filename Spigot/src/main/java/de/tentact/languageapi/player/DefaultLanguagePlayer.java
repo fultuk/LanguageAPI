@@ -58,7 +58,7 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (this.player == null) {
             return;
         }
-        this.getLanguageAsync().thenCompose(language ->
+        super.getLanguageAsync().thenCompose(language ->
                 this.languageAPI.getMultipleMessagesAsync(multipleTranslationKey, language, prefixKey))
                 .thenAccept(messages -> messages
                         .forEach(this.player::sendMessage));
