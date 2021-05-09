@@ -55,15 +55,29 @@ subprojects {
         }
     }
 
+    java {
+        withJavadocJar()
+        withSourcesJar()
+    }
+
     sourceCompatibility = '8'
 
     publishing {
         publications {
-            maven(MavenPublication) {
-                from(components.java)
+            mavenJava(MavenPublication) {
+                from components.java
+            }
+        }
+
+        repositories {
+            maven {
+                def releasesRepoUrl = 'https://archiva.tentact.de/repository/tentact-release/'
+                def snapshotsRepoUrl = 'https://archiva.tentact.de/repository/tentact-snapshot/'
+                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             }
         }
     }
+
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'

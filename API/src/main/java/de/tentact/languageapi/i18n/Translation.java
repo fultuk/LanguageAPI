@@ -93,7 +93,7 @@ public interface Translation {
     /**
      * @param language      the language to get the translation in
      * @param orElseDefault whether to use the default language if the given one was not found
-     * @return returns a translation of the key in the given language if found, else uses default language if orElseDefault is <code>true<code/>
+     * @return returns a translation of the key in the given language if found, else uses default language if orElseDefault is {@code true}
      */
     @NotNull
     String getMessage(@NotNull String language, boolean orElseDefault);
@@ -101,7 +101,7 @@ public interface Translation {
     /**
      * @param language      the language to get the translation in
      * @param orElseDefault whether to use the default language if the given one was not found
-     * @return returns a translation of the key in the given language if found, else uses default language if orElseDefault is <code>true<code/>
+     * @return returns a translation of the key in the given language if found, else uses default language if orElseDefault is {@code true}
      */
     @NotNull
     CompletableFuture<String> getMessageAsync(@NotNull String language, boolean orElseDefault);

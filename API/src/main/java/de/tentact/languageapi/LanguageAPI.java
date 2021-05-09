@@ -277,7 +277,7 @@ public abstract class LanguageAPI {
     /**
      * @param translationKey the translationkey to check the parameters for
      * @param parameter      the parameter to check for
-     * @return returns if {@param parameter} is a parameter of the given translationkey
+     * @return returns if {@code parameter} is a parameter of the given translationkey
      * @since 1.8
      */
     public abstract boolean isParameter(String translationKey, String parameter);
@@ -285,7 +285,7 @@ public abstract class LanguageAPI {
     /**
      * @param translationKey the translationkey to check the parameters for
      * @param parameter      the parameter to check for
-     * @return returns if {@param parameter} is a parameter of the given translationkey
+     * @return returns if {@code parameter} is a parameter of the given translationkey
      * @since 1.9
      */
     public abstract CompletableFuture<Boolean> isParameterAsync(String translationKey, String parameter);
@@ -394,7 +394,7 @@ public abstract class LanguageAPI {
 
     /**
      * @param translationKey the translationkey which holds the other keys
-     * @return returns a {@link List<String>} with the translated messages in the default language
+     * @return returns a {@link List} with the translated messages in the default language
      * @since 1.8
      */
     @NotNull
@@ -402,7 +402,7 @@ public abstract class LanguageAPI {
 
     /**
      * @param transkey the translationkey which holds the other keys
-     * @return returns a {@link List<String>} with the translated messages in the default language
+     * @return returns a {@link List} with the translated messages in the default language
      * @since 1.9
      */
     @NotNull
@@ -411,7 +411,7 @@ public abstract class LanguageAPI {
     /**
      * @param transkey   the translationkey which holds the other keys
      * @param playerUUID the player UUID is needed to select the language
-     * @return returns a {@link List<String>} with the translated messages
+     * @return returns a {@link List} with the translated messages
      * @since 1.8
      */
     @NotNull
@@ -420,7 +420,7 @@ public abstract class LanguageAPI {
     /**
      * @param transkey   the translationkey which holds the other keys
      * @param playerUUID the player UUID is needed to select the language
-     * @return returns a {@link List<String>} with the translated messages
+     * @return returns a {@link List} with the translated messages
      * @since 1.9
      */
     @NotNull
@@ -429,7 +429,7 @@ public abstract class LanguageAPI {
     /**
      * @param transkey the translationkey which holds the other keys
      * @param language the language to get the translation in
-     * @return returns a {@link List<String>} with the translated messages
+     * @return returns a {@link List} with the translated messages
      * @since 1.8
      */
     @NotNull
@@ -438,7 +438,7 @@ public abstract class LanguageAPI {
     /**
      * @param transkey the translationkey which holds the other keys
      * @param language the language to get the translation in
-     * @return returns a {@link List<String>} with the translated messages
+     * @return returns a {@link List} with the translated messages
      * @since 1.9
      */
     @NotNull
@@ -447,7 +447,7 @@ public abstract class LanguageAPI {
     /**
      * @param transkey the translationkey which holds the other keys
      * @param language the language to get the translation in
-     * @return returns a {@link List<String>} with the translated messages
+     * @return returns a {@link List} with the translated messages
      * @since 1.8
      */
     @NotNull
@@ -456,7 +456,7 @@ public abstract class LanguageAPI {
     /**
      * @param transkey the translationkey which holds the other keys
      * @param language the language to get the translation in
-     * @return returns a {@link List<String>} with the translated messages
+     * @return returns a {@link List} with the translated messages
      * @since 1.9
      */
     @NotNull

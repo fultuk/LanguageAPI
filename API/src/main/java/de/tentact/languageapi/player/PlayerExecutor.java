@@ -134,7 +134,7 @@ public interface PlayerExecutor {
 
     /**
      * Get all online players
-     * @return a {@link Collection<LanguagePlayer>} with all online players
+     * @return a {@link Collection} with all online players
      */
     @NotNull
     Collection<LanguagePlayer> getOnlineLanguagePlayers();
