@@ -26,7 +26,6 @@
 package de.tentact.languageapi;
 
 import com.google.inject.Inject;
-import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.PluginDescription;
 import com.velocitypowered.api.proxy.ProxyServer;
 import de.tentact.languageapi.api.VelocityLanguageAPI;
@@ -37,7 +36,6 @@ import de.tentact.languageapi.util.UpdateNotifier;
 
 import java.util.logging.Logger;
 
-@Plugin(id = "languageapi", name = "LanguageAPI", version = "2.0-SNAPSHOT-1111111", authors = {"0utplay"})
 public class LanguageVelocity {
 
     @Inject

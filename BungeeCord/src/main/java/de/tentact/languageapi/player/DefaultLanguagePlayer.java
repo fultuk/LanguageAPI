@@ -27,6 +27,7 @@ package de.tentact.languageapi.player;
 
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.i18n.Translation;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,11 +43,11 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
 
     @Override
     public void sendMessage(@NotNull Translation translation) {
-        ProxiedPlayer proxiedPlayer = this.proxiedPlayer;
-        if (proxiedPlayer == null) {
+        if (this.proxiedPlayer == null) {
             return;
         }
-        proxiedPlayer.sendMessage(translation.getMessage(this.getLanguage()));
+        this.getLanguageAsync().thenCompose(translation::getMessageAsync)
+                .thenAccept(message -> this.proxiedPlayer.sendMessage(TextComponent.fromLegacyText(message)));
     }
 
     @Override
@@ -55,24 +56,21 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
     }
 
     @Override
-    public void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language, String prefixKey) {
-        if (!this.languageAPI.isMultipleTranslation(multipleTranslationKey)) {
-            throw new IllegalArgumentException(multipleTranslationKey + " was not found");
-        }
-        ProxiedPlayer proxiedPlayer = this.proxiedPlayer;
-        if (proxiedPlayer == null) {
+    public void sendMultipleTranslation(@NotNull String multipleTranslationKey, String prefixKey) {
+        if (this.proxiedPlayer == null) {
             return;
         }
-        this.languageAPI.getMultipleMessages(multipleTranslationKey, language, prefixKey).forEach(proxiedPlayer::sendMessage);
+        this.getLanguageAsync().thenCompose(language ->
+                this.languageAPI.getMultipleMessagesAsync(multipleTranslationKey, language, prefixKey))
+                .thenAccept(messages -> messages
+                        .forEach(message -> this.proxiedPlayer.sendMessage(TextComponent.fromLegacyText(message))));
     }
-
 
     @Override
     public void kickPlayer(Translation translation) {
-        ProxiedPlayer proxiedPlayer = this.proxiedPlayer;
-        if (proxiedPlayer == null) {
+        if (this.proxiedPlayer == null) {
             return;
         }
-        proxiedPlayer.disconnect(translation.getMessage(this.getLanguage()));
+        this.proxiedPlayer.disconnect(TextComponent.fromLegacyText(translation.getMessage(this.getLanguage())));
     }
 }

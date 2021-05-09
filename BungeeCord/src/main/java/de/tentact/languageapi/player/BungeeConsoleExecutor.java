@@ -29,6 +29,7 @@ import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.console.ConsoleExecutor;
 import de.tentact.languageapi.i18n.Translation;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class BungeeConsoleExecutor implements ConsoleExecutor {
 
@@ -40,7 +41,7 @@ public class BungeeConsoleExecutor implements ConsoleExecutor {
 
     @Override
     public void sendMessage(Translation translation) {
-        translation.getMessageAsync().thenAccept(message -> ProxyServer.getInstance().getConsole().sendMessage(message));
+        translation.getMessageAsync().thenAccept(message -> ProxyServer.getInstance().getConsole().sendMessage(TextComponent.fromLegacyText(message)));
     }
 
     @Override

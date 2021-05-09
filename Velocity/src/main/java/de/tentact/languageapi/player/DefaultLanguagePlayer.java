@@ -47,7 +47,8 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
         if (player == null) {
             return;
         }
-        super.getLanguageAsync().thenCompose(translation::getMessageAsync).thenAccept(message -> player.sendMessage(GsonComponentSerializer.colorDownsamplingGson().deserialize(message)));
+        super.getLanguageAsync().thenCompose(translation::getMessageAsync).thenAccept(message ->
+                player.sendMessage(GsonComponentSerializer.colorDownsamplingGson().deserialize(message)));
     }
 
     @Override
@@ -56,17 +57,15 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
     }
 
     @Override
-    public void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language, String prefixKey) {
-        if (!this.languageAPI.isMultipleTranslation(multipleTranslationKey)) {
-            throw new IllegalArgumentException(multipleTranslationKey + " was not found");
-        }
-        Player player = this.player;
-        if (player == null) {
+    public void sendMultipleTranslation(@NotNull String multipleTranslationKey, String prefixKey) {
+        if (this.player == null) {
             return;
         }
-        this.languageAPI.getMultipleMessagesAsync(multipleTranslationKey, language, prefixKey)
-                .thenAccept(messages ->
-                        messages.forEach(s -> player.sendMessage(GsonComponentSerializer.colorDownsamplingGson().deserialize(s))));
+        this.getLanguageAsync().thenCompose(language ->
+                this.languageAPI.getMultipleMessagesAsync(multipleTranslationKey, language, prefixKey))
+                .thenAccept(messages -> messages
+                        .forEach(message ->
+                                this.player.sendMessage(GsonComponentSerializer.colorDownsamplingGson().deserialize(message))));
     }
 
 
@@ -77,6 +76,7 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
             return;
         }
 
-        super.getLanguageAsync().thenCompose(translation::getMessageAsync).thenAccept(message -> player.disconnect(GsonComponentSerializer.colorDownsamplingGson().deserialize(message)));
+        super.getLanguageAsync().thenCompose(translation::getMessageAsync).thenAccept(message ->
+                player.disconnect(GsonComponentSerializer.colorDownsamplingGson().deserialize(message)));
     }
 }

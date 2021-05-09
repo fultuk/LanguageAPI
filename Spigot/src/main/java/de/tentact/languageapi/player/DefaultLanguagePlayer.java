@@ -42,11 +42,10 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
 
     @Override
     public void sendMessage(@NotNull Translation translation) {
-        Player player = this.player;
-        if (player == null) {
+        if (this.player == null) {
             return;
         }
-        super.getLanguageAsync().thenCompose(translation::getMessageAsync).thenAccept(player::sendMessage);
+        super.getLanguageAsync().thenCompose(translation::getMessageAsync).thenAccept(this.player::sendMessage);
     }
 
     @Override
@@ -55,25 +54,21 @@ public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implemen
     }
 
     @Override
-    public void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language, String prefixKey) {
-        if (!this.languageAPI.isMultipleTranslation(multipleTranslationKey)) {
-            throw new IllegalArgumentException(multipleTranslationKey + " was not found");
-        }
-        Player player = this.player;
-        if (player == null) {
+    public void sendMultipleTranslation(@NotNull String multipleTranslationKey, String prefixKey) {
+        if (this.player == null) {
             return;
         }
-        this.languageAPI.getMultipleMessagesAsync(multipleTranslationKey, language, prefixKey)
-                .thenAccept(messages ->
-                        messages.forEach(player::sendMessage));
+        this.getLanguageAsync().thenCompose(language ->
+                this.languageAPI.getMultipleMessagesAsync(multipleTranslationKey, language, prefixKey))
+                .thenAccept(messages -> messages
+                        .forEach(this.player::sendMessage));
     }
 
     @Override
     public void kickPlayer(Translation translation) {
-        Player player = this.player;
-        if (player == null) {
+        if (this.player == null) {
             return;
         }
-        super.getLanguageAsync().thenCompose(translation::getMessageAsync).thenAccept(player::kickPlayer);
+        super.getLanguageAsync().thenCompose(translation::getMessageAsync).thenAccept(this.player::kickPlayer);
     }
 }

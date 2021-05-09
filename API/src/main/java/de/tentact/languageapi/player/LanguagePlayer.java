@@ -25,11 +25,9 @@
 
 package de.tentact.languageapi.player;
 
-import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.i18n.Translation;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -73,8 +71,7 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
      * @param multipleTranslationKey the multipleTranslationKey to get the Collection of translationkeys
      */
     default void sendMultipleTranslation(@NotNull String multipleTranslationKey) {
-        LanguageAPI.getInstance().executeAsync(() ->
-                this.sendMultipleTranslation(multipleTranslationKey, this.getLanguage()));
+        this.sendMultipleTranslation(multipleTranslationKey, null);
     }
 
     /**
@@ -82,10 +79,7 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
      *
      * @param multipleTranslationKey the multipleTranslationKey to get the Collection of translationkeys
      */
-    default void sendMultipleTranslationWithPrefix(@NotNull String multipleTranslationKey, String prefixKey) {
-        LanguageAPI.getInstance().executeAsync(() ->
-                this.sendMultipleTranslation(multipleTranslationKey, this.getLanguage(), prefixKey));
-    }
+    void sendMultipleTranslation(@NotNull String multipleTranslationKey, String prefixKey);
 
     /**
      * Sends multiple messages to the player by a single {@link Translation}
@@ -94,29 +88,11 @@ public interface LanguagePlayer extends LanguageOfflinePlayer {
      */
     default void sendMultipleTranslation(@NotNull Translation multipleTranslation) {
         if (multipleTranslation.getPrefixTranslation() != null) {
-            this.sendMultipleTranslationWithPrefix(multipleTranslation.getTranslationKey(), multipleTranslation.getPrefixTranslation().getTranslationKey());
+            this.sendMultipleTranslation(multipleTranslation.getTranslationKey(), multipleTranslation.getPrefixTranslation().getTranslationKey());
         } else {
             this.sendMultipleTranslation(multipleTranslation.getTranslationKey());
         }
     }
-
-    /**
-     * Sends multiple messages to the player by a single multipleTranslationKey
-     *
-     * @param multipleTranslationKey the multipleTranslationKey to get the Collection of translationkeys
-     * @param language               the language to get the translation in
-     */
-    default void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language) {
-        this.sendMultipleTranslation(multipleTranslationKey, language, null);
-    }
-
-    /**
-     * Sends multiple messages to the player by a single multipleTranslationKey
-     *
-     * @param multipleTranslationKey the multipleTranslationKey to get the Collection of translationkeys
-     * @param language               the language to get the translation in
-     */
-    void sendMultipleTranslation(@NotNull String multipleTranslationKey, @NotNull String language, @Nullable String prefixKey);
 
     /**
      * Kick a player with a {@link Translation} as reason
