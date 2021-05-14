@@ -28,6 +28,7 @@ package de.tentact.languageapi.listener;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.LanguageSpigot;
 import de.tentact.languageapi.configuration.LanguageInventoryConfiguration;
+import de.tentact.languageapi.configuration.LanguageItem;
 import de.tentact.languageapi.i18n.I18N;
 import de.tentact.languageapi.player.LanguagePlayer;
 import de.tentact.languageapi.player.PlayerExecutor;
@@ -60,23 +61,25 @@ public class InventoryClickListener implements Listener {
                 return;
             }
             event.setCancelled(true);
-            LanguageAPI.getInstance().executeAsync(() ->
-                    this.languageInventoryConfiguration.getLanguages()
-                            .stream()
-                            .filter(languageItem -> languageItem.getInventorySlot() == clickedSlot)
-                            .filter(languageItem -> LanguageAPI.getInstance().isLanguage(languageItem.getLanguageName()))
-                            .findFirst()
-                            .ifPresent(languageItem -> {
-                                Player player = (Player) event.getWhoClicked();
-                                player.closeInventory();
-                                this.playerExecutor.setPlayerLanguage(player.getUniqueId(), languageItem.getLanguageName());
-                                LanguagePlayer languagePlayer = this.playerExecutor.getLanguagePlayer(player.getUniqueId());
-                                //Even if it should never be null here
-                                if (languagePlayer != null) {
-                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE.get()
-                                            .replace("%LANGUAGE%", languageItem.getLanguageName()));
-                                }
-                            }));
+            LanguageAPI.getInstance().executeAsync(() -> {
+                for (LanguageItem languageItem : this.languageInventoryConfiguration.getLanguages()) {
+                    if(languageItem.getInventorySlot() != clickedSlot) {
+                        continue;
+                    }
+                    if(!LanguageAPI.getInstance().isLanguage(languageItem.getLanguageName())) {
+                        continue;
+                    }
+                    Player player = (Player) event.getWhoClicked();
+                    player.closeInventory();
+                    this.playerExecutor.setPlayerLanguage(player.getUniqueId(), languageItem.getLanguageName());
+                    LanguagePlayer languagePlayer = this.playerExecutor.getLanguagePlayer(player.getUniqueId());
+                    //Even if it should never be null here
+                    if (languagePlayer != null) {
+                        languagePlayer.sendMessage(I18N.LANGUAGEAPI_PLAYER_SELECTED_LANGUAGE.get()
+                                .replace("%LANGUAGE%", languageItem.getLanguageName()));
+                    }
+                }
+            });
         }
     }
 }

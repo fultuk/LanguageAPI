@@ -70,7 +70,7 @@ public class JoinListener implements Listener {
         if (!this.updater.hasUpdate()) {
             return;
         }
-        player.sendMessage(LanguageAPI.getInstance().getLanguageAPIPrefix() + "Es ist ein neues Update verfügbar." +
+        player.sendMessage(LanguageAPI.getInstance().getDefaultLanguageAPIPrefix() + "Es ist ein neues Update verfügbar." +
                 " Aktuelle Version: §6" + this.updater.getPluginVersion()
                 + "§7. Neuste Version: §c" + this.updater.getOnlineVersion() + "");
     }

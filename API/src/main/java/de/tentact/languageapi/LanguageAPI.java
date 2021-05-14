@@ -605,6 +605,13 @@ public abstract class LanguageAPI {
     public abstract String getLanguageAPIPrefix(String language);
 
     /**
+     * @return returns the default prefix which is set in the config
+     * @since 2.0
+     */
+    @NotNull
+    public abstract String getDefaultLanguageAPIPrefix();
+
+    /**
      * Gets a {@link Translation} by its key
      *
      * @param translationKey the translationKey to fetch the translation from

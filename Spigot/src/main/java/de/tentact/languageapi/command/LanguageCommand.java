@@ -94,15 +94,15 @@ public class LanguageCommand implements TabExecutor {
                             }
                             String key = args[2].toLowerCase();
                             if (!this.languageAPI.isKey(key, language)) {
-                                StringBuilder msg = new StringBuilder();
+                                StringBuilder messageBuilder = new StringBuilder();
                                 for (int i = 3; i < args.length; i++) {
-                                    msg.append(args[i]).append(" ");
+                                    messageBuilder.append(args[i]).append(" ");
                                 }
-                                this.languageAPI.addMessage(key, msg.toString(), language);
+                                this.languageAPI.addMessage(key, messageBuilder.toString(), language);
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_ADD_SUCCESS.get()
                                         .replace("%KEY%", key)
                                         .replace("%LANG%", language)
-                                        .replace("%MSG%", msg.toString()));
+                                        .replace("%MSG%", messageBuilder.toString()));
                                 return true;
                             } else {
                                 languagePlayer.sendMessage(I18N.LANGUAGEAPI_KEY_ALREADY_EXISTS.get()
@@ -119,22 +119,23 @@ public class LanguageCommand implements TabExecutor {
                                 return false;
                             }
                             language = args[1];
-                            if (!this.languageAPI.isLanguage(language)) {
-                                languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_NOT_FOUND.get()
-                                        .replace("%LANG%", language));
-                                return false;
-                            }
                             key = args[2].toLowerCase();
-                            final String effectiveLanguage = language;
-                            this.languageAPI.isKeyAsync(key, language).thenAccept(isKey -> {
-                                if (isKey) {
-                                    player.setMetadata("editMessage", EDIT_MESSAGE);
-                                    player.setMetadata("editParameter", new FixedMetadataValue(this.languageSpigot, Arrays.asList(key, effectiveLanguage)));
-                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_INSTRUCTIONS.get());
-                                } else {
-                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_KEY_NOT_FOUND.get().replace("%KEY%", key)
-                                            .replace("%LANG%", effectiveLanguage));
+                            this.languageAPI.isLanguageAsync(language).thenAccept(isLanguage -> {
+                                if(!isLanguage) {
+                                    languagePlayer.sendMessage(I18N.LANGUAGEAPI_LANG_NOT_FOUND.get()
+                                            .replace("%LANG%", language));
+                                    return;
                                 }
+                                this.languageAPI.isKeyAsync(key, language).thenAccept(isKey -> {
+                                    if (isKey) {
+                                        player.setMetadata("editMessage", EDIT_MESSAGE);
+                                        player.setMetadata("editParameter", new FixedMetadataValue(this.languageSpigot, Arrays.asList(key, language)));
+                                        languagePlayer.sendMessage(I18N.LANGUAGEAPI_UPDATE_INSTRUCTIONS.get());
+                                    } else {
+                                        languagePlayer.sendMessage(I18N.LANGUAGEAPI_KEY_NOT_FOUND.get().replace("%KEY%", key)
+                                                .replace("%LANG%", language));
+                                    }
+                                });
                             });
                         case "create":
                             if (this.checkDoesNotHavePermission(player, args)) {
@@ -169,11 +170,12 @@ public class LanguageCommand implements TabExecutor {
                             }
                             language = args[1];
                             this.languageAPI.executeAsync(() -> {
-                                if (this.containsIgnoreCase(this.languageAPI.getAvailableLanguages(), language) && !this.languageAPI.getDefaultLanguage().equalsIgnoreCase(language)) {
+                                List<String> availableLanguages = this.languageAPI.getAvailableLanguages();
+                                if (this.containsIgnoreCase(availableLanguages, language) && !this.languageAPI.getDefaultLanguage().equalsIgnoreCase(language)) {
                                     this.languageAPI.deleteLanguage(language);
                                     languagePlayer.sendMessage(I18N.LANGUAGEAPI_DELETE_SUCCESS.get().replace("%LANG%", language));
                                 } else if (language.equalsIgnoreCase("*")) {
-                                    this.languageAPI.getAvailableLanguages().forEach(this.languageAPI::deleteLanguage);
+                                    availableLanguages.forEach(this.languageAPI::deleteLanguage);
 
                                     languagePlayer.sendMessage(I18N.LANGUAGEAPI_DELETE_ALL_LANGS.get());
                                 } else {
@@ -188,8 +190,8 @@ public class LanguageCommand implements TabExecutor {
                             if (args.length >= 3) {
                                 String langfrom = args[1];
                                 String langto = args[2];
-                                this.languageAPI.isLanguageAsync(langfrom).thenAccept(isLangFrom ->
-                                        this.languageAPI.isLanguageAsync(langto).thenAccept(isLangTo -> {
+                                this.languageAPI.isLanguageAsync(langfrom).thenAcceptAsync(isLangFrom ->
+                                        this.languageAPI.isLanguageAsync(langto).thenAcceptAsync(isLangTo -> {
                                             String resultLanguage;
                                             if (isLangFrom && isLangTo) {
                                                 this.languageAPI.copyLanguage(langfrom, langto);
@@ -250,53 +252,51 @@ public class LanguageCommand implements TabExecutor {
                             if (args.length >= 3) {
                                 language = args[1];
                                 key = args[2].toLowerCase();
-                                if (this.languageAPI.getDefaultLanguage().contains(language)) {
-                                    if (this.languageAPI.isKey(key, language)) {
-                                        this.languageAPI.deleteMessage(key, language); //EINE SPRACHE EIN KEY
-                                        languagePlayer.sendMessage(I18N.LANGUAGEAPI_REMOVE_KEY_IN_LANGUAGE.get()
-                                                .replace("%KEY%", key)
-                                                .replace("%LANG%", language));
-                                        return true;
-                                    } else if (key.endsWith("*")) {
-                                        for (String keys : this.languageAPI.getAllTranslationKeys(language)) {
-                                            if (keys.startsWith(key.replace("*", ""))) {
-                                                this.languageAPI.deleteMessage(keys, language);
-                                            }
-                                        }
-                                        languagePlayer.sendMessage(I18N.LANGUAGEAPI_REMOVE_EVERY_KEY_IN_LANGUAGE.get()
-                                                .replace("%LANG%", language)
-                                                .replace("%STARTSWITH%", key.replace("*", "")));
-                                        return true;
-                                    } else {
-                                        languagePlayer.sendMessage(I18N.LANGUAGEAPI_KEY_NOT_FOUND.get()
-                                                .replace("%LANG%", language).replace("%KEY%", key));
-                                        return false;
-                                    }
-                                } else if (language.equalsIgnoreCase("*")) {
-                                    if (key.endsWith("*")) { //JEDE SPRACHE JEDER KEY
-                                        this.languageAPI.getAvailableLanguages().forEach(langs -> this.languageAPI.getAllTranslationKeys(langs).forEach(keys -> {
-                                            if (keys.startsWith(key.replace("*", ""))) {
-                                                if (!keys.startsWith("languageapi-")) {
-                                                    this.languageAPI.deleteMessage(keys, langs);
-                                                    Bukkit.getScheduler().runTaskLaterAsynchronously(languageSpigot, () -> this.languageAPI.deleteAllParameter(key), 45L);
+                                this.languageAPI.executeAsync(() -> {
+                                    if (this.languageAPI.getDefaultLanguage().contains(language)) {
+                                        if (this.languageAPI.isKey(key, language)) {
+                                            this.languageAPI.deleteMessage(key, language); //EINE SPRACHE EIN KEY
+                                            languagePlayer.sendMessage(I18N.LANGUAGEAPI_REMOVE_KEY_IN_LANGUAGE.get()
+                                                    .replace("%KEY%", key)
+                                                    .replace("%LANG%", language));
+                                        } else if (key.endsWith("*")) {
+                                            for (String keys : this.languageAPI.getAllTranslationKeys(language)) {
+                                                if (keys.startsWith(key.replace("*", ""))) {
+                                                    this.languageAPI.deleteMessage(keys, language);
                                                 }
                                             }
-                                        }));
-                                        languagePlayer.sendMessage(I18N.LANGUAGEAPI_REMOVE_EVERY_KEY_IN_EVERY_LANGUAGE.get()
-                                                .replace("%STARTSWITH%", key.
-                                                        replace("*", "")));
-                                    } else { //JEDE SPRACHE EIN KEY
-                                        this.languageAPI.getAvailableLanguages().forEach(langs -> {
-                                            if (this.languageAPI.isKey(key, langs)) {
-                                                this.languageAPI.deleteMessage(key, langs);
-                                                this.languageAPI.deleteAllParameter(key);
-                                            }
-                                        });
-                                        languagePlayer.sendMessage(I18N.LANGUAGEAPI_REMOVE_KEY_IN_EVERY_LANGUAGE.get()
-                                                .replace("%KEY%", key));
+                                            languagePlayer.sendMessage(I18N.LANGUAGEAPI_REMOVE_EVERY_KEY_IN_LANGUAGE.get()
+                                                    .replace("%LANG%", language)
+                                                    .replace("%STARTSWITH%", key.replace("*", "")));
+                                        } else {
+                                            languagePlayer.sendMessage(I18N.LANGUAGEAPI_KEY_NOT_FOUND.get()
+                                                    .replace("%LANG%", language).replace("%KEY%", key));
+                                        }
+                                    } else if (language.equalsIgnoreCase("*")) {
+                                        if (key.endsWith("*")) { //JEDE SPRACHE JEDER KEY
+                                            this.languageAPI.getAvailableLanguages().forEach(langs -> this.languageAPI.getAllTranslationKeys(langs).forEach(keys -> {
+                                                if (keys.startsWith(key.replace("*", ""))) {
+                                                    if (!keys.startsWith("languageapi-")) {
+                                                        this.languageAPI.deleteMessage(keys, langs);
+                                                        Bukkit.getScheduler().runTaskLater(this.languageSpigot, () -> this.languageAPI.deleteAllParameter(key), 45L);
+                                                    }
+                                                }
+                                            }));
+                                            languagePlayer.sendMessage(I18N.LANGUAGEAPI_REMOVE_EVERY_KEY_IN_EVERY_LANGUAGE.get()
+                                                    .replace("%STARTSWITH%", key.
+                                                            replace("*", "")));
+                                        } else { //JEDE SPRACHE EIN KEY
+                                            this.languageAPI.getAvailableLanguages().forEach(langs -> {
+                                                if (this.languageAPI.isKey(key, langs)) {
+                                                    this.languageAPI.deleteMessage(key, langs);
+                                                    this.languageAPI.deleteAllParameter(key);
+                                                }
+                                            });
+                                            languagePlayer.sendMessage(I18N.LANGUAGEAPI_REMOVE_KEY_IN_EVERY_LANGUAGE.get()
+                                                    .replace("%KEY%", key));
+                                        }
                                     }
-                                    return true;
-                                }
+                                });
                             }
                             break;
                         case "import": //lang import FILE BOOL

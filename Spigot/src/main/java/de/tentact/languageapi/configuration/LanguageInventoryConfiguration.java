@@ -36,7 +36,7 @@ import java.util.Collection;
 public class LanguageInventoryConfiguration {
 
     private final String name;
-    private final String fillItemMaterial;
+    private final Material fillItemMaterial;
     private final byte subId;
     private final Collection<LanguageItem> languages;
     private final boolean useInventory;
@@ -45,13 +45,9 @@ public class LanguageInventoryConfiguration {
     public LanguageInventoryConfiguration(boolean useInventory, String name, String fillItemMaterial, byte subId, Collection<LanguageItem> languages) {
         this.useInventory = useInventory;
         this.name = name;
-        this.fillItemMaterial = fillItemMaterial;
+        this.fillItemMaterial = Material.getMaterial(fillItemMaterial);
         this.subId = subId;
         this.languages = languages;
-    }
-
-    public Material getFillItemMaterial() {
-        return Material.getMaterial(this.fillItemMaterial);
     }
 
     public Collection<LanguageItem> getLanguages() {
@@ -75,7 +71,7 @@ public class LanguageInventoryConfiguration {
         }
         Inventory inventory = Bukkit.createInventory(null, this.getInventorySize(), this.name);
 
-        ItemBuilder builder = new ItemBuilder(this.getFillItemMaterial());
+        ItemBuilder builder = new ItemBuilder(this.fillItemMaterial);
         if (this.subId != -1) {
             builder.setSubId(this.subId);
         }

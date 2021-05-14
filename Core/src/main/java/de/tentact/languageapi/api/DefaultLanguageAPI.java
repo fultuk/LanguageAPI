@@ -64,15 +64,21 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     private final Map<String, Translation> translationMap;
     private final PlayerExecutor playerExecutor;
     private final FileHandler fileHandler;
-    private final ExecutorService executorService = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setNameFormat("LanguageAPI-Thread-%d").build());
+    private final ExecutorService executorService;
 
     public DefaultLanguageAPI(LanguageConfig languageConfig) {
         this.languageConfig = languageConfig;
         this.playerExecutor = this.getPlayerExecutor();
         this.databaseProvider = languageConfig.getDatabaseProvider();
-        this.translationCache = CacheBuilder.newBuilder().expireAfterWrite(languageConfig.getLanguageSetting().getCachedTime(), TimeUnit.MINUTES).build();
+        this.translationCache = CacheBuilder
+                .newBuilder()
+                .expireAfterWrite(languageConfig.getLanguageSetting().getCachedTime(), TimeUnit.MINUTES)
+                .build();
         this.translationMap = new HashMap<>();
         this.fileHandler = new DefaultFileHandler();
+        this.executorService = Executors.newCachedThreadPool(
+                new ThreadFactoryBuilder().setNameFormat("LanguageAPI-Thread-%d").build()
+        );
     }
 
     @Override
@@ -564,13 +570,13 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     @NotNull
     @Override
     public String getMessage(String translationKey, String language) {
-        if (!this.isLanguage(language)) {
-            throw new IllegalArgumentException(language + " was not found");
-        }
-
         Map<String, String> cacheMap = this.translationCache.getIfPresent(translationKey.toLowerCase());
         if (cacheMap != null && cacheMap.containsKey(language.toLowerCase())) {
             return cacheMap.get(language.toLowerCase());
+        }
+
+        if (!this.isLanguage(language)) {
+            throw new IllegalArgumentException("The language " + language + " was not found");
         }
 
         try (Connection connection = this.getDataSource().getConnection();
@@ -706,6 +712,11 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     @Override
     public @NotNull String getLanguageAPIPrefix(String language) {
         return this.getMessage("languageapi-prefix", language);
+    }
+
+    @Override
+    public @NotNull String getDefaultLanguageAPIPrefix() {
+        return this.languageConfig.getLanguageSetting().getDefaultPrefix();
     }
 
     @Override
