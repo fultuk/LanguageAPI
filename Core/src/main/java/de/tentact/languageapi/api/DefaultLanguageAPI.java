@@ -27,6 +27,8 @@ package de.tentact.languageapi.api;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.LanguageAPI;
@@ -61,7 +63,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
     private final LanguageConfig languageConfig;
 
     private final Cache<String, Map<String, String>> translationCache;
-    private final Map<String, Translation> translationMap;
+    private final LoadingCache<String, Translation> translationMap;
     private final PlayerExecutor playerExecutor;
     private final FileHandler fileHandler;
     private final ExecutorService executorService;
@@ -74,7 +76,13 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
                 .newBuilder()
                 .expireAfterWrite(languageConfig.getLanguageSetting().getCachedTime(), TimeUnit.MINUTES)
                 .build();
-        this.translationMap = new HashMap<>();
+        this.translationMap = CacheBuilder.newBuilder().build(new CacheLoader<String, Translation>() {
+            @Override
+            public Translation load(@NotNull String translationKey) {
+                return new DefaultTranslation(translationKey.toLowerCase());
+            }
+        });
+
         this.fileHandler = new DefaultFileHandler();
         this.executorService = Executors.newCachedThreadPool(
                 new ThreadFactoryBuilder().setNameFormat("LanguageAPI-Thread-%d").build()
@@ -721,12 +729,7 @@ public abstract class DefaultLanguageAPI extends LanguageAPI {
 
     @Override
     public @NotNull Translation getTranslation(@NotNull String translationKey) {
-        if (this.translationMap.containsKey(translationKey.toLowerCase())) {
-            return this.translationMap.get(translationKey.toLowerCase());
-        }
-        Translation translation = new DefaultTranslation(translationKey.toLowerCase());
-        this.updateTranslation(translation);
-        return translation;
+        return this.translationMap.getUnchecked(translationKey.toLowerCase());
     }
 
     @Override
