@@ -51,7 +51,7 @@ public class BungeePlayerExecutor extends DefaultPlayerExecutor {
         if (player == null) {
             return null;
         }
-        languagePlayer = new DefaultLanguagePlayer(player);
+        languagePlayer = new BungeeLanguagePlayer(player);
         super.playerCache.put(playerId, languagePlayer);
         return languagePlayer;
     }

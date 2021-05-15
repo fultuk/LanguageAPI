@@ -56,7 +56,7 @@ public class VelocityPlayerExecutor extends DefaultPlayerExecutor {
         if (!optionalPlayer.isPresent()) {
             return null;
         }
-        languagePlayer = new DefaultLanguagePlayer(optionalPlayer.get());
+        languagePlayer = new VelocityLanguagePlayer(optionalPlayer.get());
         super.playerCache.put(playerId, languagePlayer);
         return languagePlayer;
     }

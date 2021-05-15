@@ -54,7 +54,7 @@ public class SpigotPlayerExecutor extends DefaultPlayerExecutor {
             return null;
         }
 
-        languagePlayer = new DefaultLanguagePlayer(player);
+        languagePlayer = new SpigotLanguagePlayer(player);
         super.playerCache.put(playerId, languagePlayer);
         return languagePlayer;
     }

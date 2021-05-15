@@ -31,12 +31,12 @@ import de.tentact.languageapi.i18n.Translation;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
-public class DefaultLanguagePlayer extends DefaultLanguageOfflinePlayer implements LanguagePlayer {
+public class VelocityLanguagePlayer extends DefaultLanguageOfflinePlayer implements LanguagePlayer {
 
     private final Player player;
     private final LanguageAPI languageAPI = LanguageAPI.getInstance();
 
-    public DefaultLanguagePlayer(Player player) {
+    public VelocityLanguagePlayer(Player player) {
         super(player.getUniqueId());
         this.player = player;
     }
