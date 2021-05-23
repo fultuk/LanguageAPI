@@ -1,8 +1,0 @@
-{
-  "id":"languageapi",
-  "name":"LanguageAPI",
-  "version":"{version}",
-  "authors":["0utplay"],
-  "dependencies":[],
-  "main":"de.tentact.languageapi.LanguageVelocity"
-}

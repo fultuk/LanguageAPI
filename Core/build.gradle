@@ -1,8 +1,0 @@
-
-dependencies {
-    implementation project(':API')
-    api 'com.google.guava:guava:30.0-jre'
-    implementation 'com.zaxxer:HikariCP:4.0.3'
-    implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.2'
-    api 'com.github.derrop:documents:1.1-RELEASE'
-}
