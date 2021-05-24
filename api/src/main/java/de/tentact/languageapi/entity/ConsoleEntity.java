@@ -1,6 +1,6 @@
 package de.tentact.languageapi.entity;
 
-import de.tentact.languageapi.translation.Translation;
+import de.tentact.languageapi.message.Message;
 
 public interface ConsoleEntity {
 
@@ -8,7 +8,7 @@ public interface ConsoleEntity {
      * Translates the given translation and sends it to the console
      * @param translation the translation to be sent
      */
-    void sendMessage(Translation translation);
+    void sendMessage(Message translation);
 
     /**
      * Retrieves a translation by its translationKey and sends it to the console

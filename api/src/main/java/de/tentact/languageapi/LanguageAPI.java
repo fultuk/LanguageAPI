@@ -3,7 +3,7 @@ package de.tentact.languageapi;
 import de.tentact.languageapi.entity.EntityHandler;
 import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.language.LocaleHandler;
-import de.tentact.languageapi.translation.TranslationHandler;
+import de.tentact.languageapi.message.MessageHandler;
 import org.jetbrains.annotations.ApiStatus;
 
 public abstract class LanguageAPI {
@@ -25,7 +25,7 @@ public abstract class LanguageAPI {
         return LanguageAPI.languageAPI;
     }
 
-    public abstract TranslationHandler getTranslationHandler();
+    public abstract MessageHandler getMessageHandler();
 
     public abstract FileHandler getFileHandler();
 

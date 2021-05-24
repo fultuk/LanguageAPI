@@ -1,2 +1,4 @@
 rootProject.name = 'LanguageAPI'
 include 'api'
+include 'core'
+
