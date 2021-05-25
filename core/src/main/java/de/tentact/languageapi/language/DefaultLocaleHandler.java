@@ -29,14 +29,11 @@ import de.tentact.languageapi.cache.CacheProvider;
 import de.tentact.languageapi.cache.LanguageCache;
 
 import java.util.Locale;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class DefaultLocaleHandler implements LocaleHandler {
 
-  protected static final int KEY = 0;
-
-  protected final LanguageCache<Integer, Set<Locale>> localeCache;
+  protected final LanguageCache<String, Locale> localeCache;
 
   public DefaultLocaleHandler(CacheProvider cacheProvider) {
     this.localeCache = cacheProvider.newCache();
@@ -48,7 +45,11 @@ public abstract class DefaultLocaleHandler implements LocaleHandler {
   }
 
   @Override
-  public void copyLocale(Locale from, Locale to) {
-    this.copyLocale(from, to, false);
+  public CompletableFuture<Boolean> copyLocale(Locale from, Locale to) {
+    return this.copyLocale(from, to, false);
+  }
+
+  protected void cacheLocale(Locale locale) {
+    this.localeCache.put(locale.toLanguageTag().toUpperCase(), locale);
   }
 }

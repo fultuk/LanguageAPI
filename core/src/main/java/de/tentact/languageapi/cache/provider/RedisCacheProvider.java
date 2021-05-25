@@ -23,55 +23,28 @@
  * SOFTWARE.
  */
 
-package de.tentact.languageapi.cache;
+package de.tentact.languageapi.cache.provider;
 
+import de.tentact.languageapi.cache.CacheProvider;
+import de.tentact.languageapi.cache.LanguageCache;
+import de.tentact.languageapi.cache.RedisCache;
+import de.tentact.languageapi.database.RedisDatabaseProvider;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+public class RedisCacheProvider implements CacheProvider {
 
-import java.time.Duration;
-import java.util.Collection;
-import java.util.Map;
+  private final RedisDatabaseProvider redisDatabaseProvider;
 
-public class LocalCache<K, V> implements LanguageCache<K, V> {
-
-  private final Cache<K, V> localCache;
-
-  public LocalCache(Cache<K, V> localCache) {
-    this.localCache = localCache;
-  }
-
-  public LocalCache() {
-    this(CacheBuilder.newBuilder().expireAfterWrite(Duration.ofMinutes(5L)).build());
+  public RedisCacheProvider(RedisDatabaseProvider redisDatabaseProvider) {
+    this.redisDatabaseProvider = redisDatabaseProvider;
   }
 
   @Override
-  public void put(K key, V value) {
-    this.localCache.put(key, value);
+  public <K, V> LanguageCache<K, V> newCache() {
+    return new RedisCache<>(this.redisDatabaseProvider);
   }
 
   @Override
-  public void putAll(Map<K, V> map) {
-    this.localCache.putAll(map);
-  }
-
-  @Override
-  public V getIfPresent(K key) {
-    return this.localCache.getIfPresent(key);
-  }
-
-  @Override
-  public void invalidate(K key) {
-    this.localCache.invalidate(key);
-  }
-
-  @Override
-  public Collection<V> getValues() {
-    return this.localCache.asMap().values();
-  }
-
-  @Override
-  public Map<K, V> asMap() {
-    return this.localCache.asMap();
+  public <K, V> LanguageCache<K, V> newPersistentCache() {
+    return new RedisCache.PersistentRedisCache<>(this.redisDatabaseProvider);
   }
 }

@@ -27,6 +27,7 @@ package de.tentact.languageapi.entity;
 
 import de.tentact.languageapi.cache.CacheProvider;
 import de.tentact.languageapi.cache.LanguageCache;
+import de.tentact.languageapi.registry.ServiceRegistry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -40,7 +41,7 @@ public abstract class DefaultEntityHandler implements EntityHandler {
 
   public DefaultEntityHandler(CacheProvider cacheProvider) {
     this.offlineEntityCache = cacheProvider.newCache();
-    this.entityCache = cacheProvider.newPersistenceCache();
+    this.entityCache = cacheProvider.newPersistentCache();
   }
 
   @Override
@@ -54,20 +55,31 @@ public abstract class DefaultEntityHandler implements EntityHandler {
   }
 
   @Override
-  public void updateLanguageEntity(LanguageOfflineEntity languageOfflineEntity) {
-
-  }
+  public abstract void updateLanguageEntity(LanguageOfflineEntity languageOfflineEntity);
 
   @Override
   public LanguageOfflineEntity registerEntity(UUID entityId) {
-    return null;
+    return this.registerEntity(entityId, Locale.ENGLISH);
   }
 
   @Override
-  public LanguageOfflineEntity registerEntity(UUID entityId, Locale language) {
-    return null;
+  public LanguageOfflineEntity registerEntity(UUID entityId, Locale locale) {
+    LanguageOfflineEntity languageOfflineEntity = new DefaultLanguageOfflineEntity(entityId, locale);
+
+    this.updateLanguageEntity(languageOfflineEntity);
+    return languageOfflineEntity;
   }
 
   @Override
-  public abstract ConsoleEntity getConsoleEntity();
+  public ConsoleEntity getConsoleEntity() {
+    return ServiceRegistry.getService(ConsoleEntity.class);
+  }
+
+  protected void cacheLanguageEntity(LanguageOfflineEntity languageOfflineEntity) {
+    if (languageOfflineEntity instanceof LanguageEntity) {
+      this.entityCache.put(languageOfflineEntity.getEntityId(), (LanguageEntity) languageOfflineEntity);
+    } else {
+      this.offlineEntityCache.put(languageOfflineEntity.getEntityId(), languageOfflineEntity);
+    }
+  }
 }

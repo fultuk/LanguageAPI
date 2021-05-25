@@ -26,55 +26,64 @@
 package de.tentact.languageapi.cache;
 
 import de.tentact.languageapi.database.RedisDatabaseProvider;
-import io.lettuce.core.SetArgs;
+import org.redisson.api.RMap;
+import org.redisson.api.RMapCache;
 
-import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class RedisCache<K, V> implements LanguageCache<K, V> {
 
-  private static final SetArgs EXPIRATION = SetArgs.Builder.ex(Duration.ofHours(1));
   protected final RedisDatabaseProvider redisDatabaseProvider;
+  protected final String cacheName = UUID.randomUUID().toString().split("-")[0];
+  protected RMap<K, V> backingMap;
 
   public RedisCache(RedisDatabaseProvider redisDatabaseProvider) {
     this.redisDatabaseProvider = redisDatabaseProvider;
+
+    RMapCache<K, V> cache = redisDatabaseProvider.getRedissonClient().getMapCache(this.cacheName);
+    cache.expire(1L, TimeUnit.HOURS);
+
+    this.backingMap = cache;
   }
 
   @Override
   public void put(K key, V value) {
-    this.redisDatabaseProvider.getConnection().sync().set(key, value, EXPIRATION);
+    this.backingMap.fastPut(key, value);
+  }
+
+  @Override
+  public void putAll(Map<K, V> map) {
+    this.backingMap.putAll(map);
   }
 
   @Override
   public V getIfPresent(K key) {
-    return (V) this.redisDatabaseProvider.getConnection().sync().get(key);
+    return this.backingMap.get(key);
   }
 
   @Override
   public void invalidate(K key) {
-    this.redisDatabaseProvider.getConnection().sync().del(key);
+    this.backingMap.remove(key);
   }
 
   @Override
   public Collection<V> getValues() {
-    return this.redisDatabaseProvider.getConnection().sync().get;
+    return this.backingMap.values();
   }
 
   @Override
   public Map<K, V> asMap() {
-
+    return this.backingMap.readAllMap();
   }
 
-  static class PersistenceRedisCache<K, V> extends RedisCache<K, V> implements LanguageCache<K, V> {
+  public static class PersistentRedisCache<K, V> extends RedisCache<K, V> implements LanguageCache<K, V> {
 
-    public PersistenceRedisCache(RedisDatabaseProvider redisDatabaseProvider) {
+    public PersistentRedisCache(RedisDatabaseProvider redisDatabaseProvider) {
       super(redisDatabaseProvider);
-    }
-
-    @Override
-    public void put(K key, V value) {
-      super.redisDatabaseProvider.getConnection().sync().set(key, value);
+      super.backingMap = redisDatabaseProvider.getRedissonClient().getMap(super.cacheName);
     }
   }
 }

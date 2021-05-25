@@ -25,14 +25,8 @@
 
 package de.tentact.languageapi.database;
 
-import io.lettuce.core.RedisClient;
-import io.lettuce.core.api.StatefulRedisConnection;
-import io.lettuce.core.codec.RedisCodec;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
-
-import java.io.*;
-import java.nio.ByteBuffer;
 
 public class RedisDatabaseProvider {
 
@@ -41,7 +35,7 @@ public class RedisDatabaseProvider {
   private final String username;
   private final String password;
   private final int port;
-  private final StatefulRedisConnection<Object, Object> connection;
+  private final RedissonClient redissonClient;
 
   protected RedisDatabaseProvider(String hostname, String database, String username, String password, int port) {
     this.hostname = hostname;
@@ -50,65 +44,10 @@ public class RedisDatabaseProvider {
     this.password = password;
     this.port = port;
 
-    RedissonClient redissonClient = Redisson.create();
-    redissonClient.createBatch().
-
-    RedisClient redisClient = RedisClient.create();
-    this.connection = redisClient.connect(new CustomCodec());
+    this.redissonClient = Redisson.create();
   }
 
-  public StatefulRedisConnection<Object, Object> getConnection() {
-    return this.connection;
-  }
-
-  static class CustomCodec implements RedisCodec<Object, Object> {
-
-    @Override
-    public Object decodeKey(ByteBuffer bytes) {
-      try {
-        byte[] array = new byte[bytes.remaining()];
-        bytes.get(array);
-        ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(array));
-        return objectInputStream.readObject();
-      } catch (Exception e) {
-        return null;
-      }
-    }
-
-    @Override
-    public Object decodeValue(ByteBuffer bytes) {
-      try {
-        byte[] array = new byte[bytes.remaining()];
-        bytes.get(array);
-        ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(array));
-        return objectInputStream.readObject();
-      } catch (Exception e) {
-        return null;
-      }
-    }
-
-    @Override
-    public ByteBuffer encodeKey(Object key) {
-      try {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(bytes);
-        objectOutputStream.writeObject(key);
-        return ByteBuffer.wrap(bytes.toByteArray());
-      } catch (IOException e) {
-        return null;
-      }
-    }
-
-    @Override
-    public ByteBuffer encodeValue(Object value) {
-      try {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(bytes);
-        objectOutputStream.writeObject(value);
-        return ByteBuffer.wrap(bytes.toByteArray());
-      } catch (IOException e) {
-        return null;
-      }
-    }
+  public RedissonClient getRedissonClient() {
+    return this.redissonClient;
   }
 }

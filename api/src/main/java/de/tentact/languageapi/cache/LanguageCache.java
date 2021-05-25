@@ -32,6 +32,8 @@ public interface LanguageCache<K, V> {
 
   void put(K key, V value);
 
+  void putAll(Map<K, V> map);
+
   V getIfPresent(K key);
 
   void invalidate(K key);

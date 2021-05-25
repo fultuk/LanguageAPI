@@ -43,10 +43,10 @@ public interface EntityHandler {
    * Registers a entity with the given id in the database and caches it
    *
    * @param entityId the entityId that belongs to the entity
-   * @param language the locale that is set for the entity
+   * @param locale the locale that is set for the entity
    * @return the new entity
    */
-  LanguageOfflineEntity registerEntity(UUID entityId, Locale language);
+  LanguageOfflineEntity registerEntity(UUID entityId, Locale locale);
 
   /**
    * @return the console entity to send messages to a console

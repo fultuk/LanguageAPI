@@ -33,10 +33,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class MySQLLocaleHandler extends DefaultLocaleHandler implements LocaleHandler {
@@ -50,42 +47,66 @@ public class MySQLLocaleHandler extends DefaultLocaleHandler implements LocaleHa
 
   @Override
   public void createLocale(Locale locale) {
-
+    this.mySQLDatabaseProvider.createLocaleTable(locale);
+    super.cacheLocale(locale);
   }
 
   @Override
   public boolean isAvailable(Locale locale) {
+    Locale cachedLocale = super.localeCache.getIfPresent(locale.toLanguageTag());
+    if (cachedLocale != null) {
+      return true;
+    }
+
+    try (Connection connection = this.getDataSource().getConnection();
+         PreparedStatement preparedStatement = connection.prepareStatement("SELECT locale FROM LANGUAGE WHERE locale=?")) {
+      String languageTag = locale.toLanguageTag().toUpperCase();
+      preparedStatement.setString(1, languageTag);
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        if (resultSet.next()) {
+          super.localeCache.put(languageTag, locale);
+          return true;
+        }
+        super.localeCache.invalidate(languageTag);
+        return false;
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+
     return false;
   }
 
   @Override
   public void deleteLocale(Locale locale) {
-
+    this.mySQLDatabaseProvider.deleteLocaleTable(locale);
+    this.localeCache.invalidate(locale.toLanguageTag().toUpperCase());
   }
 
   @Override
-  public CompletableFuture<Set<Locale>> getAvailableLocales() {
+  public CompletableFuture<Collection<Locale>> getAvailableLocales() {
     return this.getAvailableLocales(false);
   }
 
   @Override
-  public CompletableFuture<Set<Locale>> getAvailableLocales(boolean fromCache) {
+  public CompletableFuture<Collection<Locale>> getAvailableLocales(boolean fromCache) {
     return CompletableFuture.supplyAsync(() -> {
-      Set<Locale> cachedLocales = super.localeCache.getIfPresent(KEY);
+      Map<String, Locale> cachedLocales = super.localeCache.asMap();
       if (fromCache) {
-        return cachedLocales == null ? Collections.emptySet() : cachedLocales;
+        return cachedLocales.values();
       }
       try (Connection connection = this.getDataSource().getConnection();
            PreparedStatement preparedStatement = connection.prepareStatement("SELECT locale FROM LANGUAGE")) {
         try (ResultSet resultSet = preparedStatement.executeQuery()) {
 
-          Set<Locale> locales = cachedLocales == null ? new HashSet<>() : new HashSet<>(cachedLocales);
+          Map<String, Locale> locales = new HashMap<>(cachedLocales);
           while (resultSet.next()) {
-            locales.add(Locale.forLanguageTag(resultSet.getString("locale")));
+            String localeTag = resultSet.getString("locale");
+            locales.put(localeTag.toUpperCase(), Locale.forLanguageTag(localeTag));
           }
 
-          super.localeCache.put(KEY, locales);
-          return locales;
+          super.localeCache.putAll(locales);
+          return locales.values();
         }
       } catch (SQLException throwables) {
         throwables.printStackTrace();
@@ -95,8 +116,24 @@ public class MySQLLocaleHandler extends DefaultLocaleHandler implements LocaleHa
   }
 
   @Override
-  public void copyLocale(Locale from, Locale to, boolean createIfNotExists) {
-
+  public CompletableFuture<Boolean> copyLocale(Locale from, Locale to, boolean createIfNotExists) {
+    return CompletableFuture.supplyAsync(() -> {
+      if (!this.isAvailable(from)) {
+        return false;
+      }
+      if (createIfNotExists) {
+        this.createLocale(to);
+      }
+      String oldLocaleTag = from.toLanguageTag().toUpperCase();
+      String localeTag = to.toLanguageTag().toUpperCase();
+      try (Connection connection = this.getDataSource().getConnection()) {
+        connection.createStatement().execute("INSERT INTO " +localeTag +" SELECT * FROM " + oldLocaleTag);
+        return true;
+      } catch (SQLException throwables) {
+        throwables.printStackTrace();
+      }
+      return false;
+    });
   }
 
   private HikariDataSource getDataSource() {

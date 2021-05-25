@@ -26,6 +26,7 @@
 package de.tentact.languageapi.database;
 
 import com.zaxxer.hikari.HikariDataSource;
+import de.tentact.languageapi.LanguageAPI;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -70,16 +71,18 @@ public class MySQLDatabaseProvider {
   }
 
   private void createDefaultTables() {
-    if (this.isNotConnected()) {
-      return;
-    }
-    try (Connection connection = this.hikariDataSource.getConnection()) {
-      connection.createStatement().execute("CREATE TABLE IF NOT EXISTS INDENTIFIER(translationkey VARCHAR(128) PRIMARY KEY, parameter TEXT)");
-      connection.createStatement().execute("CREATE TABLE IF NOT EXISTS LANGUAGEENTITY(entityId VARCHAR(36) PRIMARY KEY, locale VARCHAR(32))");
-      connection.createStatement().execute("CREATE TABLE IF NOT EXISTS LANGUAGE(locale VARCHAR(32) PRIMARY KEY)");
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
-    }
+    LanguageAPI.getInstance().executeAsync(() -> {
+      if (this.isNotConnected()) {
+        return;
+      }
+      try (Connection connection = this.hikariDataSource.getConnection()) {
+        connection.createStatement().execute("CREATE TABLE IF NOT EXISTS INDENTIFIER(translationkey VARCHAR(128) PRIMARY KEY, parameter TEXT)");
+        connection.createStatement().execute("CREATE TABLE IF NOT EXISTS LANGUAGEENTITY(entityid VARCHAR(36) PRIMARY KEY, locale VARCHAR(32))");
+        connection.createStatement().execute("CREATE TABLE IF NOT EXISTS LANGUAGE(locale VARCHAR(32) PRIMARY KEY)");
+      } catch (SQLException throwables) {
+        throwables.printStackTrace();
+      }
+    });
   }
 
   public void createLocaleTable(Locale locale) {
@@ -93,6 +96,19 @@ public class MySQLDatabaseProvider {
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
+  }
+
+  public void deleteLocaleTable(Locale locale) {
+    LanguageAPI.getInstance().executeAsync(() -> {
+      if (this.isNotConnected()) {
+        return;
+      }
+      try (Connection connection = this.hikariDataSource.getConnection()) {
+        connection.createStatement().execute("DROP TABLE IF EXISTS "+locale.toLanguageTag().toUpperCase());
+      } catch (SQLException throwables) {
+        throwables.printStackTrace();
+      }
+    });
   }
 
   public HikariDataSource getDataSource() {

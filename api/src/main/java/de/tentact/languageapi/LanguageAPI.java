@@ -4,6 +4,7 @@ import de.tentact.languageapi.entity.EntityHandler;
 import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.language.LocaleHandler;
 import de.tentact.languageapi.message.MessageHandler;
+import de.tentact.languageapi.registry.ServiceRegistry;
 import org.jetbrains.annotations.ApiStatus;
 
 public abstract class LanguageAPI {
@@ -32,6 +33,8 @@ public abstract class LanguageAPI {
   public abstract LocaleHandler getLocaleHandler();
 
   public abstract EntityHandler getEntityHandler();
+
+  public abstract ServiceRegistry getServiceRegistry();
 
   public abstract void executeAsync(Runnable runnable);
 }

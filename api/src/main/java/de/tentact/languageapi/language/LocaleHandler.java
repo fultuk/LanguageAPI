@@ -1,7 +1,7 @@
 package de.tentact.languageapi.language;
 
+import java.util.Collection;
 import java.util.Locale;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public interface LocaleHandler {
@@ -41,7 +41,7 @@ public interface LocaleHandler {
    *
    * @return all locales from the cache
    */
-  CompletableFuture<Set<Locale>> getAvailableLocales();
+  CompletableFuture<Collection<Locale>> getAvailableLocales();
 
   /**
    * Retrieves all locales from the cache or loads them from the database
@@ -49,7 +49,7 @@ public interface LocaleHandler {
    * @param fromCache whether the cache should be used or not
    * @return all locales from the cache or loads them from the database
    */
-  CompletableFuture<Set<Locale>> getAvailableLocales(boolean fromCache);
+  CompletableFuture<Collection<Locale>> getAvailableLocales(boolean fromCache);
 
   /**
    * Copies every translationKey and the translation from one to the other locale
@@ -57,7 +57,7 @@ public interface LocaleHandler {
    * @param from the locale to be copied from
    * @param to   the locale to be copied to
    */
-  void copyLocale(Locale from, Locale to);
+  CompletableFuture<Boolean> copyLocale(Locale from, Locale to);
 
   /**
    * Copies every translationKey and the translation from one to the other locale and optional creates the locale
@@ -66,6 +66,6 @@ public interface LocaleHandler {
    * @param to                the locale to be copied to
    * @param createIfNotExists whether the locale should be created or not
    */
-  void copyLocale(Locale from, Locale to, boolean createIfNotExists);
+  CompletableFuture<Boolean> copyLocale(Locale from, Locale to, boolean createIfNotExists);
 
 }

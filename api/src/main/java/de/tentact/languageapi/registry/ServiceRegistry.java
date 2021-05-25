@@ -23,55 +23,20 @@
  * SOFTWARE.
  */
 
-package de.tentact.languageapi.cache;
+package de.tentact.languageapi.registry;
 
+import de.tentact.languageapi.LanguageAPI;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+public interface ServiceRegistry {
 
-import java.time.Duration;
-import java.util.Collection;
-import java.util.Map;
-
-public class LocalCache<K, V> implements LanguageCache<K, V> {
-
-  private final Cache<K, V> localCache;
-
-  public LocalCache(Cache<K, V> localCache) {
-    this.localCache = localCache;
+  static <T> T getService(Class<T> service) {
+    return LanguageAPI.getInstance().getServiceRegistry().getProvider(service);
   }
 
-  public LocalCache() {
-    this(CacheBuilder.newBuilder().expireAfterWrite(Duration.ofMinutes(5L)).build());
-  }
+  <T> T getProvider(Class<T> service);
 
-  @Override
-  public void put(K key, V value) {
-    this.localCache.put(key, value);
-  }
+  <T> void setProvider(Class<T> service, T provider);
 
-  @Override
-  public void putAll(Map<K, V> map) {
-    this.localCache.putAll(map);
-  }
+  <T> void unregister(Class<T> service);
 
-  @Override
-  public V getIfPresent(K key) {
-    return this.localCache.getIfPresent(key);
-  }
-
-  @Override
-  public void invalidate(K key) {
-    this.localCache.invalidate(key);
-  }
-
-  @Override
-  public Collection<V> getValues() {
-    return this.localCache.asMap().values();
-  }
-
-  @Override
-  public Map<K, V> asMap() {
-    return this.localCache.asMap();
-  }
 }

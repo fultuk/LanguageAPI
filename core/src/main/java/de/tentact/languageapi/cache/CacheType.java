@@ -25,35 +25,8 @@
 
 package de.tentact.languageapi.cache;
 
-import com.google.common.cache.CacheBuilder;
-import de.tentact.languageapi.database.RedisDatabaseProvider;
-
 public enum CacheType {
 
-  LOCAL {
-    @Override
-    <K, V> LanguageCache<K, V> newCache(RedisDatabaseProvider redisDatabaseProvider) {
-      return new LocalCache<>();
-    }
-
-    @Override
-    <K, V> LanguageCache<K, V> newPersistenceCache(RedisDatabaseProvider redisDatabaseProvider) {
-      return new LocalCache<>(CacheBuilder.newBuilder().build());
-    }
-  },
-  REDIS {
-    @Override
-    <K, V> LanguageCache<K, V> newCache(RedisDatabaseProvider redisDatabaseProvider) {
-      return new RedisCache<>(redisDatabaseProvider);
-    }
-
-    @Override
-    <K, V> LanguageCache<K, V> newPersistenceCache(RedisDatabaseProvider redisDatabaseProvider) {
-      return new RedisCache.PersistenceRedisCache<>(redisDatabaseProvider);
-    }
-  };
-
-  abstract <K, V> LanguageCache<K, V> newCache(RedisDatabaseProvider redisDatabaseProvider);
-
-  abstract <K, V> LanguageCache<K, V> newPersistenceCache(RedisDatabaseProvider redisDatabaseProvider);
+  LOCAL,
+  REDIS
 }
