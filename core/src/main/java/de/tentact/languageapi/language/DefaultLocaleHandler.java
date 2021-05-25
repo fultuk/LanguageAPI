@@ -23,32 +23,32 @@
  * SOFTWARE.
  */
 
-package de.tentact.languageapi.message;
+package de.tentact.languageapi.language;
 
-import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.cache.CacheProvider;
+import de.tentact.languageapi.cache.LanguageCache;
 
-import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-public class DefaultMessage implements Message {
+public abstract class DefaultLocaleHandler implements LocaleHandler {
 
-  private final Identifier identifier;
+  protected static final int KEY = 0;
 
-  public DefaultMessage(Identifier identifier) {
-    this.identifier = identifier;
+  protected final LanguageCache<Integer, Set<Locale>> localeCache;
+
+  public DefaultLocaleHandler(CacheProvider cacheProvider) {
+    this.localeCache = cacheProvider.newCache();
   }
 
   @Override
-  public String build(Locale locale, Object... params) {
-    return MessageFormat.format(
-        LanguageAPI.getInstance().getMessageHandler().getMessage(this.identifier, locale),
-        params
-    );
+  public CompletableFuture<Boolean> isAvailableAsync(Locale locale) {
+    return CompletableFuture.supplyAsync(() -> this.isAvailable(locale));
   }
 
   @Override
-  public CompletableFuture<String> buildAsync(Locale locale, Object... params) {
-    return CompletableFuture.supplyAsync(() -> this.build(locale, params));
+  public void copyLocale(Locale from, Locale to) {
+    this.copyLocale(from, to, false);
   }
 }

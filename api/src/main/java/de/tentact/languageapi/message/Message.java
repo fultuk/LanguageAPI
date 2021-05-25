@@ -5,8 +5,8 @@ import java.util.concurrent.CompletableFuture;
 
 public interface Message {
 
-    String build(Locale locale, Object... params);
+  String build(Locale locale, Object... params);
 
-    CompletableFuture<String> buildAsync(Locale locale, Object... params);
+  CompletableFuture<String> buildAsync(Locale locale, Object... params);
 
 }

@@ -26,29 +26,55 @@
 package de.tentact.languageapi.cache;
 
 import de.tentact.languageapi.database.RedisDatabaseProvider;
-import org.redisson.api.RedissonClient;
+import io.lettuce.core.SetArgs;
+
+import java.time.Duration;
+import java.util.Collection;
+import java.util.Map;
 
 public class RedisCache<K, V> implements LanguageCache<K, V> {
 
-    private final String redisCacheName;
-    private final RedisDatabaseProvider redisDatabaseProvider;
+  private static final SetArgs EXPIRATION = SetArgs.Builder.ex(Duration.ofHours(1));
+  protected final RedisDatabaseProvider redisDatabaseProvider;
 
-    public RedisCache(String redisCacheName, RedisDatabaseProvider redisDatabaseProvider) {
-        this.redisCacheName = redisCacheName;
-        this.redisDatabaseProvider = redisDatabaseProvider;
+  public RedisCache(RedisDatabaseProvider redisDatabaseProvider) {
+    this.redisDatabaseProvider = redisDatabaseProvider;
+  }
+
+  @Override
+  public void put(K key, V value) {
+    this.redisDatabaseProvider.getConnection().sync().set(key, value, EXPIRATION);
+  }
+
+  @Override
+  public V getIfPresent(K key) {
+    return (V) this.redisDatabaseProvider.getConnection().sync().get(key);
+  }
+
+  @Override
+  public void invalidate(K key) {
+    this.redisDatabaseProvider.getConnection().sync().del(key);
+  }
+
+  @Override
+  public Collection<V> getValues() {
+    return this.redisDatabaseProvider.getConnection().sync().get;
+  }
+
+  @Override
+  public Map<K, V> asMap() {
+
+  }
+
+  static class PersistenceRedisCache<K, V> extends RedisCache<K, V> implements LanguageCache<K, V> {
+
+    public PersistenceRedisCache(RedisDatabaseProvider redisDatabaseProvider) {
+      super(redisDatabaseProvider);
     }
 
     @Override
     public void put(K key, V value) {
-        this.getClient().createBatch().getMap(this.redisCacheName).fastPutAsync(key, value);
+      super.redisDatabaseProvider.getConnection().sync().set(key, value);
     }
-
-    @Override
-    public V getIfPresent(K key) {
-        return (V) this.getClient().getMap(this.redisCacheName).get(key);
-    }
-
-    private RedissonClient getClient() {
-        return this.redisDatabaseProvider.getRedisClient();
-    }
+  }
 }

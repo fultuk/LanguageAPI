@@ -23,32 +23,37 @@
  * SOFTWARE.
  */
 
-package de.tentact.languageapi.message;
+package de.tentact.languageapi.cache;
 
-import de.tentact.languageapi.LanguageAPI;
+import com.google.common.cache.CacheBuilder;
+import de.tentact.languageapi.database.RedisDatabaseProvider;
 
-import java.text.MessageFormat;
-import java.util.Locale;
-import java.util.concurrent.CompletableFuture;
+public enum CacheType {
 
-public class DefaultMessage implements Message {
+  LOCAL {
+    @Override
+    <K, V> LanguageCache<K, V> newCache(RedisDatabaseProvider redisDatabaseProvider) {
+      return new LocalCache<>();
+    }
 
-  private final Identifier identifier;
+    @Override
+    <K, V> LanguageCache<K, V> newPersistenceCache(RedisDatabaseProvider redisDatabaseProvider) {
+      return new LocalCache<>(CacheBuilder.newBuilder().build());
+    }
+  },
+  REDIS {
+    @Override
+    <K, V> LanguageCache<K, V> newCache(RedisDatabaseProvider redisDatabaseProvider) {
+      return new RedisCache<>(redisDatabaseProvider);
+    }
 
-  public DefaultMessage(Identifier identifier) {
-    this.identifier = identifier;
-  }
+    @Override
+    <K, V> LanguageCache<K, V> newPersistenceCache(RedisDatabaseProvider redisDatabaseProvider) {
+      return new RedisCache.PersistenceRedisCache<>(redisDatabaseProvider);
+    }
+  };
 
-  @Override
-  public String build(Locale locale, Object... params) {
-    return MessageFormat.format(
-        LanguageAPI.getInstance().getMessageHandler().getMessage(this.identifier, locale),
-        params
-    );
-  }
+  abstract <K, V> LanguageCache<K, V> newCache(RedisDatabaseProvider redisDatabaseProvider);
 
-  @Override
-  public CompletableFuture<String> buildAsync(Locale locale, Object... params) {
-    return CompletableFuture.supplyAsync(() -> this.build(locale, params));
-  }
+  abstract <K, V> LanguageCache<K, V> newPersistenceCache(RedisDatabaseProvider redisDatabaseProvider);
 }

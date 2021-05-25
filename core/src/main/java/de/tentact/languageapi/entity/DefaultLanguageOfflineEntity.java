@@ -30,18 +30,26 @@ import java.util.UUID;
 
 public class DefaultLanguageOfflineEntity implements LanguageOfflineEntity {
 
-    @Override
-    public UUID getEntityId() {
-        return null;
-    }
+  private final UUID entityId;
+  private Locale locale;
 
-    @Override
-    public Locale getLocale() {
-        return null;
-    }
+  public DefaultLanguageOfflineEntity(UUID entityId, Locale locale) {
+    this.entityId = entityId;
+    this.locale = locale;
+  }
 
-    @Override
-    public void setLocale(Locale locale) {
+  @Override
+  public UUID getEntityId() {
+    return this.entityId;
+  }
 
-    }
+  @Override
+  public Locale getLocale() {
+    return this.locale;
+  }
+
+  @Override
+  public void setLocale(Locale locale) {
+    this.locale = locale;
+  }
 }

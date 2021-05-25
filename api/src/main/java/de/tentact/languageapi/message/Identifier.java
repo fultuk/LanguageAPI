@@ -4,21 +4,21 @@ import java.util.Map;
 
 public interface Identifier {
 
-    static Identifier of(String translationKey) {
-        return new DefaultIdentifier(translationKey);
-    }
+  static Identifier of(String translationKey) {
+    return new DefaultIdentifier(translationKey);
+  }
 
-    static Identifier of(String translationKey, String... parameters) {
-        return new DefaultIdentifier(translationKey, parameters);
-    }
+  static Identifier of(String translationKey, String... parameters) {
+    return new DefaultIdentifier(translationKey, parameters);
+  }
 
-    Map<Integer, String> getParameters();
+  Map<Integer, String> getParameters();
 
-    String getTranslationKey();
+  String getTranslationKey();
 
-    Identifier parameters(String... parameters);
+  Identifier parameters(String... parameters);
 
-    Identifier load();
+  Identifier load();
 
-    Identifier write();
+  Identifier write();
 }

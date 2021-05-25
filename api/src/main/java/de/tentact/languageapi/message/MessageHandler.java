@@ -8,12 +8,16 @@ import java.util.concurrent.CompletableFuture;
 @ApiStatus.Internal
 public interface MessageHandler {
 
-    Identifier loadIdentifier(Identifier identifier);
+  Identifier loadIdentifier(Identifier identifier);
 
-    void writeIdentifier(Identifier identifier);
+  CompletableFuture<Identifier> loadIdentifierAsync(Identifier identifier);
 
-    String getMessage(Identifier identifier, Locale locale);
+  void writeIdentifier(Identifier identifier);
 
-    CompletableFuture<String> getMessageAsync(Identifier identifier, Locale locale);
+  String getMessage(Identifier identifier, Locale locale);
+
+  CompletableFuture<String> getMessageAsync(Identifier identifier, Locale locale);
+
+  void translateMessage(Identifier identifier, Locale locale, String translation);
 
 }

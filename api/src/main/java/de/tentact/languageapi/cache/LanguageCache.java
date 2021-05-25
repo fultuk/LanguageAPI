@@ -25,10 +25,19 @@
 
 package de.tentact.languageapi.cache;
 
+import java.util.Collection;
+import java.util.Map;
+
 public interface LanguageCache<K, V> {
 
-    void put(K key, V value);
+  void put(K key, V value);
 
-    V getIfPresent(K key);
+  V getIfPresent(K key);
+
+  void invalidate(K key);
+
+  Collection<V> getValues();
+
+  Map<K, V> asMap();
 
 }

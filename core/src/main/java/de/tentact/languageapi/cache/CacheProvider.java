@@ -25,23 +25,24 @@
 
 package de.tentact.languageapi.cache;
 
-import com.google.common.cache.Cache;
 import de.tentact.languageapi.database.RedisDatabaseProvider;
 
 public class CacheProvider {
 
-    private final RedisDatabaseProvider redisDatabaseProvider;
+  private final RedisDatabaseProvider redisDatabaseProvider;
 
-    public CacheProvider(RedisDatabaseProvider redisDatabaseProvider) {
-        this.redisDatabaseProvider = redisDatabaseProvider;
-    }
+  public CacheProvider(RedisDatabaseProvider redisDatabaseProvider) {
+    this.redisDatabaseProvider = redisDatabaseProvider;
+  }
 
-    public <K, V> LanguageCache<K, V> newCache(String cacheName, Cache<K, V> cache) {
-        //whether to use redis as cache (from config)
-        if (true) {
-            return new RedisCache<>(cacheName, this.redisDatabaseProvider);
-        }
-        return new LocalCache<>(cache);
-    }
+  public <K, V> LanguageCache<K, V> newCache() {
+    CacheType cacheType = CacheType.LOCAL;
+    return cacheType.newCache(this.redisDatabaseProvider);
+  }
+
+  public <K, V> LanguageCache<K, V> newPersistenceCache() {
+    CacheType cacheType = CacheType.LOCAL;
+    return cacheType.newPersistenceCache(this.redisDatabaseProvider);
+  }
 
 }

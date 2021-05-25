@@ -25,7 +25,6 @@
 
 package de.tentact.languageapi.message;
 
-import com.google.common.cache.CacheBuilder;
 import de.tentact.languageapi.cache.CacheProvider;
 import de.tentact.languageapi.cache.LanguageCache;
 import de.tentact.languageapi.language.LocaleHandler;
@@ -37,52 +36,64 @@ import java.util.concurrent.CompletableFuture;
 
 public abstract class DefaultMessageHandler implements MessageHandler {
 
-    protected final LocaleHandler localeHandler;
-    protected final LanguageCache<String, Map<String, String>> translationCache;
+  protected final LocaleHandler localeHandler;
+  protected final LanguageCache<String, Map<String, String>> translationCache;
+  protected final LanguageCache<String, Identifier> identifierCache;
 
-    public DefaultMessageHandler(LocaleHandler localeHandler, CacheProvider cacheProvider) {
-        this.localeHandler = localeHandler;
-        this.translationCache = cacheProvider.newCache("translationCache", CacheBuilder.newBuilder().build());
+  public DefaultMessageHandler(LocaleHandler localeHandler, CacheProvider cacheProvider) {
+    this.localeHandler = localeHandler;
+    this.translationCache = cacheProvider.newCache();
+    this.identifierCache = cacheProvider.newCache();
+  }
+
+  @Override
+  public Identifier loadIdentifier(Identifier identifier) {
+    return this.identifierCache.getIfPresent(identifier.getTranslationKey());
+  }
+
+  @Override
+  public CompletableFuture<Identifier> loadIdentifierAsync(Identifier identifier) {
+    return CompletableFuture.supplyAsync(() -> this.loadIdentifier(identifier));
+  }
+
+  @Override
+  public abstract void writeIdentifier(Identifier identifier);
+
+  @Override
+  public String getMessage(Identifier identifier, Locale locale) {
+    Map<String, String> cacheMap = this.translationCache.getIfPresent(identifier.getTranslationKey());
+    if (cacheMap != null && cacheMap.containsKey(identifier.getTranslationKey())) {
+      return cacheMap.get(locale.toLanguageTag().toUpperCase());
     }
+    return null;
+  }
 
-    @Override
-    public Identifier loadIdentifier(Identifier identifier) {
-        return null;
+  @Override
+  public abstract void translateMessage(Identifier identifier, Locale locale, String translation);
+
+  @Override
+  public CompletableFuture<String> getMessageAsync(Identifier identifier, Locale locale) {
+    return CompletableFuture.supplyAsync(() -> this.getMessage(identifier, locale));
+  }
+
+  protected void cacheTranslation(Identifier identifier, Locale locale, String translation) {
+    Map<String, String> cacheMap = new HashMap<>(1);
+    cacheMap.put(locale.toLanguageTag().toUpperCase(), translation);
+    this.translationCache.put(identifier.getTranslationKey(), cacheMap);
+  }
+
+  protected void cacheIdentifier(Identifier identifier) {
+    this.identifierCache.put(identifier.getTranslationKey(), identifier);
+  }
+
+  protected String translateColor(String message) {
+    char[] b = message.toCharArray();
+    for (int i = 0; i < b.length - 1; i++) {
+      if (b[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1) {
+        b[i] = '§';
+        b[i + 1] = Character.toLowerCase(b[i + 1]);
+      }
     }
-
-    @Override
-    public void writeIdentifier(Identifier identifier) {
-
-    }
-
-    @Override
-    public String getMessage(Identifier identifier, Locale locale) {
-        Map<String, String> cacheMap = this.translationCache.getIfPresent(identifier.getTranslationKey());
-        if (cacheMap != null && cacheMap.containsKey(identifier.getTranslationKey())) {
-            return cacheMap.get(locale.toLanguageTag().toUpperCase());
-        }
-        return null;
-    }
-
-    @Override
-    public CompletableFuture<String> getMessageAsync(Identifier identifier, Locale locale) {
-        return CompletableFuture.supplyAsync(() -> this.getMessage(identifier, locale));
-    }
-
-    protected void cacheTranslation(Identifier identifier, Locale locale, String translation) {
-        Map<String, String> cacheMap = new HashMap<>(1);
-        cacheMap.put(locale.toLanguageTag().toUpperCase(), translation);
-        this.translationCache.put(identifier.getTranslationKey(), cacheMap);
-    }
-
-    protected String translateColor(String message) {
-        char[] b = message.toCharArray();
-        for (int i = 0; i < b.length - 1; i++) {
-            if (b[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1) {
-                b[i] = '§';
-                b[i + 1] = Character.toLowerCase(b[i + 1]);
-            }
-        }
-        return new String(b);
-    }
+    return new String(b);
+  }
 }

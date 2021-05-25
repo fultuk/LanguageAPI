@@ -32,45 +32,45 @@ import java.util.Map;
 
 final class DefaultIdentifier implements Identifier {
 
-    private final String translationKey;
-    private final Map<Integer, String> parameters;
+  private final String translationKey;
+  private final Map<Integer, String> parameters;
 
-    public DefaultIdentifier(String translationKey) {
-        this.translationKey = translationKey.toLowerCase();
-        this.parameters = new HashMap<>();
-    }
+  public DefaultIdentifier(String translationKey) {
+    this.translationKey = translationKey.toLowerCase();
+    this.parameters = new HashMap<>();
+  }
 
-    public DefaultIdentifier(String translationKey, String... parameters) {
-        this(translationKey);
-        this.parameters(parameters);
-    }
+  public DefaultIdentifier(String translationKey, String... parameters) {
+    this(translationKey);
+    this.parameters(parameters);
+  }
 
-    @Override
-    public Identifier parameters(String... parameters) {
-        for (int i = this.parameters.size(); i < parameters.length; i++) {
-            this.parameters.put(i, parameters[i]);
-        }
-        return this;
+  @Override
+  public Identifier parameters(String... parameters) {
+    for (int i = this.parameters.size(); i < parameters.length; i++) {
+      this.parameters.put(i, parameters[i]);
     }
+    return this;
+  }
 
-    @Override
-    public Identifier load() {
-        return LanguageAPI.getInstance().getMessageHandler().loadIdentifier(this);
-    }
+  @Override
+  public Identifier load() {
+    return LanguageAPI.getInstance().getMessageHandler().loadIdentifier(this);
+  }
 
-    @Override
-    public Identifier write() {
-        LanguageAPI.getInstance().getMessageHandler().writeIdentifier(this);
-        return this;
-    }
+  @Override
+  public Identifier write() {
+    LanguageAPI.getInstance().getMessageHandler().writeIdentifier(this);
+    return this;
+  }
 
-    @Override
-    public Map<Integer, String> getParameters() {
-        return this.parameters;
-    }
+  @Override
+  public Map<Integer, String> getParameters() {
+    return this.parameters;
+  }
 
-    @Override
-    public String getTranslationKey() {
-        return this.translationKey;
-    }
+  @Override
+  public String getTranslationKey() {
+    return this.translationKey;
+  }
 }

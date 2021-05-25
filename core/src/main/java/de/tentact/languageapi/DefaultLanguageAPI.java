@@ -30,23 +30,33 @@ import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.language.LocaleHandler;
 import de.tentact.languageapi.message.MessageHandler;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public abstract class DefaultLanguageAPI extends LanguageAPI {
 
-    @Override
-    public MessageHandler getMessageHandler() {
-        return null;
-    }
+  private final ExecutorService executorService = Executors.newCachedThreadPool();
 
-    @Override
-    public FileHandler getFileHandler() {
-        return null;
-    }
+  @Override
+  public MessageHandler getMessageHandler() {
+    return null;
+  }
 
-    @Override
-    public LocaleHandler getLocaleHandler() {
-        return null;
-    }
+  @Override
+  public FileHandler getFileHandler() {
+    return null;
+  }
 
-    @Override
-    public abstract EntityHandler getEntityHandler();
+  @Override
+  public LocaleHandler getLocaleHandler() {
+    return null;
+  }
+
+  @Override
+  public abstract EntityHandler getEntityHandler();
+
+  @Override
+  public void executeAsync(Runnable runnable) {
+    this.executorService.execute(runnable);
+  }
 }

@@ -31,23 +31,23 @@ import java.util.concurrent.CompletableFuture;
 
 public class DefaultFileHandler implements FileHandler {
 
-    @Override
-    public CompletableFuture<Boolean> loadFile(Path path) {
-        return null;
-    }
+  @Override
+  public CompletableFuture<Boolean> loadFile(Path path) {
+    return null;
+  }
 
-    @Override
-    public CompletableFuture<Boolean> loadFile(Path path, boolean overwrite) {
-        return null;
-    }
+  @Override
+  public CompletableFuture<Boolean> loadFile(Path path, boolean overwrite) {
+    return null;
+  }
 
-    @Override
-    public boolean exportLanguage(Locale locale) {
-        return false;
-    }
+  @Override
+  public boolean exportLanguage(Locale locale) {
+    return false;
+  }
 
-    @Override
-    public boolean exportLanguage(Locale locale, Path path) {
-        return false;
-    }
+  @Override
+  public boolean exportLanguage(Locale locale, Path path) {
+    return false;
+  }
 }
