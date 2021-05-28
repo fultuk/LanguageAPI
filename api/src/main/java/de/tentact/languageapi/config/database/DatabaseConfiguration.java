@@ -23,39 +23,52 @@
  * SOFTWARE.
  */
 
-package de.tentact.languageapi.database;
+package de.tentact.languageapi.config.database;
 
-import com.google.common.primitives.Ints;
-import de.tentact.languageapi.config.database.DatabaseConfiguration;
-import org.redisson.Redisson;
-import org.redisson.api.RedissonClient;
-import org.redisson.config.Config;
+public class DatabaseConfiguration {
 
-public class RedisDatabaseProvider extends DatabaseConfiguration {
+  public static final DatabaseConfiguration DEFAULT_DATABASE_CONFIGURATION =
+      new DatabaseConfiguration(
+          "localhost",
+          "languageapi",
+          "languageapi",
+          "password",
+          3306
+      );
 
-  private final RedissonClient redissonClient;
+  protected final String hostname;
+  protected final String database;
+  protected final String username;
+  protected final String password;
+  protected final int port;
 
-  public RedisDatabaseProvider(DatabaseConfiguration configuration) {
-    this(configuration.getHostname(), configuration.getDatabase(), configuration.getUsername(),
-        configuration.getPassword(), configuration.getPort());
+  public DatabaseConfiguration(String hostname, String database, String username, String password, int port) {
+    this.hostname = hostname;
+    this.database = database;
+    this.username = username;
+    this.password = password;
+    this.port = port;
   }
 
-  public RedisDatabaseProvider(String hostname, String database, String username, String password, int port) {
-    super(hostname, database, username, password, port);
+  public void closeConnection() { }
 
-    Config config = new Config();
-    Integer databaseIndex = Ints.tryParse(database);
-
-    if (databaseIndex == null) {
-      databaseIndex = 0;
-    }
-
-    config.useSingleServer().setAddress(hostname).setDatabase(databaseIndex).setUsername(username).setPassword(password);
-    this.redissonClient = Redisson.create(config);
+  public String getHostname() {
+    return this.hostname;
   }
 
-  public RedissonClient getRedissonClient() {
-    return this.redissonClient;
+  public String getDatabase() {
+    return this.database;
   }
 
+  public String getUsername() {
+    return this.username;
+  }
+
+  public String getPassword() {
+    return this.password;
+  }
+
+  public int getPort() {
+    return this.port;
+  }
 }

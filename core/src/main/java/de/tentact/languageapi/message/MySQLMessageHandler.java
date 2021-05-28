@@ -34,7 +34,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public class MySQLMessageHandler extends DefaultMessageHandler implements MessageHandler {
 
@@ -114,13 +118,39 @@ public class MySQLMessageHandler extends DefaultMessageHandler implements Messag
   }
 
   @Override
+  public CompletableFuture<Set<Identifier>> getIdentifier(Locale locale, boolean cacheOnly) {
+    return CompletableFuture.supplyAsync(() -> {
+      Set<Identifier> identifiers = new HashSet<>(super.identifierCache.getValues());
+      if (cacheOnly) {
+        return identifiers;
+      }
+      try (Connection connection = this.getDataSource().getConnection();
+           PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM IDENTIFIER")) {
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+          while (resultSet.next()) {
+            Identifier identifier = Identifier.of(resultSet.getString("translationkey"),
+                resultSet.getString("parameters").split(","));
+
+            identifiers.add(identifier);
+          }
+        }
+      } catch (SQLException throwables) {
+        throwables.printStackTrace();
+      }
+
+      super.cacheIdentifier(identifiers);
+      return identifiers;
+    });
+  }
+
+  @Override
   public void translateMessage(Identifier identifier, Locale locale, String translation) {
     super.localeHandler.isAvailableAsync(locale).thenAcceptAsync(isAvailable -> {
       if (!isAvailable) {
         return;
       }
       try (Connection connection = this.getDataSource().getConnection();
-           PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO translation (translationKey, translation) VALUES (?, ?) ON DUPLICATE KEY UPDATE translation=?;")) {
+           PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO translation (translationkey, translation) VALUES (?, ?) ON DUPLICATE KEY UPDATE translation=?;")) {
         String formattedTranslation = super.translateColor(translation);
 
         preparedStatement.setString(1, identifier.getTranslationKey());
@@ -132,6 +162,34 @@ public class MySQLMessageHandler extends DefaultMessageHandler implements Messag
       }
 
       super.cacheTranslation(identifier, locale, translation);
+    });
+  }
+
+  @Override
+  public void translateMessage(Map<Identifier, String> translations, Locale locale) {
+    super.localeHandler.isAvailableAsync(locale).thenAcceptAsync(isAvailable -> {
+      if (!isAvailable) {
+        return;
+      }
+      try (Connection connection = this.getDataSource().getConnection();
+           PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO translation (translationKey, translation) VALUES (?, ?) ON DUPLICATE KEY UPDATE translation=?;")) {
+
+        for (Map.Entry<Identifier, String> translationEntry : translations.entrySet()) {
+          Identifier identifier = translationEntry.getKey();
+          String formattedTranslation = super.translateColor(translationEntry.getValue());
+
+          preparedStatement.setString(1, identifier.getTranslationKey());
+          preparedStatement.setString(2, formattedTranslation);
+          preparedStatement.setString(3, formattedTranslation);
+          preparedStatement.addBatch();
+
+          super.cacheTranslation(identifier, locale, formattedTranslation);
+        }
+
+        preparedStatement.executeBatch();
+      } catch (SQLException throwables) {
+        throwables.printStackTrace();
+      }
     });
   }
 

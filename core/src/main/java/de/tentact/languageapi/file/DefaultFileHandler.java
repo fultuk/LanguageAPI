@@ -25,29 +25,79 @@
 
 package de.tentact.languageapi.file;
 
+import com.github.derrop.documents.Document;
+import com.github.derrop.documents.Documents;
+import com.google.common.base.Preconditions;
+import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.message.Identifier;
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class DefaultFileHandler implements FileHandler {
 
   @Override
-  public CompletableFuture<Boolean> loadFile(Path path) {
+  public CompletableFuture<Boolean> loadFile(@NotNull Path path) {
+    Preconditions.checkNotNull(path, "path");
+
+    return CompletableFuture.supplyAsync(() -> {
+      Document inputDocument = Documents.yamlStorage().read(path);
+
+      Map<Identifier, String> uncheckedMessages = (Map<Identifier, String>) inputDocument.get("languageAPI");
+
+      Locale locale = Locale.forLanguageTag(uncheckedMessages.get(Identifier.of("locale")));
+
+
+      return true;
+    });
+  }
+
+  @Override
+  public CompletableFuture<Boolean> loadFile(@NotNull Path path, boolean overwrite) {
+    Preconditions.checkNotNull(path, "path");
+
     return null;
   }
 
   @Override
-  public CompletableFuture<Boolean> loadFile(Path path, boolean overwrite) {
-    return null;
+  public CompletableFuture<Boolean> exportLanguage(@NotNull Locale locale) {
+    Preconditions.checkNotNull(locale, "locale");
+
+    return this.exportLanguage(locale, Paths.get("plugins/LanguageAPI/export"));
   }
 
   @Override
-  public boolean exportLanguage(Locale locale) {
-    return false;
-  }
+  public CompletableFuture<Boolean> exportLanguage(@NotNull Locale locale, @NotNull Path path) {
+    Preconditions.checkNotNull(path, "path");
+    Preconditions.checkNotNull(locale, "locale");
 
-  @Override
-  public boolean exportLanguage(Locale locale, Path path) {
-    return false;
+    return CompletableFuture.supplyAsync(() -> {
+      if (!LanguageAPI.getInstance().getLocaleHandler().isAvailable(locale)) {
+        return false;
+      }
+      Map<Identifier, String> translations = new HashMap<>();
+      String languageTag = locale.toLanguageTag().toUpperCase();
+
+      translations.put(Identifier.of("locale"), languageTag);
+      translations.putAll(LanguageAPI.getInstance().getMessageHandler().getMessages(locale).join());
+
+      Document outputDocument = Documents.newDocument("languageAPI", translations);
+      Path outputPath = path.resolve(languageTag + ".yml");
+
+      try {
+        Files.createDirectories(path);
+      } catch (IOException exception) {
+        exception.printStackTrace();
+      }
+      outputDocument.yaml().write(outputPath);
+      return true;
+    });
   }
 }

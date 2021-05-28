@@ -23,39 +23,10 @@
  * SOFTWARE.
  */
 
-package de.tentact.languageapi.database;
+package de.tentact.languageapi.cache;
 
-import com.google.common.primitives.Ints;
-import de.tentact.languageapi.config.database.DatabaseConfiguration;
-import org.redisson.Redisson;
-import org.redisson.api.RedissonClient;
-import org.redisson.config.Config;
+public enum DatabaseType {
 
-public class RedisDatabaseProvider extends DatabaseConfiguration {
-
-  private final RedissonClient redissonClient;
-
-  public RedisDatabaseProvider(DatabaseConfiguration configuration) {
-    this(configuration.getHostname(), configuration.getDatabase(), configuration.getUsername(),
-        configuration.getPassword(), configuration.getPort());
-  }
-
-  public RedisDatabaseProvider(String hostname, String database, String username, String password, int port) {
-    super(hostname, database, username, password, port);
-
-    Config config = new Config();
-    Integer databaseIndex = Ints.tryParse(database);
-
-    if (databaseIndex == null) {
-      databaseIndex = 0;
-    }
-
-    config.useSingleServer().setAddress(hostname).setDatabase(databaseIndex).setUsername(username).setPassword(password);
-    this.redissonClient = Redisson.create(config);
-  }
-
-  public RedissonClient getRedissonClient() {
-    return this.redissonClient;
-  }
+  MYSQL,
 
 }

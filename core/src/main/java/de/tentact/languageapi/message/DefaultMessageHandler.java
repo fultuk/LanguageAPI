@@ -32,7 +32,9 @@ import de.tentact.languageapi.language.LocaleHandler;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public abstract class DefaultMessageHandler implements MessageHandler {
 
@@ -44,6 +46,17 @@ public abstract class DefaultMessageHandler implements MessageHandler {
     this.localeHandler = localeHandler;
     this.translationCache = cacheProvider.newCache();
     this.identifierCache = cacheProvider.newCache();
+  }
+
+  @Override
+  public CompletableFuture<Map<Identifier, String>> getMessages(Locale locale) {
+    return this.getIdentifier(locale, false).thenApplyAsync(identifiers -> {
+      Map<Identifier, String> translations = new HashMap<>();
+      for (Identifier identifier : identifiers) {
+        translations.put(identifier, this.getMessage(identifier, locale));
+      }
+      return translations;
+    });
   }
 
   @Override
@@ -69,21 +82,26 @@ public abstract class DefaultMessageHandler implements MessageHandler {
   }
 
   @Override
-  public abstract void translateMessage(Identifier identifier, Locale locale, String translation);
-
-  @Override
   public CompletableFuture<String> getMessageAsync(Identifier identifier, Locale locale) {
     return CompletableFuture.supplyAsync(() -> this.getMessage(identifier, locale));
   }
 
   protected void cacheTranslation(Identifier identifier, Locale locale, String translation) {
-    Map<String, String> cacheMap = new HashMap<>(1);
+    Map<String, String> cacheMap = this.translationCache.getIfPresent(identifier.getTranslationKey());
+    if (cacheMap == null) {
+      cacheMap = new HashMap<>(1);
+    }
     cacheMap.put(locale.toLanguageTag().toUpperCase(), translation);
     this.translationCache.put(identifier.getTranslationKey(), cacheMap);
   }
 
   protected void cacheIdentifier(Identifier identifier) {
     this.identifierCache.put(identifier.getTranslationKey(), identifier);
+  }
+
+  protected void cacheIdentifier(Set<Identifier> identifiers) {
+    this.identifierCache.putAll(identifiers.stream().collect(Collectors.toMap(Identifier::getTranslationKey,
+        identifier -> identifier)));
   }
 
   protected String translateColor(String message) {

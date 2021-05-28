@@ -27,26 +27,23 @@ package de.tentact.languageapi.database;
 
 import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.config.database.DatabaseConfiguration;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Locale;
 
-public class MySQLDatabaseProvider {
+public class MySQLDatabaseProvider extends DatabaseConfiguration {
 
-  private final String hostname;
-  private final String database;
-  private final String username;
-  private final String password;
-  private final int port;
   private HikariDataSource hikariDataSource;
 
-  protected MySQLDatabaseProvider(String hostname, String database, String username, String password, int port) {
-    this.hostname = hostname;
-    this.database = database;
-    this.username = username;
-    this.password = password;
-    this.port = port;
+  public MySQLDatabaseProvider(DatabaseConfiguration configuration) {
+    this(configuration.getHostname(), configuration.getDatabase(), configuration.getUsername(),
+        configuration.getPassword(), configuration.getPort());
+  }
+
+  public MySQLDatabaseProvider(String hostname, String database, String username, String password, int port) {
+    super(hostname, database, username, password, port);
 
     this.setupHikariDataSource();
     this.createDefaultTables();
@@ -59,6 +56,7 @@ public class MySQLDatabaseProvider {
     this.hikariDataSource.setPassword(this.password);
   }
 
+  @Override
   public void closeConnection() {
     if (this.isNotConnected()) {
       return;
