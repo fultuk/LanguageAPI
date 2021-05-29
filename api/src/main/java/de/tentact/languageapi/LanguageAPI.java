@@ -28,6 +28,10 @@ public abstract class LanguageAPI {
     return LanguageAPI.languageAPI;
   }
 
+  /**
+   *
+   * @return
+   */
   public abstract MessageHandler getMessageHandler();
 
   public abstract FileHandler getFileHandler();

@@ -29,14 +29,33 @@ import de.tentact.languageapi.LanguageAPI;
 
 public interface ServiceRegistry {
 
+  /**
+   * @param service
+   * @param <T>
+   * @return
+   */
   static <T> T getService(Class<T> service) {
     return LanguageAPI.getInstance().getServiceRegistry().getProvider(service);
   }
 
+  /**
+   * @param service
+   * @param <T>
+   * @return
+   */
   <T> T getProvider(Class<T> service);
 
+  /**
+   * @param service
+   * @param provider
+   */
   <T> void setProvider(Class<T> service, T provider);
 
+  /**
+   * Unregisters the instance of the given service
+   *
+   * @param service the service to be unregistered
+   */
   <T> void unregister(Class<T> service);
 
 }

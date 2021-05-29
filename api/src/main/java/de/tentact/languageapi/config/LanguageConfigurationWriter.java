@@ -52,24 +52,25 @@ public class LanguageConfigurationWriter {
   }
 
   /**
+   * Reads the configuration from the given path
    *
-   * @param path
-   * @param createIfNotExists
-   * @return
+   * @param path              the path to the file
+   * @param createIfNotExists whether to create a configuration
+   * @return the configuration from the given path
    */
   public static LanguageConfiguration readConfiguration(Path path, boolean createIfNotExists) {
     if (Files.notExists(path)) {
-      if(createIfNotExists) {
+      if (createIfNotExists) {
         writeConfiguration(LanguageConfiguration.DEFAULT_LANGUAGE_CONFIGURATION, path);
-        return LanguageConfiguration.DEFAULT_LANGUAGE_CONFIGURATION;
+        return LanguageConfiguration.DEFAULT_LANGUAGE_CONFIGURATION.clone();
       }
       return null;
     }
     Document document = Documents.jsonStorage().read(path);
     if (!document.contains("config")) {
-      if(createIfNotExists) {
+      if (createIfNotExists) {
         writeConfiguration(LanguageConfiguration.DEFAULT_LANGUAGE_CONFIGURATION, path);
-        return LanguageConfiguration.DEFAULT_LANGUAGE_CONFIGURATION;
+        return LanguageConfiguration.DEFAULT_LANGUAGE_CONFIGURATION.clone();
       }
       return null;
     }

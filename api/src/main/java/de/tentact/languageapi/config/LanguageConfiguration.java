@@ -31,7 +31,7 @@ import de.tentact.languageapi.config.database.DatabaseConfiguration;
 
 import java.util.Locale;
 
-public class LanguageConfiguration {
+public class LanguageConfiguration implements Cloneable {
 
   public static final LanguageConfiguration DEFAULT_LANGUAGE_CONFIGURATION =
       new LanguageConfiguration(
@@ -97,5 +97,19 @@ public class LanguageConfiguration {
   public void setDefaultLocale(Locale locale) {
     this.locale = locale;
     this.defaultLocale = locale.toLanguageTag();
+  }
+
+  @Override
+  public LanguageConfiguration clone() {
+    try {
+      return (LanguageConfiguration) super.clone();
+    } catch (CloneNotSupportedException e) {
+      return new LanguageConfiguration(this.databaseConfiguration,
+          this.cacheConfiguration,
+          this.cacheType,
+          this.databaseType,
+          this.defaultLocale
+      );
+    }
   }
 }

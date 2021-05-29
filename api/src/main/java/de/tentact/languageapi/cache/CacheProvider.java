@@ -27,8 +27,22 @@ package de.tentact.languageapi.cache;
 
 public interface CacheProvider {
 
+  /**
+   * Provides a new cache corresponding to the set {@link CacheType}
+   *
+   * @param <K> the key type
+   * @param <V> the value type
+   * @return a new cache corresponding to the set {@link CacheType}
+   */
   <K, V> LanguageCache<K, V> newCache();
 
+  /**
+   * Provides a new cache corresponding to the set {@link CacheType}. This cache has no expiration time
+   *
+   * @param <K> the key type
+   * @param <V> the value type
+   * @return a new cache corresponding to the set {@link CacheType} without an expiration time
+   */
   <K, V> LanguageCache<K, V> newPersistentCache();
 
 }

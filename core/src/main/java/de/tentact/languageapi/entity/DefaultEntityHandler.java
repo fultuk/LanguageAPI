@@ -28,6 +28,7 @@ package de.tentact.languageapi.entity;
 import de.tentact.languageapi.cache.CacheProvider;
 import de.tentact.languageapi.cache.LanguageCache;
 import de.tentact.languageapi.registry.ServiceRegistry;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -45,25 +46,37 @@ public abstract class DefaultEntityHandler implements EntityHandler {
   }
 
   @Override
-  public @Nullable LanguageEntity getLanguageEntity(UUID entityId) {
+  public @Nullable LanguageEntity getLanguageEntity(@NotNull UUID entityId) {
     return this.entityCache.getIfPresent(entityId);
   }
 
   @Override
-  public CompletableFuture<LanguageOfflineEntity> getOfflineLanguageEntity(UUID entityId) {
-    return null;
+  public void loginEntity(@NotNull LanguageEntity languageEntity) {
+    this.entityCache.put(languageEntity.getEntityId(), languageEntity);
   }
 
   @Override
-  public abstract void updateLanguageEntity(LanguageOfflineEntity languageOfflineEntity);
+  public void logoutEntity(@NotNull LanguageEntity languageEntity) {
+    LanguageEntity cachedEntity = this.entityCache.getIfPresent(languageEntity.getEntityId());
+    if(!languageEntity.equals(cachedEntity)) {
+      this.updateLanguageEntity(languageEntity);
+    }
+    this.entityCache.invalidate(languageEntity.getEntityId());
+  }
 
   @Override
-  public LanguageOfflineEntity registerEntity(UUID entityId) {
+  public abstract CompletableFuture<LanguageOfflineEntity> getOfflineLanguageEntity(@NotNull UUID entityId);
+
+  @Override
+  public abstract void updateLanguageEntity(@NotNull LanguageOfflineEntity languageOfflineEntity);
+
+  @Override
+  public LanguageOfflineEntity registerEntity(@NotNull UUID entityId) {
     return this.registerEntity(entityId, Locale.ENGLISH);
   }
 
   @Override
-  public LanguageOfflineEntity registerEntity(UUID entityId, Locale locale) {
+  public LanguageOfflineEntity registerEntity(@NotNull UUID entityId, @NotNull Locale locale) {
     LanguageOfflineEntity languageOfflineEntity = new DefaultLanguageOfflineEntity(entityId, locale);
 
     this.updateLanguageEntity(languageOfflineEntity);
@@ -81,5 +94,10 @@ public abstract class DefaultEntityHandler implements EntityHandler {
     } else {
       this.offlineEntityCache.put(languageOfflineEntity.getEntityId(), languageOfflineEntity);
     }
+  }
+
+  protected LanguageOfflineEntity getCachedEntity(UUID entityId) {
+    LanguageOfflineEntity cachedEntity = this.offlineEntityCache.getIfPresent(entityId);
+    return cachedEntity == null ? this.entityCache.getIfPresent(entityId) : cachedEntity;
   }
 }

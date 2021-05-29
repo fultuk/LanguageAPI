@@ -40,15 +40,20 @@ public class DefaultMessage implements Message {
   }
 
   @Override
-  public String build(Locale locale, Object... params) {
+  public String build(Locale locale, Object... parameters) {
     return MessageFormat.format(
         LanguageAPI.getInstance().getMessageHandler().getMessage(this.identifier, locale),
-        params
+        parameters
     );
   }
 
   @Override
-  public CompletableFuture<String> buildAsync(Locale locale, Object... params) {
-    return CompletableFuture.supplyAsync(() -> this.build(locale, params));
+  public CompletableFuture<String> buildAsync(Locale locale, Object... parameters) {
+    return CompletableFuture.supplyAsync(() -> this.build(locale, parameters));
+  }
+
+  @Override
+  public Identifier getIdentifier() {
+    return this.identifier;
   }
 }

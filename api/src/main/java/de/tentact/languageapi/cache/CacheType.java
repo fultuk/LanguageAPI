@@ -25,6 +25,10 @@
 
 package de.tentact.languageapi.cache;
 
+/**
+ * A representation for the implemented caches.
+ * Used to identify which cache should be used
+ */
 public enum CacheType {
 
   LOCAL,

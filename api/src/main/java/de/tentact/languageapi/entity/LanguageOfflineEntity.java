@@ -1,5 +1,7 @@
 package de.tentact.languageapi.entity;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Locale;
 import java.util.UUID;
 
@@ -10,14 +12,14 @@ public interface LanguageOfflineEntity {
    *
    * @return the uniqueId of the entity
    */
-  UUID getEntityId();
+  @NotNull UUID getEntityId();
 
   /**
    * Retrieves the locale of the entity
    *
    * @return the locale of the entity
    */
-  Locale getLocale();
+  @NotNull Locale getLocale();
 
   /**
    * Set the locale of the entity
@@ -25,6 +27,6 @@ public interface LanguageOfflineEntity {
    * @param locale the locale of the entity
    * @see EntityHandler#updateLanguageEntity(LanguageOfflineEntity) to update the player
    */
-  void setLocale(Locale locale);
+  void setLocale(@NotNull Locale locale);
 
 }

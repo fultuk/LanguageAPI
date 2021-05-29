@@ -25,7 +25,11 @@
 
 package de.tentact.languageapi.entity;
 
+import com.google.common.base.Preconditions;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Locale;
+import java.util.Objects;
 import java.util.UUID;
 
 public class DefaultLanguageOfflineEntity implements LanguageOfflineEntity {
@@ -39,17 +43,31 @@ public class DefaultLanguageOfflineEntity implements LanguageOfflineEntity {
   }
 
   @Override
-  public UUID getEntityId() {
+  public @NotNull UUID getEntityId() {
     return this.entityId;
   }
 
   @Override
-  public Locale getLocale() {
+  public @NotNull Locale getLocale() {
     return this.locale;
   }
 
   @Override
-  public void setLocale(Locale locale) {
+  public void setLocale(@NotNull Locale locale) {
+    Preconditions.checkNotNull(locale, "locale");
     this.locale = locale;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof DefaultLanguageOfflineEntity)) return false;
+    DefaultLanguageOfflineEntity that = (DefaultLanguageOfflineEntity) o;
+    return this.entityId.equals(that.entityId) && this.locale.equals(that.locale);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.entityId, this.locale);
   }
 }

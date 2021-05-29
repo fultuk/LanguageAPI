@@ -25,6 +25,10 @@
 
 package de.tentact.languageapi.cache;
 
+/**
+ * A representation for the implemented databases.
+ * Used to identify which database should be used
+ */
 public enum DatabaseType {
 
   MYSQL,

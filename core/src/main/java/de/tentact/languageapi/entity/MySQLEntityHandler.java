@@ -25,13 +25,19 @@
 
 package de.tentact.languageapi.entity;
 
+import com.google.common.base.Preconditions;
 import de.tentact.languageapi.cache.CacheProvider;
 import de.tentact.languageapi.database.MySQLDatabaseProvider;
 import de.tentact.languageapi.language.LocaleHandler;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Locale;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class MySQLEntityHandler extends DefaultEntityHandler implements EntityHandler {
 
@@ -45,12 +51,39 @@ public class MySQLEntityHandler extends DefaultEntityHandler implements EntityHa
   }
 
   @Override
-  public void updateLanguageEntity(LanguageOfflineEntity languageOfflineEntity) {
+  public CompletableFuture<LanguageOfflineEntity> getOfflineLanguageEntity(@NotNull UUID entityId) {
+    Preconditions.checkNotNull(entityId, "entityId");
+    return CompletableFuture.supplyAsync(() -> {
+      LanguageOfflineEntity cachedEntity = this.getCachedEntity(entityId);
+      if (cachedEntity != null) {
+        return cachedEntity;
+      }
+      try (Connection connection = this.mySQLDatabaseProvider.getDataSource().getConnection();
+           PreparedStatement preparedStatement = connection.prepareStatement("SELECT locale FROM LANGUAGEENTITY WHERE entityid=?;")) {
+        preparedStatement.setString(1, entityId.toString());
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+          if (!resultSet.next()) {
+            return null;
+          }
+          Locale locale = Locale.forLanguageTag(resultSet.getString("locale"));
+          LanguageOfflineEntity offlineEntity = new DefaultLanguageOfflineEntity(entityId, locale);
+
+          super.cacheLanguageEntity(offlineEntity);
+          return offlineEntity;
+        }
+      } catch (SQLException throwables) {
+        throwables.printStackTrace();
+      }
+      return null;
+    });
+  }
+
+  @Override
+  public void updateLanguageEntity(@NotNull LanguageOfflineEntity languageOfflineEntity) {
     this.localeHandler.isAvailableAsync(languageOfflineEntity.getLocale()).thenAcceptAsync(isAvailable -> {
-      if(!isAvailable) {
+      if (!isAvailable) {
         return;
       }
-      super.cacheLanguageEntity(languageOfflineEntity);
       try (Connection connection = this.mySQLDatabaseProvider.getDataSource().getConnection();
            PreparedStatement preparedStatement = connection
                .prepareStatement("INSERT INTO LANGUAGEENTITY (entityid, locale) VALUES (?, ?) ON DUPLICATE KEY UPDATE locale=?;")) {
@@ -64,5 +97,6 @@ public class MySQLEntityHandler extends DefaultEntityHandler implements EntityHa
         throwables.printStackTrace();
       }
     });
+    super.cacheLanguageEntity(languageOfflineEntity);
   }
 }

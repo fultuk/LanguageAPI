@@ -30,16 +30,46 @@ import java.util.Map;
 
 public interface LanguageCache<K, V> {
 
+  /**
+   * Inserts a value in the backing caches
+   *
+   * @param key   the key to be set
+   * @param value the value to be set
+   */
   void put(K key, V value);
 
+  /**
+   * Inserts a value in the backing caches
+   *
+   * @param map a map of keys and values that is set in the backing map
+   */
   void putAll(Map<K, V> map);
 
+  /**
+   * @param key the key to the value
+   * @return the value associated with the given key
+   */
   V getIfPresent(K key);
 
+  /**
+   * Invalidates the given key in the backing cache
+   *
+   * @param key the key to be invalided
+   */
   void invalidate(K key);
 
+  /**
+   * Retrieves all present values from the backing cache
+   *
+   * @return all present values from the backing cache
+   */
   Collection<V> getValues();
 
+  /**
+   * Retrieves all present keys and values from the backing cache
+   *
+   * @return all present keys and values from the backing cache
+   */
   Map<K, V> asMap();
 
 }
