@@ -56,12 +56,12 @@ public abstract class DefaultEntityHandler implements EntityHandler {
   }
 
   @Override
-  public void logoutEntity(@NotNull LanguageEntity languageEntity) {
-    LanguageEntity cachedEntity = this.entityCache.getIfPresent(languageEntity.getEntityId());
-    if(!languageEntity.equals(cachedEntity)) {
-      this.updateLanguageEntity(languageEntity);
+  public void logoutEntity(@NotNull UUID entityId) {
+    LanguageEntity cachedEntity = this.entityCache.getIfPresent(entityId);
+    if(cachedEntity != null) {
+      this.updateLanguageEntity(cachedEntity);
     }
-    this.entityCache.invalidate(languageEntity.getEntityId());
+    this.entityCache.invalidate(entityId);
   }
 
   @Override

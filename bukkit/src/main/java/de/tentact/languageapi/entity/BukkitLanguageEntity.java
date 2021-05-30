@@ -23,39 +23,29 @@
  * SOFTWARE.
  */
 
-package de.tentact.languageapi.database;
+package de.tentact.languageapi.entity;
 
-import com.google.common.primitives.Ints;
-import de.tentact.languageapi.config.database.DatabaseConfiguration;
-import org.redisson.Redisson;
-import org.redisson.api.RedissonClient;
-import org.redisson.config.Config;
+import de.tentact.languageapi.message.Message;
+import org.bukkit.entity.Player;
 
-public class RedisDatabaseProvider extends DatabaseConfiguration {
+import java.util.Locale;
+import java.util.UUID;
 
-  private final transient RedissonClient redissonClient;
+public class BukkitLanguageEntity extends DefaultLanguageOfflineEntity implements LanguageEntity {
 
-  public RedisDatabaseProvider(DatabaseConfiguration configuration) {
-    this(configuration.getHostname(), configuration.getDatabase(), configuration.getUsername(),
-        configuration.getPassword(), configuration.getPort());
+  private final Player bukkitPlayer;
+
+  public BukkitLanguageEntity(LanguageOfflineEntity languageOfflineEntity, Player player) {
+    this(languageOfflineEntity.getEntityId(), languageOfflineEntity.getLocale(), player);
   }
 
-  public RedisDatabaseProvider(String hostname, String database, String username, String password, int port) {
-    super(hostname, database, username, password, port);
-
-    Config config = new Config();
-    Integer databaseIndex = Ints.tryParse(database);
-
-    if (databaseIndex == null) {
-      databaseIndex = 0;
-    }
-
-    config.useSingleServer().setAddress(hostname).setDatabase(databaseIndex).setUsername(username).setPassword(password);
-    this.redissonClient = Redisson.create(config);
+  public BukkitLanguageEntity(UUID entityId, Locale locale, Player player) {
+    super(entityId, locale);
+    this.bukkitPlayer = player;
   }
 
-  public RedissonClient getRedissonClient() {
-    return this.redissonClient;
+  @Override
+  public void sendMessage(Message translation, Object... parameters) {
+    translation.buildAsync(super.locale, parameters).thenAccept(this.bukkitPlayer::sendMessage);
   }
-
 }

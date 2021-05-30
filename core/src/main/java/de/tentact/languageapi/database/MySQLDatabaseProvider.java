@@ -35,7 +35,7 @@ import java.util.Locale;
 
 public class MySQLDatabaseProvider extends DatabaseConfiguration {
 
-  private HikariDataSource hikariDataSource;
+  private transient HikariDataSource hikariDataSource;
 
   public MySQLDatabaseProvider(DatabaseConfiguration configuration) {
     this(configuration.getHostname(), configuration.getDatabase(), configuration.getUsername(),

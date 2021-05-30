@@ -34,8 +34,8 @@ import java.util.UUID;
 
 public class DefaultLanguageOfflineEntity implements LanguageOfflineEntity {
 
-  private final UUID entityId;
-  private Locale locale;
+  protected final UUID entityId;
+  protected Locale locale;
 
   public DefaultLanguageOfflineEntity(UUID entityId, Locale locale) {
     this.entityId = entityId;

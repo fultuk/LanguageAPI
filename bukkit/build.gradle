@@ -1,0 +1,23 @@
+plugins {
+    id 'net.minecrell.plugin-yml.bukkit' version '0.3.0'
+}
+
+dependencies {
+    implementation project(':core')
+    implementation project(':api')
+    compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
+}
+
+bukkit {
+    name = 'LanguageAPI'
+    main = 'de.tentact.languageapi.LanguageSpigot'
+    version = project.version
+    author = '0utplay'
+    apiVersion = 1.13
+
+    commands {
+        languageapi {
+            aliases = ['lang', 'language', 'langapi']
+        }
+    }
+}

@@ -45,7 +45,7 @@ import de.tentact.languageapi.registry.ServiceRegistry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public abstract class DefaultLanguageAPI extends LanguageAPI {
+public class DefaultLanguageAPI extends LanguageAPI {
 
   private final ExecutorService executorService = Executors.newCachedThreadPool();
   private LanguageConfiguration languageConfiguration;

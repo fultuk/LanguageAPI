@@ -23,39 +23,29 @@
  * SOFTWARE.
  */
 
-package de.tentact.languageapi.database;
+package de.tentact.languageapi;
 
-import com.google.common.primitives.Ints;
-import de.tentact.languageapi.config.database.DatabaseConfiguration;
-import org.redisson.Redisson;
-import org.redisson.api.RedissonClient;
-import org.redisson.config.Config;
+import de.tentact.languageapi.config.LanguageConfiguration;
+import de.tentact.languageapi.config.LanguageConfigurationWriter;
+import de.tentact.languageapi.entity.BukkitConsoleEntity;
+import de.tentact.languageapi.entity.ConsoleEntity;
+import org.bukkit.plugin.java.JavaPlugin;
 
-public class RedisDatabaseProvider extends DatabaseConfiguration {
+public class BukkitLanguageAPIPlugin extends JavaPlugin {
 
-  private final transient RedissonClient redissonClient;
+  @Override
+  public void onEnable() {
+    LanguageConfiguration languageConfiguration = LanguageConfigurationWriter.readConfiguration(
+        this.getDataFolder().toPath().resolve("config.json"),
+        true
+    );
+    LanguageAPI.setLanguageAPI(new DefaultLanguageAPI(languageConfiguration));
 
-  public RedisDatabaseProvider(DatabaseConfiguration configuration) {
-    this(configuration.getHostname(), configuration.getDatabase(), configuration.getUsername(),
-        configuration.getPassword(), configuration.getPort());
+    LanguageAPI.getInstance().getServiceRegistry().setProvider(ConsoleEntity.class, new BukkitConsoleEntity(languageConfiguration));
   }
 
-  public RedisDatabaseProvider(String hostname, String database, String username, String password, int port) {
-    super(hostname, database, username, password, port);
-
-    Config config = new Config();
-    Integer databaseIndex = Ints.tryParse(database);
-
-    if (databaseIndex == null) {
-      databaseIndex = 0;
-    }
-
-    config.useSingleServer().setAddress(hostname).setDatabase(databaseIndex).setUsername(username).setPassword(password);
-    this.redissonClient = Redisson.create(config);
+  @Override
+  public void onDisable() {
+    LanguageAPI.getInstance().getLanguageConfiguration().closeConnections();
   }
-
-  public RedissonClient getRedissonClient() {
-    return this.redissonClient;
-  }
-
 }

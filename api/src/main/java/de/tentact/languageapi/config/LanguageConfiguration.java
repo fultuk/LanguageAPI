@@ -37,7 +37,7 @@ public class LanguageConfiguration implements Cloneable {
       new LanguageConfiguration(
           DatabaseConfiguration.DEFAULT_DATABASE_CONFIGURATION,
           DatabaseConfiguration.DEFAULT_DATABASE_CONFIGURATION,
-          CacheType.REDIS,
+          CacheType.LOCAL,
           DatabaseType.MYSQL,
           Locale.GERMAN.toLanguageTag()
       );
@@ -97,6 +97,11 @@ public class LanguageConfiguration implements Cloneable {
   public void setDefaultLocale(Locale locale) {
     this.locale = locale;
     this.defaultLocale = locale.toLanguageTag();
+  }
+
+  public void closeConnections() {
+    this.databaseConfiguration.closeConnection();
+    this.cacheConfiguration.closeConnection();
   }
 
   @Override

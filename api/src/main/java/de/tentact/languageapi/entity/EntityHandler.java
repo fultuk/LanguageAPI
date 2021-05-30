@@ -29,10 +29,10 @@ public interface EntityHandler {
   /**
    * Removes the entity from the cache
    *
-   * @param languageEntity the entity to be removed from cache
+   * @param entityId the entity to be removed from cache
    */
   @ApiStatus.Internal
-  void logoutEntity(@NotNull LanguageEntity languageEntity);
+  void logoutEntity(@NotNull UUID entityId);
 
   /**
    * Retrieves the entity from the cache if present or loads it from the database and caches it

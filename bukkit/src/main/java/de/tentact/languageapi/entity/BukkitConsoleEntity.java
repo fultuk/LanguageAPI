@@ -23,39 +23,24 @@
  * SOFTWARE.
  */
 
-package de.tentact.languageapi.database;
+package de.tentact.languageapi.entity;
 
-import com.google.common.primitives.Ints;
-import de.tentact.languageapi.config.database.DatabaseConfiguration;
-import org.redisson.Redisson;
-import org.redisson.api.RedissonClient;
-import org.redisson.config.Config;
+import de.tentact.languageapi.config.LanguageConfiguration;
+import de.tentact.languageapi.message.Message;
+import org.bukkit.Bukkit;
 
-public class RedisDatabaseProvider extends DatabaseConfiguration {
+import java.util.Locale;
 
-  private final transient RedissonClient redissonClient;
+public class BukkitConsoleEntity implements ConsoleEntity {
 
-  public RedisDatabaseProvider(DatabaseConfiguration configuration) {
-    this(configuration.getHostname(), configuration.getDatabase(), configuration.getUsername(),
-        configuration.getPassword(), configuration.getPort());
+  private final Locale consoleLocale;
+
+  public BukkitConsoleEntity(LanguageConfiguration languageConfiguration) {
+    this.consoleLocale = languageConfiguration.getDefaultLocale();
   }
 
-  public RedisDatabaseProvider(String hostname, String database, String username, String password, int port) {
-    super(hostname, database, username, password, port);
-
-    Config config = new Config();
-    Integer databaseIndex = Ints.tryParse(database);
-
-    if (databaseIndex == null) {
-      databaseIndex = 0;
-    }
-
-    config.useSingleServer().setAddress(hostname).setDatabase(databaseIndex).setUsername(username).setPassword(password);
-    this.redissonClient = Redisson.create(config);
+  @Override
+  public void sendMessage(Message translation, Object... parameters) {
+    translation.buildAsync(this.consoleLocale, parameters).thenAccept(Bukkit.getConsoleSender()::sendMessage);
   }
-
-  public RedissonClient getRedissonClient() {
-    return this.redissonClient;
-  }
-
 }

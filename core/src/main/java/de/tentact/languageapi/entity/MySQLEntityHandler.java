@@ -97,6 +97,7 @@ public class MySQLEntityHandler extends DefaultEntityHandler implements EntityHa
         throwables.printStackTrace();
       }
     });
+    //TODO: this async cache might break invalidating a player on disconnect
     super.cacheLanguageEntity(languageOfflineEntity);
   }
 }
