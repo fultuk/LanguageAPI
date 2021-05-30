@@ -2,4 +2,6 @@ rootProject.name = 'LanguageAPI'
 include 'api'
 include 'core'
 include 'bukkit'
+include 'bungee'
+include 'velocity'
 

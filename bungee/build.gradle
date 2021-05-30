@@ -1,0 +1,16 @@
+plugins {
+    id 'net.minecrell.plugin-yml.bungee' version '0.3.0'
+}
+
+dependencies {
+    implementation project(':api')
+    implementation project(':core')
+    compileOnly 'net.md-5:bungeecord-api:1.16-R0.3'
+}
+
+bungee {
+    name = 'LanguageAPI'
+    main = 'de.tentact.languageapi.BungeeLanguageAPIPlugin'
+    version = project.version
+    author = '0utplay'
+}

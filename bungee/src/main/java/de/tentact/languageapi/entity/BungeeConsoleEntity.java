@@ -23,35 +23,26 @@
  * SOFTWARE.
  */
 
-package de.tentact.languageapi;
+package de.tentact.languageapi.entity;
 
 import de.tentact.languageapi.config.LanguageConfiguration;
-import de.tentact.languageapi.config.LanguageConfigurationWriter;
-import de.tentact.languageapi.entity.BukkitConsoleEntity;
-import de.tentact.languageapi.entity.ConsoleEntity;
-import de.tentact.languageapi.listener.EntityCacheListener;
-import org.bukkit.plugin.java.JavaPlugin;
+import de.tentact.languageapi.message.Message;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.TextComponent;
 
-public class BukkitLanguageAPIPlugin extends JavaPlugin {
+import java.util.Locale;
 
-  @Override
-  public void onEnable() {
-    LanguageConfiguration languageConfiguration = LanguageConfigurationWriter.readConfiguration(
-        this.getDataFolder().toPath().resolve("config.json"),
-        true
-    );
-    LanguageAPI.setLanguageAPI(new DefaultLanguageAPI(languageConfiguration));
+public class BungeeConsoleEntity implements ConsoleEntity {
 
-    LanguageAPI.getInstance().getServiceRegistry().setProvider(
-        ConsoleEntity.class,
-        new BukkitConsoleEntity(languageConfiguration)
-    );
+  private final Locale consoleLocale;
 
-    new EntityCacheListener(this);
+  public BungeeConsoleEntity(LanguageConfiguration languageConfiguration) {
+    this.consoleLocale = languageConfiguration.getDefaultLocale();
   }
 
   @Override
-  public void onDisable() {
-    LanguageAPI.getInstance().getLanguageConfiguration().closeConnections();
+  public void sendMessage(Message translation, Object... parameters) {
+    translation.buildAsync(this.consoleLocale, parameters).thenAccept(message ->
+        ProxyServer.getInstance().getConsole().sendMessage(TextComponent.fromLegacyText(message)));
   }
 }

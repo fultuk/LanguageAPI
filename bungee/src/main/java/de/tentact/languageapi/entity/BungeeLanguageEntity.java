@@ -23,35 +23,31 @@
  * SOFTWARE.
  */
 
-package de.tentact.languageapi;
+package de.tentact.languageapi.entity;
 
-import de.tentact.languageapi.config.LanguageConfiguration;
-import de.tentact.languageapi.config.LanguageConfigurationWriter;
-import de.tentact.languageapi.entity.BukkitConsoleEntity;
-import de.tentact.languageapi.entity.ConsoleEntity;
-import de.tentact.languageapi.listener.EntityCacheListener;
-import org.bukkit.plugin.java.JavaPlugin;
+import de.tentact.languageapi.message.Message;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-public class BukkitLanguageAPIPlugin extends JavaPlugin {
+import java.util.Locale;
+import java.util.UUID;
 
-  @Override
-  public void onEnable() {
-    LanguageConfiguration languageConfiguration = LanguageConfigurationWriter.readConfiguration(
-        this.getDataFolder().toPath().resolve("config.json"),
-        true
-    );
-    LanguageAPI.setLanguageAPI(new DefaultLanguageAPI(languageConfiguration));
+public class BungeeLanguageEntity extends DefaultLanguageOfflineEntity implements LanguageEntity {
 
-    LanguageAPI.getInstance().getServiceRegistry().setProvider(
-        ConsoleEntity.class,
-        new BukkitConsoleEntity(languageConfiguration)
-    );
+  private final ProxiedPlayer bungeePlayer;
 
-    new EntityCacheListener(this);
+  public BungeeLanguageEntity(LanguageOfflineEntity languageOfflineEntity, ProxiedPlayer player) {
+    this(languageOfflineEntity.getEntityId(), languageOfflineEntity.getLocale(), player);
+  }
+
+  public BungeeLanguageEntity(UUID entityId, Locale locale, ProxiedPlayer player) {
+    super(entityId, locale);
+    this.bungeePlayer = player;
   }
 
   @Override
-  public void onDisable() {
-    LanguageAPI.getInstance().getLanguageConfiguration().closeConnections();
+  public void sendMessage(Message translation, Object... parameters) {
+    translation.buildAsync(super.locale, parameters).thenAccept(message ->
+        this.bungeePlayer.sendMessage(TextComponent.fromLegacyText(message)));
   }
 }

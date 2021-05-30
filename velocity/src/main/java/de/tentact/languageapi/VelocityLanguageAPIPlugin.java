@@ -25,33 +25,42 @@
 
 package de.tentact.languageapi;
 
+
+import com.google.inject.Inject;
+import com.velocitypowered.api.plugin.annotation.DataDirectory;
+import com.velocitypowered.api.proxy.ProxyServer;
 import de.tentact.languageapi.config.LanguageConfiguration;
 import de.tentact.languageapi.config.LanguageConfigurationWriter;
-import de.tentact.languageapi.entity.BukkitConsoleEntity;
 import de.tentact.languageapi.entity.ConsoleEntity;
+import de.tentact.languageapi.entity.VelocityConsoleEntity;
 import de.tentact.languageapi.listener.EntityCacheListener;
-import org.bukkit.plugin.java.JavaPlugin;
 
-public class BukkitLanguageAPIPlugin extends JavaPlugin {
+import java.nio.file.Path;
+import java.util.logging.Logger;
 
-  @Override
-  public void onEnable() {
+public class VelocityLanguageAPIPlugin {
+
+  private final ProxyServer proxyServer;
+
+  @Inject
+  public VelocityLanguageAPIPlugin(ProxyServer proxyServer, Logger logger, @DataDirectory Path dataDirectory) {
+    this.proxyServer = proxyServer;
+
     LanguageConfiguration languageConfiguration = LanguageConfigurationWriter.readConfiguration(
-        this.getDataFolder().toPath().resolve("config.json"),
+        dataDirectory.resolve("config.json"),
         true
     );
     LanguageAPI.setLanguageAPI(new DefaultLanguageAPI(languageConfiguration));
 
     LanguageAPI.getInstance().getServiceRegistry().setProvider(
         ConsoleEntity.class,
-        new BukkitConsoleEntity(languageConfiguration)
+        new VelocityConsoleEntity(languageConfiguration, this.proxyServer)
     );
 
     new EntityCacheListener(this);
   }
 
-  @Override
-  public void onDisable() {
-    LanguageAPI.getInstance().getLanguageConfiguration().closeConnections();
+  public ProxyServer getProxyServer() {
+    return this.proxyServer;
   }
 }

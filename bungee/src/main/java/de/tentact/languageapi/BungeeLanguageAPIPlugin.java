@@ -27,12 +27,12 @@ package de.tentact.languageapi;
 
 import de.tentact.languageapi.config.LanguageConfiguration;
 import de.tentact.languageapi.config.LanguageConfigurationWriter;
-import de.tentact.languageapi.entity.BukkitConsoleEntity;
+import de.tentact.languageapi.entity.BungeeConsoleEntity;
 import de.tentact.languageapi.entity.ConsoleEntity;
 import de.tentact.languageapi.listener.EntityCacheListener;
-import org.bukkit.plugin.java.JavaPlugin;
+import net.md_5.bungee.api.plugin.Plugin;
 
-public class BukkitLanguageAPIPlugin extends JavaPlugin {
+public class BungeeLanguageAPIPlugin extends Plugin {
 
   @Override
   public void onEnable() {
@@ -44,7 +44,7 @@ public class BukkitLanguageAPIPlugin extends JavaPlugin {
 
     LanguageAPI.getInstance().getServiceRegistry().setProvider(
         ConsoleEntity.class,
-        new BukkitConsoleEntity(languageConfiguration)
+        new BungeeConsoleEntity(languageConfiguration)
     );
 
     new EntityCacheListener(this);

@@ -25,45 +25,35 @@
 
 package de.tentact.languageapi.listener;
 
-import de.tentact.languageapi.BukkitLanguageAPIPlugin;
+import de.tentact.languageapi.BungeeLanguageAPIPlugin;
 import de.tentact.languageapi.LanguageAPI;
-import de.tentact.languageapi.cache.CacheType;
-import de.tentact.languageapi.config.LanguageConfiguration;
-import de.tentact.languageapi.entity.BukkitLanguageEntity;
+import de.tentact.languageapi.entity.BungeeLanguageEntity;
 import de.tentact.languageapi.entity.EntityHandler;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.PlayerDisconnectEvent;
+import net.md_5.bungee.api.event.PostLoginEvent;
+import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.event.EventHandler;
 
-public class PlayerCacheListener implements Listener {
+public class EntityCacheListener implements Listener {
 
-  private final LanguageConfiguration languageConfiguration;
   private final EntityHandler entityHandler;
 
-  public PlayerCacheListener(BukkitLanguageAPIPlugin bukkitLanguageAPIPlugin) {
-    Bukkit.getPluginManager().registerEvents(this, bukkitLanguageAPIPlugin);
-    this.languageConfiguration = LanguageAPI.getInstance().getLanguageConfiguration();
+  public EntityCacheListener(BungeeLanguageAPIPlugin bungeeLanguageAPIPlugin) {
+    ProxyServer.getInstance().getPluginManager().registerListener(bungeeLanguageAPIPlugin, this);
     this.entityHandler = LanguageAPI.getInstance().getEntityHandler();
   }
 
   @EventHandler
-  public void handlePlayerJoin(PlayerJoinEvent playerJoinEvent) {
-    if (this.languageConfiguration.getCacheType() != CacheType.LOCAL) {
-      return;
-    }
-    Player player = playerJoinEvent.getPlayer();
+  public void handlePlayerJoin(PostLoginEvent playerJoinEvent) {
+    ProxiedPlayer player = playerJoinEvent.getPlayer();
     this.entityHandler.getOfflineLanguageEntity(player.getUniqueId()).thenAccept(offlineEntity ->
-        this.entityHandler.loginEntity(new BukkitLanguageEntity(offlineEntity, player)));
+        this.entityHandler.loginEntity(new BungeeLanguageEntity(offlineEntity, player)));
   }
 
   @EventHandler
-  public void handlePlayerQuit(PlayerQuitEvent playerQuitEvent) {
-    if (this.languageConfiguration.getCacheType() != CacheType.LOCAL) {
-      return;
-    }
+  public void handlePlayerQuit(PlayerDisconnectEvent playerQuitEvent) {
     this.entityHandler.logoutEntity(playerQuitEvent.getPlayer().getUniqueId());
   }
 }

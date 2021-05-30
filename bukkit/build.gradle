@@ -10,7 +10,7 @@ dependencies {
 
 bukkit {
     name = 'LanguageAPI'
-    main = 'de.tentact.languageapi.LanguageSpigot'
+    main = 'de.tentact.languageapi.BukkitLanguageAPIPlugin'
     version = project.version
     author = '0utplay'
     apiVersion = 1.13

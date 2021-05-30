@@ -23,35 +23,31 @@
  * SOFTWARE.
  */
 
-package de.tentact.languageapi;
+package de.tentact.languageapi.entity;
 
-import de.tentact.languageapi.config.LanguageConfiguration;
-import de.tentact.languageapi.config.LanguageConfigurationWriter;
-import de.tentact.languageapi.entity.BukkitConsoleEntity;
-import de.tentact.languageapi.entity.ConsoleEntity;
-import de.tentact.languageapi.listener.EntityCacheListener;
-import org.bukkit.plugin.java.JavaPlugin;
+import com.velocitypowered.api.proxy.Player;
+import de.tentact.languageapi.message.Message;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
-public class BukkitLanguageAPIPlugin extends JavaPlugin {
+import java.util.Locale;
+import java.util.UUID;
 
-  @Override
-  public void onEnable() {
-    LanguageConfiguration languageConfiguration = LanguageConfigurationWriter.readConfiguration(
-        this.getDataFolder().toPath().resolve("config.json"),
-        true
-    );
-    LanguageAPI.setLanguageAPI(new DefaultLanguageAPI(languageConfiguration));
+public class VelocityLanguageEntity extends DefaultLanguageOfflineEntity implements LanguageEntity {
 
-    LanguageAPI.getInstance().getServiceRegistry().setProvider(
-        ConsoleEntity.class,
-        new BukkitConsoleEntity(languageConfiguration)
-    );
+  private final Player velocityPlayer;
 
-    new EntityCacheListener(this);
+  public VelocityLanguageEntity(LanguageOfflineEntity languageOfflineEntity, Player player) {
+    this(languageOfflineEntity.getEntityId(), languageOfflineEntity.getLocale(), player);
+  }
+
+  public VelocityLanguageEntity(UUID entityId, Locale locale, Player player) {
+    super(entityId, locale);
+    this.velocityPlayer = player;
   }
 
   @Override
-  public void onDisable() {
-    LanguageAPI.getInstance().getLanguageConfiguration().closeConnections();
+  public void sendMessage(Message translation, Object... parameters) {
+    translation.buildAsync(super.locale, parameters).thenAccept(message ->
+        this.velocityPlayer.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message)));
   }
 }
