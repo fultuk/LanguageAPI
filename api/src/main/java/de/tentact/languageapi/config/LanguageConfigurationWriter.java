@@ -42,7 +42,7 @@ public class LanguageConfigurationWriter {
    */
   public static void writeConfiguration(LanguageConfiguration languageConfiguration, Path path) {
     try {
-      Files.createDirectories(path);
+      Files.createDirectories(path.getParent());
       Files.createFile(path);
     } catch (IOException exception) {
       exception.printStackTrace();

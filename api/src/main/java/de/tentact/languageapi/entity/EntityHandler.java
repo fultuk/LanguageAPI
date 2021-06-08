@@ -46,8 +46,9 @@ public interface EntityHandler {
    * Validates the locale of the given entity and updates it in caches and databases
    *
    * @param languageOfflineEntity the entity to update
+   * @return a future when the update is written to the database
    */
-  void updateLanguageEntity(@NotNull LanguageOfflineEntity languageOfflineEntity);
+  CompletableFuture<Void> updateLanguageEntity(@NotNull LanguageOfflineEntity languageOfflineEntity);
 
   /**
    * Registers a entity with the given id in the database and caches it

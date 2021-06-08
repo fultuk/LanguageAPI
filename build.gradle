@@ -70,6 +70,8 @@ subprojects {
 
     shadowJar {
         archiveFileName.set(project.name + "-" + shortVersion + ".jar")
+        relocate('com.google.gson', 'com.google.relocated.gson')
+        relocate('com.google.common', 'com.google.relocated.common')
     }
 
     jar {

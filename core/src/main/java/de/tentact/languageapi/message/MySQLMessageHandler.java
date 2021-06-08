@@ -144,19 +144,29 @@ public class MySQLMessageHandler extends DefaultMessageHandler implements Messag
   }
 
   @Override
-  public void translateMessage(Identifier identifier, Locale locale, String translation) {
+  public void translateMessage(Identifier identifier, Locale locale, String translation, boolean replaceIfExists) {
     super.localeHandler.isAvailableAsync(locale).thenAcceptAsync(isAvailable -> {
       if (!isAvailable) {
         return;
       }
       try (Connection connection = this.getDataSource().getConnection();
-           PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO translation (translationkey, translation) VALUES (?, ?) ON DUPLICATE KEY UPDATE translation=?;")) {
-        String formattedTranslation = super.translateColor(translation);
+           PreparedStatement selectStatement = connection.prepareStatement("SELECT * FROM " + locale.toLanguageTag().toUpperCase() + " WHERE translationKey=?;")) {
+        selectStatement.setString(1, identifier.getTranslationKey());
 
-        preparedStatement.setString(1, identifier.getTranslationKey());
-        preparedStatement.setString(2, formattedTranslation);
-        preparedStatement.setString(3, formattedTranslation);
-        preparedStatement.execute();
+        try (ResultSet resultSet = selectStatement.executeQuery()) {
+          if (resultSet.next() && !replaceIfExists) {
+            return;
+          }
+          try (PreparedStatement insertStatement = connection.prepareStatement(
+              "INSERT INTO " + locale.toLanguageTag().toUpperCase() + " (translationkey, translation) VALUES (?, ?) ON DUPLICATE KEY UPDATE translation=?;")) {
+            String formattedTranslation = super.translateColor(translation);
+
+            insertStatement.setString(1, identifier.getTranslationKey());
+            insertStatement.setString(2, formattedTranslation);
+            insertStatement.setString(3, formattedTranslation);
+            insertStatement.execute();
+          }
+        }
       } catch (SQLException throwables) {
         throwables.printStackTrace();
       }
@@ -166,7 +176,7 @@ public class MySQLMessageHandler extends DefaultMessageHandler implements Messag
   }
 
   @Override
-  public void translateMessage(Map<Identifier, String> translations, Locale locale) {
+  public void translateMessage(Map<Identifier, String> translations, Locale locale, boolean replaceIfExists) {
     super.localeHandler.isAvailableAsync(locale).thenAcceptAsync(isAvailable -> {
       if (!isAvailable) {
         return;

@@ -58,8 +58,8 @@ public abstract class DefaultEntityHandler implements EntityHandler {
   @Override
   public void logoutEntity(@NotNull UUID entityId) {
     LanguageEntity cachedEntity = this.entityCache.getIfPresent(entityId);
-    if(cachedEntity != null) {
-      this.updateLanguageEntity(cachedEntity);
+    if (cachedEntity != null) {
+      this.updateLanguageEntity(cachedEntity).thenAccept(unused -> this.entityCache.invalidate(entityId));
     }
     this.entityCache.invalidate(entityId);
   }
@@ -68,7 +68,7 @@ public abstract class DefaultEntityHandler implements EntityHandler {
   public abstract CompletableFuture<LanguageOfflineEntity> getOfflineLanguageEntity(@NotNull UUID entityId);
 
   @Override
-  public abstract void updateLanguageEntity(@NotNull LanguageOfflineEntity languageOfflineEntity);
+  public abstract CompletableFuture<Void> updateLanguageEntity(@NotNull LanguageOfflineEntity languageOfflineEntity);
 
   @Override
   public LanguageOfflineEntity registerEntity(@NotNull UUID entityId) {

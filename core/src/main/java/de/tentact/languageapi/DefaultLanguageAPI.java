@@ -76,6 +76,7 @@ public class DefaultLanguageAPI extends LanguageAPI {
       case MYSQL:
       default:
         MySQLDatabaseProvider databaseProvider = new MySQLDatabaseProvider(this.languageConfiguration.getDatabaseConfiguration());
+        databaseProvider.init(this);
         this.localeHandler = new MySQLLocaleHandler(this.cacheProvider, databaseProvider);
         this.messageHandler = new MySQLMessageHandler(this.localeHandler, databaseProvider, this.cacheProvider);
         this.entityHandler = new MySQLEntityHandler(this.cacheProvider, this.localeHandler, databaseProvider);

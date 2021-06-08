@@ -79,8 +79,8 @@ public class MySQLEntityHandler extends DefaultEntityHandler implements EntityHa
   }
 
   @Override
-  public void updateLanguageEntity(@NotNull LanguageOfflineEntity languageOfflineEntity) {
-    this.localeHandler.isAvailableAsync(languageOfflineEntity.getLocale()).thenAcceptAsync(isAvailable -> {
+  public CompletableFuture<Void> updateLanguageEntity(@NotNull LanguageOfflineEntity languageOfflineEntity) {
+    return this.localeHandler.isAvailableAsync(languageOfflineEntity.getLocale()).thenAcceptAsync(isAvailable -> {
       if (!isAvailable) {
         return;
       }
@@ -96,8 +96,7 @@ public class MySQLEntityHandler extends DefaultEntityHandler implements EntityHa
       } catch (SQLException throwables) {
         throwables.printStackTrace();
       }
+      super.cacheLanguageEntity(languageOfflineEntity);
     });
-    //TODO: this async cache might break invalidating a player on disconnect
-    super.cacheLanguageEntity(languageOfflineEntity);
   }
 }

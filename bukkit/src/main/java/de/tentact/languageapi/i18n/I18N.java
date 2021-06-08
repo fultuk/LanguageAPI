@@ -23,58 +23,33 @@
  * SOFTWARE.
  */
 
-package de.tentact.languageapi.config.database;
+package de.tentact.languageapi.i18n;
 
 import de.tentact.languageapi.LanguageAPI;
+import de.tentact.languageapi.message.Identifier;
+import de.tentact.languageapi.message.Message;
 
-public class DatabaseConfiguration {
+public enum I18N {
 
-  public static final DatabaseConfiguration DEFAULT_DATABASE_CONFIGURATION =
-      new DatabaseConfiguration(
-          "localhost",
-          "languageapi",
-          "languageapi",
-          "password",
-          3306
-      );
+  LANGUAGEAPI_PREFIX(Identifier.of("languageapi.prefix"), "&bLanguageAPI x &7"),
+  LANGUAGEAPI_NOPERMS(Identifier.of("languageapi.noperms"), "You dont have the permission to execute this command");
 
-  protected final String hostname;
-  protected final String database;
-  protected final String username;
-  protected final String password;
-  protected final int port;
+  private final Identifier identifier;
 
-  public DatabaseConfiguration(String hostname, String database, String username, String password, int port) {
-    this.hostname = hostname;
-    this.database = database;
-    this.username = username;
-    this.password = password;
-    this.port = port;
+  I18N(Identifier identifier, String translation) {
+    this.identifier = identifier;
+    LanguageAPI.getInstance().getMessageHandler().translateMessage(identifier, translation);
   }
 
-  public void init(LanguageAPI languageAPI) {
-
+  public Message get() {
+    return this.get(true);
   }
 
-  public void closeConnection() { }
-
-  public String getHostname() {
-    return this.hostname;
+  public Message get(boolean prefix) {
+    if(prefix) {
+      return LanguageAPI.getInstance().getMessageHandler().getMessage(this.identifier, LANGUAGEAPI_PREFIX.get(false));
+    }
+    return LanguageAPI.getInstance().getMessageHandler().getMessage(this.identifier);
   }
 
-  public String getDatabase() {
-    return this.database;
-  }
-
-  public String getUsername() {
-    return this.username;
-  }
-
-  public String getPassword() {
-    return this.password;
-  }
-
-  public int getPort() {
-    return this.port;
-  }
 }

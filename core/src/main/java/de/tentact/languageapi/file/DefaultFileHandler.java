@@ -45,6 +45,11 @@ public class DefaultFileHandler implements FileHandler {
 
   @Override
   public CompletableFuture<Boolean> loadFile(@NotNull Path path) {
+    return this.loadFile(path, false);
+  }
+
+  @Override
+  public CompletableFuture<Boolean> loadFile(@NotNull Path path, boolean overwrite) {
     Preconditions.checkNotNull(path, "path");
 
     return CompletableFuture.supplyAsync(() -> {
@@ -57,13 +62,6 @@ public class DefaultFileHandler implements FileHandler {
 
       return true;
     });
-  }
-
-  @Override
-  public CompletableFuture<Boolean> loadFile(@NotNull Path path, boolean overwrite) {
-    Preconditions.checkNotNull(path, "path");
-
-    return null;
   }
 
   @Override

@@ -58,6 +58,20 @@ public interface MessageHandler {
   Message getMessage(Identifier identifier);
 
   /**
+   * @param identifier
+   * @param prefixIdentifier
+   * @return
+   */
+  Message getMessage(Identifier identifier, Identifier prefixIdentifier);
+
+  /**
+   * @param identifier
+   * @param prefixMessage
+   * @return
+   */
+  Message getMessage(Identifier identifier, Message prefixMessage);
+
+  /**
    * Retrieves every identifier and it's translation in the given locale
    *
    * @param locale the locale to retrieve the translation in
@@ -77,17 +91,63 @@ public interface MessageHandler {
   /**
    * Adds or updates a translation for the given identifier in the given locale
    *
+   * @param identifier      the identifier for the translation
+   * @param locale          the locale of the translation
+   * @param translation     the translation to the identifier and the locale
+   * @param replaceIfExists whether to replace an existing translation
+   */
+  void translateMessage(Identifier identifier, Locale locale, String translation, boolean replaceIfExists);
+
+  /**
+   * Adds or updates a translation for the given identifier in the given locale,
+   * if a translation exists this will overwrite it
+   *
    * @param identifier  the identifier for the translation
    * @param locale      the locale of the translation
    * @param translation the translation to the identifier and the locale
    */
-  void translateMessage(Identifier identifier, Locale locale, String translation);
+  default void translateMessage(Identifier identifier, Locale locale, String translation) {
+    this.translateMessage(identifier, locale, translation, true);
+  }
 
   /**
    * Adds or updates every translation from the given map in the given locale
-   * @param translations the identifier and translations as map
-   * @param locale the locale of the translation
+   *
+   * @param translations    the identifier and translations as map
+   * @param locale          the locale of the translation
+   * @param replaceIfExists whether to replace an existing translation
    */
-  void translateMessage(Map<Identifier, String> translations, Locale locale);
+  void translateMessage(Map<Identifier, String> translations, Locale locale, boolean replaceIfExists);
+
+  /**
+   * Adds or updates every translation from the given map in the given locale,
+   * if a translation exists this will overwrite it
+   *
+   * @param translations the identifier and translations as map
+   * @param locale       the locale of the translation
+   */
+  default void translateMessage(Map<Identifier, String> translations, Locale locale) {
+    this.translateMessage(translations, locale, true);
+  }
+
+  /**
+   * Adds or updates a translation for the given identifier in the default locale
+   *
+   * @param identifier      the identifier for the translation
+   * @param translation     the translation to the identifier and the locale
+   * @param replaceIfExists whether to replace an existing translation
+   */
+  void translateMessage(Identifier identifier, String translation, boolean replaceIfExists);
+
+  /**
+   * Adds or updates a translation for the given identifier in the default locale,
+   * if a translation exists this will overwrite it
+   *
+   * @param identifier  the identifier for the translation
+   * @param translation the translation to the identifier and the locale
+   */
+  default void translateMessage(Identifier identifier, String translation) {
+    this.translateMessage(identifier, translation, true);
+  }
 
 }

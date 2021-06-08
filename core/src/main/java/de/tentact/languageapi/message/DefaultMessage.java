@@ -34,14 +34,27 @@ import java.util.concurrent.CompletableFuture;
 public class DefaultMessage implements Message {
 
   private final Identifier identifier;
+  private Message prefix;
 
   public DefaultMessage(Identifier identifier) {
     this.identifier = identifier;
   }
 
+  public DefaultMessage(Identifier identifier, Identifier prefixIdentifier) {
+    this(identifier);
+    this.prefix = LanguageAPI.getInstance().getMessageHandler().getMessage(prefixIdentifier);
+  }
+
+  public DefaultMessage(Identifier identifier, Message prefix) {
+    this(identifier);
+    this.prefix = prefix;
+  }
+
   @Override
   public String build(Locale locale, Object... parameters) {
-    return MessageFormat.format(
+    String prefix = this.prefix == null ? "" : this.prefix.build(locale);
+
+    return prefix + MessageFormat.format(
         LanguageAPI.getInstance().getMessageHandler().getMessage(this.identifier, locale),
         parameters
     );

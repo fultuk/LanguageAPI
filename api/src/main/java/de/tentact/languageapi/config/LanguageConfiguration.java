@@ -39,7 +39,7 @@ public class LanguageConfiguration implements Cloneable {
           DatabaseConfiguration.DEFAULT_DATABASE_CONFIGURATION,
           CacheType.LOCAL,
           DatabaseType.MYSQL,
-          Locale.GERMAN.toLanguageTag()
+          Locale.GERMANY.toLanguageTag()
       );
 
   private DatabaseConfiguration databaseConfiguration;

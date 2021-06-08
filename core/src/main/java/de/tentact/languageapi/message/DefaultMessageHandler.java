@@ -25,6 +25,7 @@
 
 package de.tentact.languageapi.message;
 
+import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.cache.CacheProvider;
 import de.tentact.languageapi.cache.LanguageCache;
 import de.tentact.languageapi.language.LocaleHandler;
@@ -78,6 +79,16 @@ public abstract class DefaultMessageHandler implements MessageHandler {
   }
 
   @Override
+  public Message getMessage(Identifier identifier, Message prefixMessage) {
+    return new DefaultMessage(identifier, prefixMessage);
+  }
+
+  @Override
+  public Message getMessage(Identifier identifier, Identifier prefixIdentifier) {
+    return new DefaultMessage(identifier, prefixIdentifier);
+  }
+
+  @Override
   public String getMessage(Identifier identifier, Locale locale) {
     Map<String, String> cacheMap = this.translationCache.getIfPresent(identifier.getTranslationKey());
     if (cacheMap != null && cacheMap.containsKey(identifier.getTranslationKey())) {
@@ -89,6 +100,11 @@ public abstract class DefaultMessageHandler implements MessageHandler {
   @Override
   public CompletableFuture<String> getMessageAsync(Identifier identifier, Locale locale) {
     return CompletableFuture.supplyAsync(() -> this.getMessage(identifier, locale));
+  }
+
+  @Override
+  public void translateMessage(Identifier identifier, String translation, boolean replaceIfExists) {
+    this.translateMessage(identifier, LanguageAPI.getInstance().getLanguageConfiguration().getDefaultLocale(), translation, replaceIfExists);
   }
 
   protected void cacheTranslation(Identifier identifier, Locale locale, String translation) {

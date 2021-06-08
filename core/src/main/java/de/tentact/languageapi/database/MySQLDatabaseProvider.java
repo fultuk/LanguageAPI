@@ -44,9 +44,12 @@ public class MySQLDatabaseProvider extends DatabaseConfiguration {
 
   public MySQLDatabaseProvider(String hostname, String database, String username, String password, int port) {
     super(hostname, database, username, password, port);
+  }
 
+  @Override
+  public void init(LanguageAPI languageAPI) {
     this.setupHikariDataSource();
-    this.createDefaultTables();
+    this.createDefaultTables(languageAPI);
   }
 
   private void setupHikariDataSource() {
@@ -68,13 +71,13 @@ public class MySQLDatabaseProvider extends DatabaseConfiguration {
     return this.hikariDataSource == null || this.hikariDataSource.isClosed();
   }
 
-  private void createDefaultTables() {
-    LanguageAPI.getInstance().executeAsync(() -> {
+  private void createDefaultTables(LanguageAPI languageAPI) {
+    languageAPI.executeAsync(() -> {
       if (this.isNotConnected()) {
         return;
       }
       try (Connection connection = this.hikariDataSource.getConnection()) {
-        connection.createStatement().execute("CREATE TABLE IF NOT EXISTS INDENTIFIER(translationkey VARCHAR(128) PRIMARY KEY, parameter TEXT)");
+        connection.createStatement().execute("CREATE TABLE IF NOT EXISTS IDENTIFIER(translationkey VARCHAR(128) PRIMARY KEY, parameter TEXT)");
         connection.createStatement().execute("CREATE TABLE IF NOT EXISTS LANGUAGEENTITY(entityid VARCHAR(36) PRIMARY KEY, locale VARCHAR(32))");
         connection.createStatement().execute("CREATE TABLE IF NOT EXISTS LANGUAGE(locale VARCHAR(32) PRIMARY KEY)");
       } catch (SQLException throwables) {
