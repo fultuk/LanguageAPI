@@ -99,12 +99,12 @@ public class MySQLLocaleHandler extends DefaultLocaleHandler implements LocaleHa
            PreparedStatement preparedStatement = connection.prepareStatement("SELECT locale FROM LANGUAGE")) {
         try (ResultSet resultSet = preparedStatement.executeQuery()) {
 
-          Map<String, Locale> locales = new HashMap<>(cachedLocales);
+          Map<String, Locale> locales = new HashMap<>();
           while (resultSet.next()) {
             String localeTag = resultSet.getString("locale");
             locales.put(localeTag.toUpperCase(), Locale.forLanguageTag(localeTag));
           }
-
+          super.localeCache.clear();
           super.localeCache.putAll(locales);
           return locales.values();
         }

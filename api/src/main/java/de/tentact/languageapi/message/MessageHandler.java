@@ -1,6 +1,7 @@
 package de.tentact.languageapi.message;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 import java.util.Map;
@@ -16,7 +17,7 @@ public interface MessageHandler {
    * @param identifier the identifier to be loaded
    * @return the loaded identifier
    */
-  Identifier loadIdentifier(Identifier identifier);
+  @NotNull Identifier loadIdentifier(@NotNull Identifier identifier);
 
   /**
    * Loads the parameters of an identifier from the cache or the database
@@ -24,14 +25,23 @@ public interface MessageHandler {
    * @param identifier the identifier to be loaded
    * @return the loaded identifier
    */
-  CompletableFuture<Identifier> loadIdentifierAsync(Identifier identifier);
+  @NotNull CompletableFuture<Identifier> loadIdentifierAsync(@NotNull Identifier identifier);
 
   /**
    * Updates the parameters of the identifier in the cache & database
    *
    * @param identifier the identifier to be updated
    */
-  void writeIdentifier(Identifier identifier);
+  void writeIdentifier(@NotNull Identifier identifier);
+
+  /**
+   * Retrieves the translation associated with the identifier
+   *
+   * @param identifier the identifier to search for
+   * @param locale     the locale of the translation
+   * @return the translation associated with the identifier, if no translation is found the identifier-key is returned
+   */
+  @NotNull String getMessage(@NotNull Identifier identifier, @NotNull Locale locale);
 
   /**
    * Retrieves the translation associated with the identifier
@@ -40,36 +50,27 @@ public interface MessageHandler {
    * @param locale     the locale of the translation
    * @return the translation associated with the identifier
    */
-  String getMessage(Identifier identifier, Locale locale);
+  @NotNull CompletableFuture<String> getMessageAsync(@NotNull Identifier identifier, @NotNull Locale locale);
 
   /**
-   * Retrieves the translation associated with the identifier
-   *
-   * @param identifier the identifier to search for
-   * @param locale     the locale of the translation
-   * @return the translation associated with the identifier
+   * @param identifier the identifier for the message
+   * @return the message associated with the given identifier
    */
-  CompletableFuture<String> getMessageAsync(Identifier identifier, Locale locale);
+  @NotNull Message getMessage(@NotNull Identifier identifier);
 
   /**
-   * @param identifier
-   * @return
+   * @param identifier the identifier for the message
+   * @param prefixIdentifier the identifier of the prefix for the message
+   * @return the message associated with the given identifier & prefixIdentifier
    */
-  Message getMessage(Identifier identifier);
+  @NotNull Message getMessage(@NotNull Identifier identifier, @NotNull Identifier prefixIdentifier);
 
   /**
-   * @param identifier
-   * @param prefixIdentifier
-   * @return
+   * @param identifier the identifier for the message
+   * @param prefixMessage the prefixMessage used for resolving the prefix of the message
+   * @return the message associated with the given identifier & the prefixMessage
    */
-  Message getMessage(Identifier identifier, Identifier prefixIdentifier);
-
-  /**
-   * @param identifier
-   * @param prefixMessage
-   * @return
-   */
-  Message getMessage(Identifier identifier, Message prefixMessage);
+  @NotNull Message getMessage(@NotNull Identifier identifier, @NotNull Message prefixMessage);
 
   /**
    * Retrieves every identifier and it's translation in the given locale
@@ -77,16 +78,23 @@ public interface MessageHandler {
    * @param locale the locale to retrieve the translation in
    * @return every identifier and it's translation in the given locale
    */
-  CompletableFuture<Map<Identifier, String>> getMessages(Locale locale);
+  @NotNull CompletableFuture<Map<Identifier, String>> getMessages(@NotNull Locale locale);
 
   /**
    * Retrieves every identifier for a given locale
    *
    * @param locale    the locale to retrieve the identifiers in
-   * @param cacheOnly whether to use the cache only
    * @return every identifier for the given locale
    */
-  CompletableFuture<Set<Identifier>> getIdentifier(Locale locale, boolean cacheOnly);
+  @NotNull CompletableFuture<Set<Identifier>> getIdentifier(@NotNull Locale locale);
+
+  /**
+   * Retrieves every identifier that was written to the database
+   *
+   * @param cacheOnly whether to use the cache only
+   * @return every identifier that was written to the database
+   */
+  @NotNull CompletableFuture<Set<Identifier>> getGlobalIdentifier(boolean cacheOnly);
 
   /**
    * Adds or updates a translation for the given identifier in the given locale
@@ -96,7 +104,7 @@ public interface MessageHandler {
    * @param translation     the translation to the identifier and the locale
    * @param replaceIfExists whether to replace an existing translation
    */
-  void translateMessage(Identifier identifier, Locale locale, String translation, boolean replaceIfExists);
+  void translateMessage(@NotNull Identifier identifier, @NotNull Locale locale, @NotNull String translation, boolean replaceIfExists);
 
   /**
    * Adds or updates a translation for the given identifier in the given locale,
@@ -106,7 +114,7 @@ public interface MessageHandler {
    * @param locale      the locale of the translation
    * @param translation the translation to the identifier and the locale
    */
-  default void translateMessage(Identifier identifier, Locale locale, String translation) {
+  default void translateMessage(@NotNull Identifier identifier, @NotNull Locale locale, @NotNull String translation) {
     this.translateMessage(identifier, locale, translation, true);
   }
 
@@ -117,7 +125,7 @@ public interface MessageHandler {
    * @param locale          the locale of the translation
    * @param replaceIfExists whether to replace an existing translation
    */
-  void translateMessage(Map<Identifier, String> translations, Locale locale, boolean replaceIfExists);
+  void translateMessage(@NotNull Map<Identifier, String> translations, @NotNull Locale locale, boolean replaceIfExists);
 
   /**
    * Adds or updates every translation from the given map in the given locale,
@@ -126,7 +134,7 @@ public interface MessageHandler {
    * @param translations the identifier and translations as map
    * @param locale       the locale of the translation
    */
-  default void translateMessage(Map<Identifier, String> translations, Locale locale) {
+  default void translateMessage(@NotNull Map<Identifier, String> translations, @NotNull Locale locale) {
     this.translateMessage(translations, locale, true);
   }
 
@@ -137,7 +145,7 @@ public interface MessageHandler {
    * @param translation     the translation to the identifier and the locale
    * @param replaceIfExists whether to replace an existing translation
    */
-  void translateMessage(Identifier identifier, String translation, boolean replaceIfExists);
+  void translateMessage(@NotNull Identifier identifier, @NotNull String translation, boolean replaceIfExists);
 
   /**
    * Adds or updates a translation for the given identifier in the default locale,
@@ -146,7 +154,7 @@ public interface MessageHandler {
    * @param identifier  the identifier for the translation
    * @param translation the translation to the identifier and the locale
    */
-  default void translateMessage(Identifier identifier, String translation) {
+  default void translateMessage(@NotNull Identifier identifier, @NotNull String translation) {
     this.translateMessage(identifier, translation, true);
   }
 

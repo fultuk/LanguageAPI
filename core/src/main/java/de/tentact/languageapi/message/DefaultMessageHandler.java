@@ -25,10 +25,12 @@
 
 package de.tentact.languageapi.message;
 
+import com.google.common.base.Preconditions;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.cache.CacheProvider;
 import de.tentact.languageapi.cache.LanguageCache;
 import de.tentact.languageapi.language.LocaleHandler;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -41,6 +43,7 @@ public abstract class DefaultMessageHandler implements MessageHandler {
 
   protected final LocaleHandler localeHandler;
   protected final LanguageCache<String, Map<String, String>> translationCache;
+  //TODO: this cache should be language based as not every identifier is present for every language
   protected final LanguageCache<String, Identifier> identifierCache;
 
   public DefaultMessageHandler(LocaleHandler localeHandler, CacheProvider cacheProvider) {
@@ -50,46 +53,53 @@ public abstract class DefaultMessageHandler implements MessageHandler {
   }
 
   @Override
-  public CompletableFuture<Map<Identifier, String>> getMessages(Locale locale) {
-    return this.getIdentifier(locale, false).thenApplyAsync(identifiers -> {
-      Map<Identifier, String> translations = new HashMap<>();
-      for (Identifier identifier : identifiers) {
-        translations.put(identifier, this.getMessage(identifier, locale));
-      }
-      return translations;
-    });
-  }
+  public @NotNull Identifier loadIdentifier(@NotNull Identifier identifier) {
+    Preconditions.checkNotNull(identifier, "identifier");
 
-  @Override
-  public Identifier loadIdentifier(Identifier identifier) {
     return this.identifierCache.getIfPresent(identifier.getTranslationKey());
   }
 
   @Override
-  public CompletableFuture<Identifier> loadIdentifierAsync(Identifier identifier) {
+  public @NotNull CompletableFuture<Identifier> loadIdentifierAsync(@NotNull Identifier identifier) {
+    Preconditions.checkNotNull(identifier, "identifier");
+
     return CompletableFuture.supplyAsync(() -> this.loadIdentifier(identifier));
   }
 
   @Override
-  public abstract void writeIdentifier(Identifier identifier);
+  public abstract void writeIdentifier(@NotNull Identifier identifier);
 
   @Override
-  public Message getMessage(Identifier identifier) {
+  public @NotNull Message getMessage(@NotNull Identifier identifier) {
+    Preconditions.checkNotNull(identifier, "identifier");
+
     return new DefaultMessage(identifier);
   }
 
   @Override
-  public Message getMessage(Identifier identifier, Message prefixMessage) {
+  public @NotNull Message getMessage(@NotNull Identifier identifier, @NotNull Message prefixMessage) {
+    Preconditions.checkNotNull(identifier, "identifier");
+    Preconditions.checkNotNull(prefixMessage, "prefixMessage");
+
     return new DefaultMessage(identifier, prefixMessage);
   }
 
   @Override
-  public Message getMessage(Identifier identifier, Identifier prefixIdentifier) {
+  public @NotNull Message getMessage(@NotNull Identifier identifier, @NotNull Identifier prefixIdentifier) {
+    Preconditions.checkNotNull(identifier, "identifier");
+    Preconditions.checkNotNull(prefixIdentifier, "prefixIdentifier");
+
     return new DefaultMessage(identifier, prefixIdentifier);
   }
 
+  /**
+   * This method is annotated as @NotNull because it should be overwritten by a not-null returning method.
+   */
   @Override
-  public String getMessage(Identifier identifier, Locale locale) {
+  public @NotNull String getMessage(@NotNull Identifier identifier, @NotNull Locale locale) {
+    Preconditions.checkNotNull(identifier, "identifier");
+    Preconditions.checkNotNull(locale, "locale");
+
     Map<String, String> cacheMap = this.translationCache.getIfPresent(identifier.getTranslationKey());
     if (cacheMap != null && cacheMap.containsKey(identifier.getTranslationKey())) {
       return cacheMap.get(locale.toLanguageTag().toUpperCase());
@@ -98,12 +108,18 @@ public abstract class DefaultMessageHandler implements MessageHandler {
   }
 
   @Override
-  public CompletableFuture<String> getMessageAsync(Identifier identifier, Locale locale) {
+  public @NotNull CompletableFuture<String> getMessageAsync(@NotNull Identifier identifier, @NotNull Locale locale) {
+    Preconditions.checkNotNull(identifier, "identifier");
+    Preconditions.checkNotNull(locale, "locale");
+
     return CompletableFuture.supplyAsync(() -> this.getMessage(identifier, locale));
   }
 
   @Override
-  public void translateMessage(Identifier identifier, String translation, boolean replaceIfExists) {
+  public void translateMessage(@NotNull Identifier identifier, @NotNull String translation, boolean replaceIfExists) {
+    Preconditions.checkNotNull(identifier, "identifier");
+    Preconditions.checkNotNull(translation, "translation");
+
     this.translateMessage(identifier, LanguageAPI.getInstance().getLanguageConfiguration().getDefaultLocale(), translation, replaceIfExists);
   }
 

@@ -74,4 +74,9 @@ public class LocalCache<K, V> implements LanguageCache<K, V> {
   public Map<K, V> asMap() {
     return this.localCache.asMap();
   }
+
+  @Override
+  public void clear() {
+    this.localCache.cleanUp();
+  }
 }

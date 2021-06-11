@@ -71,7 +71,6 @@ public class DefaultLanguageAPI extends LanguageAPI {
         break;
     }
 
-
     switch (this.languageConfiguration.getDatabaseType()) {
       case MYSQL:
       default:

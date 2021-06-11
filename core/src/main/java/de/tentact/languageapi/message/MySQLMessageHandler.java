@@ -25,10 +25,12 @@
 
 package de.tentact.languageapi.message;
 
+import com.google.common.base.Preconditions;
 import com.zaxxer.hikari.HikariDataSource;
 import de.tentact.languageapi.cache.CacheProvider;
 import de.tentact.languageapi.database.MySQLDatabaseProvider;
 import de.tentact.languageapi.language.LocaleHandler;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -50,7 +52,9 @@ public class MySQLMessageHandler extends DefaultMessageHandler implements Messag
   }
 
   @Override
-  public Identifier loadIdentifier(Identifier identifier) {
+  public @NotNull Identifier loadIdentifier(@NotNull Identifier identifier) {
+    Preconditions.checkNotNull(identifier, "identifier");
+
     Identifier cachedIdentifier = super.loadIdentifier(identifier);
     if (cachedIdentifier != null) {
       return cachedIdentifier;
@@ -74,7 +78,9 @@ public class MySQLMessageHandler extends DefaultMessageHandler implements Messag
   }
 
   @Override
-  public void writeIdentifier(Identifier identifier) {
+  public void writeIdentifier(@NotNull Identifier identifier) {
+    Preconditions.checkNotNull(identifier, "identifier");
+
     try (Connection connection = this.getDataSource().getConnection();
          PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO IDENTIFIER (translationKey, parameters) VALUES (?, ?) ON DUPLICATE KEY UPDATE parameters=?;")) {
 
@@ -91,13 +97,13 @@ public class MySQLMessageHandler extends DefaultMessageHandler implements Messag
   }
 
   @Override
-  public String getMessage(Identifier identifier, Locale locale) {
+  public @NotNull String getMessage(@NotNull Identifier identifier, @NotNull Locale locale) {
     String message = super.getMessage(identifier, locale);
     if (message != null) {
       return message;
     }
     if (!super.localeHandler.isAvailable(locale)) {
-      throw new IllegalArgumentException("Language not found");
+      return identifier.getTranslationKey();
     }
     try (Connection connection = this.getDataSource().getConnection();
          PreparedStatement preparedStatement = connection.prepareStatement("SELECT translation FROM " +
@@ -118,10 +124,18 @@ public class MySQLMessageHandler extends DefaultMessageHandler implements Messag
   }
 
   @Override
-  public CompletableFuture<Set<Identifier>> getIdentifier(Locale locale, boolean cacheOnly) {
+  public @NotNull CompletableFuture<Map<Identifier, String>> getMessages(@NotNull Locale locale) {
+    return null;
+  }
+
+  @Override
+  public @NotNull CompletableFuture<Set<Identifier>> getIdentifier(@NotNull Locale locale) {
+
+    //TODO: the locale is not used and it always returns every identifier
     return CompletableFuture.supplyAsync(() -> {
-      Set<Identifier> identifiers = new HashSet<>(super.identifierCache.getValues());
-      if (cacheOnly) {
+      Set<Identifier> identifiers = new HashSet<>();
+
+      if (!this.localeHandler.isAvailable(locale)) {
         return identifiers;
       }
       try (Connection connection = this.getDataSource().getConnection();
@@ -144,13 +158,22 @@ public class MySQLMessageHandler extends DefaultMessageHandler implements Messag
   }
 
   @Override
-  public void translateMessage(Identifier identifier, Locale locale, String translation, boolean replaceIfExists) {
+  public @NotNull CompletableFuture<Set<Identifier>> getGlobalIdentifier(boolean cacheOnly) {
+    return null;
+  }
+
+  @Override
+  public void translateMessage(@NotNull Identifier identifier, @NotNull Locale locale, @NotNull String translation, boolean replaceIfExists) {
+    Preconditions.checkNotNull(identifier, "identifier");
+    Preconditions.checkNotNull(locale, "locale");
+    Preconditions.checkNotNull(translation, "translation");
+
     super.localeHandler.isAvailableAsync(locale).thenAcceptAsync(isAvailable -> {
       if (!isAvailable) {
         return;
       }
       try (Connection connection = this.getDataSource().getConnection();
-           PreparedStatement selectStatement = connection.prepareStatement("SELECT * FROM " + locale.toLanguageTag().toUpperCase() + " WHERE translationKey=?;")) {
+           PreparedStatement selectStatement = connection.prepareStatement("SELECT * FROM " + locale.toLanguageTag().toUpperCase() + " WHERE translationkey=?;")) {
         selectStatement.setString(1, identifier.getTranslationKey());
 
         try (ResultSet resultSet = selectStatement.executeQuery()) {
@@ -176,15 +199,40 @@ public class MySQLMessageHandler extends DefaultMessageHandler implements Messag
   }
 
   @Override
-  public void translateMessage(Map<Identifier, String> translations, Locale locale, boolean replaceIfExists) {
+  public void translateMessage(@NotNull Map<Identifier, String> translations, @NotNull Locale locale, boolean replaceIfExists) {
+    Preconditions.checkNotNull(translations, "translations");
+    Preconditions.checkNotNull(locale, "locale");
+
     super.localeHandler.isAvailableAsync(locale).thenAcceptAsync(isAvailable -> {
       if (!isAvailable) {
         return;
       }
-      try (Connection connection = this.getDataSource().getConnection();
-           PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO translation (translationKey, translation) VALUES (?, ?) ON DUPLICATE KEY UPDATE translation=?;")) {
 
-        for (Map.Entry<Identifier, String> translationEntry : translations.entrySet()) {
+      Set<Identifier> existingTranslationKeys = new HashSet<>();
+      try (Connection connection = this.getDataSource().getConnection();
+           PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + locale.toLanguageTag().toUpperCase() + ";")) {
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+          while (resultSet.next()) {
+            Identifier translationIdentifier = Identifier.of(resultSet.getString("translationkey"));
+            existingTranslationKeys.add(translationIdentifier);
+
+            super.cacheTranslation(translationIdentifier, locale, resultSet.getString("translation"));
+          }
+        }
+      } catch (SQLException throwables) {
+        throwables.printStackTrace();
+      }
+
+      try (Connection connection = this.getDataSource().getConnection();
+           PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO " + locale.toLanguageTag().toUpperCase() +
+               " (translationkey, translation) VALUES (?, ?) ON DUPLICATE KEY UPDATE translation=?;")) {
+        Set<Map.Entry<Identifier, String>> translationEntries = translations.entrySet();
+
+        if (!replaceIfExists) {
+          translationEntries.removeAll(existingTranslationKeys);
+        }
+
+        for (Map.Entry<Identifier, String> translationEntry : translationEntries) {
           Identifier identifier = translationEntry.getKey();
           String formattedTranslation = super.translateColor(translationEntry.getValue());
 

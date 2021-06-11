@@ -25,7 +25,9 @@
 
 package de.tentact.languageapi.message;
 
+import com.google.common.base.Preconditions;
 import de.tentact.languageapi.LanguageAPI;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.MessageFormat;
 import java.util.Locale;
@@ -51,7 +53,10 @@ public class DefaultMessage implements Message {
   }
 
   @Override
-  public String build(Locale locale, Object... parameters) {
+  public @NotNull String build(@NotNull Locale locale, Object... parameters) {
+    Preconditions.checkNotNull(locale, "locale");
+    Preconditions.checkNotNull(parameters, "parameters");
+
     String prefix = this.prefix == null ? "" : this.prefix.build(locale);
 
     return prefix + MessageFormat.format(
@@ -61,12 +66,12 @@ public class DefaultMessage implements Message {
   }
 
   @Override
-  public CompletableFuture<String> buildAsync(Locale locale, Object... parameters) {
+  public @NotNull CompletableFuture<String> buildAsync(@NotNull Locale locale, Object... parameters) {
     return CompletableFuture.supplyAsync(() -> this.build(locale, parameters));
   }
 
   @Override
-  public Identifier getIdentifier() {
+  public @NotNull Identifier getIdentifier() {
     return this.identifier;
   }
 }

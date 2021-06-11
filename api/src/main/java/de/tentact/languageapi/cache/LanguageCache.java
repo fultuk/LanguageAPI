@@ -72,4 +72,9 @@ public interface LanguageCache<K, V> {
    */
   Map<K, V> asMap();
 
+  /**
+   * Clears the whole backing cache
+   */
+  void clear();
+
 }

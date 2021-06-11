@@ -26,9 +26,11 @@
 package de.tentact.languageapi.message;
 
 import de.tentact.languageapi.LanguageAPI;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 final class DefaultIdentifier implements Identifier {
 
@@ -46,7 +48,7 @@ final class DefaultIdentifier implements Identifier {
   }
 
   @Override
-  public Identifier parameters(String... parameters) {
+  public @NotNull Identifier parameters(String... parameters) {
     for (int i = this.parameters.size(); i < parameters.length; i++) {
       this.parameters.put(i, parameters[i]);
     }
@@ -54,23 +56,36 @@ final class DefaultIdentifier implements Identifier {
   }
 
   @Override
-  public Identifier load() {
+  public @NotNull Identifier load() {
     return LanguageAPI.getInstance().getMessageHandler().loadIdentifier(this);
   }
 
   @Override
-  public Identifier write() {
+  public @NotNull Identifier write() {
     LanguageAPI.getInstance().getMessageHandler().writeIdentifier(this);
     return this;
   }
 
   @Override
-  public Map<Integer, String> getParameters() {
+  public @NotNull Map<Integer, String> getParameters() {
     return this.parameters;
   }
 
   @Override
-  public String getTranslationKey() {
+  public @NotNull String getTranslationKey() {
     return this.translationKey;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof DefaultIdentifier)) return false;
+    DefaultIdentifier that = (DefaultIdentifier) o;
+    return translationKey.equals(that.translationKey);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(translationKey);
   }
 }

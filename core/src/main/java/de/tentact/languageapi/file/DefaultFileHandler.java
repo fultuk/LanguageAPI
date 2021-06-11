@@ -44,12 +44,12 @@ import java.util.concurrent.CompletableFuture;
 public class DefaultFileHandler implements FileHandler {
 
   @Override
-  public CompletableFuture<Boolean> loadFile(@NotNull Path path) {
+  public CompletableFuture<Void> loadFile(@NotNull Path path) {
     return this.loadFile(path, false);
   }
 
   @Override
-  public CompletableFuture<Boolean> loadFile(@NotNull Path path, boolean overwrite) {
+  public CompletableFuture<Void> loadFile(@NotNull Path path, boolean overwrite) {
     Preconditions.checkNotNull(path, "path");
 
     return CompletableFuture.supplyAsync(() -> {
@@ -57,10 +57,12 @@ public class DefaultFileHandler implements FileHandler {
 
       Map<Identifier, String> uncheckedMessages = (Map<Identifier, String>) inputDocument.get("languageAPI");
 
-      Locale locale = Locale.forLanguageTag(uncheckedMessages.get(Identifier.of("locale")));
+      Identifier localeIdentifier = Identifier.of("locale");
+      Locale locale = Locale.forLanguageTag(uncheckedMessages.get(localeIdentifier));
 
+      LanguageAPI.getInstance().getMessageHandler().translateMessage(uncheckedMessages, locale, overwrite);
 
-      return true;
+      return null;
     });
   }
 

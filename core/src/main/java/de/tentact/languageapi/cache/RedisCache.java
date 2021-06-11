@@ -79,6 +79,11 @@ public class RedisCache<K, V> implements LanguageCache<K, V> {
     return this.backingMap.readAllMap();
   }
 
+  @Override
+  public void clear() {
+    this.backingMap.clear();
+  }
+
   public static class PersistentRedisCache<K, V> extends RedisCache<K, V> implements LanguageCache<K, V> {
 
     public PersistentRedisCache(RedisDatabaseProvider redisDatabaseProvider) {
