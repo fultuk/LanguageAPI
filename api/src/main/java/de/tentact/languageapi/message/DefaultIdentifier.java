@@ -72,6 +72,11 @@ final class DefaultIdentifier implements Identifier {
   }
 
   @Override
+  public boolean hasParameters() {
+    return !this.parameters.isEmpty();
+  }
+
+  @Override
   public @NotNull String getTranslationKey() {
     return this.translationKey;
   }

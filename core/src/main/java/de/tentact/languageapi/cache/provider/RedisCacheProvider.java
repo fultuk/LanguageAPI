@@ -29,6 +29,7 @@ import de.tentact.languageapi.cache.CacheProvider;
 import de.tentact.languageapi.cache.LanguageCache;
 import de.tentact.languageapi.cache.RedisCache;
 import de.tentact.languageapi.database.RedisDatabaseProvider;
+import org.jetbrains.annotations.NotNull;
 
 public class RedisCacheProvider implements CacheProvider {
 
@@ -39,12 +40,12 @@ public class RedisCacheProvider implements CacheProvider {
   }
 
   @Override
-  public <K, V> LanguageCache<K, V> newCache() {
+  public <K, V> @NotNull LanguageCache<K, V> newCache() {
     return new RedisCache<>(this.redisDatabaseProvider);
   }
 
   @Override
-  public <K, V> LanguageCache<K, V> newPersistentCache() {
+  public <K, V> @NotNull LanguageCache<K, V> newPersistentCache() {
     return new RedisCache.PersistentRedisCache<>(this.redisDatabaseProvider);
   }
 }

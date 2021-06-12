@@ -25,10 +25,12 @@
 
 package de.tentact.languageapi.entity;
 
+import com.google.common.base.Preconditions;
 import de.tentact.languageapi.config.LanguageConfiguration;
 import de.tentact.languageapi.message.Message;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -41,7 +43,10 @@ public class BungeeConsoleEntity implements ConsoleEntity {
   }
 
   @Override
-  public void sendMessage(Message translation, Object... parameters) {
+  public void sendMessage(@NotNull Message translation, Object... parameters) {
+    Preconditions.checkNotNull(translation, "translation");
+    Preconditions.checkNotNull(parameters, "parameters");
+
     translation.buildAsync(this.consoleLocale, parameters).thenAccept(message ->
         ProxyServer.getInstance().getConsole().sendMessage(TextComponent.fromLegacyText(message)));
   }

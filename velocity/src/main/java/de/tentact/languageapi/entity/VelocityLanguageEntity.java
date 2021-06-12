@@ -25,9 +25,11 @@
 
 package de.tentact.languageapi.entity;
 
+import com.google.common.base.Preconditions;
 import com.velocitypowered.api.proxy.Player;
 import de.tentact.languageapi.message.Message;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 import java.util.UUID;
@@ -46,7 +48,10 @@ public class VelocityLanguageEntity extends DefaultLanguageOfflineEntity impleme
   }
 
   @Override
-  public void sendMessage(Message translation, Object... parameters) {
+  public void sendMessage(@NotNull Message translation, Object... parameters) {
+    Preconditions.checkNotNull(translation, "translation");
+    Preconditions.checkNotNull(parameters, "parameters");
+
     translation.buildAsync(super.locale, parameters).thenAccept(message ->
         this.velocityPlayer.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message)));
   }

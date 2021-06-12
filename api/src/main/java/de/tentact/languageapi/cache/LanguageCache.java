@@ -25,6 +25,9 @@
 
 package de.tentact.languageapi.cache;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.Map;
 
@@ -49,7 +52,7 @@ public interface LanguageCache<K, V> {
    * @param key the key to the value
    * @return the value associated with the given key
    */
-  V getIfPresent(K key);
+  @Nullable V getIfPresent(K key);
 
   /**
    * Invalidates the given key in the backing cache
@@ -63,14 +66,14 @@ public interface LanguageCache<K, V> {
    *
    * @return all present values from the backing cache
    */
-  Collection<V> getValues();
+  @NotNull Collection<V> getValues();
 
   /**
    * Retrieves all present keys and values from the backing cache
    *
    * @return all present keys and values from the backing cache
    */
-  Map<K, V> asMap();
+  @NotNull Map<K, V> asMap();
 
   /**
    * Clears the whole backing cache

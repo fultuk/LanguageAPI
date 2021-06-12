@@ -26,6 +26,7 @@
 package de.tentact.languageapi.cache;
 
 import de.tentact.languageapi.database.RedisDatabaseProvider;
+import org.jetbrains.annotations.NotNull;
 import org.redisson.api.RMap;
 import org.redisson.api.RMapCache;
 
@@ -70,12 +71,12 @@ public class RedisCache<K, V> implements LanguageCache<K, V> {
   }
 
   @Override
-  public Collection<V> getValues() {
+  public @NotNull Collection<V> getValues() {
     return this.backingMap.values();
   }
 
   @Override
-  public Map<K, V> asMap() {
+  public @NotNull Map<K, V> asMap() {
     return this.backingMap.readAllMap();
   }
 

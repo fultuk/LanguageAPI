@@ -48,8 +48,12 @@ public class EntityCacheListener implements Listener {
   @EventHandler
   public void handlePlayerJoin(PostLoginEvent playerJoinEvent) {
     ProxiedPlayer player = playerJoinEvent.getPlayer();
-    this.entityHandler.getOfflineLanguageEntity(player.getUniqueId()).thenAccept(offlineEntity ->
-        this.entityHandler.loginEntity(new BungeeLanguageEntity(offlineEntity, player)));
+    this.entityHandler.getOfflineLanguageEntity(player.getUniqueId()).thenAccept(offlineEntity -> {
+      if (offlineEntity == null) {
+        offlineEntity = this.entityHandler.registerEntity(player.getUniqueId());
+      }
+      this.entityHandler.loginEntity(new BungeeLanguageEntity(offlineEntity, player));
+    });
   }
 
   @EventHandler

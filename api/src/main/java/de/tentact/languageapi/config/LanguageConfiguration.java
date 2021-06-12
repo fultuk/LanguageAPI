@@ -109,8 +109,8 @@ public class LanguageConfiguration implements Cloneable {
     try {
       return (LanguageConfiguration) super.clone();
     } catch (CloneNotSupportedException e) {
-      return new LanguageConfiguration(this.databaseConfiguration,
-          this.cacheConfiguration,
+      return new LanguageConfiguration(this.databaseConfiguration.clone(),
+          this.cacheConfiguration.clone(),
           this.cacheType,
           this.databaseType,
           this.defaultLocale

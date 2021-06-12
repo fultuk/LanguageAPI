@@ -25,9 +25,11 @@
 
 package de.tentact.languageapi.entity;
 
+import com.google.common.base.Preconditions;
 import de.tentact.languageapi.message.Message;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 import java.util.UUID;
@@ -46,7 +48,10 @@ public class BungeeLanguageEntity extends DefaultLanguageOfflineEntity implement
   }
 
   @Override
-  public void sendMessage(Message translation, Object... parameters) {
+  public void sendMessage(@NotNull Message translation, Object... parameters) {
+    Preconditions.checkNotNull(translation, "translation");
+    Preconditions.checkNotNull(parameters, "parameters");
+
     translation.buildAsync(super.locale, parameters).thenAccept(message ->
         this.bungeePlayer.sendMessage(TextComponent.fromLegacyText(message)));
   }

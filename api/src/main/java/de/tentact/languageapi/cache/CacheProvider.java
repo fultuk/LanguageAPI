@@ -25,6 +25,8 @@
 
 package de.tentact.languageapi.cache;
 
+import org.jetbrains.annotations.NotNull;
+
 public interface CacheProvider {
 
   /**
@@ -34,7 +36,7 @@ public interface CacheProvider {
    * @param <V> the value type
    * @return a new cache corresponding to the set {@link CacheType}
    */
-  <K, V> LanguageCache<K, V> newCache();
+  @NotNull <K, V> LanguageCache<K, V> newCache();
 
   /**
    * Provides a new cache corresponding to the set {@link CacheType}. This cache has no expiration time
@@ -43,6 +45,6 @@ public interface CacheProvider {
    * @param <V> the value type
    * @return a new cache corresponding to the set {@link CacheType} without an expiration time
    */
-  <K, V> LanguageCache<K, V> newPersistentCache();
+  @NotNull <K, V> LanguageCache<K, V> newPersistentCache();
 
 }

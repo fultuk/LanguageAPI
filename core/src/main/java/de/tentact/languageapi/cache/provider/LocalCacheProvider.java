@@ -29,16 +29,17 @@ import com.google.common.cache.CacheBuilder;
 import de.tentact.languageapi.cache.CacheProvider;
 import de.tentact.languageapi.cache.LanguageCache;
 import de.tentact.languageapi.cache.LocalCache;
+import org.jetbrains.annotations.NotNull;
 
 public class LocalCacheProvider implements CacheProvider {
 
   @Override
-  public <K, V> LanguageCache<K, V> newCache() {
+  public <K, V> @NotNull LanguageCache<K, V> newCache() {
     return new LocalCache<>();
   }
 
   @Override
-  public <K, V> LanguageCache<K, V> newPersistentCache() {
+  public <K, V> @NotNull LanguageCache<K, V> newPersistentCache() {
     return new LocalCache<>(CacheBuilder.newBuilder().concurrencyLevel(4).build());
   }
 }

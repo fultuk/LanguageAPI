@@ -27,7 +27,7 @@ package de.tentact.languageapi.config.database;
 
 import de.tentact.languageapi.LanguageAPI;
 
-public class DatabaseConfiguration {
+public class DatabaseConfiguration implements Cloneable {
 
   public static final DatabaseConfiguration DEFAULT_DATABASE_CONFIGURATION =
       new DatabaseConfiguration(
@@ -53,10 +53,10 @@ public class DatabaseConfiguration {
   }
 
   public void init(LanguageAPI languageAPI) {
-
   }
 
-  public void closeConnection() { }
+  public void closeConnection() {
+  }
 
   public String getHostname() {
     return this.hostname;
@@ -76,5 +76,14 @@ public class DatabaseConfiguration {
 
   public int getPort() {
     return this.port;
+  }
+
+  @Override
+  public DatabaseConfiguration clone() {
+    try {
+      return (DatabaseConfiguration) super.clone();
+    } catch (CloneNotSupportedException e) {
+      return new DatabaseConfiguration(this.hostname, this.database, this.username, this.password, this.port);
+    }
   }
 }

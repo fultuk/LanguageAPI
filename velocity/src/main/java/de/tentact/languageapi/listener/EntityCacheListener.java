@@ -47,8 +47,12 @@ public class EntityCacheListener {
   @Subscribe
   public void handlePlayerJoin(LoginEvent loginEvent) {
     Player player = loginEvent.getPlayer();
-    this.entityHandler.getOfflineLanguageEntity(player.getUniqueId()).thenAccept(offlineEntity ->
-        this.entityHandler.loginEntity(new VelocityLanguageEntity(offlineEntity, player)));
+    this.entityHandler.getOfflineLanguageEntity(player.getUniqueId()).thenAccept(offlineEntity -> {
+      if (offlineEntity == null) {
+        offlineEntity = this.entityHandler.registerEntity(player.getUniqueId());
+      }
+      this.entityHandler.loginEntity(new VelocityLanguageEntity(offlineEntity, player));
+    });
   }
 
   @Subscribe

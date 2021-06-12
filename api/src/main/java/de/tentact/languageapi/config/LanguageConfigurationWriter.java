@@ -27,10 +27,13 @@ package de.tentact.languageapi.config;
 
 import com.github.derrop.documents.Document;
 import com.github.derrop.documents.Documents;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 public class LanguageConfigurationWriter {
 
@@ -40,7 +43,10 @@ public class LanguageConfigurationWriter {
    * @param languageConfiguration the languageConfiguration that should be written to the file
    * @param path                  the path to the file
    */
-  public static void writeConfiguration(LanguageConfiguration languageConfiguration, Path path) {
+  public static void writeConfiguration(@NotNull LanguageConfiguration languageConfiguration, @NotNull Path path) {
+    Objects.requireNonNull(languageConfiguration, "languageConfiguration");
+    Objects.requireNonNull(path, "path");
+
     try {
       Files.createDirectories(path.getParent());
       Files.createFile(path);
@@ -58,7 +64,10 @@ public class LanguageConfigurationWriter {
    * @param createIfNotExists whether to create a configuration
    * @return the configuration from the given path
    */
+  @Nullable
   public static LanguageConfiguration readConfiguration(Path path, boolean createIfNotExists) {
+    Objects.requireNonNull(path, "path");
+
     if (Files.notExists(path)) {
       if (createIfNotExists) {
         writeConfiguration(LanguageConfiguration.DEFAULT_LANGUAGE_CONFIGURATION, path);

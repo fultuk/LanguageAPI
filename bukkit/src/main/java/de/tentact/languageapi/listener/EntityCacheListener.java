@@ -28,7 +28,6 @@ package de.tentact.languageapi.listener;
 import de.tentact.languageapi.BukkitLanguageAPIPlugin;
 import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.cache.CacheType;
-import de.tentact.languageapi.config.LanguageConfiguration;
 import de.tentact.languageapi.entity.BukkitLanguageEntity;
 import de.tentact.languageapi.entity.EntityHandler;
 import org.bukkit.Bukkit;
@@ -40,28 +39,30 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class EntityCacheListener implements Listener {
 
-  private final LanguageConfiguration languageConfiguration;
   private final EntityHandler entityHandler;
 
   public EntityCacheListener(BukkitLanguageAPIPlugin bukkitLanguageAPIPlugin) {
     Bukkit.getPluginManager().registerEvents(this, bukkitLanguageAPIPlugin);
-    this.languageConfiguration = LanguageAPI.getInstance().getLanguageConfiguration();
     this.entityHandler = LanguageAPI.getInstance().getEntityHandler();
   }
 
   @EventHandler
   public void handlePlayerJoin(PlayerJoinEvent playerJoinEvent) {
-    if (this.languageConfiguration.getCacheType() != CacheType.LOCAL) {
+    if (LanguageAPI.getInstance().getLanguageConfiguration().getCacheType() != CacheType.LOCAL) {
       return;
     }
     Player player = playerJoinEvent.getPlayer();
-    this.entityHandler.getOfflineLanguageEntity(player.getUniqueId()).thenAccept(offlineEntity ->
-        this.entityHandler.loginEntity(new BukkitLanguageEntity(offlineEntity, player)));
+    this.entityHandler.getOfflineLanguageEntity(player.getUniqueId()).thenAccept(offlineEntity -> {
+      if (offlineEntity == null) {
+        offlineEntity = this.entityHandler.registerEntity(player.getUniqueId());
+      }
+      this.entityHandler.loginEntity(new BukkitLanguageEntity(offlineEntity, player));
+    });
   }
 
   @EventHandler
   public void handlePlayerQuit(PlayerQuitEvent playerQuitEvent) {
-    if (this.languageConfiguration.getCacheType() != CacheType.LOCAL) {
+    if (LanguageAPI.getInstance().getLanguageConfiguration().getCacheType() != CacheType.LOCAL) {
       return;
     }
     this.entityHandler.logoutEntity(playerQuitEvent.getPlayer().getUniqueId());

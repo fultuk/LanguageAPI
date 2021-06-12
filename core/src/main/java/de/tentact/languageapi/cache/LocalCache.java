@@ -28,6 +28,7 @@ package de.tentact.languageapi.cache;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.util.Collection;
@@ -66,12 +67,12 @@ public class LocalCache<K, V> implements LanguageCache<K, V> {
   }
 
   @Override
-  public Collection<V> getValues() {
+  public @NotNull Collection<V> getValues() {
     return this.localCache.asMap().values();
   }
 
   @Override
-  public Map<K, V> asMap() {
+  public @NotNull Map<K, V> asMap() {
     return this.localCache.asMap();
   }
 

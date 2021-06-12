@@ -31,6 +31,11 @@ public interface Identifier {
   @NotNull Map<Integer, String> getParameters();
 
   /**
+   * @return whether or not the Identifier was loaded and has parameters
+   */
+  boolean hasParameters();
+
+  /**
    * The translationKey that belongs to the identifier
    *
    * @return the translationKey that belongs to the identifier

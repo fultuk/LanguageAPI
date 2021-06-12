@@ -38,7 +38,11 @@ public enum I18N {
 
   I18N(Identifier identifier, String translation) {
     this.identifier = identifier;
-    LanguageAPI.getInstance().getMessageHandler().translateMessage(identifier, translation);
+    LanguageAPI.getInstance().getMessageHandler().translateMessage(identifier, translation, false);
+
+    if(identifier.hasParameters()) {
+      identifier.write();
+    }
   }
 
   public Message get() {

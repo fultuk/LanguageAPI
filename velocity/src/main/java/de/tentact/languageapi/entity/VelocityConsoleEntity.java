@@ -25,10 +25,12 @@
 
 package de.tentact.languageapi.entity;
 
+import com.google.common.base.Preconditions;
 import com.velocitypowered.api.proxy.ProxyServer;
 import de.tentact.languageapi.config.LanguageConfiguration;
 import de.tentact.languageapi.message.Message;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -43,7 +45,10 @@ public class VelocityConsoleEntity implements ConsoleEntity {
   }
 
   @Override
-  public void sendMessage(Message translation, Object... parameters) {
+  public void sendMessage(@NotNull Message translation, Object... parameters) {
+    Preconditions.checkNotNull(translation, "translation");
+    Preconditions.checkNotNull(parameters, "parameters");
+
     translation.buildAsync(this.consoleLocale, parameters).thenAccept(message ->
         this.proxyServer.getConsoleCommandSource().sendMessage(LegacyComponentSerializer.legacySection().deserialize(message)));
   }
