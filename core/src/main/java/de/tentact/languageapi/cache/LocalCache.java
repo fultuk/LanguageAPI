@@ -42,7 +42,7 @@ public class LocalCache<K, V> implements LanguageCache<K, V> {
   }
 
   public LocalCache() {
-    this(CacheBuilder.newBuilder().expireAfterWrite(Duration.ofMinutes(5L)).build());
+    this(CacheBuilder.newBuilder().concurrencyLevel(4).expireAfterWrite(Duration.ofMinutes(5L)).build());
   }
 
   @Override

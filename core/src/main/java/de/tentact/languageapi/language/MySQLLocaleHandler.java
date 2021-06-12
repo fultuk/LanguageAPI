@@ -53,7 +53,7 @@ public class MySQLLocaleHandler extends DefaultLocaleHandler implements LocaleHa
 
   @Override
   public boolean isAvailable(Locale locale) {
-    Locale cachedLocale = super.localeCache.getIfPresent(locale.toLanguageTag());
+    Locale cachedLocale = super.localeCache.getIfPresent(locale.toLanguageTag().toUpperCase());
     if (cachedLocale != null) {
       return true;
     }

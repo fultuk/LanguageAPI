@@ -86,7 +86,7 @@ public class DefaultFileHandler implements FileHandler {
       String languageTag = locale.toLanguageTag().toUpperCase();
 
       translations.put(Identifier.of("locale"), languageTag);
-      translations.putAll(LanguageAPI.getInstance().getMessageHandler().getMessages(locale).join());
+      translations.putAll(LanguageAPI.getInstance().getMessageHandler().getMessages(locale, false).join());
 
       Document outputDocument = Documents.newDocument("languageAPI", translations);
       Path outputPath = path.resolve(languageTag + ".yml");
@@ -95,6 +95,7 @@ public class DefaultFileHandler implements FileHandler {
         Files.createDirectories(path);
       } catch (IOException exception) {
         exception.printStackTrace();
+        return false;
       }
       outputDocument.yaml().write(outputPath);
       return true;

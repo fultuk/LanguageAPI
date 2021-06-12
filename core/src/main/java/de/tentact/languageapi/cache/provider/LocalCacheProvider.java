@@ -39,6 +39,6 @@ public class LocalCacheProvider implements CacheProvider {
 
   @Override
   public <K, V> LanguageCache<K, V> newPersistentCache() {
-    return new LocalCache<>(CacheBuilder.newBuilder().build());
+    return new LocalCache<>(CacheBuilder.newBuilder().concurrencyLevel(4).build());
   }
 }

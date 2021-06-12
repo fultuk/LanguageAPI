@@ -30,24 +30,26 @@ import de.tentact.languageapi.LanguageAPI;
 public interface ServiceRegistry {
 
   /**
-   * @param service
-   * @param <T>
-   * @return
+   * @param service the corresponding class to the searched service
+   * @param <T>     the type of the service
+   * @return the searched service
    */
   static <T> T getService(Class<T> service) {
     return LanguageAPI.getInstance().getServiceRegistry().getProvider(service);
   }
 
   /**
-   * @param service
-   * @param <T>
-   * @return
+   * @param service the corresponding class to the searched service
+   * @param <T>     the type of the service
+   * @return the instance of the searched service
    */
   <T> T getProvider(Class<T> service);
 
   /**
-   * @param service
-   * @param provider
+   * Registers a service in the registry
+   *
+   * @param service  the corresponding class to the searched service
+   * @param provider the instance of the given service
    */
   <T> void setProvider(Class<T> service, T provider);
 

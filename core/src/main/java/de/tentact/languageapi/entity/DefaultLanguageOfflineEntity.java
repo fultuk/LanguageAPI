@@ -63,11 +63,11 @@ public class DefaultLanguageOfflineEntity implements LanguageOfflineEntity {
     if (this == o) return true;
     if (!(o instanceof DefaultLanguageOfflineEntity)) return false;
     DefaultLanguageOfflineEntity that = (DefaultLanguageOfflineEntity) o;
-    return this.entityId.equals(that.entityId) && this.locale.equals(that.locale);
+    return this.entityId.equals(that.entityId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.entityId, this.locale);
+    return Objects.hash(this.entityId);
   }
 }

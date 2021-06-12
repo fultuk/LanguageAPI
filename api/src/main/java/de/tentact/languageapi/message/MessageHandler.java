@@ -78,7 +78,7 @@ public interface MessageHandler {
    * @param locale the locale to retrieve the translation in
    * @return every identifier and it's translation in the given locale
    */
-  @NotNull CompletableFuture<Map<Identifier, String>> getMessages(@NotNull Locale locale);
+  @NotNull CompletableFuture<Map<Identifier, String>> getMessages(@NotNull Locale locale, boolean fromCache);
 
   /**
    * Retrieves every identifier for a given locale
@@ -86,15 +86,15 @@ public interface MessageHandler {
    * @param locale    the locale to retrieve the identifiers in
    * @return every identifier for the given locale
    */
-  @NotNull CompletableFuture<Set<Identifier>> getIdentifier(@NotNull Locale locale);
+  @NotNull CompletableFuture<Set<Identifier>> getIdentifier(@NotNull Locale locale, boolean fromCache);
 
   /**
    * Retrieves every identifier that was written to the database
    *
-   * @param cacheOnly whether to use the cache only
+   * @param fromCache whether to use the cache only
    * @return every identifier that was written to the database
    */
-  @NotNull CompletableFuture<Set<Identifier>> getGlobalIdentifier(boolean cacheOnly);
+  @NotNull CompletableFuture<Set<Identifier>> getGlobalIdentifier(boolean fromCache);
 
   /**
    * Adds or updates a translation for the given identifier in the given locale

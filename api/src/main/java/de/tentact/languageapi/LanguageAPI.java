@@ -29,24 +29,50 @@ public abstract class LanguageAPI {
   }
 
   /**
-   *
-   * @return
+   * @return an instance to the {@link MessageHandler}
    */
   public abstract MessageHandler getMessageHandler();
 
+  /**
+   * @return an instance to the {@link FileHandler}
+   */
   public abstract FileHandler getFileHandler();
 
+  /**
+   * @return an instance to the {@link LocaleHandler}
+   */
   public abstract LocaleHandler getLocaleHandler();
 
+  /**
+   * @return an instance to the {@link EntityHandler}
+   */
   public abstract EntityHandler getEntityHandler();
 
+  /**
+   * @return an instance to the {@link ServiceRegistry}
+   */
   public abstract ServiceRegistry getServiceRegistry();
 
+  /**
+   * @return an instance to the {@link CacheProvider}
+   */
   public abstract CacheProvider getCacheProvider();
 
+  /**
+   * @return the loaded {@link LanguageConfiguration}
+   */
   public abstract LanguageConfiguration getLanguageConfiguration();
 
+  /**
+   * Sets the current {@link LanguageConfiguration} to the given one
+   * Use the {@link de.tentact.languageapi.config.LanguageConfigurationWriter} to write the config in the file
+   * @param languageConfiguration the new configuration
+   */
   public abstract void setLanguageConfiguration(LanguageConfiguration languageConfiguration);
 
+  /**
+   * Executes the given runnable on another thread using an {@link java.util.concurrent.ExecutorService}
+   * @param runnable the runnable to be executed
+   */
   public abstract void executeAsync(Runnable runnable);
 }

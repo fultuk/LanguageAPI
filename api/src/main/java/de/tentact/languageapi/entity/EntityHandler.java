@@ -40,7 +40,7 @@ public interface EntityHandler {
    * @param entityId the entityId that belongs to the entity
    * @return the found entity - null if no entity was found
    */
-  CompletableFuture<LanguageOfflineEntity> getOfflineLanguageEntity(@NotNull UUID entityId);
+  @Nullable CompletableFuture<LanguageOfflineEntity> getOfflineLanguageEntity(@NotNull UUID entityId);
 
   /**
    * Validates the locale of the given entity and updates it in caches and databases
@@ -56,7 +56,7 @@ public interface EntityHandler {
    * @param entityId the entityId that belongs to the entity
    * @return the new entity
    */
-  LanguageOfflineEntity registerEntity(@NotNull UUID entityId);
+  @NotNull LanguageOfflineEntity registerEntity(@NotNull UUID entityId);
 
   /**
    * Registers a entity with the given id in the database and caches it
@@ -65,11 +65,11 @@ public interface EntityHandler {
    * @param locale   the locale that is set for the entity
    * @return the new entity
    */
-  LanguageOfflineEntity registerEntity(@NotNull UUID entityId,@NotNull Locale locale);
+  @NotNull LanguageOfflineEntity registerEntity(@NotNull UUID entityId, @NotNull Locale locale);
 
   /**
    * @return the console entity to send messages to a console
    */
-  ConsoleEntity getConsoleEntity();
+  @NotNull ConsoleEntity getConsoleEntity();
 
 }

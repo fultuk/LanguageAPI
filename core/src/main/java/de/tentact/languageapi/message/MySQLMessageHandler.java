@@ -36,10 +36,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class MySQLMessageHandler extends DefaultMessageHandler implements MessageHandler {
@@ -124,30 +121,70 @@ public class MySQLMessageHandler extends DefaultMessageHandler implements Messag
   }
 
   @Override
-  public @NotNull CompletableFuture<Map<Identifier, String>> getMessages(@NotNull Locale locale) {
-    return null;
+  public @NotNull CompletableFuture<Map<Identifier, String>> getMessages(@NotNull Locale locale, boolean fromCache) {
+    Preconditions.checkNotNull(locale, "locale");
+
+    return super.localeHandler.isAvailableAsync(locale).thenApplyAsync(isAvailable -> {
+      if (!isAvailable) {
+        return new HashMap<>();
+      }
+      if (fromCache) {
+        Map<Identifier, String> cachedTranslations = super.translationCache.getIfPresent(locale);
+        if (cachedTranslations == null) {
+          cachedTranslations = new HashMap<>();
+        }
+        return cachedTranslations;
+      }
+
+      Map<Identifier, String> translations = new HashMap<>();
+
+      try (Connection connection = this.getDataSource().getConnection();
+           PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM " + locale.toLanguageTag().toUpperCase() + ";")) {
+
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+          while (resultSet.next()) {
+            translations.put(Identifier.of(resultSet.getString("translationkey")),
+                resultSet.getString("translation"));
+          }
+
+          super.translationCache.put(locale, translations);
+        }
+
+      } catch (SQLException throwables) {
+        throwables.printStackTrace();
+      }
+      return translations;
+    });
   }
 
   @Override
-  public @NotNull CompletableFuture<Set<Identifier>> getIdentifier(@NotNull Locale locale) {
+  public @NotNull CompletableFuture<Set<Identifier>> getIdentifier(@NotNull Locale locale, boolean fromCache) {
+    if (fromCache) {
+      return CompletableFuture.completedFuture(super.translationCache.getIfPresent(locale).keySet());
+    }
+    return this.getMessages(locale, false).thenApply(Map::keySet);
+  }
 
-    //TODO: the locale is not used and it always returns every identifier
+  @Override
+  public @NotNull CompletableFuture<Set<Identifier>> getGlobalIdentifier(boolean fromCache) {
     return CompletableFuture.supplyAsync(() -> {
-      Set<Identifier> identifiers = new HashSet<>();
-
-      if (!this.localeHandler.isAvailable(locale)) {
+      Set<Identifier> identifiers = new HashSet<>(super.identifierCache.getValues());
+      if (fromCache) {
         return identifiers;
       }
+
       try (Connection connection = this.getDataSource().getConnection();
-           PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM IDENTIFIER")) {
+           PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM IDENTIFIER;")) {
+
         try (ResultSet resultSet = preparedStatement.executeQuery()) {
           while (resultSet.next()) {
             Identifier identifier = Identifier.of(resultSet.getString("translationkey"),
                 resultSet.getString("parameters").split(","));
-
+            identifiers.remove(identifier);
             identifiers.add(identifier);
           }
         }
+
       } catch (SQLException throwables) {
         throwables.printStackTrace();
       }
@@ -155,11 +192,6 @@ public class MySQLMessageHandler extends DefaultMessageHandler implements Messag
       super.cacheIdentifier(identifiers);
       return identifiers;
     });
-  }
-
-  @Override
-  public @NotNull CompletableFuture<Set<Identifier>> getGlobalIdentifier(boolean cacheOnly) {
-    return null;
   }
 
   @Override
@@ -226,11 +258,15 @@ public class MySQLMessageHandler extends DefaultMessageHandler implements Messag
       try (Connection connection = this.getDataSource().getConnection();
            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO " + locale.toLanguageTag().toUpperCase() +
                " (translationkey, translation) VALUES (?, ?) ON DUPLICATE KEY UPDATE translation=?;")) {
-        Set<Map.Entry<Identifier, String>> translationEntries = translations.entrySet();
+
 
         if (!replaceIfExists) {
-          translationEntries.removeAll(existingTranslationKeys);
+          for (Identifier existingTranslationKey : existingTranslationKeys) {
+            translations.remove(existingTranslationKey);
+          }
         }
+
+        Set<Map.Entry<Identifier, String>> translationEntries = translations.entrySet();
 
         for (Map.Entry<Identifier, String> translationEntry : translationEntries) {
           Identifier identifier = translationEntry.getKey();

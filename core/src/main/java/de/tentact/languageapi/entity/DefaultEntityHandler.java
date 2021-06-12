@@ -71,12 +71,12 @@ public abstract class DefaultEntityHandler implements EntityHandler {
   public abstract CompletableFuture<Void> updateLanguageEntity(@NotNull LanguageOfflineEntity languageOfflineEntity);
 
   @Override
-  public LanguageOfflineEntity registerEntity(@NotNull UUID entityId) {
+  public @NotNull LanguageOfflineEntity registerEntity(@NotNull UUID entityId) {
     return this.registerEntity(entityId, Locale.ENGLISH);
   }
 
   @Override
-  public LanguageOfflineEntity registerEntity(@NotNull UUID entityId, @NotNull Locale locale) {
+  public @NotNull LanguageOfflineEntity registerEntity(@NotNull UUID entityId, @NotNull Locale locale) {
     LanguageOfflineEntity languageOfflineEntity = new DefaultLanguageOfflineEntity(entityId, locale);
 
     this.updateLanguageEntity(languageOfflineEntity);
@@ -84,7 +84,7 @@ public abstract class DefaultEntityHandler implements EntityHandler {
   }
 
   @Override
-  public ConsoleEntity getConsoleEntity() {
+  public @NotNull ConsoleEntity getConsoleEntity() {
     return ServiceRegistry.getService(ConsoleEntity.class);
   }
 

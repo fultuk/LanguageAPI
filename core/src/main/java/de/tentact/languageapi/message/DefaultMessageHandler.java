@@ -42,8 +42,7 @@ import java.util.stream.Collectors;
 public abstract class DefaultMessageHandler implements MessageHandler {
 
   protected final LocaleHandler localeHandler;
-  protected final LanguageCache<String, Map<String, String>> translationCache;
-  //TODO: this cache should be language based as not every identifier is present for every language
+  protected final LanguageCache<Locale, Map<Identifier, String>> translationCache;
   protected final LanguageCache<String, Identifier> identifierCache;
 
   public DefaultMessageHandler(LocaleHandler localeHandler, CacheProvider cacheProvider) {
@@ -100,11 +99,8 @@ public abstract class DefaultMessageHandler implements MessageHandler {
     Preconditions.checkNotNull(identifier, "identifier");
     Preconditions.checkNotNull(locale, "locale");
 
-    Map<String, String> cacheMap = this.translationCache.getIfPresent(identifier.getTranslationKey());
-    if (cacheMap != null && cacheMap.containsKey(identifier.getTranslationKey())) {
-      return cacheMap.get(locale.toLanguageTag().toUpperCase());
-    }
-    return null;
+    Map<Identifier, String> cacheMap = this.translationCache.getIfPresent(locale);
+    return cacheMap != null ? cacheMap.get(identifier) : null;
   }
 
   @Override
@@ -124,12 +120,12 @@ public abstract class DefaultMessageHandler implements MessageHandler {
   }
 
   protected void cacheTranslation(Identifier identifier, Locale locale, String translation) {
-    Map<String, String> cacheMap = this.translationCache.getIfPresent(identifier.getTranslationKey());
+    Map<Identifier, String> cacheMap = this.translationCache.getIfPresent(locale);
     if (cacheMap == null) {
       cacheMap = new HashMap<>(1);
     }
-    cacheMap.put(locale.toLanguageTag().toUpperCase(), translation);
-    this.translationCache.put(identifier.getTranslationKey(), cacheMap);
+    cacheMap.put(identifier, translation);
+    this.translationCache.put(locale, cacheMap);
   }
 
   protected void cacheIdentifier(Identifier identifier) {
