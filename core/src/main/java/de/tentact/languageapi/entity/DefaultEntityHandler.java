@@ -25,6 +25,7 @@
 
 package de.tentact.languageapi.entity;
 
+import de.tentact.languageapi.LanguageAPI;
 import de.tentact.languageapi.cache.CacheProvider;
 import de.tentact.languageapi.cache.LanguageCache;
 import de.tentact.languageapi.registry.ServiceRegistry;
@@ -72,7 +73,7 @@ public abstract class DefaultEntityHandler implements EntityHandler {
 
   @Override
   public @NotNull LanguageOfflineEntity registerEntity(@NotNull UUID entityId) {
-    return this.registerEntity(entityId, Locale.ENGLISH);
+    return this.registerEntity(entityId, LanguageAPI.getInstance().getLanguageConfiguration().getDefaultLocale());
   }
 
   @Override
