@@ -1,9 +1,9 @@
 name: Publish package to the repository
 on:
   push:
-    branches: [development]
+    branches: [ development ]
   release:
-    types: [created]
+    types: [ created ]
 jobs:
   publish:
     runs-on: ubuntu-latest

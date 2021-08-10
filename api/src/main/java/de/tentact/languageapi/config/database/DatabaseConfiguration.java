@@ -30,13 +30,13 @@ import de.tentact.languageapi.LanguageAPI;
 public class DatabaseConfiguration implements Cloneable {
 
   public static final DatabaseConfiguration DEFAULT_DATABASE_CONFIGURATION =
-      new DatabaseConfiguration(
-          "localhost",
-          "languageapi",
-          "languageapi",
-          "password",
-          3306
-      );
+    new DatabaseConfiguration(
+      "localhost",
+      "languageapi",
+      "languageapi",
+      "password",
+      3306
+    );
 
   protected final String hostname;
   protected final String database;

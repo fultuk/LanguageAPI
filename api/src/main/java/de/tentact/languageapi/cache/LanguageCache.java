@@ -52,7 +52,7 @@ public interface LanguageCache<K, V> {
    * @param key the key to the value
    * @return the value associated with the given key
    */
-  @Nullable V getIfPresent(K key);
+  @Nullable V getIfPresent(@NotNull K key);
 
   /**
    * Invalidates the given key in the backing cache

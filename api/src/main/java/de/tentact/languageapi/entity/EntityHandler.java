@@ -40,7 +40,7 @@ public interface EntityHandler {
    * @param entityId the entityId that belongs to the entity
    * @return the found entity - null if no entity was found
    */
-  @Nullable CompletableFuture<LanguageOfflineEntity> getOfflineLanguageEntity(@NotNull UUID entityId);
+  @NotNull CompletableFuture<LanguageOfflineEntity> getOfflineLanguageEntity(@NotNull UUID entityId);
 
   /**
    * Validates the locale of the given entity and updates it in caches and databases

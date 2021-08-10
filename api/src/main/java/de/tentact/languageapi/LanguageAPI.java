@@ -2,6 +2,7 @@ package de.tentact.languageapi;
 
 import de.tentact.languageapi.cache.CacheProvider;
 import de.tentact.languageapi.config.LanguageConfiguration;
+import de.tentact.languageapi.config.LanguageConfigurationHelper;
 import de.tentact.languageapi.entity.EntityHandler;
 import de.tentact.languageapi.file.FileHandler;
 import de.tentact.languageapi.language.LocaleHandler;
@@ -65,13 +66,15 @@ public abstract class LanguageAPI {
 
   /**
    * Sets the current {@link LanguageConfiguration} to the given one
-   * Use the {@link de.tentact.languageapi.config.LanguageConfigurationWriter} to write the config in the file
+   * Use the {@link LanguageConfigurationHelper} to write the config in the file
+   *
    * @param languageConfiguration the new configuration
    */
   public abstract void setLanguageConfiguration(LanguageConfiguration languageConfiguration);
 
   /**
    * Executes the given runnable on another thread using an {@link java.util.concurrent.ExecutorService}
+   *
    * @param runnable the runnable to be executed
    */
   public abstract void executeAsync(Runnable runnable);

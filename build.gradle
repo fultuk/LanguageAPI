@@ -1,112 +1,138 @@
-plugins {
-    id "com.github.johnrengelman.shadow" version "7.0.0"
+buildscript {
+  ext.kotlin_version = '1.5.30-RC'
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+  }
 }
+plugins {
+  id "com.github.johnrengelman.shadow" version "7.0.0"
+}
+apply plugin: 'kotlin'
 
 ext.shortVersion = '2.0-SNAPSHOT'
 
 allprojects {
-    group = 'de.tentact.languageapi'
-    version = shortVersion + '-' + getCurrentShortRevision()
+  group = 'de.tentact.languageapi'
+  version = shortVersion + '-' + getCurrentShortRevision()
 }
 
 def getCurrentShortRevision() {
-    new ByteArrayOutputStream().withStream { os ->
-        exec {
-            executable = "git"
-            args = ["rev-parse", "HEAD"]
-            standardOutput = os
-        }
-        return os.toString().trim().substring(0, 8)
+  new ByteArrayOutputStream().withStream { os ->
+    exec {
+      executable = "git"
+      args = ["rev-parse", "HEAD"]
+      standardOutput = os
     }
+    return os.toString().trim().substring(0, 8)
+  }
 }
 
 subprojects {
-    apply plugin: 'java'
-    apply plugin: 'maven-publish'
-    apply plugin: 'java-library'
-    apply plugin: 'com.github.johnrengelman.shadow'
+  apply plugin: 'java'
+  apply plugin: 'maven-publish'
+  apply plugin: 'java-library'
+  apply plugin: 'com.github.johnrengelman.shadow'
+
+  repositories {
+    mavenLocal()
+    maven {
+      url = uri('https://repo.maven.apache.org/maven2')
+    }
+
+    maven {
+      url = uri('https://repo.dmulloy2.net/nexus/repository/public/')
+    }
+
+    maven {
+      url = uri('https://hub.spigotmc.org/nexus/content/repositories/snapshots/')
+    }
+
+    maven {
+      url = uri('https://jitpack.io')
+    }
+
+    maven {
+      url = uri('https://libraries.minecraft.net/')
+    }
+
+    maven {
+      url = uri('https://oss.sonatype.org/content/repositories/snapshots')
+    }
+
+    maven {
+      url = uri('https://repo.velocitypowered.com/releases/')
+    }
+  }
+
+  sourceCompatibility = '8'
+
+  tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+  }
+
+  tasks.withType(Javadoc) {
+    options.encoding = 'UTF-8'
+    options.memberLevel = JavadocMemberLevel.PRIVATE
+  }
+
+  shadowJar {
+    archiveFileName.set(project.name + "-" + shortVersion + ".jar")
+    relocate('com.google.gson', 'com.google.relocated.gson')
+    relocate('com.google.common', 'com.google.relocated.common')
+  }
+
+  jar {
+    archiveFileName.set(project.name + "-" + shortVersion + ".jar")
+  }
+
+  if (project.name == 'Examples') return
+
+  java {
+    withJavadocJar()
+    withSourcesJar()
+  }
+
+  publishing {
+    publications {
+      maven(MavenPublication) {
+        groupId = project.group
+        artifactId = project.name
+        version = shortVersion
+
+        from components.java
+      }
+    }
 
     repositories {
-        mavenLocal()
-        maven {
-            url = uri('https://repo.maven.apache.org/maven2')
-        }
+      maven {
+        def releasesRepoUrl = 'https://archiva.tentact.de/repository/tentact-release/'
+        def snapshotsRepoUrl = 'https://archiva.tentact.de/repository/tentact-snapshot/'
+        url = shortVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
 
-        maven {
-            url = uri('https://repo.dmulloy2.net/nexus/repository/public/')
+        credentials {
+          username = System.getenv("MAVEN_USERNAME")
+          password = System.getenv("MAVEN_PASSWORD")
         }
-
-        maven {
-            url = uri('https://hub.spigotmc.org/nexus/content/repositories/snapshots/')
-        }
-
-        maven {
-            url = uri('https://jitpack.io')
-        }
-
-        maven {
-            url = uri('https://libraries.minecraft.net/')
-        }
-
-        maven {
-            url = uri('https://oss.sonatype.org/content/repositories/snapshots')
-        }
-
-        maven {
-            url = uri('https://repo.velocitypowered.com/releases/')
-        }
+      }
     }
-
-    sourceCompatibility = '8'
-
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
-    }
-
-    tasks.withType(Javadoc) {
-        options.encoding = 'UTF-8'
-        options.memberLevel = JavadocMemberLevel.PRIVATE
-    }
-
-    shadowJar {
-        archiveFileName.set(project.name + "-" + shortVersion + ".jar")
-        relocate('com.google.gson', 'com.google.relocated.gson')
-        relocate('com.google.common', 'com.google.relocated.common')
-    }
-
-    jar {
-        archiveFileName.set(project.name + "-" + shortVersion + ".jar")
-    }
-
-    if (project.name == 'Examples') return
-
-    java {
-        withJavadocJar()
-        withSourcesJar()
-    }
-
-    publishing {
-        publications {
-            maven(MavenPublication) {
-                groupId = project.group
-                artifactId = project.name
-                version = shortVersion
-
-                from components.java
-            }
-        }
-
-        repositories {
-            maven {
-                def releasesRepoUrl = 'https://archiva.tentact.de/repository/tentact-release/'
-                def snapshotsRepoUrl = 'https://archiva.tentact.de/repository/tentact-snapshot/'
-                url = shortVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-
-                credentials {
-                    username = System.getenv("MAVEN_USERNAME")
-                    password = System.getenv("MAVEN_PASSWORD")
-                }
-            }
-        }
-    }
+  }
+}
+repositories {
+  mavenCentral()
+}
+dependencies {
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+}
+compileKotlin {
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
+}
+compileTestKotlin {
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
 }

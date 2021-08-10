@@ -34,13 +34,13 @@ import java.util.Locale;
 public class LanguageConfiguration implements Cloneable {
 
   public static final LanguageConfiguration DEFAULT_LANGUAGE_CONFIGURATION =
-      new LanguageConfiguration(
-          DatabaseConfiguration.DEFAULT_DATABASE_CONFIGURATION,
-          DatabaseConfiguration.DEFAULT_DATABASE_CONFIGURATION,
-          CacheType.LOCAL,
-          DatabaseType.MYSQL,
-          Locale.GERMANY.toLanguageTag()
-      );
+    new LanguageConfiguration(
+      DatabaseConfiguration.DEFAULT_DATABASE_CONFIGURATION,
+      DatabaseConfiguration.DEFAULT_DATABASE_CONFIGURATION,
+      CacheType.LOCAL,
+      DatabaseType.MYSQL,
+      Locale.GERMANY.toLanguageTag()
+    );
 
   private DatabaseConfiguration databaseConfiguration;
   private DatabaseConfiguration cacheConfiguration;
@@ -110,10 +110,10 @@ public class LanguageConfiguration implements Cloneable {
       return (LanguageConfiguration) super.clone();
     } catch (CloneNotSupportedException e) {
       return new LanguageConfiguration(this.databaseConfiguration.clone(),
-          this.cacheConfiguration.clone(),
-          this.cacheType,
-          this.databaseType,
-          this.defaultLocale
+        this.cacheConfiguration.clone(),
+        this.cacheType,
+        this.databaseType,
+        this.defaultLocale
       );
     }
   }

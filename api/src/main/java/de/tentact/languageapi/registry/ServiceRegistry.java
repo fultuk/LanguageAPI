@@ -26,6 +26,7 @@
 package de.tentact.languageapi.registry;
 
 import de.tentact.languageapi.LanguageAPI;
+import org.jetbrains.annotations.Nullable;
 
 public interface ServiceRegistry {
 
@@ -43,7 +44,7 @@ public interface ServiceRegistry {
    * @param <T>     the type of the service
    * @return the instance of the searched service
    */
-  <T> T getProvider(Class<T> service);
+  @Nullable <T> T getProvider(Class<T> service);
 
   /**
    * Registers a service in the registry

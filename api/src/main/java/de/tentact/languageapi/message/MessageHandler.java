@@ -59,14 +59,14 @@ public interface MessageHandler {
   @NotNull Message getMessage(@NotNull Identifier identifier);
 
   /**
-   * @param identifier the identifier for the message
+   * @param identifier       the identifier for the message
    * @param prefixIdentifier the identifier of the prefix for the message
    * @return the message associated with the given identifier & prefixIdentifier
    */
   @NotNull Message getMessage(@NotNull Identifier identifier, @NotNull Identifier prefixIdentifier);
 
   /**
-   * @param identifier the identifier for the message
+   * @param identifier    the identifier for the message
    * @param prefixMessage the prefixMessage used for resolving the prefix of the message
    * @return the message associated with the given identifier & the prefixMessage
    */
@@ -83,7 +83,7 @@ public interface MessageHandler {
   /**
    * Retrieves every identifier for a given locale
    *
-   * @param locale    the locale to retrieve the identifiers in
+   * @param locale the locale to retrieve the identifiers in
    * @return every identifier for the given locale
    */
   @NotNull CompletableFuture<Set<Identifier>> getIdentifier(@NotNull Locale locale, boolean fromCache);
